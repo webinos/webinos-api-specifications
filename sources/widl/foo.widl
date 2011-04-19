@@ -1,0 +1,99 @@
+/**
+ * \brief The foo API 
+ *
+ * This should include a detailed description of the functionality this API offers
+ *
+ * \def-api-feature http://webinos.org/api/foo
+ * Acccess to all the module. This identifies which are the features that are exposed by this
+ * module so that the developer can express a dependency on them.
+ *
+ * \author No Name &lt;noname@nodomain.org&gt;
+ * \version 0.1 
+ */
+module foo {
+
+  /**
+   * \brief Defines what is instantiated in initialization 
+   * 
+   * There will be a window.foo object that allows accessing the
+   * functionality of this module
+   * 
+   * \def-instantiated 
+   * \api-feature http://webinos.org/api/foo
+   */
+  [NoInterfaceObject] interface FooManager {
+    readonly attribute FooManager foo; 
+  };
+  Window implements FooManager;
+
+  /**
+   * \brief Entry point for the foo API  
+   *
+   * Long description about what this interface does, e.g.
+   * providing access to some nice functionalities through
+   * additional methods
+   *
+   * \code
+   * // This should include a more meaningful example
+   * var text = foo.getFoo("webinos");
+   * alert("Foo returned " + text);
+   * \endcode
+   */
+  [NoInterfaceObject] interface FooManager {
+
+    /**
+     * \brief Returns a foo string
+     *
+     * Herein a more detailed description about the behaviour of
+     * this method should be offered, paying attention to error
+     * situations, normal behaviour and using normative words if
+     * possible
+     *
+     * \code
+     * // This should include a more meaningful example
+     * var text = foo.getFoo("webinos");
+     * alert("Foo returned " + text);
+     * \endcode
+     *
+     * \param text An input argument description
+     * \return A string with a human readable string
+     * \throw Error with error code TYPE_MISMATCH_ERR if 
+     * the input parameter is not compatible with the expected type for 
+     * that parameter.
+     */
+    DOMString getFoo(in DOMString text)
+        raises(Error);
+
+    /**
+     * \brief instance of the FooInterface member of the FooManager
+     *
+     * A detailed description should be put here.
+     */
+    attribute FooInterface fooIfcInstance;
+  };
+
+  /**
+   * \brief Another interface definition,
+   *
+   * A detailed description should be put here.
+   */
+   [Callback, NoInterfaceObject] interface FooInterface {
+
+    /**
+     * \brief fooAttribute
+     *
+     * A detailed description should be put here.
+     */
+    attribute DOMString fooAttribute;
+  };
+  
+  /**
+   * \brief Defines the  error codes for this module
+   */
+  [NoInterfaceObject, Supplemental] interface Error {
+    /**
+     * \brief The property cannot be currently retrieved
+     */
+     const unsigned short NOT_AVAILABLE_ERR = 101;
+   };
+};

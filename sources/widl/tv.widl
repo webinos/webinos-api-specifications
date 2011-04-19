@@ -1,0 +1,140 @@
+/**
+ * \brief Interfaces for TV control.
+ *
+ * Parts of this API are based on the OIPF Rel 2 Specification Vol 5 - Declarative Application
+ *
+ * \author Alexander Fut&aacute;sz &lt;alexander.futasz@fokus.fraunhofer.de&gt;
+ */
+module tvcontrol {
+
+  interface HTMLMediaElement {};
+
+  /**
+   * \brief The TVMediaElement interface
+   *
+   * The TVMediaElement interface extends the HTMLMediaElement to support TV video
+   * broadcast streams which are mapped as channels. The API supports listing, 
+   * setting and switching these channels.
+   *
+   * See http://www.whatwg.org/specs/web-apps/current-work/multipage/video.html#media-element
+   */
+  interface TVMediaElement : HTMLMediaElement {
+    
+    /**
+     * \brief Indicates the current parental rating of the showing programme.
+     */
+    readonly attribute ParentalRating currentParentalRating;
+
+    /**
+     * \brief Indicates whether the media element is stopped or not. 
+     */
+    readonly attribute boolean stopped; 
+
+    /**
+     * \brief An array holding all channels that can be switched to.
+     *
+     * The order in this array defines the behaviour of the nextChannel() and
+     * prevChannel() functions.
+     */
+    readonly attribute sequence<Channel> channelList;
+
+    /**
+     * \brief Requests the tuner to switch to the channel specified.
+     *
+     * Request to switch to the specified channel and render the received broadcast. 
+     *
+     * \param channel A channel object, obtained from the channelList.
+     */
+    void setChannel(in Channel channel);
+    
+    /**
+     * \brief Request to switch the tuner to the previous channel.
+     *
+     * The previous channel is the channel preceding the current channel in
+     * channelList. The list shall be cycled in case the end has been reached.
+     */
+    void prevChannel();
+    
+    /**
+     * \brief Request to switch the tuner to the next channel.
+     *
+     * The next channel is the channel succeeding the current channel in
+     * channelList. The list shall be cycled in case the end has been reached.
+     */
+    void nextChannel();
+    
+    /**
+     * \brief Stop video broadcast.
+     *
+     * If a video broadcast is currently playing, stop the broadcast and transition
+     * to a stopped state.
+     */
+    void stop();
+    
+  };
+
+  /**
+   * \brief The Channel Interface
+   *
+   * Channel objects represent broadcast streams. 
+   */
+  interface Channel {
+
+    /**
+     * \brief Indicates a TV channel.
+     */
+    const unsigned short TYPE_TV = 0;
+    
+    /**
+     * \brief Indicates a radio channel.
+     */
+    const unsigned short TYPE_RADIO = 1;
+    
+    /**
+     * \brief The type of channel.
+     *
+     * Type of channel is defined by one of the TYPE_* constants defined above.
+     */
+    readonly attribute unsigned short channelType;
+
+    /**
+     * \brief The name of the channel.
+     *
+     * The name of the channel will typically be the call sign of the station.
+     */
+    readonly attribute DOMString name;
+    
+    /**
+     * \brief The long name of the channel.
+     *
+     * The long name of the channel if transmitted. Can be undefined if not available.
+     */
+    readonly attribute DOMString longName;
+    
+  };
+  
+  /**
+   * \brief The Parental Rating interface.
+   */
+  interface ParentalRating {
+  
+    /**
+     * \brief Indicates the parental rating value.
+     *
+     * The parental rating value for the respective rating scheme as denoted by
+     * the property scheme. Example: "PG-13".
+     */
+    readonly attribute DOMString name;
+    
+    /**
+     * \brief Indicates the used parental rating guidance scheme.
+     *
+     * The guidance scheme to which the name property refers. Valid strings
+     * include an uri as defined in MPEG-7, "urn:oipf:GermanyFSKCS" or "dvb-si"
+     * (see ETSI EN 300 468).
+     */
+    readonly attribute DOMString scheme;
+    
+  };
+    
+};

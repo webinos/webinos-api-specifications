@@ -1,0 +1,735 @@
+/*
+ * Licensed to OMTP Ltd. (OMTP) under one or more contributor license agreements. 
+ * See the NOTICE file distributed with this work for additional information regarding 
+ * copyright ownership. 
+ * 
+ * The Reference Implementation (save for such parts of the reference implementation made 
+ * available under separate terms and conditions) is made available under the terms of the 
+ * Apache License, version 2.0, subject to the condition that any "Works" and "Derivative 
+ * Works" used or distributed for commercial purposes must be and remain compliant with the
+ * BONDI specification as promulgated by OMTP in each release. Your implementation of the 
+ * Reference Implementation (whether object or source) must malongain these conditions, and 
+ * you must notify any recipient of this condition in a conspicuous way.
+ * 
+ * You may not use this BONDI Reference Implementation except in compliance with the License. 
+ * 
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 or at 
+ * http://bondi.omtp.org/BONDI-LICENSE-2.0 
+ */
+
+/**
+ * \brief BONDI Gallery interface.
+ *
+ * The BONDI Gallery interface provides access to media galleries located on the phone.
+ * A media gallery is a collection of media files (here referred to as media items),
+ * that is image, audio and video files.
+ * The number and the location of media galleries are implementation dependent.
+ * As an example, on a Windows Mobile phone a gallery can be located in the
+ * directory "\\My Documents". A gallery can also be located in different directories;
+ * for example you can have a single gallery including files from "\\My Documents" directory
+ * and from the memory card.
+ * The interface allows the user to create a custom view of the gallery. This means that
+ * the interface exposes an API to filter and order the list of files according to various
+ * options. As an example a user can request all images sorted by date, or mp3 files sorted
+ * by author.
+ *
+ * \def-api-feature http://bondi.omtp.org/api/gallery.read
+ * \brief Access to the gallery content.
+ * \device-cap io.file.read
+ *
+ * \def-api-feature-set http://bondi.omtp.org/api/gallery
+ * \api-feature http://bondi.omtp.org/api/gallery.read
+ *
+ * \def-device-cap io.file.read
+ * \brief Read gallery files from the filesystem.
+ * \param name Name of directory or file, in virtual filesystem,
+ * e.g. rootlocation/filename
+ * 
+ * \author Stefano Vercelli &lt;stefano.vercelli@telecomitalia.it&gt;
+ * \version 1.1
+ */
+module gallery {
+
+	/**
+	 * \brief Array of Gallery objects.
+	 */
+	typedef sequence<Gallery>   GalleryArray;
+
+	/**
+	 * \brief Array of MediaItem objects.
+	 */
+	typedef sequence<MediaItem> MediaItemArray;
+
+	/**
+	 * \brief Gallery specific errors.
+	 */
+	interface GalleryError : GenericError {
+
+		/**
+		 * \brief Gallery is already open
+		 */
+		const unsigned short GALLERY_OPEN_ERROR = 1;
+
+		/**
+		 * \brief Gallery is not open
+		 */
+		const unsigned short GALLERY_NOT_OPEN_ERROR = 2;
+	};
+
+	/**
+	 * \brief Interface retrieval of list of media galleries of the phone.
+	 *
+	 * This interface allows for the retrieval of the list of Media Galleries
+	 * present on the phone. The number of galleries is hardcoded in the
+	 * implementation. As an example, in a windows mobile implementation
+	 * it may retrieve the gallery located in the directory "\\My Documents"
+	 * and another one located on the memory card. The property info of each
+	 * gallery can be checked to get further details.
+	 *
+	 * \code
+	 * 	var availableGalleries = bondi.gallery.getGalleries();
+	 * 	for (i=0; i &lt; availableGalleries.length; i++) {
+	 * 		var galleryInfo = availableGalleries[i].info;
+	 * 		// check gallery info...
+	 * 	}
+	 * \endcode
+	 *
+	 */
+	interface GalleryManager {
+
+		/**
+		 * \brief Retrieves all galleries managed by the manager.
+		 *
+		 * The number of galleries depends on the implementation.
+		 * It can return an empty array: if it does this means that the developer or
+		 * phone manufacturer doesn't give access to galleries, or that there
+		 * are no galleries currently available (for example, because there
+		 * is no memory card in the phone).
+		 *
+		 * \api-feature http://bondi.omtp.org/api/gallery.read
+		 * 
+		 * \code
+		 * 	var availableGalleries = bondi.gallery.getGalleries();
+		 * \endcode
+		 *
+		 * \return a vector containing all available galleries.
+		 */
+		GalleryArray getGalleries();
+	};
+
+	/**
+	 * \brief Interface to access the media gallery of the phone.
+	 *
+	 * Interface for handling a media gallery of the device.
+	 * This interface scans a predefined location of the filesystem
+	 * for media files and extracts multimedia information from them. The user
+	 * can create a custom view by filtering and sorting the list of media items.
+	 *
+	 * \code
+	 *	// Define the changeView success callback.
+	 * 	function changeViewSuccess() {
+	 * 		alert("Gallery contains " + myGallery.getNumberOfMediaItems() + " images");
+	 * 	}
+	 *
+	 *	// Define the changeView failure callback.
+	 * 	function changeViewFailure(e) {
+	 * 		alert("Cannot change gallery view");
+	 * 	}
+	 *
+	 *	// Define the open success callback.
+	 * 	function openSuccess() {
+	 * 		alert("Gallery contains " + myGallery.getNumberOfMediaItems() + " media items");
+	 * 		myGallery.changeView(changeViewSuccess, changeViewFailure, {filterItemType:gallery.MEDIA_ITEM_TYPE_IMAGE});
+	 * 	}
+	 *
+	 *	// Define the open failure callback.
+	 * 	function openFailure(e) {
+	 * 		alert("Cannot open the gallery");
+	 * 	}
+	 *
+	 *	// Open the gallery.
+	 * 	myGallery.open(openSuccess, openFailure);
+	 * \endcode
+	 *
+	 */
+	interface Gallery {
+
+		/**
+		 * \brief Constant used to identify an undefined MediaItem.
+		 */
+		const unsigned short MEDIA_ITEM_TYPE_UNDEFINED = 0;
+
+		/**
+		 * \brief Constant used to identify an audio MediaItem.
+		 */
+		const unsigned short MEDIA_ITEM_TYPE_AUDIO = 1;
+
+		/**
+		 * \brief Constant used to identify a video MediaItem.
+		 */
+		const unsigned short MEDIA_ITEM_TYPE_VIDEO = 2;
+
+		/**
+		 * \brief Constant used to identify an image MediaItem.
+		 */
+		const unsigned short MEDIA_ITEM_TYPE_IMAGE = 3;
+
+		/**
+		 * \brief Constants used to identify no sort ordering.
+		 */
+		const unsigned short MEDIA_SORT_NONE = 0;
+
+		/**
+		 * \brief Constants used to identify sort by filename.
+		 */
+		const unsigned short MEDIA_SORT_BY_FILENAME = 1;
+
+		/**
+		 * \brief Constants used to identify sort by file date.
+		 */
+		const unsigned short MEDIA_SORT_BY_FILEDATE = 2;
+
+		/**
+		 * \brief Constants used to identify sort by media item type.
+		 */
+		const unsigned short MEDIA_SORT_BY_TYPE = 3;
+
+		/**
+		 * \brief Constants used to identify sort by title.
+		 */
+		const unsigned short MEDIA_SORT_BY_TITLE = 20;
+
+		/**
+		 * \brief Constants used to identify sort by author.
+		 */
+		const unsigned short MEDIA_SORT_BY_AUTHOR = 21;
+
+		/**
+		 * \brief Constants used to identify sort by album.
+		 */
+		const unsigned short MEDIA_SORT_BY_ALBUM = 22;
+
+		/**
+		 * \brief Constants used to identify sort by date.
+		 */
+		const unsigned short MEDIA_SORT_BY_DATE = 23;
+
+		/**
+		 * \brief Constant used to identify ascending sort order.
+		 */
+		const unsigned short MEDIA_SORT_ASCENDING = 0;
+
+		/**
+		 * \brief Constants used to identify descending sort order.
+		 */
+		const unsigned short MEDIA_SORT_DESCENDING = 1;
+
+		/**
+		 * \brief Returns information about the gallery.
+		 *
+		 * Provides generic information regarding the gallery. In particular
+		 * it indicates if the location of the gallery is removable, is on the device
+		 * or both, and a list of content types supported by this gallery.
+		 * The return map can be:
+		 * {locationType:removable|device|mixed;contenttype:&lt;list of supported contenttypes&gt;}
+		 *
+		 * \code
+		 * 	var galleryDetails = gallery.info;
+		 * 	alert("This gallery is located on a " + galleryDetails.locationType + " location");
+		 * 	alert("Supported content types are " + galleryDetails.contenttype);
+		 * \endcode
+		 */
+		readonly attribute Map info;
+
+		/**
+		 * \brief Gets the number of media items currently in the gallery.
+		 *
+		 * Returns the number of media items (that is pictures, videos or audio files)
+		 * in the current view of the gallery. The number of items may change every time 
+		 * a changeView or refresh operation is performed.
+		 *
+		 * \api-feature http://bondi.omtp.org/api/gallery.read
+		 * 
+		 * \code
+		 *		var numberOfItems = gallery.getNumberOfMediaItems();
+		 * \endcode
+		 *
+		 * \return the number of media items in the current gallery view
+		 * \throw SecurityError PERMISSION_DENIED_ERROR when
+		 *        access is denied by the security policy.
+		 * \throw GalleryError GALLERY_NOT_OPEN_ERROR if the gallery is not open
+		 */
+		unsigned long getNumberOfMediaItems()
+			raises(SecurityError, GalleryError);
+
+		/**
+		 * \brief Opens the gallery.
+		 *
+		 * When the gallery is opened, memory is allocated and filled with
+		 * information about the media items it contains.
+		 *
+		 * \api-feature http://bondi.omtp.org/api/gallery.read
+		 * 
+		 * \code
+		 *	// Define the open success callback.
+		 * 	function openSuccess() {
+		 * 		alert("Gallery successfully opened");
+		 * 	}
+		 *
+		 *	// Define the open failure callback.
+		 * 	function openFailure(e) {
+		 * 		alert("Cannot open gallery");
+		 * 	}
+		 *
+		 *	// Open the gallery.
+		 * 	gallery.open(openSuccess, openFailure);
+		 * \endcode
+		 *
+		 * \param successCallback Callback issued when the opening is correctly finished.
+		 * \param errorCallback Callback issued if an error occurs during the opening.
+		 * \return PendingOperation enabling the requester to cancel this request.
+		 * \throw SecurityError PERMISSION_DENIED_ERROR when
+		 *        access is denied by the security policy.
+		 * \throw DeviceAPIError PENDING_OPERATION_ERROR if another Open operation is being processed
+		 * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if an invalid argument is passed
+		 * \throw GalleryError GALLERY_OPEN_ERROR if the gallery is already open
+		 */
+		PendingOperation open(in SuccessCallback successCallback, in ErrorCallback errorCallback)
+			raises(SecurityError, DeviceAPIError, GalleryError);
+
+		/**
+		 * \brief Refresh the content of the gallery
+		 *
+		 * When a refresh is run, the content of the gallery is updated
+		 * with files added or deleted. The current view options (if any)
+		 * will be maintained.
+		 *
+		 * \api-feature http://bondi.omtp.org/api/gallery.read
+		 * 
+		 * \code
+		 * 	var itemNum1;
+		 * 	var itemNum2;
+		 *
+		 *	// Define the refresh failure callback.
+		 * 	function refreshFailure(e) {
+		 * 		alert("Cannot refresh gallery");
+		 * 	}
+		 *
+		 *	// Define the refresh success callback.
+		 * 	function refreshSuccess() {
+		 * 		itemNum2 = gallery.getNumberOfMediaItems();
+		 * 		var itemDiff = itemNum2 - itemNum1;
+		 * 		alert("You added "+itemDiff+" pictures to your gallery");
+		 * 	}
+		 *
+		 *	// Define the open failure callback.
+		 * 	function openFailure(e) {
+		 * 		alert("Cannot open gallery");
+		 * 	}
+		 *
+		 *	// Define the open success callback.
+		 * 	function openSuccess() {
+		 * 		alert("Gallery successfully opened");
+		 * 		itemNum1 = gallery.getNumberOfMediaItems();
+		 * 		// Take some pictures here...
+		 * 		// ...
+		 * 		// Then refresh your gallery content:
+		 * 		gallery.refresh(refreshSuccess, refreshFailure);
+		 * 	}
+		 *
+		 *	// Open the gallery.
+		 * 	gallery.open(openSuccess, openFailure);
+		 * \endcode
+		 *
+		 * \param successCallback Callback issued when the refresh is correctly finished.
+		 * \param errorCallback Callback issued if an error occurs during the refresh.
+		 * \return PendingOperation enabling the requester to cancel this request.
+		 * \throw SecurityError PERMISSION_DENIED_ERROR when
+		 *        access is denied by the security policy.
+		 * \throw DeviceAPIError PENDING_OPERATION_ERROR if a Refresh or ChangeView operation is being processed
+		 * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if an invalid argument is passed
+		 * \throw GalleryError GALLERY_NOT_OPEN_ERROR if the gallery is not open
+		 */
+		PendingOperation refresh(in SuccessCallback successCallback, in ErrorCallback errorCallback)
+			raises(SecurityError, DeviceAPIError, GalleryError);
+
+		/**
+		 * \brief Closes the media gallery.
+		 *
+		 * When the gallery is closed, all information regarding the
+		 * current view is lost and memory is released.
+		 * If the GALLERY_NO_OPEN_ERROR is raise, there is no need to close 
+		 * the gallery. In case the PENDING_OPERATION_ERROR is raised, the
+		 * application should wait for the pending asynchronous function 
+		 * to end (or cancel its execution) and then try again to close 
+		 * the gallery.
+		 *
+		 * \code
+		 *	// Define the success callback.
+		 * 	function openSuccess() {
+		 * 		alert("Gallery successfully opened");
+		 * 		// Perform all operations you need...
+		 * 		// ...
+		 * 		// When no longer needed, close the gallery so
+		 * 		// memory is released.
+		 * 		gallery.close();
+		 * 	}
+		 *
+		 *	// Define the error callback.
+		 * 	function openFailure(e) {
+		 * 		alert("Cannot open gallery");
+		 * 	}
+		 *
+		 *	// Open the gallery.
+		 * 	gallery.open(openSuccess, openFailure);
+		 * \endcode
+		 *
+		 * \throw DeviceAPIError PENDING_OPERATION_ERROR if an Open, Refresh or ChangeView operation is being processed
+		 * \throw GalleryError GALLERY_NOT_OPEN_ERROR if the gallery is not open
+		 */
+		void close()
+			raises(DeviceAPIError, GalleryError);
+
+		/**
+		 * \brief Creates a new view of the gallery
+		 *
+		 * Changes the current view of the gallery filtering and ordering items
+		 * according to the option parameters.  If present, any option regarding
+		 * a previous view is overwritten by the new ones.
+		 * Sort options include ascending or descending order by file name,
+		 * by file date, by media item type or by various fields from the metadata
+		 * of the media item. Either a primary sort order or a primary and a
+		 * secondary sort order (applied when files are equivalent as primary order) can be defined.
+		 * Filter options include selection of the file date, of the media item type,
+		 * of the file name, of the mimetype as well as various fields from the
+		 * media item metadata.
+		 *
+		 * \api-feature http://bondi.omtp.org/api/gallery.read
+		 * 
+		 * \code
+		 *	// Define the changeView error callback.
+		 * 	function cvFailure(e) {
+		 * 		alert("Cannot change gallery view");
+		 * 	}
+		 *
+		 *	// Define the changeView success callback.
+		 * 	function cvSuccess() {
+		 * 		var itemNum = gallery.getNumberOfMediaItems();
+		 * 		alert("You have "+itemNum+" pictures taken in November 2008");
+		 * 	}
+		 *
+		 *	// Define the open error callback.
+		 * 	function openFailure(e) {
+		 * 		alert("Cannot open gallery");
+		 * 	}
+		 *
+		 *	// Define the open success callback.
+		 * 	function openSuccess() {
+		 * 		alert("Gallery successfully opened");
+		 *		// Change the view.
+		 *		var startDate = new Date(8,10,1);
+		 *		var endDate = new Date(8,10,30);
+         * 		gallery.changeView(cvSuccess, cvFailure, {
+	     * 			primarySortOrder:gallery.MEDIA_SORT_BY_FILENAME,
+	     * 			secondarySortOrder:gallery.MEDIA_SORT_NONE,
+	     * 			startDate:startDate,
+	     * 			endDate:endDate
+		 * 		});
+		 * 	}
+		 *
+		 *	// Open the gallery.
+		 * 	gallery.open(openSuccess, openFailure);
+		 * \endcode
+		 *
+		 * \param successCallback Callback issued when the refresh is correctly finished.
+		 * \param errorCallback Callback issued if an error occurs during the refresh.
+		 * \param viewOptions Contains details on the way to sort and filter items in the new view.
+		 * \return PendingOperation enabling the requester to cancel this request.
+		 * \throw SecurityError PERMISSION_DENIED_ERROR when
+		 *        access is denied by the security policy.
+		 * \throw DeviceAPIError PENDING_OPERATION_ERROR if a Refresh or ChangeView operation is being processed
+		 * \throw GalleryError GALLERY_NOT_OPEN_ERROR if the gallery is not open
+		 * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if an invalid argument is passed
+		 */
+		PendingOperation changeView(in SuccessCallback successCallback,
+		                            in ErrorCallback errorCallback,
+		                            in ViewFilter viewOptions)
+			raises(SecurityError, DeviceAPIError, GalleryError);
+
+		/**
+		 * \brief Retrieves the list of media items
+		 *
+		 * Retrieves an array of MediaItems from the gallery according to current view options.
+		 * If no view has been created, all items of the gallery are returned. In this case,
+		 * the order of items is random.
+		 *
+		 * \api-feature http://bondi.omtp.org/api/gallery.read
+		 * 
+		 * \code
+		 *	// Define the error callback.
+		 * 	function openFailure(e) {
+		 * 		alert("Cannot open gallery");
+		 * 	}
+		 *
+		 *	// Define the success callback.
+		 * 	function openSuccess() {
+		 * 		alert("Gallery successfully opened");
+		 * 		var mediaItemArray = gallery.getMediaItems();
+		 * 		for (i=0; i &lt; mediaItemArray.length; i++) {
+		 * 			alert("Item number "+i+", file is "+mediaItemArray[i].fileName);
+		 * 		}
+		 * 	}
+		 *
+		 *	// Open the gallery.
+		 * 	gallery.open(openSuccess, openFailure);
+		 * \endcode
+		 *
+		 * \return a vector of media items
+		 * \throw SecurityError PERMISSION_DENIED_ERROR when
+		 *        access is denied by the security policy.
+		 * \throw DeviceAPIError PENDING_OPERATION_ERROR if an Open, Refresh or ChangeView operation is being processed
+		 * \throw GalleryError GALLERY_NOT_OPEN_ERROR if the gallery is not open
+		 */
+		MediaItemArray getMediaItems()
+			raises(SecurityError, DeviceAPIError, GalleryError);
+
+		/**
+		 * \brief Retrieves a media item by id
+		 *
+		 * Retrieves a media item by his id. The id of an item never changes
+		 * while the gallery is open. Notice that this method can retrieve
+		 * a media item even if it is out of the current view.
+		 *
+		 * \api-feature http://bondi.omtp.org/api/gallery.read
+		 * 
+		 * \code
+		 * 	var myPreferredImageId = -1;
+		 *
+		 *	// Define the changeView error callback.
+		 * 	function changeViewFailure(e) {
+		 * 		alert("Cannot change gallery view");
+		 * 	}
+		 *
+		 *	// Define the changeView success callback.
+		 * 	function changeViewSuccess() {
+		 * 		var imageArray = gallery.getMediaItems();
+		 * 		for (i=0; i &lt; imageArray.length; i++) {
+		 * 			var answer = Confirm("Is this your preferred image?");
+		 * 			if(answer) {
+		 * 				myPreferredImageId = imageArray[i].id;
+		 * 			}
+		 * 		}
+		 * 		if(myPreferredImageId != -1) {
+		 * 			var myPreferredImage = gallery.getMediaItemById(myPreferredImageId);
+		 * 			// Display my preferred image
+		 * 		}
+		 * 	}
+		 *
+		 *	// Define the open error callback.
+		 * 	function openFailure(e) {
+		 * 		alert("Cannot open the gallery");
+		 * 	}
+		 *
+		 *	// Define the open success callback.
+		 * 	function openSuccess() {
+		 * 		myGallery.changeView(changeViewSuccess, changeViewFailure, {filterItemType:gallery.MEDIA_ITEM_TYPE_IMAGE});
+		 * 	}
+		 *
+		 *	// Open the gallery.
+		 * 	myGallery.open(openSuccess, openFailure);
+		 * \endcode
+		 *
+		 * \param itemId Unique numeric id of the media item to be retrieved.
+		 * \return the MediaItem corresponding to that id
+		 * \throw SecurityError PERMISSION_DENIED_ERROR when
+		 *        access is denied by the security policy.
+		 * \throw DeviceAPIError PENDING_OPERATION_ERROR if an Open, Refresh or ChangeView operation is being processed
+		 * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if an invalid argument is passed
+		 * \throw GalleryError GALLERY_NOT_OPEN_ERROR if the gallery is not open
+		 */
+		MediaItem getMediaItemById(in unsigned long itemId)
+			raises(SecurityError, DeviceAPIError, GalleryError);
+	};
+
+	/**
+	 * \brief Interface to a single media item.
+	 *
+	 * The MediaItem interface offer access to information regarding a
+	 * single media item. A media item is a media file located in the
+	 * gallery, that is an image, audio or video file.
+	 * All information provided are readonly.
+	 *
+	 * \code
+	 * 	var myPreferredPictureId = 7;
+	 * 	var myPreferredPicture = gallery.getMediaItemById(myPreferredPictureId);
+	 * 	if(myPreferredPicture.type == gallery.MEDIA_ITEM_TYPE_IMAGE) {
+	 * 		alert("My preferred picture was taken with camera " + myPreferredPicture.metadata.cameraModel);
+	 * 	}
+	 * 	else {
+	 * 		alert("My preferred picture is not an image...");
+	 * 	}
+	 * \endcode
+	 *
+	 */
+	interface MediaItem {
+
+		/**
+		 * \brief Unique Id of the media item.
+		 *
+		 * This id is a unique numeric identifiers of the item.
+		 * This id is persistent while the media gallery is opened, so a refresh
+		 * or changeView operation will not change his value.
+		 *
+		 * \code
+		 * 	var selectedItem = mediaItem.id;
+		 * \endcode
+		 */
+		readonly attribute unsigned long id;
+
+		/**
+		 * \brief Type of media item.
+		 *
+		 * The type of the media item is an internal representation to distinguish among
+		 * audio items (MEDIA_ITEM_TYPE_AUDIO), video items (MEDIA_ITEM_TYPE_VIDEO)
+		 * or image items (MEDIA_ITEM_TYPE_IMAGE).
+		 *
+		 * \code
+		 * 	if (mediaItem.type == gallery.MEDIA_ITEM_TYPE_IMAGE) {
+		 * 		//display the image
+		 * 	}
+		 * \endcode
+		 */
+		readonly attribute long type;
+
+		/**
+		 * \brief Mimetype of the media file.
+		 *
+		 * This field is the mimetype associated to the media file.
+		 * It can be used to open the media item with an external application.
+		 *
+		 * \code
+		 * 	var mimetype = mediaItem.mimeType;
+		 * \endcode
+		 */
+		readonly attribute DOMString mimeType;
+
+		/**
+		 * \brief Gets the name of the file corresponding to this item.
+		 *
+		 * Return the full file name (including path) of the media item.
+		 *
+		 * \code
+		 * 	var fileName = mediaItem.fileName;
+		 * \endcode
+		 */
+		readonly attribute DOMString fileName;
+
+		/**
+		 * \brief Metadata associated to the media item.
+		 *
+		 * Informations extracted from the media file header.
+		 * The return map can be:
+		 * {metaTag0:&lt;metadata tag values&gt;, metaTag1:&lt;metadata tag values&gt;, ...}
+		 * where metaTag0, metaTag1, ... are the fields of file's metadata.
+		 *
+		 * \code
+		 * 	var pictureInfo = mediaItem.metadata;
+		 * 	alert("Picture taken with camera " + pictureInfo.cameraModel);
+		 * \endcode
+		 *
+		 * It is also possible to iterate over the metadata collection:
+		 * \code
+		 * 	var metadata = mediaitem.metadata; 
+		 * 	for (var metadate in metadata) {
+		 * 		alert(metadate + " of " + mediaitem.fileName + " is " + metadata[metadate]);
+		 * 	}
+		 * \endcode
+		 */
+		readonly attribute Map metadata;
+	};
+
+   /**
+    * \brief Describes the way in which the gallery media should be ordered
+    *
+    * Contains the set of parameters that defines the way in which the media
+    * items should be filtered and ordered
+    *
+    * \code
+    *	// Define the changeView error callback.
+	* 	function cvFailure(e) {
+	* 		alert("Cannot change gallery view");
+	* 	}
+	*
+	*	// Define the changeView success callback.
+	* 	function cvSuccess() {
+	* 		var itemNum = gallery.getNumberOfMediaItems();
+	* 		alert("You have "+itemNum+" pictures taken in November 2008");
+	* 	}
+	*
+	*	// Define the open error callback.
+	* 	function openFailure(e) {
+	* 		alert("Cannot open gallery");
+	* 	}
+	*
+	*	// Define the open success callback.
+	* 	function openSuccess() {
+	* 		alert("Gallery successfully opened");
+	*		// Change the view.
+	*		var startDate = new Date(8,10,1);
+	*		var endDate = new Date(8,10,30);
+	* 		gallery.changeView(cvSuccess, cvFailure, {
+	* 			primarySortOrder:gallery.MEDIA_SORT_BY_FILENAME,
+	* 			secondarySortOrder:gallery.MEDIA_SORT_NONE,
+	* 			startDate:startDate,
+	* 			endDate:endDate
+	* 		});
+	* 	}
+	*
+	*	// Open the gallery.
+	* 	gallery.open(openSuccess, openFailure);
+	* \endcode
+    */	
+   [NoInterfaceObject, Callback] interface ViewFilter {
+       /**
+        * \brief Primary criteria to order the gallery objects
+        */
+        attribute short primarySortOrder;
+
+       /**
+        * \brief Secondary criteria to order the gallery objects
+        */
+        attribute short secondarySortOrder;
+
+       /**
+        * \brief Start date for performing the search. Media tems with date 
+        * previous to that date will not be returned 
+        */
+        attribute Date startDate;
+
+       /**
+        * \brief End date for performing the search. Media items with date 
+        * later to that date will not be returned 
+        */
+        attribute Date endDate;
+
+       /**
+        * \brief String to be searched in the metadata of the gallery item.
+        */
+        attribute DOMString metaTag;
+   };
+
+  /**
+   * \brief Describes the functionality in this module that is available upon feature request
+   * If none of the listed features is requested, there won't be access to this module as it will be
+   * impossible to use the Manager object
+   */
+	interface GalleryObject {
+      /** 
+       * \brief The object GalleryManager is loaded as a singleton when the related feature is requested and bound to the bondi object
+       */
+		attribute GalleryManager galleryManager; 
+	};
+	bondi implements GalleryObject;
+
+
+};
