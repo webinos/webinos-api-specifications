@@ -135,11 +135,6 @@ module tvcontrol {
      */
     readonly attribute DOMString scheme;
 
-    /**
-     * \brief Indicates the region.
-     */
-    readonly attribute DOMString region;
-    
   };
     
 };
