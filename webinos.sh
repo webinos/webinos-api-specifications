@@ -30,10 +30,10 @@ DTD=widlprocxml.dtd
 #get the right tools for unix of windows cygnus
 $(widlproc 2> /dev/null)
 [ $? != 127 ] && WIDLPROC=widlproc || WIDLPROC=$REPOS/resources/widlproc 
-[ $OS != Windows_NT ] || WIDLPROC=$REPOS/resources/win32/widlproc.exe
+[ -n "$OS" ] || [ "$OS" != Windows_NT ] || WIDLPROC=$REPOS/resources/win32/widlproc.exe
 
 XSLPROC=xsltproc 
-[ $OS != Windows_NT ] || XSLPROC=$REPOS/resources/win32/xsltproc.exe
+[ -n "$OS" ] || [ "$OS" != Windows_NT ] || XSLPROC=$REPOS/resources/win32/xsltproc.exe
 
 
 
