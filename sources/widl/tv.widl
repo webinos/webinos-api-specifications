@@ -134,6 +134,11 @@ module tvcontrol {
      * (see ETSI EN 300 468).
      */
     readonly attribute DOMString scheme;
+
+    /**
+     * \brief Indicates the region.
+     */
+    readonly attribute DOMString region;
     
   };
     
