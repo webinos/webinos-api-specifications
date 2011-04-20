@@ -32,8 +32,8 @@ $(widlproc 2> /dev/null)
 [ $? != 127 ] && WIDLPROC=widlproc || WIDLPROC=$REPOS/resources/widlproc 
 [ -n "$OS" ] && [ "$OS" = "Windows_NT" ] && WIDLPROC=$REPOS/resources/win32/widlproc.exe
 
-$(stat /opt/bitnami/common/lib/libxslt.so > /dev/null 2>&1)
-[ $1 = 0 ] && XSLTLIB=/opt/bitnami/common/lib
+$(ls /opt/bitnami/common/lib/libxslt.so > /dev/null 2>&1)
+[ $? = 0 ] && XSLTLIB=/opt/bitnami/common/lib
 XSLPROC=xsltproc 
 [ -n "$OS" ] && [ "$OS" = "Windows_NT" ] && XSLPROC=$REPOS/resources/win32/xsltproc.exe
 
