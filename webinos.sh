@@ -66,9 +66,6 @@ do
 	"$WIDLPROC" "$SPECHOME/apis/$i" > "$SPECHOME/apis/$(basename "$i" .widl).widlprocxml" 2>/dev/null
 done
 
-exit
-
-
 for i in $WIDLFILES
 do
 	LD_LIBRARY_PATH="${XSLTLIB}" "$XSLPROC" "$SPECHOME/apis/$XSL" "$SPECHOME/apis/${i}procxml" > "$SPECHOME/apis/$(basename "$i" .widl).html"
