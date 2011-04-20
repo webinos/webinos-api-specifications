@@ -30,10 +30,12 @@ DTD=widlprocxml.dtd
 #get the right tools for unix of windows cygnus
 $(widlproc 2> /dev/null)
 [ $? != 127 ] && WIDLPROC=widlproc || WIDLPROC=$REPOS/resources/widlproc 
-[ -n "$OS" ] || [ "$OS" != Windows_NT ] || WIDLPROC=$REPOS/resources/win32/widlproc.exe
+[ -n "$OS" ] && [ "$OS" = "Windows_NT" ] && WIDLPROC=$REPOS/resources/win32/widlproc.exe
 
+$(stat /opt/bitnami/common/lib/libxslt.so > /dev/null 2>&1)
+[ $1 = 0 ] && XSLTLIB=/opt/bitnami/common/lib
 XSLPROC=xsltproc 
-[ -n "$OS" ] || [ "$OS" != Windows_NT ] || XSLPROC=$REPOS/resources/win32/xsltproc.exe
+[ -n "$OS" ] && [ "$OS" = "Windows_NT" ] && XSLPROC=$REPOS/resources/win32/xsltproc.exe
 
 
 
@@ -66,7 +68,7 @@ done
 
 for i in $WIDLFILES
 do
-	"$XSLPROC" "$SPECHOME/apis/$XSL" "$SPECHOME/apis/${i}procxml" > "$SPECHOME/apis/$(basename "$i" .widl).html"
+	LD_LIBRARY_PATH="${XSLTLIB}" "$XSLPROC" "$SPECHOME/apis/$XSL" "$SPECHOME/apis/${i}procxml" > "$SPECHOME/apis/$(basename "$i" .widl).html"
 done
 
 rm "$SPECHOME"/apis/*.widlprocxml
