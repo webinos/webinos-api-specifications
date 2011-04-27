@@ -71,6 +71,12 @@ do
 	LD_LIBRARY_PATH="${XSLTLIB}" "$XSLPROC" "$SPECHOME/apis/$XSL" "$SPECHOME/apis/${i}procxml" > "$SPECHOME/apis/$(basename "$i" .widl).html"
 done
 
+echo '<html>' > "$SPECHOME/apis/index.html"
+for i in $WIDLFILES
+do
+	echo '<a href="./'"$(basename "$i" .widl).html"'">'"$(basename "$i" .widl)"'</a><br />' >> "$SPECHOME/apis/index.html"
+done
+
 rm "$SPECHOME"/apis/*.widlprocxml
 rm "$SPECHOME"/apis/*.widl
 rm "$SPECHOME/apis/$DTD"
