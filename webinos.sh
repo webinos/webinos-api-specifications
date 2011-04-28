@@ -72,10 +72,22 @@ do
 done
 
 echo '<html>' > "$SPECHOME/apis/index.html"
+echo '<head>' >> "$SPECHOME/apis/index.html"
+echo '<html>' >> "$SPECHOME/apis/index.html"
+echo '<html>' >> "$SPECHOME/apis/index.html"
+echo '<meta http-equiv="content-type" content="text/html; charset=utf-8" />' >> "$SPECHOME/apis/index.html"
+echo '<title>T3.2 Device API specs - Redmine - for Webinos</title>'  >> "$SPECHOME/apis/index.html"
+echo '</head>' >> "$SPECHOME/apis/index.html"
+echo '<body>' .>> "$SPECHOME/apis/index.html"
+echo '<h1>T3.2 Device API specs - Redmine - for Webinos</h1>'  >> "$SPECHOME/apis/index.html"
+
 for i in $WIDLFILES
 do
-	echo '<a href="./'"$(basename "$i" .widl).html"'">'"$(basename "$i" .widl)"'</a><br />' >> "$SPECHOME/apis/index.html"
+	echo '<h2><a href="./'"$(basename "$i" .widl).html"'">'"$(basename "$i" .widl)"'</a><br /></h2>' >> "$SPECHOME/apis/index.html"
 done
+
+echo '</body>' >> "$SPECHOME/apis/index.html"
+echo '</html>' >> "$SPECHOME/apis/index.html"
 
 rm "$SPECHOME"/apis/*.widlprocxml
 rm "$SPECHOME"/apis/*.widl
