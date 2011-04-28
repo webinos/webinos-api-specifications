@@ -83,7 +83,9 @@ echo '<h1>T3.2 Device API specs - Redmine - for Webinos</h1>'  >> "$SPECHOME/api
 
 for i in $WIDLFILES
 do
-	echo '<h2><a href="./'"$(basename "$i" .widl).html"'">'"$(basename "$i" .widl)"'</a><br /></h2>' >> "$SPECHOME/apis/index.html"
+	basename2=$(basename "$i" .widl)
+	basename2="$(echo ${basename2:0:1} | tr 'a-z' 'A-Z' )""${basename2:1}"
+	echo '<h3><a href="./'"$(basename "$i" .widl).html"'">'"$basename2"' API</a><br /></h3>' >> "$SPECHOME/apis/index.html"
 done
 
 echo '</body>' >> "$SPECHOME/apis/index.html"
