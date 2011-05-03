@@ -1,24 +1,39 @@
 /**
  * \brief Interfaces for TV control.
  *
- * Parts of this API are based on the OIPF Rel 2 Specification Vol 5 - Declarative Application
+ * This API has the following goals: \n
+ * - Provide functionality to access the channel list and information like type and name of a channel. \n
+ * - Switch between channels. \n
+ * - Stop/start the broadcast. \n
+ * - Access to the current parental rating of the broadcast. \n
+ * \n
+ * This API builds on two existing approaches and merges both. The basis for this API is the HTML5 video element interface (HTMLVideoElement). The here specified interface HTMLTVElement extends the video element and provides the functionality necessary to achieve the mentioned goals on top of it. This added functionality is based on the Open IPTV Forum Release 2 Volume 5 Specification for Declarative Application Environment.
  *
+ * \code
+
+\<video width="640" height="480" controls>
+  \<source src="tv">
+\</video>
+
+ * \endcode
  * \author Alexander Fut&aacute;sz &lt;alexander.futasz@fokus.fraunhofer.de&gt;
  */
 module tvcontrol {
 
-  interface HTMLMediaElement {};
+  // these interface are placeholders so we can inherit from them
+  interface HTMLVideoElement {};
+  interface Event {};
 
   /**
-   * \brief The TVMediaElement interface
+   * \brief The HTMLTVElement interface
    *
-   * The TVMediaElement interface extends the HTMLMediaElement to support TV video
+   * The HTMLTVElement interface extends the HTMLVideoElement to support TV video
    * broadcast streams which are mapped as channels. The API supports listing, 
    * setting and switching these channels.
    *
    * See http://www.whatwg.org/specs/web-apps/current-work/multipage/video.html#media-element
    */
-  interface TVMediaElement : HTMLMediaElement {
+  interface HTMLTVElement : HTMLVideoElement {
     
     /**
      * \brief Indicates the current parental rating of the showing programme.
@@ -139,6 +154,20 @@ module tvcontrol {
      * \brief Indicates the region.
      */
     readonly attribute DOMString region;
+
+  };
+
+  /**
+   * \brief Event that fires when the parental rating of the current broadcast changes.
+   *
+   * The event adds a single attribute for the new rating.
+   */
+  interface ParentalRatingChanged : Event {
+
+    /**
+     * \brief The new rating.
+     */
+    readonly attribute ParentalRating rating;
 
   };
     
