@@ -1,0 +1,363 @@
+/**
+ * \brief The Generic Sensor API 
+ *
+ *
+ *
+ * The Webinos Generic Sensor API provides web applications with an API to access data from sensors in the device or connected to the device. 
+ *
+ * The API is agonostic to underlying methods for sensor discovery and communication with sensors.  
+ *
+ * The API consists of two interfaces:
+ * - A sensor manager to get a list of available sensors and to initiate a selected sensor.
+ * - A DOM level 3 event that provides sensor data.
+ *
+ * Currently 5 different sensor types are defined but the API could easily be extended with additional sensor types.
+ * 
+ * This is an experimental API and security and privacy issues are not addressed.
+ * 
+ *
+ * \def-api-feature http://webinos.org/api/sensors
+ * Acccess to all the module. This identifies which are the features that are exposed by this
+ * module so that the developer can express a dependency on them.
+ *
+ * \author Claes Nilsson &lt;claes1.nilsson@sonyericsson.com&gt;
+ * \version 0.3 
+ */
+
+module sensors {
+
+  /**
+    * \brief Array of Sensor objects.
+    */
+     typedef sequence<Sensor>  SensorArray;
+
+ /**
+   * \brief Array of Sensor value objects
+   */
+     typedef sequence<SensorValue>  SensorValuesArray;
+
+
+  /**
+   * \brief Defines the  error codes for this module
+   */
+  interface SensorError : GenericError {
+      /**
+       * \brief Illegal sensor type
+       */
+       const unsigned short ILLEGAL_SENSOR_TYPE = 1;
+      /**
+       * \brief Illegal sensor id
+       */
+       const unsigned short ILLEGAL_SENSOR_ID = 2;
+  };
+ 
+
+   /**
+   * \brief This interface defines the sensor manager interface
+   * 
+   * Description to be completed with code examples
+   *
+   */  
+   interface SensorManager {
+
+      /**
+       * \brief Returns an array of properties for all registered sensors of requested type.
+       *
+       *
+       * \code
+       * // This should include a more meaningful example. To be completed.
+       *   var availableTempSensors = webinos.sensors.getSensorList (SENSOR_TYPE_TEMPERATURE);
+       * \endcode
+       *
+       * \param sensorType Sensor type (see list of sensor type constants in interface GenericSensorEvent. 
+       * Can they be used here or do I have to specify them again in this interface?)
+       * \return An array of Sensor objects for sensors registered in the device that matches sensorType
+       * \throw SensorError with error code ILLEGAL_SENSOR_TYPE if 
+       * the input parameter is not compatible with the expected type for 
+       * that parameter.
+       */
+       SensorArray getSensorList (in unsigned short sensorType)
+           raises (SensorError);
+     
+
+      /**
+       * \brief Configures a sensor identified by the uniqueId.
+       *
+       * Question: Do we need the ability to specify high and low thresholds?
+       *
+       * \code
+       * // TBD
+       * 
+       * \endcode
+       *
+       * \param uniqueId Unique id of the sensor
+       * \param rate Rate of sensor data (see list of rate constants in interface SensorEvent) 
+       * \param interrupt Interrupt mode of the sensor. False = INTERRUPT_DISABLED (events fired with a fixed time interval)
+       * True = INTERRUPT_ENABLED (events fired when value changes)
+       * \return True if configuration succeeded. Else false.
+       * \throw SensorError with error code ILLEGAL_SENSOR_ID if 
+       * the input parameters not compatible with the expected type for 
+       * that parameter.
+       */
+       boolean configureSensor (in DOMString uniqueId, in unsigned short rate, in boolean interrupt)
+           raises (SensorError);
+  
+      /**
+       * \brief Adds a sensor event listener identified by the uniqueId.
+       *
+       *
+       * \code
+       *
+       * // repeated
+       *
+       *  webinos.sensors.addEventListener(availableTempSensors[0].uniqueId, function (event) {
+       *    console.log(event.sensorValues[0].value);
+       *  }, true);
+       *
+       * // One-shot
+       *
+       *  function handler(event) {
+       *     console.log(event.sensorValues[0].value);
+       *  }
+       *
+       *  webinos.sensors.addEventListener(availableTempSensors[0].uniqueId, handler, true);
+       *  webinos.sensors.removeEventListener(availableTempSensors[0].uniqueId, handler, true);
+       * \endcode
+       *
+       * \param uniqueId Unique id of the sensor 
+       * \param listener Event listener call back function (see http://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/)
+       * \param useCapture If true, useCapture indicates that the user wishes to add the event listener for the capture phase only,
+       * i.e. this event listener will not be triggered during the target and bubbling phases. If false, the event listener will only be
+       * triggered during the target and bubbling phases (see http://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/)
+       * 
+       */
+       void addEventListener (in DOMString uniqueId, in EventListener listener, in boolean useCapture);      
+    };
+
+
+   /**
+    * \brief This interface defines sensor properties.
+    * Attributes corresponds to Android sensor API - to be documented better
+    */ 
+ 
+    interface Sensor {
+       /**
+	* \brief Unique ID of sensor
+	*/
+	readonly attribute DOMString      uniqueId;
+       /**
+	* \brief Type of sensor
+	*/
+        readonly attribute unsigned short type;  
+       /**
+	* \brief Max range of sensor
+	*/
+    	readonly attribute float          maximumRange;
+       /**
+	* \brief Min delay of sensor
+	*/
+   	readonly attribute unsignedlong   minDelay;
+       /**
+	* \brief Name of sensor
+	*/
+  	readonly attribute DOMString      name;
+       /**
+	* \brief Power consumption of sensor. TBD
+	*/
+   	readonly attribute float	  power;
+       /**
+	* \brief Resolution TBD
+	*/
+	readonly attribute float	  resolution;
+       /**
+	* \brief Vendor
+	*/
+	readonly attribute DOMString      vendor;  
+       /**
+	* \brief Version
+	*/ 
+   	readonly attribute unsignedlong   version; 
+
+     };
+
+
+   /**
+    * \brief This interface defines a sensor value.
+    * 
+    */ 
+ 
+
+    interface SensorValue {
+
+       /**
+	* \brief Sensor value
+	*/ 
+
+       readonly attribute float value;
+    };
+
+
+
+  /**
+   * \brief This interface defines the "genericsensor" event type.
+   *
+   *  Registration for generic sensor events is achieved by calling sensormanager.addEventListener with event type set to uniqueId of the selected sensor..
+   * 
+   *
+   * 
+   */
+
+  interface SensorEvent : Event {
+
+
+  /**
+   * \brief A constant describing an ambient light sensor type.
+   * Values:
+   * sensorValue[0] = the measured ambient light level around the device in SI lux units.
+   * Question: Do we also need max and min values and normalized value?
+   */
+    const unsigned short SENSOR_TYPE_LIGHT = 1;
+
+  /**
+   * \brief A constant describing an ambient noise sensor type.
+   * Values:
+   * sensorValue[0] = the measured ambient noise around the device, in DB(SPL).
+   * Question: Do we also need max and min values and normalized value?
+   */
+    const unsigned short SENSOR_TYPE_NOISE = 2;
+
+  /**
+   * \brief A constant describing an ambient temperature sensor type.
+   * Values:
+   * sensorValue[0] = the measured ambient temperature around the device, in degrees Celsius.
+   * Question: Do we also need max and min values and normalized value?
+   */
+    const unsigned short SENSOR_TYPE_TEMPERATURE = 3;
+
+  /**
+   * \brief A constant describing an atmospheric pressure sensor type.
+   * Values:
+   * sensorValue[0] = the measured atmospheric pressure around the device in hPa (millibar)
+   * Question: Do we also need max and min values and normalized value?
+   */
+    const unsigned short SENSOR_TYPE_PRESSURE = 4;
+
+  /**
+   * \brief A constant describing a proximity sensor type.
+   * Values:
+   * sensorValue[0] =  Proximity sensor distance measured in centimeters
+   * TBD: Need to state values for sensors that only can deliver "near" and "far" 
+   */
+    const unsigned short SENSOR_TYPE_PROXIMITY = 5;
+
+  /**
+   * \brief Should we support all Android sensor types? The internal accelerometer, gyro and magnetometer sensors are supported by the DeviceOrientation event. 
+   * Should we add support for external accelerometer, gyro and magnetometer sensors with this generic API or should we add a parameter to DeviceOrientation
+   * event that makes it possible to select external sensors to use?
+   */
+
+ 
+  /**
+   * \brief A constant describing that the sensor is reporting data with maximum accuracy.
+   */
+    const unsigned short SENSOR_STATUS_ACCURACY_HIGH = 3;
+
+  /**
+   * \brief A constant describing that the sensor is reporting data with an average level of accuracy, calibrating with the environment may improve the
+   * reading.
+   */
+    const unsigned short SENSOR_STATUS_ACCURACY_MEDIUM = 2;
+
+  /**
+   * \brief A constant describing that the sensor is reporting with low accuracy, calibrating with the environment is needed.
+   */
+    const unsigned short SENSOR_STATUS_ACCURACY_LOW = 1;
+
+  /**
+   * \brief A constant describing that the sensor data cannot be trusted, calibrating is needed or the environment does not allow reading.
+   */
+    const unsigned short SENSOR_STATUS_UNRELIABLE = 0;
+  
+  /**
+   * \brief A constant describing that the sensor is reporting data as fast as possible.
+   */
+    const unsigned short SENSOR_DELAY_FASTEST = 0;
+
+  /**
+   * \brief A constant describing that the sensor is reporting data with a rate suitable for games.
+   */
+    const unsigned short SENSOR_DELAY_GAME = 1;
+
+  /**
+   * \brief A constant describing that the sensor is reporting data with a normal rate, e.g. suitable for screen orientation changes.
+   */
+    const unsigned short SENSOR_DELAY_NORMAL = 3;
+
+  /**
+   * \brief A constant describing that the sensor is reporting data with a rate suitable for user interface.
+   */
+    const unsigned short SENSOR_DELAY_UI = 2;
+
+
+  /**
+   *  \brief The type of sensor 
+   */
+    readonly attribute unsigned short sensorType;
+
+
+  /**
+   * \brief The accuracy of the sensor
+   */
+    readonly attribute unsigned short accuracy;
+
+  /**
+   * \brief The timestamp of the sensor. The time in nanosecond at which the event happened.
+   */
+    readonly attribute unsigned long? timestamp;
+
+  /**
+   * \brief The rate of the sensor data
+   */
+    readonly attribute unsigned short rate;
+
+  /**
+   *  \brief Interrupt mode of the sensor.
+   *  The value is one of
+   *  false = INTERRUPT_DISABLED (events fired with a fixed time interval)
+   *  true = INTERRUPT_ENABLED (events fired when value changes)
+   */
+    readonly attribute boolean interrupt;
+
+  /**
+   * \brief Array of sensor values
+   */
+    readonly attribute SensorValuesArray sensorValues;
+
+  /**
+   * \brief Method to set initial values of sensor event
+   * \code
+   * // TBD
+   * \endcode
+   *   
+   * \param uniqueId Unique id of sensor
+   * \param bubbles True if event bubbles
+   * \param cancelable True if event cancelable
+   * \param sensorType Sensor type
+   * \param accuracy Accuracy of sensor data
+   * \param timestamp Timestamp 
+   * \param rate Rate
+   * \param interrupt Interrupt mode
+   * \param sensorValues Array of sensor values
+   */
+    void initSensorEvent(in DOMString uniqueId,
+                         in boolean bubbles,
+                         in boolean cancelable,
+                         in unsigned short sensorType,
+                         in unsigned short accuracy,
+                         in unsigned long timestamp,
+                         in unsigned short rate,
+                         in boolean interrupt, 
+                         in SensorValuesArray sensorValues); 
+    };
+
+};
