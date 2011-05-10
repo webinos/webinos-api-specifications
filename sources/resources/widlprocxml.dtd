@@ -96,7 +96,7 @@
                             value CDATA #IMPLIED >
 
 <!ELEMENT Type (descriptive?, Type?) >
-<!ATTLIST Type type (sequence|array|DOMString|boolean|byte|octet|short|unsigned short|long|unsigned long|long long|unsigned long long|float|double).  #IMPLIED
+<!ATTLIST Type type CDATA #IMPLIED
                name NMTOKEN #IMPLIED
                nullable (nullable) #IMPLIED >
 
