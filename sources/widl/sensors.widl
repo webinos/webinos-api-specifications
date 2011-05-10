@@ -34,7 +34,7 @@ module sensors {
  /**
    * \brief Array of Sensor value objects
    */
-     typedef sequence<SensorValue>  SensorValuesArray;
+     typedef SensorValue[]  SensorValuesArray;
 
 
   /**
