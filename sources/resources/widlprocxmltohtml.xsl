@@ -682,6 +682,11 @@ XSLT stylesheet to convert widlprocxml into html documentation.
                     <xsl:value-of select="$reference-clean"/>
       </a>
     </xsl:when>
+    <xsl:when test="$reference-clean='EventListener'">
+      <a href="http://www.w3.org/TR/DOM-Level-3-Events/#interface-EventListener">
+                    <xsl:value-of select="$reference-clean"/>
+      </a>
+    </xsl:when>
 
     <xsl:when test="$reference-clean='Window'">
                     <xsl:value-of select="$reference-clean"/>
