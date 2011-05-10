@@ -156,7 +156,7 @@ module sensors {
        /**
 	* \brief Min delay of sensor
 	*/
-   	readonly attribute unsignedlong   minDelay;
+   	readonly attribute unsigned long   minDelay;
        /**
 	* \brief Name of sensor
 	*/
@@ -176,7 +176,7 @@ module sensors {
        /**
 	* \brief Version
 	*/ 
-   	readonly attribute unsignedlong   version; 
+   	readonly attribute unsigned long   version; 
 
      };
 
