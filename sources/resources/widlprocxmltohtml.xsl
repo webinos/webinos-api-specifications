@@ -641,7 +641,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <!-- start Kevin Smith insert 20 Oct 2010
     Adds a link to the specification text for every inline reference
  -->
-<xsl:key name="reference-link-key" match="Interface | Typedef" use="@name"/>
+<xsl:key name="reference-link-key" match="Interface | Typedef | Exception" use="@name"/>
 
 <xsl:template match="ref">
     <xsl:variable name="reference-name" select="."/>
