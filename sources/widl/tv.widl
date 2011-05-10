@@ -51,7 +51,7 @@ module tvcontrol {
      * The order in this array defines the behaviour of the nextChannel() and
      * prevChannel() functions.
      */
-    readonly attribute sequence<Channel> channelList;
+    readonly attribute Channel[] channelList;
 
     /**
      * \brief Requests the tuner to switch to the channel specified.
