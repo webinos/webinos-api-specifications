@@ -40,7 +40,7 @@ module sensors {
   /**
    * \brief Defines the  error codes for this module
    */
-  interface SensorError : GenericError {
+  exception SensorError {
       /**
        * \brief Illegal sensor type
        */
