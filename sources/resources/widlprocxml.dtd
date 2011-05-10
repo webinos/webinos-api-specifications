@@ -27,16 +27,17 @@
 <!ELEMENT Name EMPTY >
 <!ATTLIST Name name CDATA #REQUIRED >
 
-<!ELEMENT Exception (webidl, descriptive?, ExtendedAttributeList?,
+<!ELEMENT Exception (webidl, descriptive?, ExtendedAttributeList?, ExceptionInheritance?,
         (Const | ExceptionField)* ) >
 <!ATTLIST Exception name CDATA #REQUIRED 
                     id CDATA #REQUIRED >
 
-<!ELEMENT ExceptionField (descriptive?, ExtendedAttributeList?, Type) >
+<!ELEMENT ExceptionInheritance (Name) >
+<!ELEMENT ExceptionField (webidl, descriptive?, ExtendedAttributeList?, (Type)) >
 <!ATTLIST ExceptionField name CDATA #REQUIRED
                          id CDATA #REQUIRED >
 
-<!ELEMENT Typedef (webidl, descriptive?, ExtendedAttributeList?, Type) >
+<!ELEMENT Typedef (webidl, descriptive?, ExtendedAttributeList?, (Type)) >
 <!ATTLIST Typedef name CDATA #REQUIRED
                   id CDATA #REQUIRED >
 
@@ -49,9 +50,9 @@
                 value CDATA #REQUIRED
                 id CDATA #REQUIRED >
 
-<!ELEMENT Stringifier (descriptive?, ExtendedAttributeList) >
+<!ELEMENT Stringifier (webidl, descriptive?, ExtendedAttributeList?) >
 
-<!ELEMENT Attribute (webidl, descriptive?, ExtendedAttributeList?, Type,
+<!ELEMENT Attribute (webidl, descriptive?, ExtendedAttributeList?, (Type),
     GetRaises?, SetRaises?) >
 <!ATTLIST Attribute stringifier (stringifier) #IMPLIED
                     readonly (readonly) #IMPLIED
@@ -66,36 +67,37 @@
 <!ATTLIST RaiseException name CDATA #REQUIRED >
 
 <!ELEMENT Operation (webidl, descriptive?, ExtendedAttributeList?,
-        Type, ArgumentList, Raises?) >
+        (Type), ArgumentList, Raises?) >
 <!ATTLIST Operation stringifier (stringifier) #IMPLIED
-                    omitable (omitable) #IMPLIED
+                    static (static) #IMPLIED
+                    omittable (omittable) #IMPLIED
                     getter (getter) #IMPLIED
                     setter (setter) #IMPLIED
                     creator (creator) #IMPLIED
                     deleter (deleter) #IMPLIED
                     caller (caller) #IMPLIED
-                    name CDATA #REQUIRED
-                    id CDATA #REQUIRED >
+                    name NMTOKEN #IMPLIED
+                    id NMTOKEN #IMPLIED >
 
 <!ELEMENT Raises (RaiseException+) >
 
 <!ELEMENT ArgumentList (Argument*) >
 
-<!ELEMENT Argument (descriptive?, ExtendedAttributeList?, Type) >
+<!ELEMENT Argument (descriptive?, ExtendedAttributeList?, (Type)) >
 <!ATTLIST Argument in (in) #IMPLIED
                    optional (optional) #IMPLIED
                    ellipsis (ellipsis) #IMPLIED
-                   name CDATA #REQUIRED >
+                   name NMTOKEN #REQUIRED >
 
 <!ELEMENT ExtendedAttributeList (ExtendedAttribute+) >
 
 <!ELEMENT ExtendedAttribute (ArgumentList?) >
-<!ATTLIST ExtendedAttribute name CDATA #REQUIRED
+<!ATTLIST ExtendedAttribute name NMTOKEN #REQUIRED
                             value CDATA #IMPLIED >
 
 <!ELEMENT Type (descriptive?, Type?) >
-<!ATTLIST Type type CDATA #IMPLIED
-               name CDATA #IMPLIED
+<!ATTLIST Type type (sequence|array|DOMString|boolean|byte|octet|short|unsigned short|long|unsigned long|long long|unsigned long long|float|double).  #IMPLIED
+               name NMTOKEN #IMPLIED
                nullable (nullable) #IMPLIED >
 
 <!ELEMENT descriptive (description | brief | throw | author
