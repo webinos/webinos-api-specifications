@@ -2,5 +2,6 @@
 <widlprocxml>
     <file>foo.widlprocxml</file>
     <file>gallery.widlprocxml</file>
+    <file>sensors.widlprocxml</file>
     <file>tv.widlprocxml</file>
 </widlprocxml>
