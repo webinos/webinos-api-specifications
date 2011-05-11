@@ -25,7 +25,7 @@ mytv.setChannel(randomChannel);
 // Updating name of channel
 document.getElementById('channel').normalize();
 document.getElementById('channel').removeChild(document.getElementById('channel').childNodes[0]);
-document.getElementById('channel').appendChild(document.createText(randomChannel.name));
+document.getElementById('channel').appendChild(document.createTextNode(randomChannel.name));
 
 \</script>
  * \endcode
