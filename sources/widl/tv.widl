@@ -10,7 +10,7 @@
  * This API builds on two existing approaches and merges both. The basis for this API is the HTML5 video element interface (HTMLVideoElement). The here specified interface HTMLTVElement extends the video element and provides the functionality necessary to achieve the mentioned goals on top of it. This added functionality is based on the Open IPTV Forum Release 2 Volume 5 Specification for Declarative Application Environment.
  *
  * \code
-\<p>Now viewing: <span id='channel'>Nothing</span></p>
+\<p>Now viewing: \<span id='channel'>Nothing\</span>\</p>
 \<video width="640" height="480" controls id='mytv'>
   \<source src="tv">
 \</video>
