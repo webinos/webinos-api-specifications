@@ -699,16 +699,22 @@ XSLT stylesheet to convert widlprocxml into html documentation.
     </xsl:when>
     <xsl:otherwise> 
 
-      <xsl:for-each select="document('widlprocxmlsources.xml')/widlprocxml/file">
-        <xsl:variable name="widlprocfile" select="substring-before(.,'.widlprocxml')"/>
-        <xsl:for-each select="document(.)[key('reference-link-key',$reference-clean)]">
+      <xsl:variable name="link">
+	<xsl:for-each select="document('widlprocxmlsources.xml')/widlprocxml/file">
+	  <xsl:variable name="widlprocfile" select="substring-before(.,'.widlprocxml')"/>
+	  <xsl:for-each select="document(.)[key('reference-link-key',$reference-clean)]">
             <xsl:for-each select="key('reference-link-key',$reference-clean)">
                   <a href="{concat($widlprocfile,'.html#',@id)}">
                     <xsl:value-of select="$reference-name"/>
                   </a>
             </xsl:for-each>
-        </xsl:for-each>
-      </xsl:for-each>
+	  </xsl:for-each>
+	</xsl:for-each>
+      </xsl:variable>
+      <xsl:choose>
+	<xsl:when test="normalize-space($link)"><xsl:copy-of select="$link"/></xsl:when>
+	<xsl:otherwise><span class='unknown'><xsl:value-of select="$reference-clean"/></span></xsl:otherwise>
+      </xsl:choose>
 
     </xsl:otherwise> 
     </xsl:choose>
