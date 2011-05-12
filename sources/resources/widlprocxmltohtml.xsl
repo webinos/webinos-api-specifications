@@ -694,6 +694,9 @@ XSLT stylesheet to convert widlprocxml into html documentation.
     <xsl:when test="$reference-clean='Object'">
                     <xsl:value-of select="$reference-clean"/>
     </xsl:when>
+    <xsl:when test="$reference-clean='Function'">
+                    <xsl:value-of select="$reference-clean"/>
+    </xsl:when>
     <xsl:otherwise> 
 
       <xsl:for-each select="document('widlprocxmlsources.xml')/widlprocxml/file">
