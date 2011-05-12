@@ -137,10 +137,10 @@ module payment {
        * \throw PaymentError PAYMENT_BILL_NOT_OPEN_ERROR if no bill is opened
        */
         PendingOperation addItem(in Function successCallback, in ErrorCallback errorCallback,
-        in int transactionOperation, 
+        in unsigned short transactionOperation, 
         in DOMString description,
         in DOMString currency, in float amount,
-        in int referenceSequence,        
+        in unsigned long referenceSequence,        
         in optional DOMString onBehalfOf, in optional DOMString purchaseCategoryCode, in optional DOMString channel, 
         in optional float taxAmount, in optional DOMString serviceID, in optional  DOMString productID)
         raises(SecurityError, DeviceAPIError, PaymentError);
