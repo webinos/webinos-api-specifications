@@ -108,7 +108,7 @@ module payment {
        * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if an invalid argument is passed
        * \throw PaymentError PAYMENT_BILL_OPEN_ERROR if a bill is already opened
        */
-        PendingOperation openBill(in SuccessCallback successCallback, in ErrorCallback errorCallback,
+        PendingOperation openBill(in Function successCallback, in Function errorCallback,
         in DOMString endUserId)
         raises(SecurityError, DeviceAPIError, PaymentError);
 
@@ -136,7 +136,7 @@ module payment {
        * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if an invalid argument is passed
        * \throw PaymentError PAYMENT_BILL_NOT_OPEN_ERROR if no bill is opened
        */
-        PendingOperation addItem(in SuccessCallback successCallback, in ErrorCallback errorCallback,
+        PendingOperation addItem(in Function successCallback, in Function errorCallback,
         in int transactionOperation, 
         in DOMString description,
         in DOMString currency, in float amount,
@@ -156,7 +156,7 @@ module payment {
        * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if an invalid argument is passed
        * \throw PaymentError PAYMENT_BILL_NOT_OPEN_ERROR if no bill is opened
        */
-        PendingOperation chargeBill(in SuccessCallback successCallback, in ErrorCallback errorCallback)
+        PendingOperation chargeBill(in Function successCallback, in Function errorCallback)
         raises(SecurityError, DeviceAPIError, PaymentError);
   };
   
