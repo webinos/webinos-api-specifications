@@ -141,7 +141,7 @@ module payment {
         in DOMString description,
         in DOMString currency, in float amount,
         in int referenceSequence,        
-        in optional DOMString onBehalfOf, in optional DOMString purchaseCategoryCode, optional in DOMString channel, 
+        in optional DOMString onBehalfOf, in optional DOMString purchaseCategoryCode, in optional DOMString channel, 
         in optional float taxAmount, in optional DOMString serviceID, in optional  DOMString productID)
         raises(SecurityError, DeviceAPIError, PaymentError);
 
