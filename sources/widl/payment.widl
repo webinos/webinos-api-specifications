@@ -1,0 +1,201 @@
+/**
+ * \brief Interfaces for Payment functions.
+ *
+ * This API is vaguely based on the GSMA OneAPI RESTful payment API and mirrors 
+ * its functionality and most of its paremeters.
+ *
+ * The use of the GSMA Payment API as an underlying system to perform the actual payment is
+ * not required and mapping of the functions to other payment systems should be straightforward.
+ * *
+ * \author Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
+ */
+module payment {
+
+
+
+      
+    /**
+   * \brief The PaymentManager interface
+   *
+   * The PaymentManager interface provides access to payment functionality.
+   * The API supports initial reserving of an amount (establishing a bill),
+   * adding further amounts to the bill, charging the bill to the user,
+   * refunding an amount to the user and releasing the reservation.
+   *
+   * This essentially echoes the usual 'shopping basket' system used on many web sites.
+   *
+   * The code example below refunds the user for a returned CD and charges for
+   * the deluxe edition of that CD, demonstarting charging and refunding payments.
+   *
+   * \code
+   
+        myBill.open(openBillSuccess, paymentFailure, "peter.user@datamath.com");
+
+        // Define the openBillSuccess success callback.
+        function openBillSuccess() {
+                alert("Bill was opened successfully");
+                // refound for a CD
+                myBill.addItem(refundSuccess, paymentFailure,PAYMENT_TRANSACTION_TYPE_REFUND,
+                "Best of Ladytron 00-10 by Ladytron (Audio CD - 2011)",
+                "EUR", 14.99,1);                
+        }
+
+        // Define the refundSuccess success callback.
+        function refundSuccess() {
+                alert("Refund was handled successfully");
+                // charge for the deluxe CD
+                myBill.addItem(chargeSuccess, paymentFailure,PAYMENT_TRANSACTION_TYPE_REFUND,
+                "Best of Ladytron 00-10 (Deluxe Edition) by Ladytron (Audio CD - 2011)",
+                "EUR", 17.98, 2;                
+        }
+
+        // Define the chargeSuccess success callback.
+        function chargeSuccess() {
+                alert("Charging was handled successfully");
+                // now close the bill and perform the actual payment
+                myBill.chargeBill(chargeBillSuccess, paymentFailure);
+        }
+        
+        // Define the chargeBillSuccess success callback.
+        function chargeBillSuccess() {
+                alert("Charging the bill to the user handled successfully - payment was performed.");
+        }        
+
+        // Define the paymentFailure failure callback.
+        function paymentFailure(e) {
+                alert("Failure occured during payment.");
+        }
+
+   * \endcode
+   *
+   *
+   */
+ 
+  interface PaymentManager  {
+  
+
+                /**
+                 * \brief Constant used to identify a charging transaction.
+                 */
+                const unsigned short PAYMENT_TRANSACTION_TYPE_CHARGE = 0;
+                /**
+                 * \brief Constant used to identify a refunding transaction.
+                 */
+                const unsigned short PAYMENT_TRANSACTION_TYPE_REFUND = 1;
+                
+                 /**               
+                 * \brief Returns information about the bill transactionID
+                 *                
+                 */
+                readonly attribute DOMString  transactionID;
+
+                 /**               
+                 * \brief Returns information about the bill correlator, a server provided identifier of the client
+                 *                
+                 */
+                readonly attribute DOMString  clientCorrelator;
+              
+                
+      /**
+       * \brief Opens a bill and charges the first item to it.
+       *
+       * \param successCallback Callback issued when the opening of the bill is correctly finished.
+       * \param errorCallback Callback issued if an error occurs during the opening of the bill.
+       * \param endUserId is the URL-escaped end user ID 
+       * \return PendingOperation enabling the requester to cancel this request.
+       * \throw SecurityError PERMISSION_DENIED_ERROR when access is denied by the security policy.
+       * \throw DeviceAPIError PENDING_OPERATION_ERROR if another Open operation is being processed
+       * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if an invalid argument is passed
+       * \throw PaymentError PAYMENT_BILL_OPEN_ERROR if a bill is already opened
+       */
+        PendingOperation openBill(in SuccessCallback successCallback, in ErrorCallback errorCallback,
+        in DOMString endUserId)
+        raises(SecurityError, DeviceAPIError, PaymentError);
+
+  
+        /**
+       * \brief Adds an item to an open bill.
+       *
+       *
+       *
+       * \param successCallback Callback issued when the adding of the amount to the bill is correctly finished.
+       * \param errorCallback Callback issued if an error occurs during adding the amount       
+       * \param transactionOperation  This is either PAYMENT_TRANSACTION_TYPE_CHARGE or PAYMENT_TRANSACTION_TYPE_REFUND
+       * \param description  is the human-readable text to appear on the bill, so the user can easily see what they bought.
+       * \param currency is the 3-figure code as per ISO 4217.
+       * \param amount can be a whole number or decimal.
+       * \param referenceSequence this allows the server to distinguish easily between new and repeated requests in the case of a communication failure. For each transaction within a reservation sequence, iterate the referenceSequence by 1.     
+       * \param purchaseCategoryCode (optional) an indication of the content type. 
+       * \param channel (optional) can be Wap, Web, SMS, depending on the source of user interaction
+       * \param taxAmount (optional) tax already charged by the merchant.
+       * \param serviceID (optional) The ID of the partner merchant service
+       * \param productID (optional) combines with the serviceID to uniquely identify the product being purchased.
+       * \return PendingOperation enabling the requester to cancel this request.
+       * \throw SecurityError PERMISSION_DENIED_ERROR when access is denied by the security policy.
+       * \throw DeviceAPIError PENDING_OPERATION_ERROR if another Open operation is being processed
+       * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if an invalid argument is passed
+       * \throw PaymentError PAYMENT_BILL_NOT_OPEN_ERROR if no bill is opened
+       */
+        PendingOperation addItem(in SuccessCallback successCallback, in ErrorCallback errorCallback,
+        in int transactionOperation, 
+        in DOMString description,
+        in DOMString currency, in float amount,
+        in int referenceSequence,        
+        [Optional] in DOMString onBehalfOf, [Optional] in DOMString purchaseCategoryCode, [Optional] in DOMString channel, 
+        [Optional] in float taxAmount, [Optional] in DOMString serviceID, [Optional] in  DOMString productID)
+        raises(SecurityError, DeviceAPIError, PaymentError);
+
+        /**
+       * \brief Charges to and releases the current bill.
+       *
+       * \param successCallback Callback issued when the bill is correctly charged to and released
+       * \param errorCallback Callback issued if an error occurs during adding the amount       
+       * \return PendingOperation enabling the requester to cancel this request.
+       * \throw SecurityError PERMISSION_DENIED_ERROR when access is denied by the security policy.
+       * \throw DeviceAPIError PENDING_OPERATION_ERROR if another Open operation is being processed
+       * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if an invalid argument is passed
+       * \throw PaymentError PAYMENT_BILL_NOT_OPEN_ERROR if no bill is opened
+       */
+        PendingOperation chargeBill(in SuccessCallback successCallback, in ErrorCallback errorCallback)
+        raises(SecurityError, DeviceAPIError, PaymentError);
+  };
+  
+  
+        /**
+         * \brief Payment specific errors.
+         */
+        interface PaymentError : GenericError {
+
+                /**
+                 * \brief Bill is already open
+                 */
+                const unsigned short PAYMENT_BILL_OPEN_ERROR = 1;
+
+                /**
+                 * \brief Bill is not open
+                 */
+                const unsigned short PAYMENT_BILL_NOT_OPEN_ERROR = 2;
+
+                /**
+                 * \brief Charging operation failed, the charge was not applied
+                 */
+                const unsigned short PAYMENT_CHARGE_FAILED = 270;                
+
+                /**
+                 * \brief Refunds not supported
+                 */
+                const unsigned short PAYMENT_REFUND_NOT_SUPPORTED = 271;
+
+                /**
+                 * \brief  Refund failed
+                 */
+                const unsigned short PAYMENT_REFUND_FAILED = 273;
+                
+
+                /**
+                 * \brief Chargeable amount exceeded
+                 */
+                const unsigned short PAYMENT_CHARGEABLE_EXCEEDED = 251;
+        };
+    
+};
