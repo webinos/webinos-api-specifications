@@ -7,9 +7,9 @@
  *
  * The API is agonostic to underlying methods for sensor discovery and communication with sensors.  
  *
- * The API consists of two interfaces:
- * - A sensor manager to get a list of available sensors and to initiate a selected sensor.
- * - A DOM level 3 event that provides sensor data.
+ * The API consists of two interfaces: \n
+ * - A sensor manager to get a list of available sensors and to initiate a selected sensor. \n
+ * - A DOM level 3 event that provides sensor data.\n
  *
  * Currently 5 different sensor types are defined but the API could easily be extended with additional sensor types.
  * 
@@ -29,7 +29,7 @@ module sensors {
   /**
     * \brief Array of Sensor objects.
     */
-     typedef sequence<Sensor>  SensorArray;
+     typedef Sensor[]  SensorArray;
 
  /**
    * \brief Array of Sensor value objects
