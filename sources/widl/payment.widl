@@ -103,14 +103,11 @@ module payment {
        * \param errorCallback Callback issued if an error occurs during the opening of the bill.
        * \param endUserId is the URL-escaped end user ID 
        * \return PendingOperation enabling the requester to cancel this request.
-       * \throw SecurityError PERMISSION_DENIED_ERROR when access is denied by the security policy.
-       * \throw DeviceAPIError PENDING_OPERATION_ERROR if another Open operation is being processed
        * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if an invalid argument is passed
-       * \throw PaymentError PAYMENT_BILL_OPEN_ERROR if a bill is already opened
        */
         PendingOperation openBill(in SuccessCallback successCallback, in ErrorCallback errorCallback,
         in DOMString endUserId)
-        raises(SecurityError, DeviceAPIError, PaymentError);
+        raises(DeviceAPIError);
 
   
         /**
@@ -131,10 +128,7 @@ module payment {
        * \param serviceID (optional) The ID of the partner merchant service
        * \param productID (optional) combines with the serviceID to uniquely identify the product being purchased.
        * \return PendingOperation enabling the requester to cancel this request.
-       * \throw SecurityError PERMISSION_DENIED_ERROR when access is denied by the security policy.
-       * \throw DeviceAPIError PENDING_OPERATION_ERROR if another Open operation is being processed
        * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if an invalid argument is passed
-       * \throw PaymentError PAYMENT_BILL_NOT_OPEN_ERROR if no bill is opened
        */
         PendingOperation addItem(in SuccessCallback successCallback, in ErrorCallback errorCallback,
         in int transactionOperation, 
@@ -143,7 +137,7 @@ module payment {
         in int referenceSequence,        
         [Optional] in DOMString onBehalfOf, [Optional] in DOMString purchaseCategoryCode, [Optional] in DOMString channel, 
         [Optional] in float taxAmount, [Optional] in DOMString serviceID, [Optional] in  DOMString productID)
-        raises(SecurityError, DeviceAPIError, PaymentError);
+        raises(DeviceAPIError);
 
         /**
        * \brief Charges to and releases the current bill.
@@ -151,13 +145,10 @@ module payment {
        * \param successCallback Callback issued when the bill is correctly charged to and released
        * \param errorCallback Callback issued if an error occurs during adding the amount       
        * \return PendingOperation enabling the requester to cancel this request.
-       * \throw SecurityError PERMISSION_DENIED_ERROR when access is denied by the security policy.
-       * \throw DeviceAPIError PENDING_OPERATION_ERROR if another Open operation is being processed
        * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if an invalid argument is passed
-       * \throw PaymentError PAYMENT_BILL_NOT_OPEN_ERROR if no bill is opened
        */
         PendingOperation chargeBill(in SuccessCallback successCallback, in ErrorCallback errorCallback)
-        raises(SecurityError, DeviceAPIError, PaymentError);
+        raises(DeviceAPIError);
   };
   
   
