@@ -5,4 +5,5 @@
     <file>sensors.widlprocxml</file>
     <file>tv.widlprocxml</file>
     <file>webinoscore.widlprocxml</file>
+    <file>servicediscovery.widlprocxml</file>
 </widlprocxml>
