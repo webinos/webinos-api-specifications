@@ -40,9 +40,9 @@ module serviceDiscovery {
 		var option = document.createElement('option');
 
 		option.value = service.id;
-		option.appendChildNode(document.createTextNode(service.displayName));
+		option.appendChild(document.createTextNode(service.displayName));
 		option.service = service;
-		selectlist.appendChildNode(option);
+		selectlist.appendChild(option);
 	}
 
 	// Callback when Service is authorized and ready to use
