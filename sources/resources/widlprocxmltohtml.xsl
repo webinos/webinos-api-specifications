@@ -420,18 +420,9 @@ XSLT stylesheet to convert widlprocxml into html documentation.
                 </xsl:choose>
                 <li><b>Type: </b>
 <!--<xsl:value-of select="Type/@name"/><xsl:value-of select="Type/@type"/>-->
-                <xsl:choose>
-                  <xsl:when test="substring(Type/@name, (string-length(Type/@name) - string-length('?'))+1) = '?'"> 
-                    <xsl:value-of select="substring(Type/@name,1,(string-length(Type/@name)-1))"/>
-                  </xsl:when>
-                  <xsl:when test="substring(Type/@type, (string-length(Type/@type) - string-length('?'))+1) = '?'"> 
-                    <xsl:value-of select="substring(Type/@type,1,(string-length(Type/@type)-1))"/>
-                  </xsl:when>
-                  <xsl:otherwise> 
-                    <xsl:value-of select="Type/@name"/> 
-                    <xsl:value-of select="Type/@type"/> 
-                  </xsl:otherwise>
-                </xsl:choose>
+                <xsl:call-template name="refToLink">
+		  <xsl:with-param name="reference-name" select="concat(Type/@name, Type/@type)"/>
+		</xsl:call-template>
                 </li>
                 <li><b>Description: </b>
                 <xsl:apply-templates select="descriptive"/>
@@ -644,7 +635,13 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <xsl:key name="reference-link-key" match="Interface | Typedef | Exception" use="@name"/>
 
 <xsl:template match="ref">
-    <xsl:variable name="reference-name" select="."/>
+  <xsl:call-template name="refToLink">
+    <xsl:with-param name="reference-name" select="."/>
+  </xsl:call-template>
+</xsl:template>
+
+<xsl:template name="refToLink">
+    <xsl:param name="reference-name"/>
 
     <xsl:variable name="reference-clean">
       <xsl:choose>
