@@ -31,7 +31,7 @@ module serviceDiscovery {
 	 * \code
 	// Handle that can be used to cancel the ongoing asynchronous discovery process.
 	var findHandle = 0;
-    var bindHandle = 0;
+        var bindHandle = 0;
     	 
 	// Callback method that display a list of found services in a selection list
 	// The selection list is dynamically extended every time a new service is discovered.
@@ -39,11 +39,10 @@ module serviceDiscovery {
 		var selectlist = document.getElementById('servicelist');
 		var option = document.createElement('option');
 
-		option.value = selectlist.length + 1; 
-		option.text = service.displayName;
-		option.id = service.id;
+		option.value = service.id;
+		option.appendChildNode(document.createTextNode(service.displayName));
 		option.service = service;
-		selectlist.add(option);
+		selectlist.appendChildNode(option);
 	}
 
 	// Callback when Service is authorized and ready to use
@@ -62,7 +61,7 @@ module serviceDiscovery {
 		bindHandle = service.bindService(successCB);
 	}
 	
-	findHandle = windows.webinos.findServices('self', {api:'http://webinos.org/api/geolocation'}, serviceFoundCB);
+	findHandle = window.webinos.findServices('self', {api:'http://webinos.org/api/geolocation'}, serviceFoundCB);
 	 * \endcode
 	 *
 	 */
