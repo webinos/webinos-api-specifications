@@ -69,6 +69,7 @@ module sensors {
        * \code
        * // This should include a more meaningful example. To be completed.
        *   var availableTempSensors = webinos.sensors.getSensors(webinos.sensors.SENSOR_TYPE_TEMPERATURE, foundSensor);
+       *
        *   function foundSensor(sensor) {
        	     alert("Thermometer found, named " + sensor.name);
        *   }
