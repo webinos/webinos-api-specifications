@@ -5,9 +5,9 @@
  *
  * This version of the specification defines: \n
  * - The core Webinos interface. In this version this interface is part of the window global object but this has to be discussed. W3C DAP hangs the APIs on Device on Navigator. \n
- * - The common PendingOperation interface \n
  * 
  * It is to be considered if more common interfaces should be included in this specification, for example: \n
+ * - A common PendingOperation interface \n
  * - Methods to retrieve lists of available and activated feature \n
  * - Generic error interface \n
  * - Generic success callback \n
@@ -40,22 +40,5 @@ module webinoscore {
    * A user agent supporting the Webinos interface must do so according to the following WebIDL [WEBIDL] definition.
    */
   interface Webinos { 
-  };
-
-  /**
-   * \brief The PendingOp interface
-   *
-   * The PendingOp interface describes objects that are returned by asynchronous methods that are cancellable. It makes it possible to bring 
-   * these operations to a stop if they haven't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.
-   *
-   */
-   interface PendingOp {
-    /**
-     * \brief Methid Cancel
-     *
-     *  Cancel the pending asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
-     */
-     void cancel ();
-   };
-  
+  };   
 };
