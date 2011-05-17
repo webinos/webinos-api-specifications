@@ -47,7 +47,7 @@ module serviceDiscovery {
 
 	// Callback when Service is authorized and ready to use
 	function successCB(myLocationService) {
-		alert('Service ' + service.displayName + ' ready to use');
+		alert('Service ' + myLocationService.displayName + ' ready to use');
 		myLocationService.getCurrentPosition(showMap);
 	}
 			
