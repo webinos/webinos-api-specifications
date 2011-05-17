@@ -70,16 +70,16 @@ module serviceDiscovery {
 		/**
 	   	 * \brief The ServiceDiscoveryManager interface
 		 *
-		 * \brief findServices Initiates an asynchronous search query for services matching the requested userId, serviceType and filter parameters.  
-		 * \param userId Identity of a Personal Zone that is hosting the service. The userId 'self' is reserved for the Personal Zone of the user authenticated against the device. The userId 'shared' is reserved for services that are shared on the current network.
+		 * \brief findServices Initiates an asynchronous search query for services matching the requested zoneId, serviceType and filter parameters.  
+		 * \param zoneId Identity of a Personal Zone that is hosting the service. The zoneId 'self' is reserved for the Personal Zone of the user authenticated against the device. The zoneId 'shared' is reserved for services that are shared on the current network.
 		 * \param serviceType An input argument that defines which type of service that is requested.
-		 * \param successCallBack Callback issued if an service is found.  The callback is called every time a new service is found matching the userId, serviceType and filter.
+		 * \param successCallBack Callback issued if an service is found.  The callback is called every time a new service is found matching the zoneId, serviceType and filter.
 		 * \param errorCallBack Callback issued if serviceDiscovery fails.  
 		 * \param options Defines search options. 
 		 * \param filter Defines a filter with constraints that shall be applied during the discovery process, e.g. service shall only be applied for services in proximity.
 		 * \throw DiscoveryExceptions 
 		 */
-		 PendingOperation findServices(in DOMString userId, in ServiceType serviceType, in SuccessCallBack successCallBack, in optional ErrorCallBack errorCallBack, in optional Options options, in optional Filter filter)
+		 PendingOperation findServices(in DOMString zoneId, in ServiceType serviceType, in SuccessCallBack successCallBack, in optional ErrorCallBack errorCallBack, in optional Options options, in optional Filter filter)
 		 raises(DiscoveryExceptions);
 	};
 	
