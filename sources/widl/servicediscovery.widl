@@ -204,6 +204,9 @@ module serviceDiscovery {
 	  
 	};
 	
+	/**
+	* \brief Filter interface
+	*/
 	[NoInterfaceObject] interface Filter {
 		/**
 		 * Some nice attributes to express filters. 
