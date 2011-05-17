@@ -46,13 +46,16 @@ module serviceDiscovery {
      	    
      	    // TBD guess this should by asynch as well
      	    service.bindService();
+     	    
+     	    // Stop the findService operation
+     	    handle.cancel();
 	     }
 	     
 	     var typeOfService = new ServiceType();
 	     var handle;
 	     
 	     typeOfService = {type:"geolocation.w3c.webinos.org"};
-	     handle = webinos.findServices('self', typeOfService, successCB);
+	     handle = windows.webinos.findServices('self', typeOfService, successCB);
 	 * \endcode
 	 *
      */
@@ -200,11 +203,11 @@ module serviceDiscovery {
 	/**
      * \brief Discovery specific errors.
      */
-    interface DiscoveryError : GenericError {
+    exception DiscoveryError {
 	    /**
 	     * \brief The property cannot be currently retrieved
 	     */
-	     const unsigned short NOT_AVAILABLE_ERR = 101;
+	     const unsigned short INVALID_ARGUMENT_ERROR = 101;
     };
     
 };
