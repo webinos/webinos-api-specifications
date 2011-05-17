@@ -694,8 +694,13 @@ XSLT stylesheet to convert widlprocxml into html documentation.
     <xsl:when test="$reference-clean='Object'">
                     <xsl:value-of select="$reference-clean"/>
     </xsl:when>
+    <xsl:when test="key('reference-link-key',$reference-clean)">
+                  <a href="#{key('reference-link-key',$reference-clean)[1]/@id}">
+                    <xsl:value-of select="$reference-name"/>
+                  </a>
+    </xsl:when>
     <xsl:otherwise> 
-
+      <xsl:variable name="link">
       <xsl:for-each select="document('widlprocxmlsources.xml')/widlprocxml/file">
         <xsl:variable name="widlprocfile" select="substring-before(.,'.widlprocxml')"/>
         <xsl:for-each select="document(.)[key('reference-link-key',$reference-clean)]">
@@ -706,7 +711,15 @@ XSLT stylesheet to convert widlprocxml into html documentation.
             </xsl:for-each>
         </xsl:for-each>
       </xsl:for-each>
-
+      </xsl:variable>
+      <xsl:choose>
+	<xsl:when test="not(normalize-space($link))">
+	  <xsl:value-of select="$reference-name"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:copy-of select="$link[1]"/>
+	</xsl:otherwise>
+      </xsl:choose>
     </xsl:otherwise> 
     </xsl:choose>
 
