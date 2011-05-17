@@ -74,7 +74,7 @@ module serviceDiscovery {
 	     * \param filter Defines a filter with constraints that shall be applied during the discovery process, e.g. service shall only be applied for services in proximity.
 	     * \throw DiscoveryError INVALID_ARGUMENT_ERROR if an invalid argument is passed
 		 */
-		 PendingOperation findServices(in DOMString userId, in ServiceType serviceType, in SuccessCallBack successCallBack, [Optional] in ErrorCallBack errorCallBack, [Optional] in Options options, [Optional] in Filter filter)
+		 PendingOperation findServices(in DOMString userId, in ServiceType serviceType, in SuccessCallBack successCallBack, in optional ErrorCallBack errorCallBack, in optional Options options, in optional Filter filter)
 		 raises(DiscoveryError);
     };
     
