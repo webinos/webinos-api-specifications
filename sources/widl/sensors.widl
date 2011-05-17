@@ -79,7 +79,7 @@ module sensors {
        * \return A pending operation object making it possible to cancel the getSensorList operation
        * \throw SensorException with appropriate error code.
        */
-       PendingOP getSensors (in unsigned short sensorType, in GetSensorsCB successCB, in optional GetSensorsErrorCB errorCB, in optional Options options)
+       PendingOp getSensors (in unsigned short sensorType, in GetSensorsCB successCB, in optional GetSensorsErrorCB errorCB, in optional Options options)
            raises (SensorException);
      
 
