@@ -90,7 +90,7 @@ module serviceDiscovery {
 	 */
 	[NoInterfaceObject] interface ServiceType {
 		/**
-	 	 * \brief URI used to declare the requested API's feature set. The URN shall be globally unique.  
+	 	 * \brief URI used to identify the requested API's feature set. The URI shall be globally unique.  
 		 */
 		attribute DOMString api;
 	};
