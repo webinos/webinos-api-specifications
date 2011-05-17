@@ -695,7 +695,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
                     <xsl:value-of select="$reference-clean"/>
     </xsl:when>
     <xsl:when test="key('reference-link-key',$reference-clean)">
-                  <a href="{@id}">
+                  <a href="#{key('reference-link-key',$reference-clean)[1]/@id}">
                     <xsl:value-of select="$reference-name"/>
                   </a>
     </xsl:when>
