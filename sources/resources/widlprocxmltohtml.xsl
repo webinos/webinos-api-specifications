@@ -714,7 +714,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 	  <xsl:value-of select="$reference-name"/>
 	</xsl:when>
 	<xsl:otherwise>
-	  <xsl:copy-of select="$link[1]"/>
+	  <xsl:copy-of select="$link"/>
 	</xsl:otherwise>
       </xsl:choose>
     </xsl:otherwise> 
