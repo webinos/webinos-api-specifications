@@ -68,13 +68,16 @@ module sensors {
        *
        * \code
        * // This should include a more meaningful example. To be completed.
-       *   var availableTempSensors = webinos.sensors.getSensorList (SENSOR_TYPE_TEMPERATURE);
+       *   var availableTempSensors = webinos.sensors.getSensors (webinos.sensors.SENSOR_TYPE_TEMPERATURE, foundSensor);
+       *   function foundSensor(sensor) {
+       	     alert("New thermometer found, named " + sensor.name);
+       *   }
        * \endcode
        *
        * \param sensorType Sensor type (see list of sensor type constants in interface GenericSensorEvent. 
        * Can they be used here or do I have to specify them again in this interface?)
        * \param successCB Callback issued when a sensor is found.  The callback is called every time a new sensor is found matching the sensorType.
-       * \param errorCB Callback issued if getSensorList fails.  
+       * \param errorCB Callback issued if getSensors fails.  
        * \param options Defines sensor search options.
        * \return A pending operation object making it possible to cancel the getSensorList operation
        * \throw SensorException with appropriate error code.
