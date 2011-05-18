@@ -42,15 +42,6 @@ module sensors {
        * \brief Illegal sensor id
        */
        const unsigned short INVALID_INPUT_ARGUMENT = 0; 
-
-     /**
-       * \brief Illegal sensor type
-       */
-       const unsigned short ILLEGAL_SENSOR_TYPE = 1;
-      /**
-       * \brief Illegal sensor id
-       */
-       const unsigned short ILLEGAL_SENSOR_ID = 2;
   };
  
 
@@ -83,30 +74,27 @@ module sensors {
        * \return A pending operation object making it possible to cancel the getSensorList operation
        * \throw SensorException with appropriate error code.
        */
-       PendingOp getSensors (in unsigned short sensorType, in GetSensorsCB successCB, in optional GetSensorsErrorCB errorCB, in optional Options options)
-           raises (SensorException);
-     
+       PendingOp getSensors (in unsigned short sensorType, in GetSensorsCB successCB, in optional SensorErrorCB errorCB, in optional GetSensorOptions options)
+           raises (SensorException);     
 
       /**
        * \brief Configures a sensor identified by the uniqueId.
        *
-       * Question: Do we need the ability to specify high and low thresholds?
+       * Question: Do we need the ability to specify high and low thresholds? This is for example not supported by Android sensor API.
        *
        * \code
        * // TBD
        * 
        * \endcode
        *
-       * \param uniqueId Unique id of the sensor
-       * \param rate Rate of sensor data (see list of rate constants in interface SensorEvent) 
-       * \param interrupt Interrupt mode of the sensor. False = INTERRUPT_DISABLED (events fired with a fixed time interval)
-       * True = INTERRUPT_ENABLED (events fired when value changes)
-       * \return True if configuration succeeded. Else false.
-       * \throw SensorException with error code ILLEGAL_SENSOR_ID if 
-       * the input parameters not compatible with the expected type for 
-       * that parameter.
+       * \param uniqueId Unique id of the sensor.
+       * \param options Sensor configuration options. 
+       * \param successCB Callback issued when sensor configuration succeeded.
+       * \param errorCB Callback issued if sensor configuration fails.  
+       * \return A pending operation object making it possible to cancel the configureSensor operation     
+       * \throw SensorException with appropriate error code.
        */
-       boolean configureSensor (in DOMString uniqueId, in unsigned short rate, in boolean interrupt)
+       PendingOp configureSensor (in DOMString uniqueId, in ConfigureSensorOptions options, in ConfigureSensorCB successCB, in optional SensorErrorCB errorCB)
            raises (SensorException);
   
       /**
@@ -227,13 +215,33 @@ module sensors {
     };
 
    /**
-    * \brief GetSensorsErrorCB interface definition
+    * \brief ConfigureSensorCB interface definition
     *
     */
-    [Callback=FunctionOnly] interface GetSensorsErrorCB {
+    [Callback=FunctionOnly] interface ConfigureSensorCB {
 
       /**
-       * \brief onError The onError method is called if an error occurs during the getSensors() process.  
+       * \brief onSuccess The onSuccess method is called when configuration of a sensor succeeded.  
+       * TBD Some detailed text...
+       * \code
+       * // Some code example
+       * \endcode
+       *
+       *
+       *
+       */
+       void onSuccess();	  
+    };
+
+
+   /**
+    * \brief SensorErrorCB interface definition
+    *
+    */
+    [Callback=FunctionOnly] interface SensorErrorCB {
+
+      /**
+       * \brief onError The onError method is called if an error occurs during the getSensors() or configureSensor() process.  
        * TBD Some detailed text
        *
        * \code
@@ -258,20 +266,46 @@ module sensors {
        const unsigned short UNKNOWN_ERROR = 0;
 
       /**
-       * \brief No sensor of requested type was found within timeout period.
+       * \brief No success callback within timeout period.
        */
        const unsigned short TIMEOUT_ERROR = 1;
 
       /**
-       * \brief An error code assigned by an implementation when an error has occurred in getSensors() processing.
+       * \brief Illegal sensor type
+       */
+       const unsigned short ILLEGAL_SENSOR_TYPE_ERROR = 2;
+
+      /**
+       * \brief Illegal sensor type
+       */
+       const unsigned short SENSOR_TYPE_NOT_SUPPORTED_ERROR = 3;
+
+      /**
+       * \brief Illegal sensor id
+       */
+       const unsigned short ILLEGAL_SENSOR_ID_ERROR = 4;
+
+      /**
+       * \brief Other illegal input arguments
+       */
+       const unsigned short OTHER_ILLEGAL_INPUT_ARGUMENT_ERROR = 5;
+
+     /**
+       * \brief Permission denied
+       */
+       const unsigned short PERMSISSION_DENIED_ERROR = 50;
+
+
+      /**
+       * \brief An error code assigned by an implementation when an error has occurred in getSensors() or configureSensor() processing.
        */
        readonly attribute unsigned short code;
     };    
 
    /**
-    * \brief Option interface definition
+    * \brief GetSensorOptions interface definition
     */
-    interface Options {
+    interface GetSensorOptions {
 
       /**
        * \brief INFINITE Timeout Value
@@ -280,10 +314,59 @@ module sensors {
        const unsigned short INFINITE = 0;
 
       /**
-       * \brief timeout Defines a timeout value for when getSensors() is canceled in seconds. Default value is INFINITE.
+       * \brief Defines a timeout value for when getSensors() is canceled in seconds. Default value is INFINITE.
        */
        attribute unsigned short timeout;
     };
+
+  /**
+    * \brief ConfigureSensorOptions interface definition
+    */
+    interface ConfigureSensorOptions {
+
+      /**
+       * \brief INFINITE Timeout Value
+       *
+       */
+       const unsigned short INFINITE = 0;
+
+      /**
+       * \brief The sensor is reporting data as fast as possible.
+       */
+       const unsigned short SENSOR_DELAY_FASTEST = 0;
+
+      /**
+       * \brief The sensor is reporting data with a rate suitable for games.
+       */
+       const unsigned short SENSOR_DELAY_GAME = 1;
+
+      /**
+       * \brief The sensor is reporting data with a rate suitable for user interface.
+       */
+       const unsigned short SENSOR_DELAY_UI = 2;
+
+      /**
+       * \brief The sensor is reporting data with a normal rate, e.g. suitable for screen orientation changes.
+       */
+       const unsigned short SENSOR_DELAY_NORMAL = 3;
+
+      /**
+       * \brief Defines a timeout value for when configureSensors() is canceled in seconds. Default value is INFINITE.
+       */
+       attribute unsigned short timeout;
+
+      /**
+       * \brief The requested rate of the sensor data.
+       */
+       attribute unsigned short rate;
+
+      /**
+       * \brief The requested Interrupt mode of the sensor.\n
+       * False = INTERRUPT_DISABLED (events fired with a fixed time interval) \n
+       * True = INTERRUPT_ENABLED (events fired when value changes)
+       */
+       attribute boolean interrupt;
+     };
 
     /**
      * \brief The PendingOp interface
@@ -315,34 +398,42 @@ module sensors {
 	* \brief Unique ID of sensor
 	*/
 	readonly attribute DOMString      uniqueId;
+
        /**
 	* \brief Type of sensor
 	*/
         readonly attribute unsigned short type;  
+
        /**
 	* \brief Max range of sensor
 	*/
     	readonly attribute float          maximumRange;
+
        /**
 	* \brief Min delay of sensor
 	*/
    	readonly attribute unsigned long   minDelay;
+
        /**
 	* \brief Name of sensor
 	*/
   	readonly attribute DOMString      name;
+
        /**
 	* \brief Power consumption of sensor. TBD
 	*/
    	readonly attribute float	  power;
+
        /**
 	* \brief Resolution TBD
 	*/
 	readonly attribute float	  resolution;
+
        /**
 	* \brief Vendor
 	*/
 	readonly attribute DOMString      vendor;  
+
        /**
 	* \brief Version
 	*/ 
@@ -400,26 +491,6 @@ module sensors {
    * \brief A constant describing that the sensor data cannot be trusted, calibrating is needed or the environment does not allow reading.
    */
     const unsigned short SENSOR_STATUS_UNRELIABLE = 0;
-  
-  /**
-   * \brief A constant describing that the sensor is reporting data as fast as possible.
-   */
-    const unsigned short SENSOR_DELAY_FASTEST = 0;
-
-  /**
-   * \brief A constant describing that the sensor is reporting data with a rate suitable for games.
-   */
-    const unsigned short SENSOR_DELAY_GAME = 1;
-
-  /**
-   * \brief A constant describing that the sensor is reporting data with a normal rate, e.g. suitable for screen orientation changes.
-   */
-    const unsigned short SENSOR_DELAY_NORMAL = 3;
-
-  /**
-   * \brief A constant describing that the sensor is reporting data with a rate suitable for user interface.
-   */
-    const unsigned short SENSOR_DELAY_UI = 2;
 
 
   /**
