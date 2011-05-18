@@ -290,10 +290,20 @@ module sensors {
        */
        const unsigned short OTHER_ILLEGAL_INPUT_ARGUMENT_ERROR = 5;
 
+      /**
+       * \brief Sensor rate requested through configureSensor() not supported
+       */
+       const unsigned short REQUESTED_RATE_NOT_SUPPORTED_ERROR = 6;
+
+     /**
+       * \brief Interrupt mode requested through configureSensor() not supported
+       */
+       const unsigned short REQUESTED_INTERRUPTMODE_NOT_SUPPORTED_ERROR = 7;
+
      /**
        * \brief Permission denied
        */
-       const unsigned short PERMSISSION_DENIED_ERROR = 50;
+       const unsigned short PERMISSION_DENIED_ERROR = 50;
 
 
       /**
