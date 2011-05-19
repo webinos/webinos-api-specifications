@@ -85,7 +85,7 @@ module sensors {
         }
         
         // Get list of temperature sensors registered in the device
-        sensorHandle = webinos.sensors.getSensors(3, sensorFoundCB);
+        sensorHandle = webinos.sensors.getSensors(webinos.sensors.SensorType.SENSOR_TYPE_TEMPERATURE, sensorFoundCB);
 
         // Handle user selection of sensor
         var sensorlist = document.getElementById('sensorlist');
@@ -105,6 +105,18 @@ module sensors {
        * \brief Returns an array of sensor objects (defining sensor properties) for all registered sensors of requested type.
        *
        * Note: It must be considered if this method is redundant to the general findServices() method in the Webinos ServiceDiscovery API.
+       *
+       * \code
+
+       var availableTempSensors = webinos.sensors.getSensors(webinos.sensors.SensorType.SENSOR_TYPE_TEMPERATURE, foundSensor);
+ 
+       function foundSensor(sensor) {
+
+       	  alert("Thermometer found, named " + sensor.name);
+
+       }
+	
+       * \endcode
        *
        *
        * \param sensorType Sensor type
