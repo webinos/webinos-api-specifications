@@ -527,15 +527,15 @@ module vehicle{
 		/**
 		* \brief constant indicates change for the parking lights
 		*/	
-		const DOMString LIGHTS_SIGNAL_RIGHT = "lights-parking";
+		const DOMString LIGHTS_PARKING = "lights-parking";
 		/**
 		* \brief constant indicates change for the hibeam
 		*/	
-		const DOMString LIGHTS_SIGNAL_RIGHT = "lights-hibeam";
+		const DOMString LIGHTS_HIBEAM = "lights-hibeam";
 		/**
 		* \brief constant indicates change for the headlight
 		*/	
-		const DOMString LIGHTS_SIGNAL_RIGHT = "lights-head";
+		const DOMString LIGHTS_HEAD = "lights-head";
 		/**
 		* \brief constant indicates front window is beeing washed
 		*/	
