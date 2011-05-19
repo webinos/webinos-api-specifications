@@ -12,7 +12,7 @@ module vehicle{
 	* \brief Defines error codes for this module
 	*
 	*/
-	exception VehicleError : Error{
+	interface VehicleError : Error{
 		/**
 		* \brief A const describing that the access to this feature has been denied
 		*/
