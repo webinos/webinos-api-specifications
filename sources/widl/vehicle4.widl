@@ -23,7 +23,7 @@ module vehicle{
 		const short NOT_AVAILABLE = 2;
 	};
 	/**
-	* \brief This interface defines the address properties, which can be passed to the navigation system using the requestGuidance() function. Should we use the <a href="http://dev.w3.org/geo/api/spec-source-v2.html#address_interface">Adress interface</a> defined in the v2 of the W3C Geolocation API?
+	* \brief This interface defines the address properties, which can be passed to the navigation system using the requestGuidance() function. Should we use the <a href="http://dev.w3.org/geo/api/spec-source-v2.html#address_interface">Address interface</a> defined in the v2 of the W3C Geolocation API?
 	* 
 	* Description to be completed with code examples
 	*
@@ -148,7 +148,7 @@ module vehicle{
 		*
 		* \param successCallback callback, if the address is succesully transferred
 		* \param errorCallback callback, if the address could not be transferred  
-		* \param destination new destination in form of Geolocation LatLng
+		* \param destination new destination in form of Address interface
 		*/
 		void requestGuidance(in SuccessCallback successCallback, in ErrorCallback errorCallback, in Address destination);
 		/**
@@ -286,19 +286,19 @@ module vehicle{
 		/**
 		* \brief Destination to an object sensed by the sensor in cm. Minimum distance is 20 cm. Maximum distance is 250 cm. A value of 254 indiactes that no object has been sensed.
 		*/    		
-		attribute short left;
+		attribute unsigned short left;
 		/**
 		* \brief Destination to an object sensed by the sensor in cm. Minimum distance is 20 cm. Maximum distance is 250 cm. A value of 254 indiactes that no object has been sensed.
 		*/
-		attribute short midLeft;	
+		attribute unsigned short midLeft;	
 		/**
 		* \brief Destination to an object sensed by the sensor in cm. Minimum distance is 20 cm. Maximum distance is 250 cm. A value of 254 indiactes that no object has been sensed.
 		*/
-		attribute short midRigth;
+		attribute unsigned short midRigth;
 		/**
 		* \brief Destination to an object sensed by the sensor in cm. Minimum distance is 20 cm. Maximum distance is 250 cm. A value of 254 indiactes that no object has been sensed.
 		*/
-		attribute short rigth;
+		attribute unsigned short rigth;
 
 		/**
 		* \brief Method to set initial values of ParkSensor event
@@ -378,7 +378,7 @@ module vehicle{
 		/**
 		* \brief The current speed of the vehicle. The unit is kmph/10. 	
 		*/	
-		attribute short speed;
+		attribute unsigned short speed;
 		/**
 		* \brief Method to set initial values of ParkSensor event
 		* \code
@@ -403,19 +403,19 @@ module vehicle{
 		/**
 		* \brief The current speed of the front left wheel. The unit is kmph. 	
 		*/	
-		attribute short frontLeft;
+		attribute unsigned short frontLeft;
 		/**
 		* \brief The current speed of the front right wheel. The unit is kmph. 	
 		*/	
-		attribute short frontRight;
+		attribute unsigned short frontRight;
 		/**
 		* \brief The current speed of the rear left wheel. The unit is kmph. 	
 		*/	
-		attribute short rearLeft;
+		attribute unsigned short rearLeft;
 		/**
 		* \brief The current speed of the rear right wheel. The unit is kmph. 	
 		*/	
-		attribute short rearRight;
+		attribute unsigned short rearRight;
 		/**
 		* \brief Method to set initial values of ParkSensor event
 		* \code
