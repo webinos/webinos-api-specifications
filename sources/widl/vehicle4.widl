@@ -23,7 +23,7 @@ module vehicle{
 		const short NOT_AVAILABLE = 2;
 	};
 	/**
-	* \brief This interface defines the address properties, which can be passed to the navigation system using the requestGuidance() function
+	* \brief This interface defines the address properties, which can be passed to the navigation system using the requestGuidance() function. Should we use the <a href="http://dev.w3.org/geo/api/spec-source-v2.html#address_interface">Adress interface</a> defined in the v2 of the W3C Geolocation API?
 	* 
 	* Description to be completed with code examples
 	*
