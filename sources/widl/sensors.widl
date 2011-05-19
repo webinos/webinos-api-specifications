@@ -48,26 +48,66 @@ module sensors {
    /**
    * \brief This interface defines the sensor manager interface
    * 
-   * Description to be completed with code examples
-   *
+   * \code
+
+       // Handle that can be used to cancel the ongoing asynchronous discovery process.
+        var sensorHandle = 0;
+
+        // Array of found temperature sensors object.
+        var availableTempSensors = {};
+                 
+        // Callback method that display a list of found sensors in a selection list
+        // The selection list is dynamically extended every time a new sensor is discovered.
+        function sensorFoundCB(sensor) {
+
+                var selectlist = document.getElementById('sensorlist');
+                var option = document.createElement('option');
+                option.value = sensor.uniqueId;
+                option.appendChild(document.createTextNode(sensor.name));
+	        availableTempSensors [sensor.uniqueId] = sensor;
+                selectlist.appendChild(option);
+
+        }
+                      
+        // Callback method that is invoked when user selects an option in the sensor selection list 
+        function sensorSelected(sensor) {
+
+                // Stops the getSensors operation
+                sensorHandle.cancel();
+                               
+                // Configure the sensor. TBD
+
+                // Start listening to sensor events and log values. 
+                webinos.sensors.addEventListener(sensor.uniqueId, function (event) {
+                          console.log(event.sensorValues[0].value);
+                }, true); 
+                
+        }
+        
+        // Get list of temperature sensors registered in the device
+        sensorHandle = webinos.sensors.getSensors(3, sensorFoundCB);
+
+        // Handle user selection of sensor
+        var sensorlist = document.getElementById('sensorlist');
+        sensorlist.addEventListener("change", function (e) {
+				var sensor = availableTempSensors[e.target.value];
+				if (sensor) {
+				    sensorSelected(sensor);
+				}
+        }, false);
+
+
+   * \endcode
    */  
    interface SensorManager {
 
       /**
-       * \brief Returns an array of properties for all registered sensors of requested type.
+       * \brief Returns an array of sensor objects (defining sensor properties) for all registered sensors of requested type.
+       *
+       * Note: It must be considered if this method is redundant to the general findServices() method in the Webinos ServiceDiscovery API.
        *
        *
-       * \code
-       * // This should include a more meaningful example. To be completed.
-       *   var availableTempSensors = webinos.sensors.getSensors(webinos.sensors.SensorType.SENSOR_TYPE_TEMPERATURE, foundSensor);
-       *
-       *   function foundSensor(sensor) {
-       	     alert("Thermometer found, named " + sensor.name);
-       *   }
-       * \endcode
-       *
-       * \param sensorType Sensor type (see list of sensor type constants in interface GenericSensorEvent. 
-       * Can they be used here or do I have to specify them again in this interface?)
+       * \param sensorType Sensor type
        * \param successCB Callback issued when a sensor is found.  The callback is called every time a new sensor is found matching the sensorType.
        * \param errorCB Callback issued if getSensors fails.  
        * \param options Defines sensor search options.
@@ -81,11 +121,6 @@ module sensors {
        * \brief Configures a sensor identified by the uniqueId.
        *
        * Question: Do we need the ability to specify high and low thresholds? This is for example not supported by Android sensor API.
-       *
-       * \code
-       * // TBD
-       * 
-       * \endcode
        *
        * \param uniqueId Unique id of the sensor.
        * \param options Sensor configuration options. 
