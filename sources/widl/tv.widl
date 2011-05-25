@@ -98,6 +98,16 @@ module tvcontrol {
      * to a stopped state.
      */
     void stop();
+
+    /**
+     * \brief Gets the current channel.
+     *
+     * Get the current channel from the HTMLTVElement referred to by elementId.
+     *
+     * \param elementId The unique id for the HTMLTVElement.
+     * \return The current channel.
+     */
+    Channel getCurrentChannel(in DOMString elementId);
     
   };
 
