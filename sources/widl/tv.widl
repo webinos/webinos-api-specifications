@@ -152,6 +152,48 @@ module tvcontrol {
   };
   
   /**
+   * \brief Event that fires when the channel was successfully changed.
+   *
+   * When a channel is requested with setChannel(), nextChannel() or
+   * prevChannel() methods this event will be fired if the channel was changed
+   * successfully.
+   */
+  interface ChannelChangeSucceeded : Event {
+  
+    /**
+     * \brief The channel that was changed to.
+     */
+    readonly attribute Channel channel;
+    
+    /**
+     * \brief The id of the HTMLTVElement that was asked to change the channel.
+     */
+    readonly attribute DOMString elementId;
+    
+  };
+  
+  /**
+   * \brief Event that fires when the channel failed.
+   *
+   * When a channel is requested with setChannel(), nextChannel() or
+   * prevChannel() methods this event will be fired if the channel could not be
+   * changed.
+   */
+  interface ChannelChangeError : Event {
+  
+    /**
+     * \brief The channel that could not be changed too.
+     */
+    readonly attribute Channel channel;
+
+    /**
+     * \brief The id of the HTMLTVElement that was asked to change the channel.
+     */
+    readonly attribute DOMString elementId;
+    
+  };
+  
+  /**
    * \brief The Parental Rating interface.
    */
   interface ParentalRating {
