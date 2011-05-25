@@ -20,12 +20,12 @@ var numberOfChannels = mytv.channelList.length;
 
 // pick a random channel
 var randomChannel = mytv.channelList[Math.floor(Math.random()*numberOfChannels)];
-mytv.setChannel(randomChannel);
-
-// Updating name of channel
-document.getElementById('channel').normalize();
-document.getElementById('channel').removeChild(document.getElementById('channel').childNodes[0]);
-document.getElementById('channel').appendChild(document.createTextNode(randomChannel.name));
+mytv.setChannel(randomChannel, function(channel) {
+  // Updating name of channel
+  document.getElementById('channel').normalize();
+  document.getElementById('channel').removeChild(document.getElementById('channel').childNodes[0]);
+  document.getElementById('channel').appendChild(document.createTextNode(channel.name));
+});
 
 \</script>
  * \endcode
@@ -65,6 +65,11 @@ module tvcontrol {
      * prevChannel() functions.
      */
     readonly attribute Channel[] channelList;
+    
+    /**
+     * \brief Get the current channel, if no channel was set this will be null.
+     */
+    readonly attribute Channel currentChannel;
 
     /**
      * \brief Requests the tuner to switch to the channel specified.
@@ -72,24 +77,30 @@ module tvcontrol {
      * Request to switch to the specified channel and render the received broadcast. 
      *
      * \param channel A channel object, obtained from the channelList.
+     * \param successCb Callback issued if channel change succeeds.
+     * \param errorCb Callback issued if channel change fails.
      */
-    void setChannel(in Channel channel);
+    void setChannel(in Channel channel, in ChannelChangeSuccessCallback successCb, in optional ChannelChangeErrorCallback errorCb);
     
     /**
      * \brief Request to switch the tuner to the previous channel.
      *
      * The previous channel is the channel preceding the current channel in
      * channelList. The list shall be cycled in case the end has been reached.
+     * \param successCb Callback issued if channel change succeeds.
+     * \param errorCb Callback issued if channel change fails.
      */
-    void prevChannel();
+    void prevChannel(in ChannelChangeSuccessCallback successCb, in optional ChannelChangeErrorCallback errorCb);
     
     /**
      * \brief Request to switch the tuner to the next channel.
      *
      * The next channel is the channel succeeding the current channel in
      * channelList. The list shall be cycled in case the end has been reached.
+     * \param successCb Callback issued if channel change succeeds.
+     * \param errorCb Callback issued if channel change fails.
      */
-    void nextChannel();
+    void nextChannel(in ChannelChangeSuccessCallback successCb, in optional ChannelChangeErrorCallback errorCb);
     
     /**
      * \brief Stop video broadcast.
@@ -98,16 +109,51 @@ module tvcontrol {
      * to a stopped state.
      */
     void stop();
-
+    
+  };
+  
+  /**
+   * \brief ChannelChangeSuccessCallback interface.
+   */
+  [Callback=FunctionOnly] interface ChannelChangeSuccessCallback {
+  
     /**
-     * \brief Gets the current channel.
+     * \brief This callback is called once the issued channel change successfully
+     * completed.
      *
-     * Get the current channel from the HTMLTVElement referred to by elementId.
-     *
-     * \param elementId The unique id for the HTMLTVElement.
-     * \return The current channel.
+     * \param channel The channel that was asked to change to.
      */
-    Channel getCurrentChannel(in DOMString elementId);
+    void onSuccess(in Channel channel);
+  };
+
+  /**
+   * \brief ChannelChangeErrorCallback interface.
+   */
+  [Callback=FunctionOnly] interface ChannelChangeErrorCallback {
+  
+    /**
+     * \brief This callback is called once the issued channel change successfully
+     * completed.
+     *
+     * \param error Error object detailing what went wrong during channel change.
+     */
+    void onError(in ChannelChangeError error);
+  };
+
+  /**
+   * \brief The error interface used in the ChannelChangeErrorCallback. 
+   */  
+  interface ChannelChangeError {
+  
+    /**
+     * \brief An unknown error.
+     */
+    const unsigned short UNKNOWN_ERROR = 0;
+    
+    /**
+     * \brief Invalid input channel.
+     */
+    const unsigned short ILLEGAL_CHANNEL_ERROR = 1;
     
   };
 
@@ -148,48 +194,6 @@ module tvcontrol {
      * The long name of the channel if transmitted. Can be undefined if not available.
      */
     readonly attribute DOMString longName;
-    
-  };
-  
-  /**
-   * \brief Event that fires when the channel was successfully changed.
-   *
-   * When a channel is requested with setChannel(), nextChannel() or
-   * prevChannel() methods this event will be fired if the channel was changed
-   * successfully.
-   */
-  interface ChannelChangeSucceeded : Event {
-  
-    /**
-     * \brief The channel that was changed to.
-     */
-    readonly attribute Channel channel;
-    
-    /**
-     * \brief The id of the HTMLTVElement that was asked to change the channel.
-     */
-    readonly attribute DOMString elementId;
-    
-  };
-  
-  /**
-   * \brief Event that fires when the channel failed.
-   *
-   * When a channel is requested with setChannel(), nextChannel() or
-   * prevChannel() methods this event will be fired if the channel could not be
-   * changed.
-   */
-  interface ChannelChangeError : Event {
-  
-    /**
-     * \brief The channel that could not be changed too.
-     */
-    readonly attribute Channel channel;
-
-    /**
-     * \brief The id of the HTMLTVElement that was asked to change the channel.
-     */
-    readonly attribute DOMString elementId;
     
   };
   
