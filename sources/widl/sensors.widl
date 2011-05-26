@@ -13,15 +13,18 @@
  *
  * Currently 5 different sensor types are defined but the API could easily be extended with additional sensor types.
  * 
- * This is an experimental API and security and privacy issues are not addressed.
- * 
+ * This is an experimental API and security and privacy issues are not specifically addressed in the specification. If access to security or privacy
+ * sensitive sensors are provided the user agent must either acquire access permission through a user interface or control access through a prearranged
+ * trust relationship with users. 
+ *
+ * It should be be considered if the getSensors() method is redundant with the general findServices() method in the Webinos ServiceDiscovery API.
  *
  * \def-api-feature http://webinos.org/api/sensors
  * Acccess to all the module. This identifies which are the features that are exposed by this
  * module so that the developer can express a dependency on them.
  *
  * \author Claes Nilsson &lt;claes1.nilsson@sonyericsson.com&gt;
- * \version 0.4 
+ * \version 0.5 
  */
 
 module sensors {
@@ -531,23 +534,29 @@ module sensors {
   /**
    * \brief A constant describing that the sensor is reporting data with maximum accuracy.
    */
-    const unsigned short SENSOR_STATUS_ACCURACY_HIGH = 3;
+    const unsigned short SENSOR_STATUS_ACCURACY_HIGH = 4;
 
   /**
    * \brief A constant describing that the sensor is reporting data with an average level of accuracy, calibrating with the environment may improve the
    * reading.
    */
-    const unsigned short SENSOR_STATUS_ACCURACY_MEDIUM = 2;
+    const unsigned short SENSOR_STATUS_ACCURACY_MEDIUM = 3;
 
   /**
    * \brief A constant describing that the sensor is reporting with low accuracy, calibrating with the environment is needed.
    */
-    const unsigned short SENSOR_STATUS_ACCURACY_LOW = 1;
+    const unsigned short SENSOR_STATUS_ACCURACY_LOW = 2;
 
   /**
    * \brief A constant describing that the sensor data cannot be trusted, calibrating is needed or the environment does not allow reading.
    */
-    const unsigned short SENSOR_STATUS_UNRELIABLE = 0;
+    const unsigned short SENSOR_STATUS_UNRELIABLE = 1;
+
+ /**
+   * \brief A constant describing that the sensor is not available and no sensor data can be provided. This accuracy attribute will for example take 
+   * this value when contact is lost with a sensor using Bluetooth communication.
+   */
+    const unsigned short SENSOR_STATUS_UNAVAILABLE = 0;
 
 
   /**
