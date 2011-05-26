@@ -1,0 +1,428 @@
+/**
+ * \brief Interface for NFC.
+ *
+ *
+ * \code
+ * var nfcAdapterList = webinos.nfc.getAdapters();
+ * var selectedNfcAdapter = nfcAdapterList[0];
+ * selectedNfcAdapter.addEventListener("nfctag", nfcListener, true);
+ *
+ * function nfcListener(event)
+ * {
+ *   var techSelected = null;
+ *   var techSupported = event.tag.techList;
+ *   if(techSupported.length > 0) {
+ *     for (var index=0; index &lt; techSupported.length; index++) {
+ *       if(techSupported[index].type == techSupported[index].TECH_NDEF) {
+ *         techSelected = techSupported[index];
+ *       }
+ *     }
+ *   }
+ *   if(techSelected) {
+ *     techSelected.connect();
+ *     var ndefMessage = techSelected.readCachedNdefMessage();
+ *   }
+ * }
+ * \endcode
+ *
+ * \author 
+ */
+
+module nfc {
+
+	/**
+	 * \brief Array of NCF adapters.
+	 */
+	typedef sequence<NFCAdapter>		NFCAdapterArray;
+
+	/**
+	 * \brief Array of NFCTagTechnology.
+	 */
+	typedef sequence<NFCTagTechnology>	NFCTagTechnologyArray;
+
+	/**
+	 * \brief Array of NdefRecord.
+	 */
+	typedef sequence<NdefRecord>	NdefRecordArray;
+
+	/**
+	 * \brief Array of 8-bit unsigned integer values.
+	 */
+	typedef sequence<octet> ByteArray;
+
+	/**
+	 * \brief Definition of pending op. Should be inserted in a common package?
+	 * 
+	 */
+	[NoInterfaceObject] interface PendingOperation {
+		/**
+		 * \brief Cancel the async op.
+		 *
+		 */
+		boolean cancel();
+	};
+
+	
+	/**
+	 * \brief Interface for retrieving available NFC adapters.
+	 *
+	 */
+	interface NFCManager {
+
+	    /**
+	     * \brief Retrieve the list of available NFC adapters.
+	     *
+	     * In case no adapter is available returns an empty list.
+		 *
+	     */
+	    NFCAdapterArray getAdapters();
+
+	};
+
+	
+	/**
+	 * \brief Interface for managing an NFC adapter
+	 *
+	 */
+	interface NFCAdapter {
+
+		/**
+		 * \brief Adds a listener to identify a new tag in range.
+		 *
+		 * \param type It must be "nfctag" to register for nfc events.
+		 * \param listener Event listener call back function (see http://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/).
+		 * \param useCapture If true, useCapture indicates that the user wishes to add the event listener for the capture phase only,
+		 * i.e. this event listener will not be triggered during the target and bubbling phases. If false, the event listener will only be
+		 * triggered during the target and bubbling phases (see http://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/).
+		 *
+		 */
+		void addEventListener (in DOMString type, in EventListener listener, in boolean useCapture);
+		
+		/**
+		 * \brief Adds a listener to identify a new tag in range.
+		 *
+		 * \param type It must be "nfctag" to unregister for nfc events.
+		 * \param listener Event listener call back function (see http://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/).
+		 * \param useCapture If true, useCapture indicates that the user wishes to add the event listener for the capture phase only,
+		 * i.e. this event listener will not be triggered during the target and bubbling phases. If false, the event listener will only be
+		 * triggered during the target and bubbling phases (see http://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/).
+		 *
+		 */
+		void removeEventListener (in DOMString type, in EventListener listener, in boolean useCapture);
+		
+	};
+
+
+	/**
+	 * \brief NFC event generated when a new tag is detected.
+	 *
+	 */
+	interface NFCEvent : Event {
+		
+		/**
+		 * \brief The tag that generated the event.
+		 *
+		 */
+		readonly attribute NFCTag tag;
+		
+	};
+	
+	
+	/**
+	 * \brief NFC tag.
+	 *
+	 */
+	interface NFCTag {
+
+		/**
+		 * \brief The identifier of the tag.
+		 *
+		 */
+		readonly attribute ByteArray tagId;
+		
+		/**
+		 * \brief The list of technologies supported by the tag.
+		 *
+		 */
+		readonly attribute NFCTagTechnologyArray techList;
+		
+	};
+
+
+	/**
+	 * \brief NFC technology.
+	 *
+	 */
+	interface NFCTagTechnology {
+
+		/**
+		 * \brief Constant identifying a non supported technology.
+		 *
+		 */
+		const unsigned short TECH_OTHERS = 0;
+		
+		/**
+		 * \brief Constant identifying a NfcA technology.
+		 *
+		 */
+		const unsigned short TECH_NFCA = 1;
+		
+		/**
+		 * \brief Constant identifying a NfcB technology.
+		 *
+		 */
+		const unsigned short TECH_NFCB = 2;
+		
+		/**
+		 * \brief Constant identifying a NfcF technology.
+		 *
+		 */
+		const unsigned short TECH_NFCF = 3;
+		
+		/**
+		 * \brief Constant identifying a NfcV technology.
+		 *
+		 */
+		const unsigned short TECH_NFCV = 4;
+		
+		/**
+		 * \brief Constant identifying a IsoDep technology.
+		 *
+		 */
+		const unsigned short TECH_ISODEP = 5;
+		
+		/**
+		 * \brief Constant identifying a Ndef technology.
+		 *
+		 */
+		const unsigned short TECH_NDEF = 6;
+		
+		/**
+		 * \brief Type of technology.
+		 *
+		 */
+		readonly attribute unsigned short type;
+		
+		/**
+		 * \brief Attribute indicating if the tag is connected or not.
+		 *
+		 */
+		readonly attribute boolean isConnected;
+		
+		/**
+		 * \brief Connects to the tag.
+		 *
+		 */
+		void connect();
+
+		/**
+		 * \brief Closes connection to the tag.
+		 *
+		 */
+		void close();
+		
+	};
+
+	
+	/**
+	 * \brief Ndef technology.
+	 *
+	 */
+	interface NFCTagTechnologyNdef : NFCTagTechnology {
+	
+		/**
+		 * \brief Constant identifying a non supported Ndef format.
+		 *
+		 */
+		const unsigned short NDEFTYPE_OTHERS = 0;
+		
+		/**
+		 * \brief Constant identifying a Nfc forum type 1 Ndef tag.
+		 *
+		 */
+		const unsigned short NDEFTYPE_NFCFORUMTYPE1 = 1;
+		
+		/**
+		 * \brief Constant identifying a Nfc forum type 2 Ndef tag.
+		 *
+		 */
+		const unsigned short NDEFTYPE_NFCFORUMTYPE2 = 2;
+		
+		/**
+		 * \brief Constant identifying a Nfc forum type 3 Ndef tag.
+		 *
+		 */
+		const unsigned short NDEFTYPE_NFCFORUMTYPE3 = 3;
+		
+		/**
+		 * \brief Constant identifying a Nfc forum type 4 Ndef tag.
+		 *
+		 */
+		const unsigned short NDEFTYPE_NFCFORUMTYPE4 = 4;
+		
+		/**
+		 * \brief Constant identifying a Mifare classic Ndef formatted tag.
+		 *
+		 */
+		const unsigned short NDEFTYPE_MIFARECLASSIC = 5;
+		
+		/**
+		 * \brief Attribute indicating the type of Ndef tag.
+		 *
+		 */
+		readonly attribute unsigned short ndefType;
+		
+		/**
+		 * \brief Attribute indicating if the tag is writable or not.
+		 *
+		 */
+		readonly attribute boolean isWritable;
+		
+		/**
+		 * \brief Attribute indicating the maximum size of Ndef messages.
+		 *
+		 */
+		readonly attribute unsigned long maxNdefMessageSize;
+		
+		/**
+		 * \brief This method makes a tag read-only.
+		 *
+	     * \param successCallback function to be invoked in case of success.
+	     * \param errorCallback function to be invoked in case of failure.
+		 * \return 
+		 */
+		PendingOperation makeReadOnly(in SuccessCallback successCallback, in ErrorCallback errorCallback);
+		
+		/**
+		 * \brief Retrieves the Ndef message received at discovery time.
+		 *
+		 * \return The Ndef message received at discovery time.
+		 */
+		NdefMessage readCachedNdefMessage();
+		
+		/**
+		 * \brief This method reads a Ndef message.
+		 *
+	     * \param successCallback function to be invoked in case of success.
+	     * \param errorCallback function to be invoked in case of failure.
+		 * \return 
+		 */
+		PendingOperation readNdefMessage(in NdefSuccessCallback successCallback, in ErrorCallback errorCallback);
+		
+		/**
+		 * \brief Writes a Ndef message to the tag.
+		 *
+	     * \param successCallback function to be invoked in case of success.
+	     * \param errorCallback function to be invoked in case of failure.
+	     * \param message The message to be written.
+		 * \return 
+		 */
+		PendingOperation writeNdefMessage(in SuccessCallback successCallback, in ErrorCallback errorCallback, NdefMessage message);
+		
+		/**
+		 * \brief Create a new Ndef message.
+		 *
+		 * \return The new Ndef message
+		 */
+		NdefMessage createNdefMessage();
+
+	};
+	
+
+	/**
+	 * \brief Ndef message.
+	 *
+	 */
+	interface NdefMessage {
+	
+		/**
+		 * \brief List of Ndef records.
+		 *
+		 */
+		readonly attribute NdefRecordArray ndefRecords;
+		
+		/**
+		 * \brief Adds a record to the Ndef message.
+		 *
+		 */
+		void addNdefRecord(in unsigned short type, in DOMString payload);
+		
+	};
+	
+	
+	/**
+	 * \brief Ndef record.
+	 *
+	 * Chunk of records are assembled by the underlying implementation and returned as
+	 * a single Ndef record.
+	 *
+	 */
+	interface NdefRecord {
+	
+		/**
+		 * \brief Constant identifying an unknown Ndef record type.
+		 *
+		 */
+		const unsigned short NDEFRECTYPE_UNKNOWN = 0;
+
+		/**
+		 * \brief Constant identifying a uri Ndef record type.
+		 *
+		 */
+		const unsigned short NDEFRECTYPE_URI = 1;
+
+		/**
+		 * \brief Constant identifying a media Ndef record type.
+		 *
+		 */
+		const unsigned short NDEFRECTYPE_MEDIA = 2;
+
+		/**
+		 * \brief Constant identifying an empty Ndef record type.
+		 *
+		 */
+		const unsigned short NDEFRECTYPE_EMPTY = 3;
+
+		/**
+		 * \brief Constant identifying a RTD Ndef record type.
+		 *
+		 */
+		const unsigned short NDEFRECTYPE_RTD = 4;
+
+		/**
+		 * \brief Constant identifying an external RTD Ndef record type.
+		 *
+		 */
+		const unsigned short NDEFRECTYPE_EXTERNALRTD = 5;
+
+		/**
+		 * \brief The type of the record.
+		 *
+		 */
+		readonly attribute unsigned short type;
+		
+		/**
+		 * \brief The payload of the record.
+		 *
+		 */
+		readonly attribute DOMString textPayload;
+		
+		/**
+		 * \brief The payload of the record.
+		 *
+		 */
+		readonly attribute ByteArray binaryPayload;
+		
+	};
+	
+	
+	/**
+	 * \brief Callback to be invoked when reading a Ndef message.
+	 *
+	 */
+	[Callback=FunctionOnly, NoInterfaceObject] interface NdefSuccessCallback {
+		void onSuccess(in NdefMessage obj);
+	};
+	
+};
+
