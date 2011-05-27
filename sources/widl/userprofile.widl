@@ -1,0 +1,401 @@
+/**
+ * \brief The UserProfile API to access user information
+ *
+ * This API offers access to information of the user, e.g. login credentials.
+ * 
+ * This API is based on the W3C Contacts API of 08 March 2011 (http://dev.w3.org/2009/dap/contacts/) and the Portable Contacts 1.0 Draft C from 05 August 2088 (http://portablecontacts.net/draft-spec.html) and mirrors its functionality and most of its parameters.
+ * The API offers an social web approach as the W3C Incubator Group Report from 06 December 2010 reported.
+ *
+ * \author Ronny Gr&auml;fe &lt;ronny.graefe@t-systems.com&gt;
+ * \version 0.1 
+ */
+module userprofile {	
+
+	/**
+	 * \brief The User interface
+	 *
+	 * The User interface contains all user profile data, e.g. gender, birthday, and methods to create a user profile in the webinos system.
+	 * 
+	 */
+	interface User{
+	
+		/**
+		 * \brief createUserProfile() method - Creates a new user profile in the webinos system. A userProfileId must be provided to this method.
+		 *
+		 * 
+		 * \param userProfileId A unique profile id which matches the RFC 3986 URI Scheme.
+		 * \param user A new user object.
+		 * \param successCallBack Callback issued when the creating of the user is correctly finished.
+		 * \param errorCallback Callback issued if an error occurs during the opening. E.g. the id already exist.
+		 *
+		 * \code
+		 * //create a new user
+		 * var user = new Object();
+		 *
+		 * //add attributes
+		 * user.displayName = 'John Smith';
+		 * user.nickname = 'johnny2011';
+		 * ...
+		 * user.timezone = 'CET';
+		 * 
+		 * //creates a new user profile in the webinos system
+		 * webinos.user.createUserProfile('webinos:user:john.smith', userProfileId, user, successCB, errorCB);
+		 *
+		 * function successCB(UserProfileSuccessCB successCallBack) {
+		 *		
+		 *		// returns the userProfileId with a generated int, e.g. "webinos:user:john.smith:id=12345678"
+		 *		var newId = successCallBack.userProfileId;
+		 * } 
+		 * \endcode
+		 */
+		void createUserProfile(in DOMString userProfileId, in User user, in UserProfileSuccessCB successCallBack, in ErrorCB errorCallback);
+	
+		/**
+		 * \brief userProfileId of type DOMString
+		 *
+		 * A globally unique identifier for the given User object. Each User instance must include a non-empty id value. Is a unique profile id which matches the RFC 3986 URI Scheme.
+		 *
+		 * An implementation must maintain this globally unique identifier when a User is created via the createUserProfile() method. 
+		 *
+		 * This unique identifier is also used to identify relations between users as the social web recommends. See relationships.
+		 */
+		readonly attribute DOMString userProfileId;
+		
+		/**
+		 * \brief displayName of type DOMString
+		 *
+		 * This attribute contains the name of this User in a form that is suitable for display to the user.
+		 *
+		 * Each User MUST include EITHER a displayName OR the name attribute. 
+		 */
+		attribute DOMString displayName;
+		
+		/**
+		 * \brief name of type UserName
+		 *
+		 * This attribute represents the full name of this User indicated by the name components associated with the UserName object. 
+		 */
+		attribute UserName name;
+		
+		/**
+		 * \brief nickname of type DOMString
+		 *
+		 * This attribute contains the nickname (or a casual name) for this User. 
+		 */
+		attribute DOMString nickname;
+		
+		/**
+		 * \brief phoneNumbers of type array of ProfileField
+		 *
+		 * This attribute captures one or more phone numbers associated with this User. 
+		 */
+		attribute ProfileField[] phoneNumbers;
+		
+		/**
+		 * \brief emails of type array of ProfileField
+		 *
+		 * This attribute represents one or more email addresses associated with this User. 
+		 */
+		attribute ProfileField[] emails;
+		
+		/**
+		 * \brief addresses of type array of Address
+		 *
+		 * This attribute represents one or more physical addresses associated with this User. 
+		 */
+		attribute Address[] addresses;
+		
+		/**
+		 * \brief ims of type array of ProfileField
+		 *
+		 * This attribute represents one or more instant messaging identifiers associated with this User. 
+		 */
+		attribute ProfileField[] ims;
+		
+		/**
+		 * \brief organizations of type array of Organization
+		 *
+		 * This attribute represents one or more organizations associated with this User. 
+		 */
+		attribute Organization[] organizations;
+		
+		/**
+		 * \brief birthday of type Date
+		 *
+		 * This attribute contains birthday of this User.
+		 */
+		attribute Date birthday;
+		
+		/**
+		 * \brief gender of type DOMString
+		 *
+		 * This attribute contains the gender of this Contact. This attribute should have one of the following values:
+		 *
+		 * male
+		 * female
+         * undisclosed
+		 *
+		 * Note however that this attribute may contain a value not listed above. 
+		 */
+		attribute DOMString gender;
+		
+		/**
+		 * \brief photos of type array of ProfileField
+		 *
+		 * This attribute represents one or more photos associated with this User.
+		 *
+		 * The photos must be specified in the value attribute of the ProfileField object either by using a URL to an image resource or base64 encoded string of the image data. 
+		 */
+		attribute ProfileField[] photos;
+		
+		/**
+		 * \brief urls of type array of ProfileField
+		 *
+		 * This attribute represents one or more URLs associated with this User e.g. personal web page, blog.
+		 *
+		 * The web resources must be specified using the value attribute of the ProfileField object, and its type field may be set to "blog" or "profile". 
+		 */
+		attribute ProfileField[] urls;
+		
+		/**
+		 * \brief relationships of type array of Relationship
+		 *
+		 * A bi-directionally asserted relationship type that was established between the user and this contact by the Service Provider. The value SHOULD conform to one of the XFN relationship values (e.g. kin, friend, contact, etc.) if appropriate, but MAY be an alternative value if needed. Relationships MUST have been bi-directionally confirmed. Note that this field is a Simple Field, meaning each instance consists only of a string value. 
+		 */
+		attribute Relationship[] relationships;
+		
+		/**
+		 * \brief revision of type Date
+		 *
+		 * This attribute contains the timestamp information associated with this User, which represents the last known modification time. If no modification time exists, then this object contains the timestamp of the object's creation time. 
+		 */
+		attribute Date revision;
+		
+		/**
+		 * \brief timezone of type DOMString
+		 *
+		 * This attribute represents the time zone of this User.
+		 *
+		 * It is recommended that names from the public-domain Olson database will be used as the value of this attribute, but this is not a restriction. For example, a value of America/New_York indicates the User is associated with the variable time zone of the New York region of the United States, including daylight saving time offsets experienced in that region.
+		 *
+		 * It is also possible to use this attribute to express the timezone as a positive or negative difference from UTC, in the 24-hour clock, in units of hours and minutes (i.e. +hh:mm). For example, a value of +05:30 indicates the Contact is associated with a fixed time zone of GMT+05:30. 
+		 *
+		 * NOTE: 
+		 * Where possible UTC offset values should not be used. The UTC offset varies with time - not just because of the usual daylight saving time shifts that occur in may regions, but often entire regions will "re-base" their overall offset. The actual offset may be +/- 1 hour (or perhaps a little more) than any UTC offset given.
+		 */
+		attribute DOMString timezone;
+	};
+	
+	/**
+	 * \brief The UserProfileSuccessCB interface
+	 *
+	 * UserProfileSuccessCB interface definition
+	 * 
+	 */
+	interface UserProfileSuccessCB {
+	
+		/**
+		 * \brief The userProfileId of type DOMString
+		 *
+		 * Returns the changed userProfileId with a generated integer id of the webinos system.
+		 *
+		 */
+		readonly attribute DOMString userProfileId;
+	};
+	
+	/**
+	 * \brief The UserName interface
+	 *
+	 * The UserName interface describes a contact's name. 
+	 * 
+	 */
+	[NoInterfaceObject]
+	interface UserName {	
+
+		/**
+		 * \brief formatted of type DOMString
+		 *
+		 * This attribute contains the full name, including all the individual components such as givenName, middleName, familyName, prefix, suffix as appropriate for the user's culture, and formatted for display (e.g. Mr. Joe Smith Jr). 
+		 */
+		attribute DOMString formatted;
+		
+		/**
+		 * \brief familyName of type DOMString
+		 *
+		 * This attribute contains the family name (also referred to as the last name) of this User. 
+		 */
+		attribute DOMString familyName;
+		
+		/**
+		 * \brief givenName of type DOMString
+		 *
+		 * This attribute contains the given name (also referred to as the first name) of this User. 
+		 */
+		attribute DOMString givenName;
+		
+		/**
+		 * \brief middleName of type DOMString
+		 *
+		 * This attribute contains the middle name of this User. 
+		 */
+		attribute DOMString middleName;
+		
+		/**
+		 * \brief honorificPrefix of type DOMString
+		 *
+		 * This attribute contains the honorific prefix (or title) of this User. E.g. Mr., Dr., Ms., Mrs. 
+		 */
+		attribute DOMString honorificPrefix;
+		
+		/**
+		 * \brief honorificSuffix of type DOMString
+		 *
+		 * This attribute contains the honorific suffix of this User. E.g. Jr, III, Sr. 
+		 */
+		attribute DOMString honorificSuffix;
+	};
+	
+	/**
+	 * \brief The ProfileField interface
+	 *
+	 * The ProfileField interface is a reusable component that is used to capture contact fields of the User interface that have some modicum of structure. 
+	 * 
+	 */
+	[NoInterfaceObject]
+	interface ProfileField {
+		/**
+		 * \brief type of type DOMString
+		 *
+		 * This attribute contains the type information for this ProfileField and its content varies subject to the contact property this ProfileField is representing. For example, if the ProfileField is representing a phoneNumber property, the type attribute can be set to home, mobile; if the ProfileField is representing the ims property, the type attribute could be set to xmpp, irc, bbm, etc. 
+		 */
+		attribute DOMString type;
+		
+		/**
+		 * \brief value of type DOMString
+		 *
+		 * This attribute contains the value for this ProfileField and its content varies subject to the contact property this ProfileField is representing. For example, if the ProfileField is representing an email, the value attribute could be set to JoeSmith@example.com, and if the ProfileField is representing a url, the value attribute can be set to http://www.example.org/joesmith, etc. 
+		 */
+		attribute DOMString value;
+		
+		/**
+		 * \brief pref of type boolean
+		 *
+		 * This attribute indicates whether this instance of the ProfileField is the preferred, or primary, value for the contact property this ProfileField is representing in the User interface. 
+		 */
+		attribute boolean pref;
+	};
+	
+	/**
+	 * \brief The Address interface
+	 *
+	 * The Address interface is a reusable component that is used to capture addresses within the User interface. 
+	 * 
+	 */
+	[NoInterfaceObject]
+	interface Address {
+	
+		/**
+		 * \brief formatted of type DOMString
+		 *
+		 * This attribute contains the full physical address including street, locality, region, postalCode, and country as appropriate, and formatted for display. 
+		 */
+		attribute DOMString formatted;
+		
+		/**
+		 * \brief streetAddress of type DOMString
+		 *
+		 * This attribute contains the street address corresponding to this Address. 
+		 */
+		attribute DOMString streetAddress;
+		
+		/**
+		 * \brief locality of type DOMString
+		 *
+		 * This attribute contains the locality (or city) name corresponding to this Address. 
+		 */
+		attribute DOMString locality;
+		
+		/**
+		 * \brief region of type DOMString
+		 *
+		 * This attribute contains the region (or state/province) name corresponding to this Address. 
+		 */
+		attribute DOMString region;
+		
+		/**
+		 * \brief postalCode of type DOMString
+		 *
+		 * This attribute contains the postal code (or zip) corresponding to this Address. 
+		 */
+		attribute DOMString postalCode;
+		
+		/**
+		 * \brief country of type DOMString
+		 *
+		 * This attribute contains the country name corresponding to this Address. 
+		 */
+		attribute DOMString country;
+	};
+	
+	/**
+	 * \brief The Organization interface
+	 *
+	 * The Organization interface is a reusable component that is used to support contact organisations within the User interface. 
+	 * 
+	 */
+	[NoInterfaceObject]
+	interface Organization {
+		
+		/**
+		 * \brief name of type DOMString
+		 *
+		 * The name of the organisation. 
+		 */
+		attribute DOMString name;
+		
+		/**
+		 * \brief department of type DOMString
+		 *
+		 * The department within which this User works. 
+		 */
+		attribute DOMString department;
+		
+		/**
+		 * \brief title of type DOMString
+		 *
+		 * The job title that the User holds inside this organisation. 
+		 */
+		attribute DOMString title;
+	};
+	
+	/**
+	 * \brief The Relationship interface
+	 *
+	 * A bi-directionally asserted relationship type that was established between the user and this contact by the Service Provider. The value SHOULD conform to one of the XFN relationship values (e.g. kin, friend, contact, etc.) if appropriate, but MAY be an alternative value if needed. Relationships MUST have been bi-directionally confirmed. Note that this field is a Simple Field, meaning each instance consists only of a string value. 
+	 * 
+	 */
+	[NoInterfaceObject]
+	interface Relationship {
+		
+		/**
+		 * \brief value of type DOMString
+		 *
+		 * The primary value of this field, e.g. the actual e-mail address, phone number, or URL. When specifying a sortBy field in the Query Parameters for a Plural Field, the default meaning is to sort based on this value sub-field. Each non-empty Plural Field value MUST contain at least the value sub-field, but all other sub-fields are optional. 
+		 */
+		attribute DOMString value;
+		
+		/**
+		 * \brief type of type DOMString
+		 *
+		 * The type of field for this instance, usually used to label the preferred function of the given contact information. Unless otherwise specified, this string value specifies Canonical Values of work, home, and other. 
+		 */
+		attribute DOMString type;
+		
+		/**
+		 * \brief primary of type boolean
+		 *
+		 * A Boolean value indicating whether this instance of the Plural Field is the primary or preferred value of for this field, e.g. the preferred mailing address or primary e-mail address. Service Providers MUST NOT mark more than one instance of the same Plural Field as primary="true", and MAY choose not to mark any fields as primary, if this information is not available. For efficiency, Service Providers SHOULD NOT mark all non-primary fields with primary="false", but should instead omit this sub-field for all non-primary instances. 
+		 */
+		attribute boolean primary;
+	};
+};

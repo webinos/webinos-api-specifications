@@ -13,15 +13,18 @@
  *
  * Currently 5 different sensor types are defined but the API could easily be extended with additional sensor types.
  * 
- * This is an experimental API and security and privacy issues are not addressed.
- * 
+ * This is an experimental API and security and privacy issues are not specifically addressed in the specification. If access to security or privacy
+ * sensitive sensors are provided the user agent must either acquire access permission through a user interface or control access through a prearranged
+ * trust relationship with users. 
+ *
+ * It should be be considered if the getSensors() method is redundant with the general findServices() method in the Webinos ServiceDiscovery API.
  *
  * \def-api-feature http://webinos.org/api/sensors
  * Acccess to all the module. This identifies which are the features that are exposed by this
  * module so that the developer can express a dependency on them.
  *
  * \author Claes Nilsson &lt;claes1.nilsson@sonyericsson.com&gt;
- * \version 0.4 
+ * \version 0.5 
  */
 
 module sensors {
@@ -42,71 +45,106 @@ module sensors {
        * \brief Illegal sensor id
        */
        const unsigned short INVALID_INPUT_ARGUMENT = 0; 
-
-     /**
-       * \brief Illegal sensor type
-       */
-       const unsigned short ILLEGAL_SENSOR_TYPE = 1;
-      /**
-       * \brief Illegal sensor id
-       */
-       const unsigned short ILLEGAL_SENSOR_ID = 2;
   };
  
 
    /**
    * \brief This interface defines the sensor manager interface
    * 
-   * Description to be completed with code examples
-   *
+   * \code
+
+       // Handle that can be used to cancel the ongoing asynchronous discovery process.
+        var sensorHandle = 0;
+
+        // Array of found temperature sensors object.
+        var availableTempSensors = {};
+                 
+        // Callback method that display a list of found sensors in a selection list
+        // The selection list is dynamically extended every time a new sensor is discovered.
+        function sensorFoundCB(sensor) {
+
+                var selectlist = document.getElementById('sensorlist');
+                var option = document.createElement('option');
+                option.value = sensor.uniqueId;
+                option.appendChild(document.createTextNode(sensor.name));
+	        availableTempSensors [sensor.uniqueId] = sensor;
+                selectlist.appendChild(option);
+
+        }
+                      
+        // Callback method that is invoked when user selects an option in the sensor selection list 
+        function sensorSelected(sensor) {
+
+                // Stops the getSensors operation
+                sensorHandle.cancel();
+                               
+                // Configure the sensor. TBD
+
+                // Start listening to sensor events and log values. 
+                webinos.sensors.addEventListener(sensor.uniqueId, function (event) {
+                          console.log(event.sensorValues[0].value);
+                }, true); 
+                
+        }
+        
+        // Get list of temperature sensors registered in the device
+        sensorHandle = webinos.sensors.getSensors(webinos.sensors.SensorType.SENSOR_TYPE_TEMPERATURE, sensorFoundCB);
+
+        // Handle user selection of sensor
+        var sensorlist = document.getElementById('sensorlist');
+        sensorlist.addEventListener("change", function (e) {
+				var sensor = availableTempSensors[e.target.value];
+				if (sensor) {
+				    sensorSelected(sensor);
+				}
+        }, false);
+
+
+   * \endcode
    */  
    interface SensorManager {
 
       /**
-       * \brief Returns an array of properties for all registered sensors of requested type.
+       * \brief Returns an array of sensor objects (defining sensor properties) for all registered sensors of requested type.
        *
+       * Note: It must be considered if this method is redundant to the general findServices() method in the Webinos ServiceDiscovery API.
        *
        * \code
-       * // This should include a more meaningful example. To be completed.
-       *   var availableTempSensors = webinos.sensors.getSensors(webinos.sensors.SensorType.SENSOR_TYPE_TEMPERATURE, foundSensor);
-       *
-       *   function foundSensor(sensor) {
-       	     alert("Thermometer found, named " + sensor.name);
-       *   }
+
+       var availableTempSensors = webinos.sensors.getSensors(webinos.sensors.SensorType.SENSOR_TYPE_TEMPERATURE, foundSensor);
+ 
+       function foundSensor(sensor) {
+
+       	  alert("Thermometer found, named " + sensor.name);
+
+       }
+	
        * \endcode
        *
-       * \param sensorType Sensor type (see list of sensor type constants in interface GenericSensorEvent. 
-       * Can they be used here or do I have to specify them again in this interface?)
+       *
+       * \param sensorType Sensor type
        * \param successCB Callback issued when a sensor is found.  The callback is called every time a new sensor is found matching the sensorType.
        * \param errorCB Callback issued if getSensors fails.  
        * \param options Defines sensor search options.
        * \return A pending operation object making it possible to cancel the getSensorList operation
        * \throw SensorException with appropriate error code.
        */
-       PendingOp getSensors (in unsigned short sensorType, in GetSensorsCB successCB, in optional GetSensorsErrorCB errorCB, in optional Options options)
-           raises (SensorException);
-     
+       PendingOp getSensors (in unsigned short sensorType, in GetSensorsCB successCB, in optional SensorErrorCB errorCB, in optional GetSensorOptions options)
+           raises (SensorException);     
 
       /**
        * \brief Configures a sensor identified by the uniqueId.
        *
-       * Question: Do we need the ability to specify high and low thresholds?
+       * Question: Do we need the ability to specify high and low thresholds? This is for example not supported by Android sensor API.
        *
-       * \code
-       * // TBD
-       * 
-       * \endcode
-       *
-       * \param uniqueId Unique id of the sensor
-       * \param rate Rate of sensor data (see list of rate constants in interface SensorEvent) 
-       * \param interrupt Interrupt mode of the sensor. False = INTERRUPT_DISABLED (events fired with a fixed time interval)
-       * True = INTERRUPT_ENABLED (events fired when value changes)
-       * \return True if configuration succeeded. Else false.
-       * \throw SensorException with error code ILLEGAL_SENSOR_ID if 
-       * the input parameters not compatible with the expected type for 
-       * that parameter.
+       * \param uniqueId Unique id of the sensor.
+       * \param options Sensor configuration options. 
+       * \param successCB Callback issued when sensor configuration succeeded.
+       * \param errorCB Callback issued if sensor configuration fails.  
+       * \return A pending operation object making it possible to cancel the configureSensor operation     
+       * \throw SensorException with appropriate error code.
        */
-       boolean configureSensor (in DOMString uniqueId, in unsigned short rate, in boolean interrupt)
+       PendingOp configureSensor (in DOMString uniqueId, in ConfigureSensorOptions options, in ConfigureSensorCB successCB, in optional SensorErrorCB errorCB)
            raises (SensorException);
   
       /**
@@ -227,13 +265,33 @@ module sensors {
     };
 
    /**
-    * \brief GetSensorsErrorCB interface definition
+    * \brief ConfigureSensorCB interface definition
     *
     */
-    [Callback=FunctionOnly] interface GetSensorsErrorCB {
+    [Callback=FunctionOnly] interface ConfigureSensorCB {
 
       /**
-       * \brief onError The onError method is called if an error occurs during the getSensors() process.  
+       * \brief onSuccess The onSuccess method is called when configuration of a sensor succeeded.  
+       * TBD Some detailed text...
+       * \code
+       * // Some code example
+       * \endcode
+       *
+       *
+       *
+       */
+       void onSuccess();	  
+    };
+
+
+   /**
+    * \brief SensorErrorCB interface definition
+    *
+    */
+    [Callback=FunctionOnly] interface SensorErrorCB {
+
+      /**
+       * \brief onError The onError method is called if an error occurs during the getSensors() or configureSensor() process.  
        * TBD Some detailed text
        *
        * \code
@@ -258,20 +316,56 @@ module sensors {
        const unsigned short UNKNOWN_ERROR = 0;
 
       /**
-       * \brief No sensor of requested type was found within timeout period.
+       * \brief No success callback within timeout period.
        */
        const unsigned short TIMEOUT_ERROR = 1;
 
       /**
-       * \brief An error code assigned by an implementation when an error has occurred in getSensors() processing.
+       * \brief Illegal sensor type
+       */
+       const unsigned short ILLEGAL_SENSOR_TYPE_ERROR = 2;
+
+      /**
+       * \brief Illegal sensor type
+       */
+       const unsigned short SENSOR_TYPE_NOT_SUPPORTED_ERROR = 3;
+
+      /**
+       * \brief Illegal sensor id
+       */
+       const unsigned short ILLEGAL_SENSOR_ID_ERROR = 4;
+
+      /**
+       * \brief Other illegal input arguments
+       */
+       const unsigned short OTHER_ILLEGAL_INPUT_ARGUMENT_ERROR = 5;
+
+      /**
+       * \brief Sensor rate requested through configureSensor() not supported
+       */
+       const unsigned short REQUESTED_RATE_NOT_SUPPORTED_ERROR = 6;
+
+     /**
+       * \brief Interrupt mode requested through configureSensor() not supported
+       */
+       const unsigned short REQUESTED_INTERRUPTMODE_NOT_SUPPORTED_ERROR = 7;
+
+     /**
+       * \brief Permission denied
+       */
+       const unsigned short PERMISSION_DENIED_ERROR = 50;
+
+
+      /**
+       * \brief An error code assigned by an implementation when an error has occurred in getSensors() or configureSensor() processing.
        */
        readonly attribute unsigned short code;
     };    
 
    /**
-    * \brief Option interface definition
+    * \brief GetSensorOptions interface definition
     */
-    interface Options {
+    interface GetSensorOptions {
 
       /**
        * \brief INFINITE Timeout Value
@@ -280,10 +374,59 @@ module sensors {
        const unsigned short INFINITE = 0;
 
       /**
-       * \brief timeout Defines a timeout value for when getSensors() is canceled in seconds. Default value is INFINITE.
+       * \brief Defines a timeout value for when getSensors() is canceled in seconds. Default value is INFINITE.
        */
        attribute unsigned short timeout;
     };
+
+  /**
+    * \brief ConfigureSensorOptions interface definition
+    */
+    interface ConfigureSensorOptions {
+
+      /**
+       * \brief INFINITE Timeout Value
+       *
+       */
+       const unsigned short INFINITE = 0;
+
+      /**
+       * \brief The sensor is reporting data as fast as possible.
+       */
+       const unsigned short SENSOR_DELAY_FASTEST = 0;
+
+      /**
+       * \brief The sensor is reporting data with a rate suitable for games.
+       */
+       const unsigned short SENSOR_DELAY_GAME = 1;
+
+      /**
+       * \brief The sensor is reporting data with a rate suitable for user interface.
+       */
+       const unsigned short SENSOR_DELAY_UI = 2;
+
+      /**
+       * \brief The sensor is reporting data with a normal rate, e.g. suitable for screen orientation changes.
+       */
+       const unsigned short SENSOR_DELAY_NORMAL = 3;
+
+      /**
+       * \brief Defines a timeout value for when configureSensors() is canceled in seconds. Default value is INFINITE.
+       */
+       attribute unsigned short timeout;
+
+      /**
+       * \brief The requested rate of the sensor data.
+       */
+       attribute unsigned short rate;
+
+      /**
+       * \brief The requested Interrupt mode of the sensor.\n
+       * False = INTERRUPT_DISABLED (events fired with a fixed time interval) \n
+       * True = INTERRUPT_ENABLED (events fired when value changes)
+       */
+       attribute boolean interrupt;
+     };
 
     /**
      * \brief The PendingOp interface
@@ -315,34 +458,42 @@ module sensors {
 	* \brief Unique ID of sensor
 	*/
 	readonly attribute DOMString      uniqueId;
+
        /**
 	* \brief Type of sensor
 	*/
         readonly attribute unsigned short type;  
+
        /**
 	* \brief Max range of sensor
 	*/
     	readonly attribute float          maximumRange;
+
        /**
 	* \brief Min delay of sensor
 	*/
    	readonly attribute unsigned long   minDelay;
+
        /**
 	* \brief Name of sensor
 	*/
   	readonly attribute DOMString      name;
+
        /**
 	* \brief Power consumption of sensor. TBD
 	*/
    	readonly attribute float	  power;
+
        /**
 	* \brief Resolution TBD
 	*/
 	readonly attribute float	  resolution;
+
        /**
 	* \brief Vendor
 	*/
 	readonly attribute DOMString      vendor;  
+
        /**
 	* \brief Version
 	*/ 
@@ -383,43 +534,29 @@ module sensors {
   /**
    * \brief A constant describing that the sensor is reporting data with maximum accuracy.
    */
-    const unsigned short SENSOR_STATUS_ACCURACY_HIGH = 3;
+    const unsigned short SENSOR_STATUS_ACCURACY_HIGH = 4;
 
   /**
    * \brief A constant describing that the sensor is reporting data with an average level of accuracy, calibrating with the environment may improve the
    * reading.
    */
-    const unsigned short SENSOR_STATUS_ACCURACY_MEDIUM = 2;
+    const unsigned short SENSOR_STATUS_ACCURACY_MEDIUM = 3;
 
   /**
    * \brief A constant describing that the sensor is reporting with low accuracy, calibrating with the environment is needed.
    */
-    const unsigned short SENSOR_STATUS_ACCURACY_LOW = 1;
+    const unsigned short SENSOR_STATUS_ACCURACY_LOW = 2;
 
   /**
    * \brief A constant describing that the sensor data cannot be trusted, calibrating is needed or the environment does not allow reading.
    */
-    const unsigned short SENSOR_STATUS_UNRELIABLE = 0;
-  
-  /**
-   * \brief A constant describing that the sensor is reporting data as fast as possible.
-   */
-    const unsigned short SENSOR_DELAY_FASTEST = 0;
+    const unsigned short SENSOR_STATUS_UNRELIABLE = 1;
 
-  /**
-   * \brief A constant describing that the sensor is reporting data with a rate suitable for games.
+ /**
+   * \brief A constant describing that the sensor is not available and no sensor data can be provided. This accuracy attribute will for example take 
+   * this value when contact is lost with a sensor using Bluetooth communication.
    */
-    const unsigned short SENSOR_DELAY_GAME = 1;
-
-  /**
-   * \brief A constant describing that the sensor is reporting data with a normal rate, e.g. suitable for screen orientation changes.
-   */
-    const unsigned short SENSOR_DELAY_NORMAL = 3;
-
-  /**
-   * \brief A constant describing that the sensor is reporting data with a rate suitable for user interface.
-   */
-    const unsigned short SENSOR_DELAY_UI = 2;
+    const unsigned short SENSOR_STATUS_UNAVAILABLE = 0;
 
 
   /**

@@ -31,7 +31,9 @@ module serviceDiscovery {
 	 * \code
 	// Handle that can be used to cancel the ongoing asynchronous discovery process.
 	var findHandle = 0;
-    var bindHandle = 0;
+        var bindHandle = 0;
+
+        var geoServices = {};
     	 
 	// Callback method that display a list of found services in a selection list
 	// The selection list is dynamically extended every time a new service is discovered.
@@ -39,16 +41,15 @@ module serviceDiscovery {
 		var selectlist = document.getElementById('servicelist');
 		var option = document.createElement('option');
 
-		option.value = selectlist.length + 1; 
-		option.text = service.displayName;
-		option.id = service.id;
-		option.service = service;
-		selectlist.add(option);
+		option.value = service.id;
+		option.appendChild(document.createTextNode(service.displayName));
+	        geoServices[service.id] = service;
+		selectlist.appendChild(option);
 	}
 
 	// Callback when Service is authorized and ready to use
 	function successCB(myLocationService) {
-		alert('Service ' + service.displayName + ' ready to use');
+		alert('Service ' + myLocationService.displayName + ' ready to use');
 		myLocationService.getCurrentPosition(showMap);
 	}
 			
@@ -62,7 +63,16 @@ module serviceDiscovery {
 		bindHandle = service.bindService(successCB);
 	}
 	
-	findHandle = windows.webinos.findServices('self', {api:'http://webinos.org/api/geolocation'}, serviceFoundCB);
+	findHandle = window.webinos.findServices('self', {api:'http://webinos.org/api/geolocation'}, serviceFoundCB);
+
+	var selectlist = document.getElementById('servicelist');
+	selectlist.addEventListener("change", function (e) {
+				var service = geoServices[e.target.value];
+				if (service) {
+				    serviceSelected(service);
+				}
+			    }, false);
+
 	 * \endcode
 	 *
 	 */
@@ -71,16 +81,16 @@ module serviceDiscovery {
 		/**
 	   	 * \brief The ServiceDiscoveryManager interface
 		 *
-		 * \brief findServices Initiates an asynchronous search query for services matching the requested userId, serviceType and filter parameters.  
-		 * \param userId Identity of a Personal Zone that is hosting the service. The userId 'self' is reserved for the Personal Zone of the user authenticated against the device. The userId 'shared' is reserved for services that are shared on the current network.
+		 * \brief findServices Initiates an asynchronous search query for services matching the requested zoneId, serviceType and filter parameters.  
+		 * \param zoneId Identity of a Personal Zone that is hosting the service. The zoneId 'self' is reserved for the Personal Zone of the user authenticated against the device. The zoneId 'shared' is reserved for services that are shared on the current network.
 		 * \param serviceType An input argument that defines which type of service that is requested.
-		 * \param successCallBack Callback issued if an service is found.  The callback is called every time a new service is found matching the userId, serviceType and filter.
+		 * \param successCallBack Callback issued if an service is found.  The callback is called every time a new service is found matching the zoneId, serviceType and filter.
 		 * \param errorCallBack Callback issued if serviceDiscovery fails.  
 		 * \param options Defines search options. 
 		 * \param filter Defines a filter with constraints that shall be applied during the discovery process, e.g. service shall only be applied for services in proximity.
 		 * \throw DiscoveryExceptions 
 		 */
-		 PendingOperation findServices(in DOMString userId, in ServiceType serviceType, in SuccessCallBack successCallBack, in optional ErrorCallBack errorCallBack, in optional Options options, in optional Filter filter)
+		 PendingOperation findServices(in DOMString zoneId, in ServiceType serviceType, in SuccessCallBack successCallBack, in optional ErrorCallBack errorCallBack, in optional Options options, in optional Filter filter)
 		 raises(DiscoveryExceptions);
 	};
 	
@@ -91,7 +101,7 @@ module serviceDiscovery {
 	 */
 	[NoInterfaceObject] interface ServiceType {
 		/**
-	 	 * \brief URI used to declare the requested API's feature set. The URN shall be globally unique.  
+	 	 * \brief URI used to identify the requested API's feature set. The URI shall be globally unique.  
 		 */
 		attribute DOMString api;
 	};
@@ -165,6 +175,7 @@ module serviceDiscovery {
 		attribute DOMString description;
 
 		/**
+<<<<<<< HEAD
 		 * \brief The bind service API mutually authenticates the application/service, establish a trusted relation respecting the privacy and security policy settings and instantiate an implementation of the api.  
 		 * 1. Verify that the user of the device is authenticated against the Personal Zone. 
 		 * 2. In case of access outside the Personal Zone authenticate against the remote Zone.
@@ -172,6 +183,25 @@ module serviceDiscovery {
 		 * 4. Verify that privacy and security policies allows access to the service. 
 		 * 5. Instantiate an implementation of the service. 
 		 * 6. Upon successful completion issue a succesCallback reporting the outcome.    
+=======
+		 * \brief The bind service API initiate bindings to the implementation of the api with the following steps:
+		 *
+		 * 1. Verify that the user of the device is authenticated against the Personal Zone.
+		 *
+		 * 2. Authenticate the application requesting access to the service.
+		 *
+		 * 3. Verify that the end user is authorized to access the api according the policy.
+		 *
+		 * 4. In case of access outside the Personal Zone authenticate against the remote Zone.
+		 *
+		 * 5. In case of access outside the Personal Zone authenticate the remote Zone.		 
+		 *
+		 * 6. In case of access outside the Personal Zone check whether the user is authorized to access the service.
+		 *
+		 * 7. Bind to the implementation of the service.
+		 *
+		 * 8. Upon successful completion issue a succesCallback reporting the outcome.
+>>>>>>> 90d3a63dc0256f21fa65bd9ff904c9f5110b90c3
 		 */
 		PendingOperation bindService(in SuccessCallBack successCallBack, in optional ErrorCallBack errorCallBack);	
 	};
@@ -195,11 +225,10 @@ module serviceDiscovery {
 	  
 	};
 	
+	/**
+	* \brief TBD: Some nice attributes to express filters. 
+	*/
 	[NoInterfaceObject] interface Filter {
-		/**
-		 * Some nice attributes to express filters. 
-		 *
-		 */
 	 
 	};
 	
