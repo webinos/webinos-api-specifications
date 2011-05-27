@@ -1,0 +1,489 @@
+
+/**
+ * \brief W3C based Contacts interface.
+ *
+ * The Contacts API defines the high-level interfaces required to obtain read access to a user's unified address book.
+ *
+ * This API includes the following key interfaces:
+ *
+ *    A Contacts interface, which provides the method needed to access a user's unified address book.
+ *    A Contact interface, which captures the individual contact information that can be returned following a successful read operation.
+ *
+ * 
+ * 
+ * \author W3C Editor's Draft 25 May 2011
+ * \author WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
+ * \version 1.0
+ */
+module Contacts {
+        /**
+         * \brief Contacts specific errors.
+         */
+         [NoInterfaceObject]
+        interface ContactError {
+           /**
+           * \brief An unknown error occurred.
+           */
+            const unsigned short UNKNOWN_ERROR = 0;
+           /**
+           * \brief An invalid parameter was provided when the requested method was invoked.
+           */
+            const unsigned short INVALID_ARGUMENT_ERROR = 1;
+           /**
+           * \brief The requested method timed out before it could be completed.
+           */
+            const unsigned short TIMEOUT_ERROR = 2;
+           /**
+           * \brief There is already a task in the device task source.
+           */
+            const unsigned short PENDING_OPERATION_ERROR = 3;
+           /**
+           * \brief An error occurred in communication with the underlying implementation that meant the requested method could not complete.
+           */
+            const unsigned short IO_ERROR = 4;
+           /**
+           * \brief The requested method is not supported by the current implementation.
+           */
+            const unsigned short NOT_SUPPORTED_ERROR = 5;
+           /**
+           * \brief Access to the requested information was denied by the implementation or by the user.
+           */
+            const unsigned short PERMISSION_DENIED_ERROR = 20;
+           /**
+           * \brief An error code assigned by an implementation when an error has occurred in Contacts API processing.
+           * No exceptions.
+           */
+            readonly attribute unsigned short code;
+        };
+        
+        
+        /**
+         * \brief The ServiceContacts interface is exposed on the Navigator object [NAVIGATOR]. Its goal is to provide an access point to the functionality in this specification. 
+         */
+        [NoInterfaceObject]
+        interface ServiceContacts {
+           /**
+           * \brief The object through which the contacts functionality can be accessed.
+           * No exceptions.
+           */
+                    readonly attribute Contacts contacts;
+        };  
+        
+        /**
+         * \brief The Contacts interface exposes a database of contact information that may be retrieved. 
+         *
+         * Multiple contact groups can be represented within this unified address book by specifying consistent categories values as part of individual Contact objects. 
+         *
+         * Multiple contact groups can be displayed by filtering on the required categories values via the Contacts find() operation. 
+         *
+         * The ServiceContacts interface is exposed on the Navigator object [NAVIGATOR]. 
+         * 
+         * Its goal is to provide an access point to the functionality in this specification. 
+         */        
+        
+        [NoInterfaceObject]
+        interface Contacts {
+                 /**
+                 * \brief Find contacts in the address book according to the find contacts process detailed below. 
+                 *
+                 *                 This method takes two, three or four arguments. When called, it starts the following find contacts process:
+                 *
+                 *    Let successCallback be the callback indicated by the method's second argument.
+                 *
+                 *    Let errorCallback be the callback indicated by the method's third argument, if any, or null otherwise.
+                 *
+                 *    If successCallback is null, then throw a TypeError (as defined in [WEBIDL]).
+                 *
+                 *    If there is a task from the device task source in one of the task queues (e.g. an existing find() operation is still pending a response), run these substeps:
+                 *
+                 *        If errorCallback is not null, let error be a ContactError object whose code attribute has the value PENDING_OPERATION_ERROR and queue a task to invoke errorCallback with error as its argument.
+                 *
+                 *        Abort this operation.
+                 *
+                 *    Return, and run the remaining steps asynchronously.
+                 *
+                 *    Let results be the array of Contact objects obtained by searching contacts in the address book according to the rules defined in Contact Search Processing, or null if the search has failed.
+                 *
+                 *    If results is null, run these substeps:
+                 *
+                 *        If errorCallback is not null, let error be a ContactError object whose code attribute has its value set according to the type of failure that occurred and queue a task to invoke errorCallback with error as its argument.
+                 *
+                 *        Abort this operation.
+                 *
+                 *    Queue a task to invoke successCallback with results as its argument.
+                 *
+                 * \param fields The search qualifier.
+                 * \param successCB Function to call when the asynchronous operation completes successfully.
+                 * \param errorCB Function to call when the asynchronous operation fails.
+                 * \param options The options to apply to the output of this method.                                 
+                 * \return caller void                 
+                 */
+
+            caller void find (DOMString[] fields, ContactFindCB successCB, optional ContactErrorCB errorCB, optional ContactFindOptions options);
+        };
+  
+
+      /**
+         * \brief The Contact interface captures the properties of a contact object. 
+         *
+         * All Contact objects must include all attributes supported by the implementation, regardless of whether these attributes have been assigned a null value or not. If a supported attribute has not been assigned a value by the user or the implementation, then this attribute must still be present in the resulting Contact object and must have a value of null. 
+         *
+         * Additional attributes may be included according to the provisions detailed in Extended Contact Properties and Parameters. If an extended attribute is supported by the current implementation and has not been assigned a value by the user or the implementation, then this extended attribute must still be present in the resulting Contact object and must have a value of null. 
+         *
+         *
+         */        
+
+        [NoInterfaceObject]
+        interface Contact {
+                        
+           /**
+           * \brief A globally unique identifier for the given Contact object. 
+           *
+           * Each Contact instance must include a non-empty id value.
+           *
+           * No exceptions.
+           */
+             readonly attribute DOMString              id;
+           /**
+           * \brief This attribute contains the name of this Contact in a form that is suitable for display to the user.
+           *
+           * Each Contact must include either a displayName or the name attribute. 
+           *
+           * No exceptions.
+           */
+             attribute DOMString?             displayName;
+           /**
+           * \brief This attribute represents the full name of this Contact indicated by the name components associated with the ContactName object.
+           *
+           * Each Contact must include either a displayName or the name attribute. 
+           *
+           * No exceptions.
+           */
+             attribute  ContactName           name;
+           /**
+           * \brief This attribute contains the nickname (or a casual name) for this Contact. 
+           *
+           * No exceptions.
+           */
+             attribute DOMString?             nickname;
+           /**
+           * \brief This attribute captures one or more phone numbers associated with this Contact. 
+           *
+           * No exceptions.
+           */
+             attribute ContactField[]        phoneNumbers;
+           /**
+           * \brief This attribute represents one or more email addresses associated with this Contact. 
+           *
+           * No exceptions.
+           */
+             attribute ContactField[]        emails;
+           /**
+           * \brief This attribute represents one or more physical addresses associated with this Contact. 
+           *
+           * No exceptions.
+           */
+             attribute ContactAddress[]      addresses;
+           /**
+           * \brief This attribute represents one or more instant messaging identifiers associated with this Contact. 
+           *
+           * No exceptions.
+           */
+             attribute ContactField[]        ims;
+           /**
+           * \brief This attribute represents one or more organizations associated with this Contact. 
+           *
+           * No exceptions.
+           */
+             attribute ContactOrganization[] organizations;
+           /**
+           * \brief This attribute contains the timestamp information associated with this Contact, which represents the last known modification time. If no modification time exists, then this object contains the timestamp of the object's creation time. 
+           *
+           * No exceptions.
+           */
+             attribute Date                  revision;
+           /**
+           * \brief     This attribute contains birthday of this Contact.
+           *
+           *  The year value may be set to 0000 when the age of the Contact is private or the year is not available.
+           *
+           * No exceptions.
+           */
+             attribute Date                  birthday;
+           /**
+           * \brief This attribute contains the gender of this Contact. This attribute should have one of the following values:
+           *
+           *    male
+           *
+           *    female
+           *
+           *    undisclosed
+           *
+           * Note however that this attribute may contain a value not listed above. 
+           *
+           * No exceptions.
+           */
+             attribute DOMString             gender;
+           /**
+           * \brief This attribute contains the personal notes (free-text) for this Contact that is managed by the user of the address book. 
+           *
+           * No exceptions.
+           */
+             attribute DOMString             note;
+           /**
+           * \brief This attribute represents one or more photos associated with this Contact.
+           * 
+           * The photos must be specified in the value attribute of the ContactField object either by using a URL to an image resource or base64 encoded string of the image data. 
+           *
+           * No exceptions.
+           */
+             attribute ContactField[]        photos;
+           /**
+           * \brief This attribute contains one or more user-defined categories/tags/labels associated with this Contact. e.g. "family", "favourite", "cryptozoologists". 
+           *
+           * No exceptions.
+           */
+             attribute DOMString[]           categories;
+           /**
+           * \brief This attribute represents one or more URLs associated with this Contact e.g. personal web page, blog.
+           *
+           * The web resources must be specified using the value attribute of the ContactField object, and its type field may be set to "blog" or "profile". 
+           *
+           * No exceptions.
+           */
+             attribute ContactField[]        urls;
+           /**
+           * \brief This attribute represents the time zone of this Contact.
+           *
+           * It is recommended that names from the public-domain Olson database [TZDB] will be used as the value of this attribute, but this is not a restriction. For example, a value of America/New_York indicates the Contact is associated with the variable time zone of the New York region of the United States, including daylight saving time offsets experienced in that region.
+           *
+           * It is also possible to use this attribute to express the timezone as a positive or negative difference from UTC, in the 24-hour clock, in units of hours and minutes (i.e. +hh:mm). For example, a value of +05:30 indicates the Contact is associated with a fixed time zone of GMT+05:30. 
+           *
+           * No exceptions.
+           */
+             attribute DOMString             timezone;
+        };
+        
+        /**
+         * \brief The ContactName interface describes a contact's name. 
+         *
+         */        
+      [NoInterfaceObject]
+        interface ContactName {
+           /**
+           * \brief This attribute contains the full name, including all the individual components such as givenName, middleName, familyName, prefix, suffix as appropriate for the user's culture, and formatted for display (e.g. Mr. Joe Smith Jr). 
+           *
+           * No exceptions.
+           */            
+            attribute DOMString? formatted;
+           /**
+           * \brief This attribute contains the family name (also referred to as the last name) of this Contact. 
+           *
+           * No exceptions.
+           */            
+            attribute DOMString? familyName;
+           /**
+           * \brief This attribute contains the given name (also referred to as the first name) of this Contact. 
+           *
+           * No exceptions.
+           */            
+            attribute DOMString? givenName;
+           /**
+           * \brief This attribute contains the middle name of this Contact. 
+           *
+           * No exceptions.
+           */            
+            attribute DOMString? middleName;
+           /**
+           * \brief This attribute contains the honorific prefix (or title) of this Contact. E.g. Mr., Dr., Ms., Mrs. 
+           *
+           * No exceptions.
+           */            
+            attribute DOMString? honorificPrefix;
+           /**
+           * \brief This attribute contains the honorific suffix of this Contact. E.g. Jr, III, Sr. 
+           *
+           * No exceptions.
+           */            
+            attribute DOMString? honorificSuffix;
+        };
+
+        
+        /**
+         * \brief The ContactField interface is a reusable component that is used to capture contact fields of the Contact interface that have some modicum of structure. 
+         *
+         */ 
+        [NoInterfaceObject]
+        interface ContactField {
+           /**
+           * \brief This attribute contains the type information for this ContactField and its content varies subject to the contact property this ContactField is representing. For example, if the ContactField is representing a phoneNumber property, the type attribute can be set to home, mobile; if the ContactField is representing the ims property, the type attribute could be set to xmpp, irc, bbm, etc. 
+           *
+           * No exceptions.
+           */            
+            attribute DOMString  type;
+           /**
+           * \brief This attribute contains the value for this ContactField and its content varies subject to the contact property this ContactField is representing. For example, if the ContactField is representing an email, the value attribute could be set to JoeSmith@example.com, and if the ContactField is representing a url, the value attribute can be set to http://www.example.org/joesmith, etc. 
+           *
+           * No exceptions.
+           */            
+            attribute DOMString? value;
+           /**
+           * \brief This attribute indicates whether this instance of the ContactField is the preferred, or primary, value for the contact property this ContactField is representing in the Contact interface. By default, the value is false. 
+           *
+           * No exceptions.
+           */            
+            attribute boolean    pref;
+        };
+        
+        
+        /**
+         * \brief The ContactAddress interface is a reusable component that is used to capture addresses within the Contact interface. 
+         *
+         */ 
+        [NoInterfaceObject]
+        interface ContactAddress {
+           /**
+           * \brief This attribute indicates whether this instance of the ContactAddress is the preferred, or primary, value for the contact. By default, the value is false. 
+           *
+           * No exceptions.
+           */            
+            attribute boolean    pref;
+           /**
+           * \brief This attribute contains the type of address this object is representing (e.g. work, home, premises, etc). 
+           *
+           * No exceptions.
+           */            
+            attribute DOMString? type;
+           /**
+           * \brief This attribute contains the full physical address including street, locality, region, postalCode, and country as appropriate, and formatted for display. 
+           *
+           * No exceptions.
+           */            
+            attribute DOMString? formatted;
+           /**
+           * \brief This attribute contains the street address corresponding to this ContactAddress. 
+           *
+           * No exceptions.
+           */            
+            attribute DOMString? streetAddress;
+           /**
+           * \brief This attribute contains the locality (or city) name corresponding to this ContactAddress. 
+           *
+           * No exceptions.
+           */            
+            attribute DOMString? locality;
+           /**
+           * \brief This attribute contains the region (or state/province) name corresponding to this ContactAddress. 
+           *
+           * No exceptions.
+           */            
+            attribute DOMString? region;
+           /**
+           * \brief This attribute contains the postal code (or zip) corresponding to this ContactAddress. 
+           *
+           * No exceptions.
+           */            
+            attribute DOMString? postalCode;
+           /**
+           * \brief This attribute contains the country name corresponding to this ContactAddress. 
+           *
+           * No exceptions.
+           */            
+            attribute DOMString? country;
+        };
+     
+        /**
+         * \brief The ContactOrganization interface is a reusable component that is used to support contact organisations within the Contact interface. 
+         *
+         */ 
+     [NoInterfaceObject]
+        interface ContactOrganization {
+           /**
+           * \brief This attribute indicates whether this instance of the ContactOrganization is the preferred, or primary, value for the contact. By default, the value is false. 
+           *
+           * No exceptions.
+           */            
+            attribute boolean    pref;
+           /**
+           * \brief This attribute contains the type of organization this object is representing. 
+           *
+           * No exceptions.
+           */            
+            attribute DOMString? type;
+           /**
+           * \brief The name of the organisation. 
+           *
+           * No exceptions.
+           */            
+            attribute DOMString? name;
+           /**
+           * \brief The department within which this Contact works. 
+           *
+           * No exceptions.
+           */            
+            attribute DOMString? department;
+           /**
+           * \brief The job title that the Contact holds inside this organisation. 
+           *
+           * No exceptions.
+           */            
+            attribute DOMString? title;
+        };
+        
+       /**
+         * \brief The ContactFindOptions interface describes the options that can be applied to contact searching. When a ContactFindOptions parameter is provided to the Contacts find() operation, it should be processed according to the provisions detailed in Options Processing. 
+         *
+         */ 
+        [NoInterfaceObject]
+        interface ContactFindOptions {
+           /**
+           * \brief A string-based search filter which provides a hint to the user agent to facilitate contacts selection by the user. 
+           *
+           * No exceptions.
+           */            
+            attribute DOMString? filter;
+            /**
+           * \brief A boolean value to indicate whether multiple Contact objects are wanted as part of the Contacts find() operation. By default this option is set to false. 
+           *
+           * No exceptions.
+           */            
+            attribute boolean?   multiple;
+            /**
+           * \brief Return only contact records that have been updated on or after the given time, specified as an ECMAScript Date object.
+           *
+           * This filter is applied to the revision field as defined in Contact. 
+           *
+           * No exceptions.
+           */            
+            attribute Date      updatedSince;
+        };
+
+         /**
+         * \brief This is the wrapper interface for callbacks indicating success of the find() operation. 
+         *
+         */         
+        [Callback=FunctionOnly, NoInterfaceObject]
+        interface ContactFindCB {        
+                 /**
+                 * \brief Callback on success of a find() operation
+                 * \param contactObjs An array of Contact objects resulting from the given Contacts find() operation. 
+                 * \return void                 
+                 */
+            void onsuccess (Contact[] contactObjs);
+        };
+        
+         /**
+         * \brief This is the wrapper interface for callbacks indicating failure  of the find() operation. 
+         *
+         */         
+        [Callback=FunctionOnly, NoInterfaceObject]
+        interface ContactErrorCB  {        
+                 /**
+                 * \brief Callback on failure  of a find() operation
+                 * \param error The ContactError object capturing the type of the error.
+                 * \return void                 
+                 */
+              void onerror (ContactError error);
+        };
+        
+};
