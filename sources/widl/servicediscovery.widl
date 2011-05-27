@@ -10,11 +10,18 @@
  * or connected to the device via Local Connectivity such as
  * Bluetooth, WiFi or USB. 
  * 
- * Remote service discovery includes services exposed in a Personal Zone. 
+ * Remote service discovery includes services exposed in a Personal Zone.
+ * I WILL CLEAN-UP THE TEXT Ais 
  * Services could be discovered outside the own Personal Zone. 
+ * 1. Verify that the user of the device is authenticated against the Personal Zone. 
+ * 2. In case of access outside the Personal Zone authenticate against the remote Zone.
+ * 3. Mutually authenticate the application and service against the Personal Zone.
+ * 4. Verify that privacy and security policies allows access to the service. 
+ * 5. Instantiate an implementation of the service. 
+ * 6. Upon successful completion issue a succesCallback reporting the outcome.     
  *
  * \author Anders Isberg &lt;anders.isberg@sonyericsson.com&gt;
- * \version 0.2 
+ * \version 0.3 
  */
 module serviceDiscovery {
 
@@ -22,57 +29,33 @@ module serviceDiscovery {
 	 * \brief The Service Discovery Interface
 	 *
 	 * The ServiceDiscoveryManager interface provides functionality for service discovery. 
-	 * The API support the possibility to find services based on a search criteria. 
+	 * The API supports the possibility to find services based on a search criteria. 
 	 *
-	 * The code example below shows how a search query is initiated and the found services 
-	 * are listed in a selection list in an asynchronous manner. When the end user selects
-	 * an service, the implementation of the service is initiated by binding to the service.  
+	 * The code example below shows how an application initiating a search query
+	 * to find a geolocation service. Once the service is found and the service
+	 * is ready to use a success callback is called in an asynchronous manner. 
+	 * 
+	 * The API provides also the possibility resume an binding to a service with
+	 * bindService method. The bindService method provides the possibility to bind
+	 * directly to a specific service.
 	 * 
 	 * \code
+	// Find a service
 	// Handle that can be used to cancel the ongoing asynchronous discovery process.
-	var findHandle = 0;
-        var bindHandle = 0;
-
-        var geoServices = {};
+	var handle = 0;
+	var serviceId = 0;
     	 
-	// Callback method that display a list of found services in a selection list
-	// The selection list is dynamically extended every time a new service is discovered.
-	function serviceFoundCB(service) {
-		var selectlist = document.getElementById('servicelist');
-		var option = document.createElement('option');
-
-		option.value = service.id;
-		option.appendChild(document.createTextNode(service.displayName));
-	        geoServices[service.id] = service;
-		selectlist.appendChild(option);
-	}
-
-	// Callback when Service is authorized and ready to use
+	// Callback when service is found, selected by end user, authorized and ready to use
 	function successCB(myLocationService) {
 		alert('Service ' + myLocationService.displayName + ' ready to use');
+		serviceId = myLocationService.id;
 		myLocationService.getCurrentPosition(showMap);
 	}
 			
-	// Callback method that is invoked when user selects an option in the selection list 
-	function serviceSelected(service) {
-		// Stops the findServices operation
-		findHandle.cancel();
-		
-		// Binds to the service to initiate an authorized objects used to
-		// invoke services.  
-		bindHandle = service.bindService(successCB);
-	}
+	handle = window.webinos.findServices('self', {api:'http://webinos.org/api/geolocation'}, successCB);
 	
-	findHandle = window.webinos.findServices('self', {api:'http://webinos.org/api/geolocation'}, serviceFoundCB);
-
-	var selectlist = document.getElementById('servicelist');
-	selectlist.addEventListener("change", function (e) {
-				var service = geoServices[e.target.value];
-				if (service) {
-				    serviceSelected(service);
-				}
-			    }, false);
-
+	// Resume a binding to a service			
+	handle = window.webinos.bindService(serviceId, successCB);
 	 * \endcode
 	 *
 	 */
@@ -81,7 +64,7 @@ module serviceDiscovery {
 		/**
 	   	 * \brief The ServiceDiscoveryManager interface
 		 *
-		 * \brief findServices Initiates an asynchronous search query for services matching the requested zoneId, serviceType and filter parameters.  
+		 * \brief findServices Initiates an asynchronous search query for services matching the requested zoneId, serviceType and filter parameters. The end user is prompted to select one of the found services. Upon selection the methods tries to bind to the service.  
 		 * \param zoneId Identity of a Personal Zone that is hosting the service. The zoneId 'self' is reserved for the Personal Zone of the user authenticated against the device. The zoneId 'shared' is reserved for services that are shared on the current network.
 		 * \param serviceType An input argument that defines which type of service that is requested.
 		 * \param successCallBack Callback issued if an service is found.  The callback is called every time a new service is found matching the zoneId, serviceType and filter.
@@ -91,6 +74,16 @@ module serviceDiscovery {
 		 * \throw DiscoveryExceptions 
 		 */
 		 PendingOperation findServices(in DOMString zoneId, in ServiceType serviceType, in SuccessCallBack successCallBack, in optional ErrorCallBack errorCallBack, in optional Options options, in optional Filter filter)
+		 raises(DiscoveryExceptions);
+		 
+		/**
+		 * \brief bindService Resumes the binding to service uniquely identified by the service identity. When binding to a service the API mutually authenticates the application/service, establish a trusted relation respecting the privacy and security policy settings and instantiate an implementation of the api. 
+		 * \param serviceId Unique id of the binding to the particular service. 
+		 * \param successCallBack Callback issued if an service is found.  The callback is called every time a new service is found matching the zoneId, serviceType and filter.
+		 * \param errorCallBack Callback issued if serviceDiscovery fails.  
+		 * \throw DiscoveryExceptions 
+		 */ 
+		 PendingOperation bindService(in DOMString serviceId, in SuccessCallBack successCallBack, in optional ErrorCallBack errorCallBack)
 		 raises(DiscoveryExceptions);
 	};
 	
@@ -173,27 +166,6 @@ module serviceDiscovery {
 		 * \brief An URL referring to a detailed description of the service. 
 		 */ 
 		attribute DOMString description;
-
-		/**
-		 * \brief The bind service API initiate bindings to the implementation of the api with the following steps:
-		 *
-		 * 1. Verify that the user of the device is authenticated against the Personal Zone.
-		 *
-		 * 2. Authenticate the application requesting access to the service.
-		 *
-		 * 3. Verify that the end user is authorized to access the api according the policy.
-		 *
-		 * 4. In case of access outside the Personal Zone authenticate against the remote Zone.
-		 *
-		 * 5. In case of access outside the Personal Zone authenticate the remote Zone.		 
-		 *
-		 * 6. In case of access outside the Personal Zone check whether the user is authorized to access the service.
-		 *
-		 * 7. Bind to the implementation of the service.
-		 *
-		 * 8. Upon successful completion issue a succesCallback reporting the outcome.
-		 */
-		PendingOperation bindService(in SuccessCallBack successCallBack, in optional ErrorCallBack errorCallBack);	
 	};
 	
 	
