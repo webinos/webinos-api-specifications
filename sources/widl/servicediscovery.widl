@@ -165,15 +165,13 @@ module serviceDiscovery {
 		attribute DOMString description;
 
 		/**
-		 * \brief The bind service API initiate bindings to the implementation of the api with the following steps:
+		 * \brief The bind service API mutually authenticates the application/service, establish a trusted relation respecting the privacy and security policy settings and instantiate an implementation of the api.  
 		 * 1. Verify that the user of the device is authenticated against the Personal Zone. 
-		 * 2. Authenticate the application requesting access to the service.
-		 * 3. Verify that the end user is authorized to access the api according the policy.
-		 * 4. In case of access outside the Personal Zone authenticate against the remote Zone.
-		 * 5. In case of access outside the Personal Zone authenticate the remote Zone.		 
-		 * 6. In case of access outside the Personal Zone check whether the user is authorized to access the service.
-		 * 7. Bind to the implementation of the service.
-		 * 8. Upon successful completion issue a succesCallback reporting the outcome.    
+		 * 2. In case of access outside the Personal Zone authenticate against the remote Zone.
+		 * 3. Mutually authenticate the application and service against the Personal Zone.
+		 * 4. Verify that privacy and security policies allows access to the service. 
+		 * 5. Instantiate an implementation of the service. 
+		 * 6. Upon successful completion issue a succesCallback reporting the outcome.    
 		 */
 		PendingOperation bindService(in SuccessCallBack successCallBack, in optional ErrorCallBack errorCallBack);	
 	};
