@@ -3,7 +3,7 @@
  *
  * The messaging API provides access to the following capabilities:
  *
- *  Sending messages through different technologies: SMS, MMS and Email.
+ *  Sending messages through different technologies: SMS, MMS, Email and Instant Messages.
  *
  *  Search for messages in the different folders.
  *
@@ -407,22 +407,22 @@ module messaging {
    /**                       
    * \brief Registers the function to be notified on incoming new Instant Message
    *
-   * When this method is invoked, the implementation MUST register the function passed in the messageHandler argument as the handler for being notified whenever an incoming Email arrives to the device. That function will be invoked every time an incoming Instant Message arrives, unless the unsubscribe method with the handler identifier is invoked in order to cancel the subscription.
+   * When this method is invoked, the implementation MUST register the function passed in the messageHandler argument as the handler for being notified whenever an incoming instant message arrives to the device. That function will be invoked every time an incoming Instant Message arrives, unless the unsubscribe method with the handler identifier is invoked in order to cancel the subscription.
    *
    * If the subscription is successfully created, an identifier for the handler is created and returned so that it is possible to cancel the subscription. If the subscription cannot be created, a DeviceAPIError is synchronously thrown with an error code that describes the reason for the error.
    *
    * \code
-   * // function to receive new Email notifications
+   * // function to receive new Instant Messaging notifications
    *  function incomingIM(message)
    *  {
-   *    alert("New incoming Email from " + message.from);
+   *    alert("New incoming Instant Message from " + message.from);
    * 
    *    // The subscription is cancelled to prevent further notifications
    *    if (myIMListener != null)
    *      deviceapis.messaging.unsubscribe(myIMistener);
    *  }
    * 
-   *  // Register listener for new Email events
+   *  // Register listener for new Instant Messaging events
    *  var myIMistener = null;
    *  myIMistener = deviceapis.messaging.onIM(incomingIM);    
    * \endcode
