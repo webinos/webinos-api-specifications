@@ -1,7 +1,6 @@
 /**
  * \brief The Service Discovery API 
  *
- * \def-api-feature http://webinos.org/api/servicediscovery
  * The Webinos Service Disocvery API provide web applications with 
  * an API to find and bind to services that are exposed in a personal zone of devices.
  * The service can be discovered locally or remotely given the current context, 
@@ -10,6 +9,7 @@
  * The api assumes that the web application is installed, trusted and that the user is
  * authenticated/authorized to use the api.
  *
+ * \def-api-feature http://webinos.org/api/servicediscovery
  * \author Anders Isberg &lt;anders.isberg@sonyericsson.com&gt;
  * \version 0.4 
  */
