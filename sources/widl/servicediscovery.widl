@@ -146,6 +146,35 @@ module serviceDiscovery {
 	
 	interface Service {
 		/**
+		 * \brief A constant describing the service is in the process of being initiated. 
+		 *
+		 */
+	 	 
+		const unsigned short SERVICE_INITATING = 0;
+		
+		/**
+		 * \brief A constant describing the service is available and can be used. 
+		 *
+		 */
+	 	 
+		const unsigned short SERVICE_AVAILABLE = 1;
+
+		/**
+		 * \brief A constant describing the service is unavailable. 
+		 *
+		 */
+		
+		const unsigned short SERVICE_UNAVAILABLE = 2;
+
+		/**
+		 * \brief Current State of the Sensor. 
+		 *
+		 */
+		
+		readonly attribute unsigned short serviceState;
+
+
+		/**
 	 	 * \brief API is an global unique URI identifying the feature set provided when the bindService has been successfully executed.
 	 	 */
 		attribute DOMString api;
@@ -181,7 +210,7 @@ module serviceDiscovery {
 		const unsigned short INFINITE = 0;
 		
 		/**
-		 * \brief A timeout value for the findService operation in seconds between 0-65535. Default value is INFINITE.
+		 * \brief A timeout value for the findService operation in seconds between 0-65535. Default value is 120 seconds.
 		 */
 		attribute unsigned short timeout;
 	  
