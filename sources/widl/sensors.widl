@@ -20,11 +20,22 @@
  * It should be be considered if the getSensors() method is redundant with the general findServices() method in the Webinos ServiceDiscovery API.
  *
  * \def-api-feature http://webinos.org/api/sensors
- * Acccess to all the module. This identifies which are the features that are exposed by this
- * module so that the developer can express a dependency on them.
+ * Indentifies all the sensor types. 
+ *
+ * \def-api-feature http://webinos.org/api/sensors.light
+ * Indentifies the light sensor type. 
+ *
+ * \def-api-feature http://webinos.org/api/sensors.noise
+ * Indentifies the noise sensor type. 
+ *
+ * \def-api-feature http://webinos.org/api/sensors.temperature
+ * Indentifies the temperature sensor type. 
+ *
+ * \def-api-feature http://webinos.org/api/sensors.pressure
+ * Indentifies the pressure sensor type. 
  *
  * \author Claes Nilsson &lt;claes1.nilsson@sonyericsson.com&gt;
- * \version 0.5 
+ * \version 0.6 
  */
 
 module sensors {
