@@ -1,26 +1,23 @@
 /**
- * \brief Interfaces for Payment functions.
+ * \brief Interface for Payment functions.
  *
- * This API is vaguely based on the GSMA OneAPI RESTful payment API and mirrors 
- * its functionality and most of its paremeters.
+ * This API provides generic shopping basket functionality to provide in-app payment.
  *
- * The use of the GSMA Payment API as an underlying system to perform the actual payment is
- * not required and mapping of the functions to other payment systems should be straightforward.
- * *
+ * It is not linked to a specific payment service provider and is designed to be 
+ * sufficiently generic to be mapable to various payment services like GSMA OneAPI,
+ * Andoid Payment API or PayPal. 
+ * 
  * \author Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
  */
-module payment {
-
-
-
-      
+ 
+module payment {      
     /**
-   * \brief The PaymentManager interface
+   * \brief The Payment interface
    *
-   * The PaymentManager interface provides access to payment functionality.
-   * The API supports initial reserving of an amount (establishing a bill),
-   * adding further amounts to the bill, charging the bill to the user,
-   * refunding an amount to the user and releasing the reservation.
+   * The Payment interface provides access to payment functionality.
+   *
+   * The API supports creation of a shopping basket, adding items to the shopping
+   * basket, proceeding to checkout and releasing the shopping basket.
    *
    * This essentially echoes the usual 'shopping basket' system used on many web sites.
    *
@@ -28,165 +25,323 @@ module payment {
    * the deluxe edition of that CD, demonstarting charging and refunding payments.
    *
    * \code
-   
-        myBill.open(openBillSuccess, paymentFailure, "peter.user@datamath.com");
-
-        // Define the openBillSuccess success callback.
-        function openBillSuccess() {
-                alert("Bill was opened successfully");
-                // refound for a CD
-                myBill.addItem(refundSuccess, paymentFailure,PAYMENT_TRANSACTION_TYPE_REFUND,
-                "Best of Ladytron 00-10 by Ladytron (Audio CD - 2011)",
-                "EUR", 14.99,1);                
-        }
-
-        // Define the refundSuccess success callback.
-        function refundSuccess() {
-                alert("Refund was handled successfully");
-                // charge for the deluxe CD
-                myBill.addItem(chargeSuccess, paymentFailure,PAYMENT_TRANSACTION_TYPE_REFUND,
-                "Best of Ladytron 00-10 (Deluxe Edition) by Ladytron (Audio CD - 2011)",
-                "EUR", 17.98, 2;                
-        }
-
-        // Define the chargeSuccess success callback.
-        function chargeSuccess() {
-                alert("Charging was handled successfully");
-                // now close the bill and perform the actual payment
-                myBill.chargeBill(chargeBillSuccess, paymentFailure);
-        }
-        
-        // Define the chargeBillSuccess success callback.
-        function chargeBillSuccess() {
-                alert("Charging the bill to the user handled successfully - payment was performed.");
-        }        
-
-        // Define the paymentFailure failure callback.
-        function paymentFailure(e) {
-                alert("Failure occured during payment.");
-        }
-
+   *    
+   *        webinons.payment.createShoppingBasket(openBasketSuccess, paymentFailure, "PayPal", "mymail@provider.com", "ShopName12345");
+   *        var myBasket = null;
+   *
+   *        // Define the openBasketSuccess success callback.
+   *        function openBasketSuccess(basket) {
+   *                alert("Shopping basket was opened successfully");
+   *                myBasket = basket;  
+   *                // refound for a CD
+   *                myBasket.addItem(CD2346278, paymentFailure,
+   *                    {  productID: 'DCD2346233', 
+   *                       description: 'Best of Ladytron 00-10 by Ladytron (Audio CD - 2011)', 
+   *                       currency: 'EUR',
+   *                       itemPrice: -14.99,
+   *                       itemCount: 1}
+   *        }
+   *
+   *        // Define the refundItemSuccess success callback.
+   *        function refundSuccess() {
+   *                alert("Adding of refunding item was handled successfully");
+   *                // charge for the deluxe CD
+   *                myBasket.addItem(addItemSuccess, paymentFailure,
+   *                    {  productID: 'DCD2346233', 
+   *                       description: 'Best of Ladytron 00-10 (Deluxe Edition) by Ladytron (Audio CD - 2011)', 
+   *                       currency: 'EUR',
+   *                       itemPrice: 17.98,
+   *                       itemCount: 1}
+   *        }
+   *
+   *        // Define the addItemSuccess success callback.
+   *        function addItemSuccess() {
+   *                alert("Adding of new item was handled successfully");
+   *                // now close the bill and perform the actual payment
+   *                myBasket.update(updateSuccess, paymentFailure);
+   *        }
+   *        
+   *        // Define the updateSuccess success callback.
+   *        function updateSuccess() {
+   *                alert("Total amount is: "myBasket.totalAmount+" Tax is "+myBasket.tax);
+   *                // now close the bill and perform the actual payment
+   *                myBasket.checkout(checkoutSuccess, paymentFailure);
+   *        }
+   *        
+   *        // Define the checkoutSuccess success callback.
+   *        function checkoutSuccess() {
+   *                alert("Checkout handled successfully - payment was performed.");
+                    if (myBasket != null) myBasket.release();
+   *        }        
+   *
+   *        // Define the paymentFailure failure callback.
+   *        function paymentFailure(e) {   
+   *                alert("Failure occured during payment.");
+   *                 if (myBasket != null) myBasket.release();
+   *        }
+   *
    * \endcode
    *
    *
    */
  
-  interface PaymentManager  {
-  
-
-                /**
-                 * \brief Constant used to identify a charging transaction.
-                 */
-                const unsigned short PAYMENT_TRANSACTION_TYPE_CHARGE = 0;
-                /**
-                 * \brief Constant used to identify a refunding transaction.
-                 */
-                const unsigned short PAYMENT_TRANSACTION_TYPE_REFUND = 1;
-                
-                 /**               
-                 * \brief Returns information about the bill transactionID
-                 *                
-                 */
-                readonly attribute DOMString  transactionID;
-
-                 /**               
-                 * \brief Returns information about the bill correlator, a server provided identifier of the client
-                 *                
-                 */
-                readonly attribute DOMString  clientCorrelator;
-              
-                
+[NoInterfaceObject] interface Payment { 
       /**
-       * \brief Opens a bill and charges the first item to it.
+       * \brief Creates a shopping basket
        *
-       * \param successCallback Callback issued when the opening of the bill is correctly finished.
-       * \param errorCallback Callback issued if an error occurs during the opening of the bill.
-       * \param endUserId is the URL-escaped end user ID 
+       * \param successCallback Callback issued when the shopping basket is created
+       * \param errorCallback Callback issued if an error occurs during the creation of the shopping basket
+       * \param serviceProviderID is the name of the payment provider to be used
+       * \param customerID is identification of the person making the payment as known to the payment provider
+       * \param shopID is the identification of the shop the payment is made to
        * \return PendingOperation enabling the requester to cancel this request.
        * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if an invalid argument is passed
        */
-        PendingOperation openBill(in SuccessCallback successCallback, in ErrorCallback errorCallback,
-        in DOMString endUserId)
-        raises(DeviceAPIError);
-
-  
-        /**
-       * \brief Adds an item to an open bill.
-       *
-       *
-       *
-       * \param successCallback Callback issued when the adding of the amount to the bill is correctly finished.
-       * \param errorCallback Callback issued if an error occurs during adding the amount       
-       * \param transactionOperation  This is either PAYMENT_TRANSACTION_TYPE_CHARGE or PAYMENT_TRANSACTION_TYPE_REFUND
-       * \param description  is the human-readable text to appear on the bill, so the user can easily see what they bought.
-       * \param currency is the 3-figure code as per ISO 4217.
-       * \param amount can be a whole number or decimal.
-       * \param referenceSequence this allows the server to distinguish easily between new and repeated requests in the case of a communication failure. For each transaction within a reservation sequence, iterate the referenceSequence by 1.     
-       * \param purchaseCategoryCode (optional) an indication of the content type. 
-       * \param channel (optional) can be Wap, Web, SMS, depending on the source of user interaction
-       * \param taxAmount (optional) tax already charged by the merchant.
-       * \param serviceID (optional) The ID of the partner merchant service
-       * \param productID (optional) combines with the serviceID to uniquely identify the product being purchased.
-       * \return PendingOperation enabling the requester to cancel this request.
-       * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if an invalid argument is passed
-       */
-        PendingOperation addItem(in SuccessCallback successCallback, in ErrorCallback errorCallback,
-        in int transactionOperation, 
-        in DOMString description,
-        in DOMString currency, in float amount,
-        in int referenceSequence,        
-        [Optional] in DOMString onBehalfOf, [Optional] in DOMString purchaseCategoryCode, [Optional] in DOMString channel, 
-        [Optional] in float taxAmount, [Optional] in DOMString serviceID, [Optional] in  DOMString productID)
-        raises(DeviceAPIError);
-
-        /**
-       * \brief Charges to and releases the current bill.
-       *
-       * \param successCallback Callback issued when the bill is correctly charged to and released
-       * \param errorCallback Callback issued if an error occurs during adding the amount       
-       * \return PendingOperation enabling the requester to cancel this request.
-       * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if an invalid argument is passed
-       */
-        PendingOperation chargeBill(in SuccessCallback successCallback, in ErrorCallback errorCallback)
+        PendingOperation createShoppingBasket(in SuccessShoppingBasketCallback successCallback, in PaymentErrorCB errorCallback,
+        in DOMString serviceProviderID, in DOMString customerID, in DOMString shopID)
         raises(DeviceAPIError);
   };
   
-  
+    /**
+   * \brief The ShoppingBasket interface provides access to a shopping basket
+   *
+   * The shopping basket represents a current payment action and allows to 
+   * add a number of items to the basket before proceeding to checkout.
+   *
+   **/
+   
+[NoInterfaceObject] interface ShoppingBasket {   
+
+        /**
+       * \brief List of items currently in the shopping basket. 
+       * 
+       * These are the items that have been added with addItem.
+       *
+       * No exceptions
+       */
+        readonly attribute ShoppingItem[] items; 
+        /**
+       * \brief Automatically generated extra items, typically rebates, taxes and shipping costs.
+       *
+       * These items are automatically added to the shopping basket by update()
+       * (or after the addition of an item to the basket).
+       * 
+       * These items can contain such 'virtual' items as payback schemes, rebates, taxes,
+       * shipping costs and other items that are calculated on the basis of the regular
+       * items added.
+       *
+       * No exceptions
+       */
+        readonly attribute ShoppingItem[] extras; 
+        /**
+       * \brief The total amount that will be charged to the user on checkout.
+       *
+       * Will be updated by update(), may be updated by addItem().
+       *
+       * No exceptions
+       */
+        readonly attribute float totalBill; 
+        
+        /**
+       * \brief Adds an item to a shopping basket.
+       *
+       * \param successCallback Callback issued when the adding of the item to the shopping basket is correctly finished.
+       * \param errorCallback Callback issued if an error occurs during adding the amount       
+       * \param item the item to purchase
+       * \return PendingOperation enabling the requester to cancel this request.
+       * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if an invalid argument is passed
+       */
+        PendingOperation addItem(in PaymentSuccessCB successCallback, in PaymentErrorCB errorCallback, in ShoppingItem item)
+        raises(DeviceAPIError);
+
+        /**
+       * \brief Updates the shopping basket
+       *
+       * The update function updates the values in the shopping baskets, based on 
+       * the added items. Such updates may include taxes, calculating the total
+       * amount, shipping costs or rebate calculations. 
+       *
+       * While this, preferably, is internally updated after the adding of each item,
+       * such an update might require communication with the payment service provider
+       * and it might be undesireable in specific implementations to perform such
+       * a query after each individual item, so a specifc update function is provided
+       * to force such an update.
+       *
+       * The checkout function will always perform an update internally before
+       * payment.              
+       *
+       * \param successCallback Callback issued when the update is performed
+       * \param errorCallback Callback issued if an error occurs during update 
+       * \return PendingOperation enabling the requester to cancel this request.
+       * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if an invalid argument is passed
+       */
+        PendingOperation update(in PaymentSuccessCB successCallback, in PaymentErrorCB errorCallback)
+        raises(DeviceAPIError);
+
+        /**
+       * \brief Performs the checkout of the shopping basket.
+       *
+       * The items in the shopping basket will be charged to the shopper.
+       *
+       * Depending on the implementation of the actual payment service, this function
+       * might cause the checkout screen of the payment service provider to be displayed.
+       *
+       * \param successCallback Callback issued when the checkout is performed and payment is made
+       * \param errorCallback Callback issued if an error occurs during adding the amount       
+       * \return PendingOperation enabling the requester to cancel this request.
+       * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if an invalid argument is passed
+       */
+        PendingOperation checkout(in PaymentSuccessCB successCallback, in PaymentErrorCB errorCallback)
+        raises(DeviceAPIError);
+
+        /**
+       * \brief Releases a shopping basket.
+       *
+       * The current shopping basket will be released.
+       *
+       * If no checkout has been performed, the initiated shopping transaction will be cancelled.
+       *
+       * \return void
+       */
+        void release();
+  };
+
+    /**
+   * \brief The ShoppingItem captures the attributes of a single shopping product
+   *
+   * The shopping basket represents a current payment action and allows to 
+   * add a number of items to the basket before proceeding to checkout.
+   *
+   **/
+   [NoInterfaceObject] interface ShoppingItem {
+        /**
+       * \brief An id that allows the shop to identify the purchased item
+       *
+       * No exceptions
+       */
+         attribute DOMString productID;
+        /**
+       * \brief A human-readable text to appear on the bill, so the user can easily see what they bought.
+       *
+       * No exceptions
+       */
+         attribute DOMString description;
+        /**
+       * \brief The 3-figure code as per ISO 4217.
+       *
+       * No exceptions
+       */
+         attribute DOMString currency;
+        /**
+       * \brief The price per individual item in the currency given above, a negative number represents a refund.
+       *
+       * No exceptions
+       */
+         attribute float itemPrice;
+        /**
+       * \brief The number of identical items purchased
+       *
+       * No exceptions
+       */
+         attribute int itemCount;
+       /**
+       * \brief Price for all products in this shopping item.
+       *
+       * Typically this is itemPrice*itemCount, but special '3 for 2' rebates might apply.
+       *
+       * Updated by the shopping basket update function.
+       *
+       * No exceptions
+       *
+       */
+         readonly attribute int itemsPrice;
+    };  
+
+        /**
+         * \brief Callback for successful creation of a shopping basket
+         */
+        [Callback=FunctionOnly, NoInterfaceObject]
+        interface SuccessShoppingBasketCallback {
+        /**
+         * \brief Callback for successful creation of a shopping basket
+         * \param basket The shopping basket to which items can be added.
+         * \return void
+         */
+            void onSuccess  (ShoppingBasket basket);
+        };
+        
+        /**
+         * \brief Callback for successful payment related functions
+         */
+        [Callback=FunctionOnly, NoInterfaceObject]
+        interface PaymentSuccessCB {
+        /**
+         * \brief Callback for successful of payment related functions
+         * \return void
+         */
+            void onSuccess  ();
+        };
+                
+        /**
+         * \brief Callback for errors during payment related functions
+         */
+        [Callback=FunctionOnly, NoInterfaceObject]
+        interface PaymentErrorCB {
+        /**
+         * \brief Callback for errors during payment related functions
+         * \param error The Payment API related error object of an unsuccessful asynchronous operation. 
+         * \return void
+         */
+            void onError (in PaymentError error);
+        };
+        
         /**
          * \brief Payment specific errors.
+         *
+         * The PaymentError interface encapsulates all errors in the manipulation of payments objects in the Payment API. 
          */
         interface PaymentError : GenericError {
 
                 /**
                  * \brief Bill is already open
                  */
-                const unsigned short PAYMENT_BILL_OPEN_ERROR = 1;
+                const unsigned short PAYMENT_SHOPPING_BASKET_OPEN_ERROR = 1;
 
                 /**
                  * \brief Bill is not open
                  */
-                const unsigned short PAYMENT_BILL_NOT_OPEN_ERROR = 2;
+                const unsigned short PAYMENT_SHOPPING_BASKET_NOT_OPEN_ERROR = 2;
 
                 /**
                  * \brief Charging operation failed, the charge was not applied
                  */
-                const unsigned short PAYMENT_CHARGE_FAILED = 270;                
+                const unsigned short PAYMENT_CHARGE_FAILED = 3;                
 
                 /**
                  * \brief Refunds not supported
                  */
-                const unsigned short PAYMENT_REFUND_NOT_SUPPORTED = 271;
+                const unsigned short PAYMENT_REFUND_NOT_SUPPORTED = 4;
 
                 /**
                  * \brief  Refund failed
                  */
-                const unsigned short PAYMENT_REFUND_FAILED = 273;
-                
+                const unsigned short PAYMENT_REFUND_FAILED = 5;                
 
                 /**
                  * \brief Chargeable amount exceeded
                  */
-                const unsigned short PAYMENT_CHARGEABLE_EXCEEDED = 251;
-        };
-    
+                const unsigned short PAYMENT_CHARGEABLE_EXCEEDED = 6;
+
+                /**
+                 * \brief Chargeable Authentication failed. Payment credentials are incorrect. 
+                 */
+                const unsigned short PAYMENT_AUTHENTICATION_FAILED = 7;
+
+        /**
+       * \brief An error code assigned by an implementation when an error has occurred in Payment  API processing.
+       *
+       * No exceptions.
+       */
+        readonly attribute unsigned short code;
+  };  
 };
