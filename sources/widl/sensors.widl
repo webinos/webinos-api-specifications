@@ -20,22 +20,22 @@
  * It should be be considered if the getSensors() method is redundant with the general findServices() method in the Webinos ServiceDiscovery API.
  *
  * \def-api-feature http://webinos.org/api/sensors
- * Indentifies all the sensor types. 
+ * Identifies all the sensor types. 
  *
  * \def-api-feature http://webinos.org/api/sensors.light
- * Indentifies the light sensor type. 
+ * Identifies the light sensor type. 
  *
  * \def-api-feature http://webinos.org/api/sensors.noise
- * Indentifies the noise sensor type. 
+ * Identifies the noise sensor type. 
  *
  * \def-api-feature http://webinos.org/api/sensors.temperature
- * Indentifies the temperature sensor type. 
+ * Identifies the temperature sensor type. 
  *
  * \def-api-feature http://webinos.org/api/sensors.pressure
- * Indentifies the pressure sensor type. 
+ * Identifies the pressure sensor type. 
  *
  * \author Claes Nilsson &lt;claes1.nilsson@sonyericsson.com&gt;
- * \version 0.6 
+ * \version 0.7 
  */
 
 module sensors {
@@ -118,7 +118,7 @@ module sensors {
       /**
        * \brief Returns an array of sensor objects (defining sensor properties) for all registered sensors of requested type.
        *
-       * Note: It must be considered if this method is redundant to the general findServices() method in the Webinos ServiceDiscovery API.
+       * Note: This method is redundant with the general findServices() method in the Webinos ServiceDiscovery API and will be removed from the specification.
        *
        * \code
 
@@ -605,10 +605,11 @@ module sensors {
     readonly attribute SensorValuesArray sensorValues;
 
   /**
-   * \brief Method to set initial values of sensor event
-   * \code
-   * // TBD
-   * \endcode
+   * \brief Method to set initial values of sensor event.  
+   *
+   * The initSensorEvent() method must initialize the event in a manner analogous to the initEvent() method in http://www.w3.org/TR/2010/WD-DOM-Level-3-Events-20100907/.
+   * The method can for example be used with document.createEvent() and EventTarget.dispatchEvent() to simulate a specific event.
+   * The sensorType, accuracy, timestamp, rate, interrupt and sensorvalues arguments must initialize the attributes with the same names.
    *   
    * \param uniqueId Unique id of sensor
    * \param bubbles True if event bubbles
