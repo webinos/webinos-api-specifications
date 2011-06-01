@@ -1,5 +1,5 @@
 /**
- * \brief Interfaces for TV control.
+ * \brief The TV control webinos API.
  *
  * This API has the following goals: \n
  * - Provide functionality to access the channel list and information like type and name of a channel. \n
