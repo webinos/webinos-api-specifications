@@ -1,33 +1,38 @@
 /**
  * \brief The Service Discovery API 
  *
- * The Webinos Service Disocvery API provide web applications with 
+ * The Webinos Service Discovery API provide web applications with 
  * an API to find and bind to services that are exposed in a personal zone of devices.
- * The service can be discovered locally or remotely given the current context, 
- * access rights and privacy policies. 
+ * Service Discovery can be used to find services that are exposed in a personal zone
+ * or via legacy discovery methods, e.g. Bluetooth service discovery, UPnP, USB
+ * or DNS-SD. The discovery process is not limited to services available via 
+ * local connectivity bearers. It is also possible remote services. 
  * 
  * The api assumes that the web application is installed, trusted and that the user is
  * authenticated/authorized to use the api.
  *
  * \def-api-feature http://webinos.org/api/servicediscovery
  * \author Anders Isberg &lt;anders.isberg@sonyericsson.com&gt;
- * \version 0.4 
+ * \version 0.5 
  */
 module serviceDiscovery {
 	/**
 	 * \brief The ServiceDiscoveryManager interface provides functionality for service discovery. 
-	 * The API supports the possibility to find services based on a given service type.
-	 * The operation can be restricted by providing certain constraints and/or context information. 
+	 * The API supports the possibility to find services based on a given service type either in 
+	 * a personal zone of devices or via other legacy discovery methods. When searching for a service type
+	 * the operation can be restricted by providing certain constraints and/or context information.  
 	 *
 	 * The code example below shows how an application initiates a search query
-	 * to find a geolocation service. Once the service is found and selected by the user, 
-	 * the API is initiated by binding to the service.  
+	 * to find a geolocation service. On each success callback a new selection item
+	 * is added to the option list, whilst new services are discovered. Once the user
+	 * selects a service, the usage of the service authorized and an implementation of
+	 * the API is instantiated.  
 	 * \code
 	var findHandle = 0;
 	var serviceHandle = 0;
 	var geoServices = {};
 	
-	// Callback method that displays a list of found services in a selection list
+	// Success callback that displays a list of found services in a HTML selection list
 	// The selection list is dynamically extended every time a new service is discovered.	
 	function serviceFoundCB(service) {	
 		var selectlist = document.getElementById('servicelist');
@@ -39,19 +44,19 @@ module serviceDiscovery {
 		selectlist.appendChild(option);
 	}
 	
-	// Callback when bind has been successfully executed on the service object. The Service is authorized and ready to use
+	// Success callback when bind has been successfully executed on the service object. 
 	function successCB(myLocationService) {
 		alert('Service ' + myLocationService.displayName + ' ready to use');
 		myLocationService.getCurrentPosition(showMap);
 	}
 	
-	// Callback method that is invoked when user selects an option in the selection list 
+	// Select callback method that is invoked when user selects an option in the selection list 
 	function serviceSelected(service) {
 	
 		// Stops the findServices operation
 		findHandle.cancel();
 	
-		// Binds to the service to initiate an authorized objects used to
+		// Binds to the service to initiate an authorized object used to
 		// invoke services.  
 		serviceHandle = service.bind(successCB);
 	}
@@ -77,7 +82,7 @@ module serviceDiscovery {
 		 * \param successCallBack Callback issued every time a service is found matching search criteria.  The callback is called every time a new service is found matching the zoneId, serviceType and filter.
 		 * \param errorCallBack Callback issued if service discovery fails.  
 		 * \param options Defines search options. 
-		 * \param filter Defines a filter that be used to limit the service operation to certain constraints and and context information. 
+		 * \param filter Defines a filter that be used to limit the service operation to certain constraints and context information. 
 		 * \throw DiscoveryExceptions 
 		 */
 		 PendingOperation findServices(in DOMString zoneId, in ServiceType serviceType, in SuccessCallBack successCallBack, in optional ErrorCallBack errorCallBack, in optional Options options, in optional Filter filter)
@@ -117,13 +122,13 @@ module serviceDiscovery {
 	};
 
 	/**
-	 * \brief Service interface provides an API to bind to a service and monitoring
+	 * \brief Service interface provides an API to bind to a specific service and monitoring
 	 * the current state of the service in an asynchronous manner. The process of binding
 	 * to a service involves:
 	 * 1. mutual authentication between the service and the personal zone
 	 * 2. in case of cross zone interworking, mutual authentication between the zones
 	 * 3. agreement on data handling obligations as set out in the service's privacy policy
-	 * 4. verifying access privileges and check the needs for elevated privileges
+	 * 4. verifying access privileges and checks the need for elevated privileges
 	 * 5. instantiate an implementation of the api that can be used by applications to request services from the requested API.
 	 */
 	
@@ -145,11 +150,11 @@ module serviceDiscovery {
 		 */
 		readonly attribute unsigned short state;
 		/**
-	 	 * \brief API is an global unique URI identifying the feature set provided when the bind has been successfully executed.
+	 	 * \brief API is a global unique URI identifying the feature set provided when the bind has been successfully executed.
 	 	 */
 		attribute DOMString api;
 		/**
-		 * \brief Id is an globally unique id representing the binding to the service. The id can be used
+		 * \brief Id is a globally unique id representing the binding to the service. The id can be used
 		 * to resume the binding again to the service without invoking the 
 		 * findServices process again. 
 		 */
@@ -161,15 +166,22 @@ module serviceDiscovery {
 		/**
 		 * \brief An URL referring to a detailed description of the service. 
 		 */ 
-		attribute DOMString description;
+		attribute DOMString? description;
 		/**
-		 * \brief bind Resumes the binding to service uniquely identified by the service identity. When binding to a service the API mutually authenticates the application/service, establish a trusted relation respecting the privacy and security policy settings and instantiate an implementation of the api. 
-		 * \param successCallBack Callback issued if an service is found.  The callback is called every time a new service is found matching the zoneId, serviceType and filter.
+		 * \brief bind Binds to the service uniquely identified by the service identity.  
+		 * \param successCallBack Callback issued if a service is found.  The callback is called every time a new service is found matching the zoneId, serviceType and filter.
 		 * \param errorCallBack Callback issued if serviceDiscovery fails.  
-		 * \param serviceId Unique id of the binding to the particular service. 
+		 * \param serviceId Unique id of the binding to the particular service. If no serviceId is provided as an in parameter, the id attribute in the Service interface will be used to bind the service.
 		 * \throw DiscoveryExceptions
 		 */
 		PendingOperation bind(in BindSuccessCallBack successCallBack, in optional BindErrorCallBack errorCallBack, in optional DOMString serviceId)
+		raises(DiscoveryExceptions);
+		
+		/**
+		 * \brief unbind Releases all resources and connections allocated by the service object.  
+		 * \throw DiscoveryExceptions
+		 */
+		void unbind()
 		raises(DiscoveryExceptions);
 	};
 	
