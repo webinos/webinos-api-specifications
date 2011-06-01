@@ -1,0 +1,121 @@
+/**
+ * \brief The application execution API (AppLauncher) allows activation of webinos applications installed locally on the device. Functionality defined in this version of the specification refers to webinos Phase 1 scope. 
+ *
+ * The application execution API allows activation of webinos applications installed locally on the device. The API is modelled after BONDI v1.1 AppLauncher API.
+ *
+ * Operation of the API is guided by application execution policies, which can be modified by user. 
+ * The policies control the following aspects of API operation: \n
+ *  - Enable/disable of activation of native applications \n
+ *  - Enable/disable of activation of webinos installable applications \n
+ *  - Enable/disable of notifications to users when a webinos application attempts to activate another application \n
+ *  - Enable/disable of application ability to discover installed applications \n
+ *  - Enable/disable of logging of operations performed using the API \n
+ *
+ * The application execution API provides mechanisms for webinos applications to check if specific webinos application is installed in the device. 
+ *
+ * \def-api-feature http://webinos.org/api/applauncher.launch
+ * Start webinos application - allows to invoke webinos application identified by a unique identifier.
+ * 
+ * \def-api-feature http://webinos.org/api/applauncher.check
+ * Check if application is installed - allow to test of an application identified by a specific application ID is installed on the device.
+ *
+ * \author Michael Vakulenko &lt;michael@visionmobile.com&gt;
+ * \version 0.1 
+ */
+module AppLauncher {
+
+  /**
+   * \brief Error codes for AppLauncher module
+   */
+  exception AppLauncherException {
+
+     /**
+       * \brief Invalid app ID
+       */
+       const unsigned short INVALID_APP_ID = 0; 
+
+     /**
+       * \brief Requested app is not installed on the device
+       */
+       const unsigned short APP_NOT_FOUND = 1; 
+
+     /**
+       * \brief No resources to start the app
+       */
+       const unsigned short NO_RESOURCES = 2; 
+
+     /**
+       * \brief App is already running
+       */
+       const unsigned short ALREADY_STARTED = 3; 
+  };
+  
+  
+  /**
+   * \brief TODO: \n
+   *  - applicationID type should be defined in webinoscore module \n
+   *  - SecurityError exception shall be defined in security or webinoscore module \n
+   *  - PendingOperation should be defined in webinoscore module\n
+   *
+   * This is the main interface for the AppLauncher API.
+   *
+   * \code
+
+        // Define the launchApplication success callback.
+        function launchedCallback(response)   {
+               alert("Webinos application launched successfully");
+        }
+
+
+        // Define the error callback
+        function errorCallback(response) {
+                        alert( "The following error: " +  response.code + ", occurred");
+        }
+
+
+        // Activate webinos application, if the application is installed in the device.
+        var appinstalled = webinos.AppLauncher.AppInstalled( appID);
+
+        if ( appinstalled)  {
+            webinos.AppLauncher.launchApplication(launchedCallback, errorCallback, appID, null);
+        }                      
+   * \endcode
+   */  
+  
+  
+  interface AppLauncherManager {
+
+      /**
+       * \brief Starts a webinos applicaiton identified by appID. The method is asynchronous. If the app was started successfuly, successCallback is invoked. In case of error, errorCallback is called.
+       *
+       *
+       * \param successCallback Callback invoked when a requested webinos app was activated successfully. 
+       * \param errorCallback Callback invoked if activation of webinos app was not successful.
+       * \param appID Identifies webinos application that needs to be activated.
+       * \param params Optional set of parameters for starting the application.
+       * \return A pending operation object
+       * \throw SecurityError Thrown when policy settings or user action prohibit the operation.
+       * \throw AppLauncherException Thrown when activation of the application was not successful.
+       */
+
+    PendingOperation launchApplication(in SuccessCallback successCallback,
+                                        in ErrorCallback errorCallback,
+                                        in applicationID appID,
+                                        [Optional] in StringArray params)
+                       raises(SecurityError, AppLauncherException);
+
+
+      /**
+       * \brief Reports if a specific webinos application is installed in the device. The method is synchronous.
+       *
+       * \param appID Identifies webinos application presence of which needs to be tested.
+       * \return True if the application is installed, false if the application is not installed.
+       * \throw SecurityError Thrown when policy settings or user action prohibit the operation.
+       * \throw AppLauncherException Thrown when activation of the application was not successful.
+       */
+       
+    boolean AppInstalled(in applicationID appID)
+            raises(SecurityError, AppLauncherException);
+    };
+  
+};

@@ -6,5 +6,6 @@
     <file>tv.widlprocxml</file>
     <file>webinoscore.widlprocxml</file>
     <file>servicediscovery.widlprocxml</file>
-	<file>userprofile.widlprocxml</file>
+	  <file>userprofile.widlprocxml</file>
+    <file>launcher.widlprocxml</file>
 </widlprocxml>
