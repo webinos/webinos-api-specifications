@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--====================================================================
 $Id: widlprocxmltohtml.xsl 407 2009-10-26 13:48:48Z tpr $
 Copyright 2009 Aplix Corporation. All rights reserved.
@@ -134,7 +134,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <xsl:if test="descriptive/def-api-feature">
             <div id="def-api-features" class="def-api-features">
                 <xsl:apply-templates select="Interface/descriptive/def-instantiated"/>
-                <p>This is the list of URIs used to declare this API's features, for use in the widget config.xml. For each URL, the list of functions covered is provided.</p>
+                <p>This is the list of URIs used to declare this API's features, for use in the widget config.xml and as identifier for service type in service discovery functionality. For each URI, the list of functions covered is provided.</p>
                 <xsl:apply-templates select="descriptive/def-api-feature"/>
             </div>
         </xsl:if>

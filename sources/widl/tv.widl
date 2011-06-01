@@ -5,7 +5,6 @@
  * - Provide functionality to access the channel list and information like type and name of a channel. \n
  * - Switch between channels. \n
  * - Stop/start the broadcast. \n
- * - Access to the current parental rating of the broadcast. \n
  * \n
  * This API builds on two existing approaches and merges both. The basis for this API is the HTML5 video element interface (HTMLVideoElement). The here specified interface HTMLTVElement extends the video element and provides the functionality necessary to achieve the mentioned goals on top of it. This added functionality is based on the Open IPTV Forum Release 2 Volume 5 Specification for Declarative Application Environment.
  *
@@ -40,19 +39,14 @@ module tvcontrol {
   /**
    * \brief The HTMLTVElement interface
    *
-   * The HTMLTVElement interface extends the HTMLVideoElement to support TV video
-   * broadcast streams which are mapped as channels. The API supports listing, 
-   * setting and switching these channels.
+   * The HTMLTVElement interface extends the HTMLVideoElement from HTML5 to
+   * support TV video broadcast streams which are mapped as channels. The API
+   * supports listing, setting and switching these channels.
    *
-   * See http://www.whatwg.org/specs/web-apps/current-work/multipage/video.html#media-element
+   * See http://dev.w3.org/html5/spec/video.html
    */
   interface HTMLTVElement : HTMLVideoElement {
     
-    /**
-     * \brief Indicates the current parental rating of the showing programme.
-     */
-    readonly attribute ParentalRating currentParentalRating;
-
     /**
      * \brief Indicates whether the media element is stopped or not. 
      */
@@ -198,46 +192,27 @@ module tvcontrol {
   };
   
   /**
-   * \brief The Parental Rating interface.
-   */
-  interface ParentalRating {
-  
-    /**
-     * \brief Indicates the parental rating value.
-     *
-     * The parental rating value for the respective rating scheme as denoted by
-     * the property scheme. Example: "PG-13".
-     */
-    readonly attribute DOMString name;
-    
-    /**
-     * \brief Indicates the used parental rating guidance scheme.
-     *
-     * The guidance scheme to which the name property refers. Valid strings
-     * include an uri as defined in MPEG-7, "urn:oipf:GermanyFSKCS" or "dvb-si"
-     * (see ETSI EN 300 468).
-     */
-    readonly attribute DOMString scheme;
-
-    /**
-     * \brief Indicates the region.
-     */
-    readonly attribute DOMString region;
-
-  };
-
-  /**
-   * \brief Event that fires when the parental rating of the current broadcast changes.
+   * \brief Event that fires when the channel is changed.
    *
-   * The event adds a single attribute for the new rating.
+   * Provides the channel that was switched to.
    */
-  interface ParentalRatingChanged : Event {
+  interface ChannelChangeEvent : Event {
 
     /**
-     * \brief The new rating.
+     * \brief The new channel.
      */
-    readonly attribute ParentalRating rating;
+    readonly attribute Channel channel;
 
+    /**
+     * \brief Initializes a new channel change event.
+     *
+     * \param type The type of event. Pass 'channelchange'.
+     * \param bubbles Indicates whether the event bubbles.
+     * \param cancelable Indicates whether the event is cancelable.
+     * \param channel The channel that was changed to.
+     */
+    void initChannelChangeEvent(in DOMString type, in boolean bubbles, in boolean cancelable, in Channel channel);
+    
   };
     
 };

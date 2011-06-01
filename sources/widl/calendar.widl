@@ -1,6 +1,6 @@
 
 /**
- * \brief W3C based Contacts interface.
+ * \brief W3C based Calendar interface.
  *
  * The Calendar API defines a high-level interface to access Calendar information such as events, reminders, alarms and other calendar information.
  *
