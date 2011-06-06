@@ -396,22 +396,15 @@ void foo(in short fooShort)
 <h3 class="title" style="clear: both;"><a name=""></a>4.2 - Asynchronous methods </h3>
 <p>When an asynchronous method is executed, all the errors should be returned in the errorCallback or in the interface that was passed as input argument (see section 3 for more details).</p>
 
-<p>However, before starting the asynchronous phase of the operation, methods cannot return errors in the ErrorCallback. This is usually the case for the situations in which the arguments provided are not of the expected type. In those situations, the error should be thrown rather than returned in the ErrorCallback.</p>
+<p>However, before starting the asynchronous phase of the operation, methods cannot return errors in the ErrorCallback. This is usually the case for the situations in which the arguments provided are not of the expected type. In those situations, exceptions will be raised as defined in the Web IDL specification.</p>
 
-<p>The preferred behaviour in Webinos APIs is checking first that the arguments are of the valid type or can be coerced to the appropriate type. If one or more arguments are passed whose type is incompatible with the declared type of that argument, the method will raise a FooAPIException synchronously with the appropriate code (e.g. code TYPE_MISMATCH_ERR). Any other error will be returned in the ErrorCallback that was passed as input argument to the asynchronous function as a FooAPIError, the documentation of the method will specify which codes and under which conditions the error will be returned in the ErrorCallback. If no error callback is passed or it is null or undefined, no additional notification is needed (i.e. the method fails silently).</p>
+<p>Any other error will be returned in the ErrorCallback that was passed as input argument to the asynchronous function as a FooAPIError, the documentation of the method will specify which codes and under which conditions the error will be returned in the ErrorCallback. If no error callback is passed or it is null or undefined, no additional notification is needed (i.e. the method fails silently).</p>
 
 <p>Type conversions between the supplied arguments and the declared IDL argument type are performed in accordance with the ECMAScript WebIDL binding.</p>
 
 <p>The following is a WebIDL excerpt declaring an asynchronous method</p>
 
 <div id="container"><div><span class="signatureBlockTitle"><b>Error Handling in Asynchronous Methods</b></span><pre class="webidl prettyprint">
-
-/*
- * \brief The FooAPIException
- */
-exception FooAPIException : FooAPIError{
-
-}
 
 /*
  * \brief The FooAPIError
@@ -431,33 +424,15 @@ exception FooAPIError{
  * \brief the synchronous foo method
  * \param fooShort The operation code.
  *
- * \throw FooAPIException with error code TYPE_MISMATCH_ERR if the input parameter 
- * is not compatible with the expected type for that parameter.
  */
 void foo(in SuccessCallback successCallback, 
          in ErrorCallback? errorCallback, 
          in Options options)
          raises(FooAPIException);
 </div>
-<p>
-The raises(FooAPIException) part is intended to specify that although the method is asynchronous, a FooAPIException may be thrown if the arguments are not of the valid type (TYPE_MISMATCH_ERR). That is documented in the method exception list as in the case of the synchronous calls:</p>
 
 <p>
-<i><code>
-<h5>Exceptions</h5>
-<ul>
-          <li class="exception">FooAPIException:
-        <div class="description"><p>
- with error code TYPE_MISMATCH_ERR if any input parameter 
-is not compatible with the expected type for that parameter.
-                </p></div>
-</li>
-</ul>
-</code></i>
-</p>
-
-<p>
-The errors returned in the errorCallback are also specified in the method description as in the following WebIDL.
+The errors returned in the errorCallback are specified in the method description as in the following WebIDL.
 </p>
 
 <div id="container"><div><span class="signatureBlockTitle"><b>Error Handling in Asynchronous Methods</b></span><pre class="webidl prettyprint">
@@ -477,8 +452,6 @@ The errors returned in the errorCallback are also specified in the method descri
  * &lt;ul&gt;
  * \param fooShort The operation code.
  *
- * \throw FooAPIException with error code TYPE_MISMATCH_ERR if the input parameter 
- * is not compatible with the expected type for that parameter.
  */
 void foo(in SuccessCallback successCallback, 
          in ErrorCallback? errorCallback, 
