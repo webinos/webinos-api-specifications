@@ -546,17 +546,7 @@ foo(success(){alert("Foo executed")},
                                   errorHandler(e){"Error occured";}, 
                                   {fooparam1:10000});
 </div>
-<p>If an optional argument has not the appropriate type or cannot be coerced to it, the recommendation is that the method throws an error with a TYPE_MISMATCH_ERR code as explained in previous section. E.g.</p>
-
-<div class="example">
-<pre name="code" class="examplecode prettyprint"> 
-foo(function(){alert("Operation completed")}, 
-                        "this is an invalidFunction");
-</div>
-
-<p>The second argument cannot be coerced to the expected type (function).</p>
-
-<p>It should be specified what happens when an optional argument contains an invalid value, although of the right type. The recommendation is that a specific error is returned in those cases (e.g. an INVALID_VALUES_ERR) or throw it if it is synchronous unless a different behaviour is required.</p>
+<p>If an optional argument has not the appropriate type or cannot be coerced to it, implementations will throw a TYPE_ERROR exception as defined in Web IDL.</p>
 
 <p>A nullable input argument is identified by the '?' character that is suffixed to the Data Type. This character can be used for Primitive EcmaScript Data Types and for derived ones. As undefined is coerced to null, the same behaviour with regards to null and undefined are expected for any input argument of an interface (derived) type declared as nullable.</p>
 
