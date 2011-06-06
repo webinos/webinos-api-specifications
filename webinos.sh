@@ -85,16 +85,21 @@ cat > "$SPECHOME/apis/index.html" <<DELIM
 
      <h1 class="head">Webinos Device APIs</h1>
 </div>
-<ul>
+<div id="content"><table><thead><tr><th>Specification</th><th>Summary</th></thead><tbody>
 DELIM
 
 for i in $WIDLFILES
 do
+    if [ "$i" != "foo.widl" ] ; 
+    then
 	basename2=$(basename "$i" .widl)
-	basename2="$(echo ${basename2:0:1} | tr 'a-z' 'A-Z' )""${basename2:1}"
-	echo '<li><a href="./'"$(basename "$i" .widl).html"'">'"$basename2"' API</a><br /></li>' >> "$SPECHOME/apis/index.html"
+	htmlfile="$SPECHOME/apis/"$basename2".html"
+	"$XSLPROC" --novalid --stringparam basename "$basename2" --html  "$REPOS/resources/getAPIdata.xsl" "$htmlfile" >> "$SPECHOME/apis/index.html"
+    fi
+	#basename2="$(echo ${basename2:0:1} | tr 'a-z' 'A-Z' )""${basename2:1}"
+	#echo '<li><a href="./'"$(basename "$i" .widl).html"'">'"$basename2"' API</a><br /></li>' >> "$SPECHOME/apis/index.html"
 done
-echo '</ul>'  >> "$SPECHOME/apis/index.html"
+echo '</tbody></table></div>'  >> "$SPECHOME/apis/index.html"
 echo '<p>See also the <a href="patterns.html">Webinos design patterns and guidelines for APIs</a></p>'  >> "$SPECHOME/apis/index.html"
 echo '</body>' >> "$SPECHOME/apis/index.html"
 echo '</html>' >> "$SPECHOME/apis/index.html"
