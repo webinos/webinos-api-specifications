@@ -94,7 +94,7 @@ do
     then
 	basename2=$(basename "$i" .widl)
 	htmlfile="$SPECHOME/apis/"$basename2".html"
-	"$XSLPROC" --novalid --stringparam basename "$basename2" --html  "$REPOS/resources/getAPIdata.xsl" "$htmlfile" >> "$SPECHOME/apis/index.html"
+	LD_LIBRARY_PATH="${XSLTLIB}" "$XSLPROC" --novalid --stringparam basename "$basename2" --html  "$REPOS/resources/getAPIdata.xsl" "$htmlfile" >> "$SPECHOME/apis/index.html"
     fi
 	#basename2="$(echo ${basename2:0:1} | tr 'a-z' 'A-Z' )""${basename2:1}"
 	#echo '<li><a href="./'"$(basename "$i" .widl).html"'">'"$basename2"' API</a><br /></li>' >> "$SPECHOME/apis/index.html"
