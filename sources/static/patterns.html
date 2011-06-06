@@ -489,7 +489,7 @@ foo("notACallback",
             options);
 </pre>
 
-<p>This invocation will raise an exception with code TYPE_MISMATCH_ERR as "notACallback" cannot be coerced to an interface.</p>
+<p>This invocation will raise a TYPE_ERROR exception as "notACallback" cannot be coerced to an interface.</p>
 
 <div class="example">
 <pre name="code" class="examplecode prettyprint"> 
@@ -505,7 +505,7 @@ foo(success(){alert("Foo exec")},
             "notACallback", 
             options);
 </pre></div>
-<p>This invocation will raise an FooAPIException with code TYPE_MISMATCH_ERR as "notACallback" cannot be coerced to an interface.</p>
+<p>This invocation will raise a TYPE_ERROR exception as "notACallback" cannot be coerced to an interface.</p>
 
 <div class="example">
 <pre name="code" class="examplecode prettyprint"> 
@@ -526,7 +526,7 @@ foo(success(){alert("Foo executed")},
 <div>
 <h2 class="title" style="clear: both;"><a name="optionalnullable"></a>5 - Optional, Nullable and Valid Arguments</h2>
 
-<p>WebIDL provides a mechanism to document that an argument is optional. In order to so, the keyword optional must be included just before the argument type. All the optional arguments that are used in Webinos APIs are marked with that keyword.</p>
+<p>Web IDL provides a mechanism to document that an argument is optional. In order to so, the keyword optional must be included just before the argument type. All the optional arguments that are used in Webinos APIs are marked with that keyword.</p>
 
 <p>E.g. the following WebIDL excerpt specifies that the second and third input arguments is optional.</p>
 <div id="container"><div><span class="signatureBlockTitle"><b>Optional Arguments</b></span><pre class="webidl prettyprint">
