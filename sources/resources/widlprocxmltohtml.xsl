@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--====================================================================
 $Id: widlprocxmltohtml.xsl 407 2009-10-26 13:48:48Z tpr $
 Copyright 2009 Aplix Corporation. All rights reserved.
@@ -245,7 +245,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 <!--Attribute-->
 <xsl:template match="Attribute">
-    <dt class="attribute" id="{@name}">
+    <dt class="attribute" id="{concat(parent::*/@name,'_',@name)}">
         <code>
         <span class='attrName'><b>
             <xsl:if test="@stringifier">
