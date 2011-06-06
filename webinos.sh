@@ -71,23 +71,31 @@ do
 	LD_LIBRARY_PATH="${XSLTLIB}" "$XSLPROC" "$SPECHOME/apis/$XSL" "$SPECHOME/apis/${i}procxml" > "$SPECHOME/apis/$(basename "$i" .widl).html"
 done
 
-echo '<html>' > "$SPECHOME/apis/index.html"
-echo '<head>' >> "$SPECHOME/apis/index.html"
-echo '<html>' >> "$SPECHOME/apis/index.html"
-echo '<html>' >> "$SPECHOME/apis/index.html"
-echo '<meta http-equiv="content-type" content="text/html; charset=utf-8" />' >> "$SPECHOME/apis/index.html"
-echo '<title>T3.2 Device API specs - Redmine - for Webinos</title>'  >> "$SPECHOME/apis/index.html"
-echo '</head>' >> "$SPECHOME/apis/index.html"
-echo '<body>' .>> "$SPECHOME/apis/index.html"
-echo '<h1>T3.2 Device API specs - Redmine - for Webinos</h1>'  >> "$SPECHOME/apis/index.html"
+cat > "$SPECHOME/apis/index.html" <<DELIM
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link media="screen" href="webinos-apis.css" type="text/css" rel="stylesheet">
+<title>Webinos Device APIs</title>
+</head>
+<body id="content">
+<div class="api">
+     <a href="http://webinos.org"><img src="http://webinos.org/wp-content/uploads/2011/press_releases/webinos_thumb_150x48.png" alt="Webinos Logo"></a>
+
+     <h1 class="head">Webinos Device APIs</h1>
+</div>
+<ul>
+DELIM
 
 for i in $WIDLFILES
 do
 	basename2=$(basename "$i" .widl)
 	basename2="$(echo ${basename2:0:1} | tr 'a-z' 'A-Z' )""${basename2:1}"
-	echo '<h3><a href="./'"$(basename "$i" .widl).html"'">'"$basename2"' API</a><br /></h3>' >> "$SPECHOME/apis/index.html"
+	echo '<li><a href="./'"$(basename "$i" .widl).html"'">'"$basename2"' API</a><br /></li>' >> "$SPECHOME/apis/index.html"
 done
-
+echo '</ul>'  >> "$SPECHOME/apis/index.html"
+echo '<p>See also the <a href="patterns.html">Webinos design patterns and guidelines for APIs</a></p>'  >> "$SPECHOME/apis/index.html"
 echo '</body>' >> "$SPECHOME/apis/index.html"
 echo '</html>' >> "$SPECHOME/apis/index.html"
 
