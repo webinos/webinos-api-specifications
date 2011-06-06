@@ -115,7 +115,7 @@ fooOperation(handleSuccess(){alert("Operation Completed Successfully");},
 <p> This is the <b>preferred way to specify asynchronous operations in Webinos APIs</b> as it is a well-known and simple mechanism.</p>
 <p> It is recommended that Webinos APIs specify that the second input argument (the errorCallback) is always optional and nullable, so that when it is not included or it is null or undefined, the implementation is just silent about any error that occurs during the asynchronous phase of the operation. NOTE: In some cases the "optional" tag could not be prefixed in the WebIDL definition because otherwise all the subsequents attributes should have been also optional which may not be possible in all the cases. However, in those cases the optionality of the errorCallback could be documented in the method description and by declaring the argument as nullable by suffixing the '?' character to the argument data type.</p>
 <p>
-It is also recommended for Webinos APIs that the first input parameter is mandatory, and if it does not contain a valid value (e.g. it is null or undefined or does not contain a function), the ErrorCallback will be launched (provided a valid errorCallback has been passed).
+It is also recommended for Webinos APIs that the first input parameter be mandatory; if it does not contain a valid value (e.g. it is null or undefined or does not contain a function), this will raises a <code>TypeError</code> exception (as defined in the Web IDL specification).
 </p>
 
 <p>For example, the following WebIDL definition states that the errorCallback and options arguments are optional and nullable:</p>
@@ -346,7 +346,7 @@ As every API is the responsible for specifying its required error codes and no c
 <div class="section" lang="en">
 <h3 class="title" style="clear: both;"><a name=""></a>4.1 - Synchronous methods </h3>
 <p>
-When a synchronous method is executed all error conditions should be indicated by throwing an instance of the Error object (FooAPIError in the example) synchronously. These error conditions can be documented in WebIDL through the raises (FooAPIError) clause. The various error codes that may be returned in the exception (FooAPIException) instance are documented through the \throw doxygen tag in the widl documentation.</p>
+When a synchronous method is executed all error conditions should be indicated by throwing an instance of the Error object (FooAPIException in the example) synchronously. These error conditions can be documented in WebIDL through the raises (FooAPIException) clause. The various error codes that may be returned in the exception (FooAPIException) instance are documented through the \throw doxygen tag in the widl documentation.</p>
 <p> Interfaces to be thrown by methods should be declared in WebIDL through the <code>exception</code> keyword.</p>
 
 <p>For instance, the following idl excerpt declares a synchronous function and the FooAPIException object as an exception.</p>
@@ -356,12 +356,12 @@ When a synchronous method is executed all error conditions should be indicated b
  */
 exception FooAPIException{
 
-  readonly attribute unsigned short code;
+  unsigned short code;
 
-  readonly attribute DOMString message;
+  DOMString message;
 
   const unsigned short FOO1_ERR = 0;
-  const unsigned short FOO2_ERR = 0;
+  const unsigned short FOO2_ERR = 1;
 }
 
 
