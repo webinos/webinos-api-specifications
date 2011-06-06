@@ -21,10 +21,10 @@ module foo {
    * \def-instantiated 
    * \api-feature http://webinos.org/api/foo
    */
-  [NoInterfaceObject] interface FooManager {
+  [NoInterfaceObject] interface WindowFooManager {
     readonly attribute FooManager foo; 
   };
-  Window implements FooManager;
+  Window implements WindowFooManager;
 
   /**
    * \brief Entry point for the foo API  
