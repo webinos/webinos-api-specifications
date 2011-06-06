@@ -417,8 +417,16 @@ interface FooAPIError{
 
   const unsigned short FOO1_ERR = 0;
   const unsigned short FOO2_ERR = 1;
-  const unsigned short TYPE_MISMATCH_ERR = 2;
 }
+
+/*
+ * \brief Error callback definition
+ */
+[Callback, NoInterfaceObject]
+interface ErrorCallback {
+  void onerror(in FooAPIError code);
+};
+
 
 /*
  * \brief the synchronous foo method
