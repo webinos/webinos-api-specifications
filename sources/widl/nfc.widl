@@ -1,7 +1,7 @@
 /**
- * \brief Interface for NFC.
+ * \brief Interface for NFC Tags reader/writer.
  *
- *
+ * API to read and write to NFC tags
  * \code
  * var nfcAdapterList = webinos.nfc.getAdapters();
  * var selectedNfcAdapter = nfcAdapterList[0];
