@@ -409,7 +409,7 @@ void foo(in short fooShort)
 /*
  * \brief The FooAPIError
  */
-exception FooAPIError{
+interface FooAPIError{
 
   readonly attribute unsigned short code;
 
@@ -455,8 +455,7 @@ The errors returned in the errorCallback are specified in the method description
  */
 void foo(in SuccessCallback successCallback, 
          in ErrorCallback? errorCallback, 
-         in Options options)
-         raises(FooAPIException);
+         in Options options);
 </div>
 <p> That will generate the following documentation through the toolchain: </p>
 <p><i><code>
