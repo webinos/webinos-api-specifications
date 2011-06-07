@@ -109,7 +109,7 @@ module tvcontrol {
   /**
    * \brief ChannelChangeSuccessCallback interface.
    */
-  [Callback=FunctionOnly] interface ChannelChangeSuccessCallback {
+  [NoInterfaceObject, Callback=FunctionOnly] interface ChannelChangeSuccessCallback {
   
     /**
      * \brief This callback is called once the issued channel change successfully
@@ -123,7 +123,7 @@ module tvcontrol {
   /**
    * \brief ChannelChangeErrorCallback interface.
    */
-  [Callback=FunctionOnly] interface ChannelChangeErrorCallback {
+  [NoInterfaceObject, Callback=FunctionOnly] interface ChannelChangeErrorCallback {
   
     /**
      * \brief This callback is called once the issued channel change successfully
@@ -137,7 +137,7 @@ module tvcontrol {
   /**
    * \brief The error interface used in the ChannelChangeErrorCallback. 
    */  
-  interface ChannelChangeError {
+  [NoInterfaceObject] interface ChannelChangeError {
   
     /**
      * \brief An unknown error.
@@ -156,7 +156,7 @@ module tvcontrol {
    *
    * Channel objects represent broadcast streams. 
    */
-  interface Channel {
+  [NoInterfaceObject] interface Channel {
 
     /**
      * \brief Indicates a TV channel.
@@ -196,7 +196,7 @@ module tvcontrol {
    *
    * Provides the channel that was switched to.
    */
-  interface ChannelChangeEvent : Event {
+  [NoInterfaceObject] interface ChannelChangeEvent : Event {
 
     /**
      * \brief The new channel.
