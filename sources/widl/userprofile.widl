@@ -1,59 +1,36 @@
 /**
  * \brief The webinos userprofile API to access user information. This API uses the Contact interface of the webinos Contacts API (http://dev.webinos.org/specifications/draft/contacts.html) and extend it with social network attributes.
  *
- * This API offers access to information of the user. Therefore, the webinos Contact interface will be used as a basis to provide fundamental information about the user (e.g. name, nickname, gender, birthday, etc.) and extends it with social network attributes.
+ * This API offers access to information of the user. Therefore, the webinos Contact interface will be used as a basis to provide fundamental information about the user (e.g. name, nickname, gender, birthday, etc.) and extends it with social network attributes. These social network attributes are a simple pointer where the webinos user has non-webinos profiles. These information then could be used by the application to query the external API for additional information (e.g. query the Facebook Graph API for the buddylist).
  *
  * \author WIDL version for webinos created by Ronny Gr&auml;fe &lt;ronny.graefe@t-systems.com&gt;
  * \version 0.2 
  */
-module userprofile {
+module Userprofile {
 
 	/**
-	 * \brief The UserProfileManager interface provides methods to create, update, delete and find a userprofile.
+	 * \brief The UserProfile Interface implements all attributes from the Contact interface to describe the user.
+	 *
+	 */
+	Userprofile::UserProfile implements Contacts::Contact;
+	
+	/**
+	 * \brief The UserProfileError Interface implements all attributes from the ContactError interface.
+	 *
+	 */
+	UserProfile::UserProfileError implements Contacts::ContactError;
+	
+	/**
+	 * \brief The UserProfileManager interface provides methods to create, update and delete a userprofile. There could be several userprofiles assigned to one sepcific webinos user.
 	 *
 	 */
 	interface UserProfileManager {
-	
-		/**
-		 * \brief find() method
-		 *
-		 * Find a userprofile in the PZH or PZP according to the find user process detailed below. 
-		 *
-		 * This method takes two, three or four arguments. When called, it starts the following find userprofile process: 
-		 *
-		 * 1. Let successCallback be the callback indicated by the method's second argument. 
-		 *
-		 * 2. Let errorCallback be the callback indicated by the method's third argument, if any, or null otherwise. 
-		 *
-		 * 3. If successCallback is null, then throw a TypeError (as defined in [WEBIDL]).
-		 *
-		 * 4. If there is a task from the device task source in one of the task queues (e.g. an existing find() operation is still pending a response), run these substeps: 
-		 *
-		 * - The terms document base URL, browsing context, event handler attribute, event handler event type, task, task source and task queues are defined by the HTML5 specification [HTML5].
-		 *
-		 * 4.1 If errorCallback is not null, let error be a ContactError object whose code attribute has the value PENDING_OPERATION_ERROR and queue a task to invoke errorCallback with error as its argument. 
-		 *
-		 * 4.2 Abort this operation.
-		 *
-		 * 5. Return, and run the remaining steps asynchronously. 
-		 *
-		 * 6. Let results be the array of Contact objects obtained by searching contacts in the PZH/PZP according to the rules defined in Contact Search Processing, or null if the search has failed.
-		 *
-		 * 7. If results is null, run these substeps: 
-		 *
-		 * 7.1 If errorCallback is not null, let error be a ContactError object whose code attribute has its value set according to the type of failure that occurred and queue a task to invoke errorCallback with error as its argument. 
-		 *
-		 * 7.2 Abort this operation.
-		 *
-		 * 8. Queue a task to invoke successCallback with results as its argument.
-		 */
-		caller void find(DOMString[] fields, ContactFindCB successCB, optional ContactErrorCB errorCB, optional ContactFindOptions options);
 			
 		/**
 		 * \brief createuserProfile() method - Creates a new user profile in the webinos system.
 		 *
 		 * 
-		 * \param user A new user object.
+		 * \param userProfile A new UserProfile object.
 		 * \param successCallBack Callback issued when the creating of the user is correctly finished.
 		 * \param errorCallback Callback issued if an error occurs during the opening. E.g. the id already exist.
 		 *
@@ -72,7 +49,7 @@ module userprofile {
 		 *
 		 * \endcode
 		 */
-		void createUserProfile(in Contact user, optional SuccessCB successCallBack, in ContactErrorCB errorCallback);
+		void createUserProfile(in UserProfile userProfile, optional SuccessCB successCallBack, in UserProfileErrorCB errorCallback);
 		
 		/**
 		 * \brief The updateUserProfile() method - Updates a userprofile
@@ -97,7 +74,7 @@ module userprofile {
 		 * \endcode
 		 *
 		 */
-		void updateUserProfile(in DOMString id, in Contact user, optional SuccessCB successCallBack, in ContactErrorCB errorCallback);
+		void updateUserProfile(in DOMString id, in UserProfile user, optional SuccessCB successCallBack, in UserProfileErrorCB errorCallback);
 		
 		/**
 		 * \brief The deleteUserProfile() method - Deletes an existing userprofile from the user in the PZH/PZP.
@@ -107,66 +84,28 @@ module userprofile {
 		 * \param errorCallback Callback issued if an error occurs during the opening. E.g. the id does not exist.
 		 *
 		 * \code
-		 * // Obtain a single existing Contact object resulting from webinos.userprofile.find()
-		 * var existingContactObj = ...;
-		 *
 		 * //delete the userprofile
-		 * webinos.userprofile.deleteUserProfile(existingContactObj.id, successCB, errorCB);
+		 * webinos.userprofile.deleteUserProfile('xxx', successCB, errorCB);
 		 * \endcode
 		 */
-		void deleteUserProfile(in DOMString id, optional SuccessCB successCallBack, in ContactErrorCB errorCallback);
+		void deleteUserProfile(in DOMString id, optional SuccessCB successCallBack, in UserProfileErrorCB errorCallback);
 	};
 	
 	/**
      * \brief Contacts specific errors.
      */
     [NoInterfaceObject]
-	interface ContactError {
-		
-		/**
-         * \brief An unknown error occurred.
-         */
-        const unsigned short UNKNOWN_ERROR = 0;
-        
-		/**
-         * \brief An invalid parameter was provided when the requested method was invoked.
-         */
-        const unsigned short INVALID_ARGUMENT_ERROR = 1;
-        
-		/**
-         * \brief The requested method timed out before it could be completed.
-         */
-        const unsigned short TIMEOUT_ERROR = 2;
-        
-		/**
-         * \brief There is already a task in the device task source.
-         */
-        const unsigned short PENDING_OPERATION_ERROR = 3;
-        
-		/**
-         * \brief An error occurred in communication with the underlying implementation that meant the requested method could not complete.
-         */
-        const unsigned short IO_ERROR = 4;
-        
-		/**
-         * \brief The requested method is not supported by the current implementation.
-         */
-        const unsigned short NOT_SUPPORTED_ERROR = 5;
+	interface UserProfileError {
 		
 		/**
          * \brief Access to the requested information was denied by the implementation or by the user.
          */
-        const unsigned short ID_NOT_EXIST = 6;
+        const unsigned short USER_NOT_EXIST = 101;
 		
 		/**
          * \brief Access to the requested information was denied by the implementation or by the user.
          */
-        const unsigned short ID_ALREADY_EXIST = 7;
-        
-		/**
-         * \brief Access to the requested information was denied by the implementation or by the user.
-         */
-        const unsigned short PERMISSION_DENIED_ERROR = 20;
+        const unsigned short USER_ID_ALREADY_EXIST = 102;
         
 		/**
          * \brief An error code assigned by an implementation when an error has occurred in Contacts API processing.
@@ -174,205 +113,28 @@ module userprofile {
          */
         readonly attribute unsigned short code;
     };
-	
-	/**
-     * \brief The ContactFindOptions interface describes the options that can be applied to contact searching. When a ContactFindOptions parameter is provided to the Contacts find() operation, it should be processed according to the provisions detailed in Options Processing. 
-     *
-     */ 
-    [NoInterfaceObject]
-    interface ContactFindOptions {
-        /**
-         * \brief A string-based search filter which provides a hint to the user agent to facilitate contacts selection by the user. 
-         *
-         * No exceptions.
-         */            
-        attribute DOMString? filter;
-		
-        /**
-         * \brief A boolean value to indicate whether multiple Contact objects are wanted as part of the Contacts find() operation. By default this option is set to false. 
-         *
-         * No exceptions.
-         */            
-        attribute boolean? multiple;
-		
-        /**
-         * \brief Return only contact records that have been updated on or after the given time, specified as an ECMAScript Date object.
-         *
-         * This filter is applied to the revision field as defined in Contact. 
-         *
-         * No exceptions.
-         */            
-        attribute Date updatedSince;
-    };
-
-    /**
-     * \brief This is the wrapper interface for callbacks indicating success of the find() operation. 
-     *
-     */         
-    [Callback=FunctionOnly, NoInterfaceObject]
-    interface ContactFindCB {        
-        /**
-         * \brief Callback on success of a find() operation
-         * \param contactObjs An array of Contact objects resulting from the given Contacts find() operation. 
-         * \return void                 
-         */
-        void onsuccess (Contact[] contactObjs);
-    };
         
     /**
-     * \brief This is the wrapper interface for callbacks indicating failure  of the find() operation. 
+     * \brief This is the wrapper interface for callbacks indicating failure of the createUserProfile(), updateUserProfile() and deleteUserProfile() operation. 
      *
      */         
     [Callback=FunctionOnly, NoInterfaceObject]
-    interface ContactErrorCB  {        
+    interface UserProfileErrorCB  {        
         /**
-         * \brief Callback on failure  of a find() operation
-         * \param error The ContactError object capturing the type of the error.
+         * \brief Callback on failure of a find() operation
+         * \param error The UserProfileError object capturing the type of the error.
          * \return void                 
          */
-        void onerror (ContactError error);
+        void onerror(UserProfileError error);
     };
-
+	
 	/**
-	 * \brief The Contact interface
+	 * \brief The UserProfile interface
 	 *
-	 * The Contact interface contains all user profile data, e.g. gender, birthday, and methods to create a user profile in the webinos system.
 	 * 
 	 */
-	interface Contact{
+	interface UserProfile {
 	
-		/**
-		 * \brief id of type DOMString
-		 *
-		 * A globally unique identifier for the given user object. Each user instance must include a non-empty id value. Is a unique profile id which match the RFC 3986 URI Scheme.
-		 *
-		 * This id is maintained by the webinos system.
-		 */
-		readonly attribute DOMString id;
-		
-		/**
-		 * \brief displayName of type DOMString
-		 *
-		 * This attribute contains the name of this user in a form that is suitable for display to the user.
-		 *
-		 * Each user MUST include EITHER a displayName OR the name attribute. 
-		 */
-		attribute DOMString? displayName;
-		
-		/**
-		 * \brief name of type ContactName
-		 *
-		 * This attribute represents the full name of this user indicated by the name components associated with the ContactName object. 
-		 */
-		attribute ContactName name;
-		
-		/**
-		 * \brief nickname of type DOMString
-		 *
-		 * This attribute contains the nickname (or a casual name) for this user. 
-		 */
-		attribute DOMString? nickname;
-		
-		/**
-		 * \brief phoneNumbers of type array of ContactField
-		 *
-		 * This attribute captures one or more phone numbers associated with this user. 
-		 */
-		attribute ContactField[] phoneNumbers;
-		
-		/**
-		 * \brief emails of type array of ContactField
-		 *
-		 * This attribute represents one or more email addresses associated with this user. 
-		 */
-		attribute ContactField[] emails;
-		
-		/**
-		 * \brief addresses of type array of ContactAddress
-		 *
-		 * This attribute represents one or more physical addresses associated with this user. 
-		 */
-		attribute ContactAddress[] addresses;
-		
-		/**
-		 * \brief ims of type array of ContactField
-		 *
-		 * This attribute represents one or more instant messaging identifiers associated with this user. 
-		 */
-		attribute ContactField[] ims;
-		
-		/**
-		 * \brief organizations of type array of ContactOrganization
-		 *
-		 * This attribute represents one or more organizations associated with this user. 
-		 */
-		attribute ContactOrganization[] organizations;
-		
-		/**
-		 * \brief revision of type Date
-		 *
-		 * This attribute contains the timestamp information associated with this user, which represents the last known modification time. If no modification time exists, then this object contains the timestamp of the object's creation time. 
-		 */
-		attribute Date revision;
-		
-		/**
-		 * \brief birthday of type Date
-		 *
-		 * This attribute contains birthday of this user.
-		 */
-		attribute Date birthday;
-		
-		/**
-		 * \brief gender of type DOMString
-		 *
-		 * This attribute contains the gender of this user. This attribute should have one of the following values:
-		 *
-		 * male
-		 * female
-         * undisclosed
-		 *
-		 * Note however that this attribute may contain a value not listed above. 
-		 */
-		attribute DOMString gender;
-		
-		/**
-		 * \brief note of type DOMString
-		 *
-		 * This attribute contains the personal notes (free-text) for this user that is managed by the user itself.
-		 */
-		attribute DOMString note;
-		
-		/**
-		 * \brief photos of type array of ContactField
-		 *
-		 * This attribute represents one or more photos associated with this user.
-		 *
-		 * The photos must be specified in the value attribute of the ContactField object either by using a URL to an image resource or base64 encoded string of the image data. 
-		 */
-		attribute ContactField[] photos;
-		
-		/**
-		 * \brief urls of type array of ContactField
-		 *
-		 * This attribute represents one or more URLs associated with this user e.g. personal web page, blog.
-		 *
-		 * The web resources must be specified using the value attribute of the ContactField object, and its type field may be set to "blog" or "profile". 
-		 */
-		attribute ContactField[] urls;
-		
-		/**
-		 * \brief timezone of type DOMString
-		 *
-		 * This attribute represents the time zone of this user.
-		 *
-		 * It is recommended that names from the public-domain Olson database [TZDB] will be used as the value of this attribute, but this is not a restriction. For example, a value of America/New_York indicates the user is associated with the variable time zone of the New York region of the United States, including daylight saving time offsets experienced in that region.
-		 *
-		 * It is also possible to use this attribute to express the timezone as a positive or negative difference from UTC, in the 24-hour clock, in units of hours and minutes (i.e. +hh:mm). For example, a value of +05:30 indicates the user is associated with a fixed time zone of GMT+05:30.
-		 *
-		 * No exceptions.
-		 */
-		attribute DOMString timezone;
-		
 		/**
 		 * \brief preferredUsername of type DOMString
 		 *
@@ -385,200 +147,7 @@ module userprofile {
 		 *
 		 * The User profile on a social network provider.
 		 */
-		attribute SocialNetworkProfile[] socialProfiles;		
-	};
-	
-	/**
-	 * \brief The ContactName interface
-	 *
-	 * The ContactName interface describes the user's name. 
-	 * 
-	 */
-	[NoInterfaceObject]
-	interface ContactName {	
-
-		/**
-		 * \brief formatted of type DOMString
-		 *
-		 * This attribute contains the full name, including all the individual components such as givenName, middleName, familyName, prefix, suffix as appropriate for the user's culture, and formatted for display (e.g. Mr. Joe Smith Jr). 
-		 */
-		attribute DOMString? formatted;
-		
-		/**
-		 * \brief familyName of type DOMString
-		 *
-		 * This attribute contains the family name (also referred to as the last name) of this user. 
-		 */
-		attribute DOMString? familyName;
-		
-		/**
-		 * \brief givenName of type DOMString
-		 *
-		 * This attribute contains the given name (also referred to as the first name) of this user. 
-		 */
-		attribute DOMString? givenName;
-		
-		/**
-		 * \brief middleName of type DOMString
-		 *
-		 * This attribute contains the middle name of this user. 
-		 */
-		attribute DOMString? middleName;
-		
-		/**
-		 * \brief honorificPrefix of type DOMString
-		 *
-		 * This attribute contains the honorific prefix (or title) of this user. E.g. Mr., Dr., Ms., Mrs. 
-		 */
-		attribute DOMString? honorificPrefix;
-		
-		/**
-		 * \brief honorificSuffix of type DOMString
-		 *
-		 * This attribute contains the honorific suffix of this user. E.g. Jr, III, Sr. 
-		 */
-		attribute DOMString? honorificSuffix;
-	};
-	
-	/**
-	 * \brief The ContactField interface
-	 *
-	 * The ContactField interface is a reusable component that is used to capture user fields of the user interface that have some modicum of structure. 
-	 * 
-	 */
-	[NoInterfaceObject]
-	interface ContactField {
-		/**
-		 * \brief type of type DOMString
-		 *
-		 * This attribute contains the type information for this ContactField and its content varies subject to the user property this ContactField is representing. For example, if the ContactField is representing a phoneNumber property, the type attribute can be set to home, mobile; if the ContactField is representing the ims property, the type attribute could be set to xmpp, irc, bbm, etc. 
-		 */
-		attribute DOMString type;
-		
-		/**
-		 * \brief value of type DOMString
-		 *
-		 * This attribute contains the value for this ContactField and its content varies subject to the user property this ContactField is representing. For example, if the ContactField is representing an email, the value attribute could be set to JoeSmith@example.com, and if the ContactField is representing a url, the value attribute can be set to http://www.example.org/joesmith, etc. 
-		 */
-		attribute DOMString value;
-		
-		/**
-		 * \brief pref of type boolean
-		 *
-		 * This attribute indicates whether this instance of the ContactField is the preferred, or primary, value for the user property this ContactField is representing in the user interface. By default, the value is false. 
-		 */
-		attribute boolean pref;
-	};
-	
-	/**
-	 * \brief The ContactAddress interface
-	 *
-	 * The ContactAddress interface is a reusable component that is used to capture addresses within the user interface. 
-	 * 
-	 */
-	[NoInterfaceObject]
-	interface ContactAddress {
-	
-		/**
-		 * \brief pref of type boolean
-		 *
-		 * This attribute indicates whether this instance of the ContactAddress is the preferred, or primary, value for the contact. By default, the value is false. 
-		 */
-		attribute boolean pref;
-		
-		/**
-		 * \brief type of type DOMString
-		 *
-		 * This attribute contains the type of address this object is representing (e.g. work, home, premises, etc). 
-		 */
-		attribute DOMString? type;
-	
-		/**
-		 * \brief formatted of type DOMString
-		 *
-		 * This attribute contains the full physical ContactAddress including street, locality, region, postalCode, and country as appropriate, and formatted for display. 
-		 */
-		attribute DOMString? formatted;
-		
-		/**
-		 * \brief streetAddress of type DOMString
-		 *
-		 * This attribute contains the street ContactAddress corresponding to this ContactAddress. 
-		 */
-		attribute DOMString? streetAddress;
-		
-		/**
-		 * \brief locality of type DOMString
-		 *
-		 * This attribute contains the locality (or city) name corresponding to this ContactAddress. 
-		 */
-		attribute DOMString? locality;
-		
-		/**
-		 * \brief region of type DOMString
-		 *
-		 * This attribute contains the region (or state/province) name corresponding to this ContactAddress. 
-		 */
-		attribute DOMString? region;
-		
-		/**
-		 * \brief postalCode of type DOMString
-		 *
-		 * This attribute contains the postal code (or zip) corresponding to this ContactAddress. 
-		 */
-		attribute DOMString? postalCode;
-		
-		/**
-		 * \brief country of type DOMString
-		 *
-		 * This attribute contains the country name corresponding to this ContactAddress. 
-		 */
-		attribute DOMString? country;
-	};
-	
-	/**
-	 * \brief The ContactOrganization interface
-	 *
-	 * The ContactOrganization interface is a reusable component that is used to support contact organisations within the user interface. 
-	 * 
-	 */
-	[NoInterfaceObject]
-	interface ContactOrganization {
-	
-		/**
-		 * \brief pref of type boolean
-		 *
-		 * This attribute indicates whether this instance of the ContactOrganization is the preferred, or primary, value for the contact. By default, the value is false. 
-		 */
-		attribute boolean pref;
-		
-		/**
-		 * \brief type of type DOMString
-		 *
-		 * This attribute contains the type of address this object is representing (e.g. work, home, premises, etc). 
-		 */
-		attribute DOMString? type;
-		
-		/**
-		 * \brief name of type DOMString
-		 *
-		 * The name of the organisation. 
-		 */
-		attribute DOMString? name;
-		
-		/**
-		 * \brief department of type DOMString
-		 *
-		 * The department within which this user works. 
-		 */
-		attribute DOMString? department;
-		
-		/**
-		 * \brief title of type DOMString
-		 *
-		 * The job title that the user holds inside this organisation. 
-		 */
-		attribute DOMString? title;
+		attribute SocialNetworkProfile[] socialProfiles;	
 	};
 	
 	/**
@@ -595,13 +164,6 @@ module userprofile {
 		 * This attribute indicates whether this instance of the SocialNetworkProfile is the preferred, or primary, value for the user. By default, the value is false. 
 		 */
 		attribute boolean pref;
-	
-		/**
-		 * \brief userID of type DOMString
-		 *
-		 * The user's webinos ID to whom the profile belongs.
-		 */
-		attribute DOMString? userID;
 		
 		/**
 		 * \brief socialNetworkProvider of type DOMString
@@ -616,52 +178,5 @@ module userprofile {
 		 * 	The user's IDs in the social network, that is one or more elements that can be used to uniquely identify the user (i.e. userName, social network ID number, email.
 		 */
 		attribute DOMString? socialId;
-		
-		/**
-		 * \brief displayName of type DOMString
-		 *
-		 * The user's display name on the social network.
-		 */
-		attribute DOMString? displayName;
-		
-		/**
-		 * \brief connectionList of type Connection
-		 *
-		 * The user's connections list (i.e. friends, connections, followers, followees) on the social network.
-		 */
-		attribute Connection[] connectionList;
-	};
-	
-	/**
-	 * \brief The Connection interface
-	 *
-	 * 
-	 */
-	[NoInterfaceObject]
-	interface Connection {
-	
-		/**
-		 * \brief connectionID of type DOMString
-		 *
-		 */
-		attribute DOMString? connectionID;
-		
-		/**
-		 * \brief connectionDisplayName of type DOMString
-		 *
-		 */
-		attribute DOMString? connectionDisplayName;
-		
-		/**
-		 * \brief connectionType of type DOMString
-		 *
-		 */
-		attribute DOMString? connectionType;
-		
-		/**
-		 * \brief relationshipType  of type DOMString
-		 *
-		 */
-		attribute DOMString? relationshipType;
 	};
 };
