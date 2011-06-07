@@ -1,0 +1,123 @@
+/**
+ * \brief Attestation: find the identity and integrity of running software
+ *
+ * The purpose of this API is to provide a secure means to query the device to find out the identity and integrity of running software. The example use case is Trusted Computing Mobile Reference Architecture . However, this is aimed at a lower layer than webinos. The aim of the attestation API is simply to allow access to existing functionality. \n
+* \n 
+* Requirement/architectural reference: ID-DEV-POLITO-005, ID-DEV-POLITO-006, ID-DEV-POLITO-007, ID-DEV-POLITO-008 \n
+*
+* [paste high level requirements here??] \n
+* \n
+ *
+* Mediation by policy and security requirements:
+* All of these three methods should be grouped into the same policy set
+* Attestation is well known to have privacy and security issues and should therefore be restricted to trusted applications
+* The "getKeyCredential" call may have privacy implications. The platform should be capable of ignoring requests even if a key certificate could be returned, if the policy dictates this
+*
+
+* TO BE DONE: \n
+* check/add data types where needed (typedefs commented out at present; attestationData flagged as needing checking) \n
+* check/improve comments \n
+* fix up error reporting for third method (by analogy with others...) \n
+
+
+ * \author Andrew Martin; andrew.martin@cs.ox.ac.uk; \n
+ * John Lyle; john.lyle@cs.ox.ac.uk
+ */
+module attestation {
+
+    /* 
+     * The following need to be defined, but not with the types
+     * given.  Hence these lines are commented-out.
+
+    typedef unsigned long Nonce; 
+
+    typedef DOMString RSAKey;
+
+    typedef DOMString X509Certificate;
+    */
+
+
+  /**
+   * \brief The data returned by an attestation request
+   * 
+   * Question: DID I GET THIS RIGHT?
+   */
+
+  interface attestationData  {
+
+     /**
+      * \brief List of binary data representing the identities of running 
+	  * software.  In the TCG scheme, this corresponds to the integrity 
+	  * measurement log
+      */
+
+     attribute byte[][] trustChain;
+
+     /**
+      * \brief single binary blob, containing validation data for the trustChain 
+      */
+
+     attribute byte[] validationData;
+
+     /**
+      * \brief text string identifying the attestation scheme being used
+      * for example, "TPM_Quote"
+      */
+
+     attribute DOMString schema;
+   };
+    
+  /**
+    * \brief interfaces for attesting the platform
+    */
+
+
+  interface platformAttestation {
+
+    /**
+     * \brief requests platform to provide attestation data
+     *
+     * inputs determine freshness and signing key to be used \n
+     * return values are loose, to support arbitrary schemes of attestation
+     *
+     * \param nonce is a 20 byte value used to guarantee freshness of the result
+     * \param key is the (identifier of the) RSA key which should be used for  attestation.  This will have been retrieved from getAttestationKey().
+     * \return data structure returned is described above.
+     *
+     * No error conditions: attestation data is always be returned (but scheme may be vacuous).
+     */
+
+     attestationData attestPlatform (in Nonce nonce,
+    	       		             in RSAKey key);
+
+
+    /**
+     * \brief returns public key corresponding to device identity used to authenticate sessions
+     *
+     * in TCG terminology tis would be the Attestation Identity Key (AIK)
+     * 
+     * \return returns public key
+     * 
+     * No error conditions: key must always exist.
+     */
+
+
+     RSAKey getAttestationKey ();
+
+
+    /**
+     * \brief return certificate for nominated key
+     *
+     * \param key is the RSA public key (or identifier) for which a certificate is to be returned
+     * \return returns certificate data structure corresponding to key
+     * 
+     * If the key identifier is unknown, or the user policy does not allow access to it, an error "not found" is returned.
+     */
+    
+     X509Certificate getKeyCredential (in RSAKey key);
+
+
+};
+
+};
+
