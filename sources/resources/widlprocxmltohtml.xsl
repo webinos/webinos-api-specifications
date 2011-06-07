@@ -68,7 +68,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <a href="http://webinos.org"><img src="http://webinos.org/wp-content/uploads/2011/press_releases/webinos_thumb_150x48.png" alt="Webinos Logo"/></a>
         <h1><xsl:value-of select="$title"/></h1>
         <h2 class="head">Webinos API Specifications</h2>
-        <h3>Date to be added</h3>
+        <h3><xsl:value-of select="$date"/></h3>
       </div>
 
         <h2>Authors</h2>
