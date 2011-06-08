@@ -25,6 +25,11 @@
 module AppLauncher {
 
   /**
+   * \brief Array of DOMStrings.
+   */
+  typedef sequence<Object> ObjectArray;
+
+  /**
    * \brief Error codes for AppLauncher module
    */
   exception AppLauncherException {
@@ -48,13 +53,17 @@ module AppLauncher {
        * \brief App is already running
        */
        const unsigned short ALREADY_STARTED = 3; 
+
+     /**
+       * \brief App is already running
+       */
+       const unsigned short POLICY_NOT_ALLOWED = 4; 
   };
   
   
   /**
    * \brief TODO: \n
    *  - applicationID type should be defined in webinoscore module \n
-   *  - SecurityError exception shall be defined in security or webinoscore module \n
    *  - PendingOperation should be defined in webinoscore module\n
    *
    * This is the main interface for the AppLauncher API.
@@ -94,15 +103,14 @@ module AppLauncher {
        * \param appID Identifies webinos application that needs to be activated.
        * \param params Optional set of parameters for starting the application.
        * \return A pending operation object
-       * \throw SecurityError Thrown when policy settings or user action prohibit the operation.
        * \throw AppLauncherException Thrown when activation of the application was not successful.
        */
 
     PendingOperation launchApplication(in SuccessCallback successCallback,
-                                        in ErrorCallback errorCallback,
-                                        in applicationID appID,
-                                        [Optional] in StringArray params)
-                       raises(SecurityError, AppLauncherException);
+                                       in ErrorCallback errorCallback,
+                                       in applicationID appID,
+                                       in optional ObjectArray params)
+                       raises( AppLauncherException);
 
 
       /**
@@ -110,12 +118,32 @@ module AppLauncher {
        *
        * \param appID Identifies webinos application presence of which needs to be tested.
        * \return True if the application is installed, false if the application is not installed.
-       * \throw SecurityError Thrown when policy settings or user action prohibit the operation.
        * \throw AppLauncherException Thrown when activation of the application was not successful.
        */
        
     boolean AppInstalled(in applicationID appID)
-            raises(SecurityError, AppLauncherException);
+            raises( AppLauncherException);
     };
+    
+    
+    /**
+     * \brief The PendingOperation interface
+     *
+     * The PendingOperation interface describes operation of cancellable aynchronous methods.
+     * Cancellable asynchronous methods return PendingOperation objects exporting methods for
+     * cancelling the operation. 
+     *
+     */
+     interface PendingOperation {
+
+    /**
+     * \brief Cancel method for cancelling asynchronous operation
+     *
+     *  Cancel ongoing asynchronous method call. Upon calling this method the runtime must immediately stop
+     *  the pending operation and return.
+     */
+        void cancel ();
+     };
+
   
 };
