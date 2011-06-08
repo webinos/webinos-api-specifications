@@ -66,9 +66,10 @@ do
 	"$WIDLPROC" "$SPECHOME/apis/$i" > "$SPECHOME/apis/$(basename "$i" .widl).widlprocxml" 2>/dev/null
 done
 
+unset GIT_DIR
 for i in $WIDLFILES
 do
-        #DATE=`(cd "$REPOS/widl" ; git log --pretty=format:'%aD' -1  "$i"|cut -d " " -f 2-4)`
+	DATE=$(cd "$REPOS/widl" ; git log --pretty=format:'%aD' -1 "$i"|cut -d " " -f 2-4)
 	LD_LIBRARY_PATH="${XSLTLIB}" "$XSLPROC" --stringparam date "$DATE" "$SPECHOME/apis/$XSL" "$SPECHOME/apis/${i}procxml" > "$SPECHOME/apis/$(basename "$i" .widl).html"
 done
 
