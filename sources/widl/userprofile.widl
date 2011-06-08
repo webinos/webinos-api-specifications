@@ -7,18 +7,6 @@
  * \version 0.2 
  */
 module userprofile {
-
-	/**
-	 * \brief The UserProfile Interface implements all attributes from the Contact interface to describe the user.
-	 *
-	 */
-	userprofile::UserProfile implements Contacts::Contact;
-	
-	/**
-	 * \brief The UserProfileError Interface implements all attributes from the ContactError interface.
-	 *
-	 */
-	userProfile::UserProfileError implements Contacts::ContactError;
 	
 	/**
 	 * \brief The UserProfileManager interface provides methods to create, replace and delete a userprofile. There could be several userprofiles assigned to one sepcific webinos user.
@@ -102,6 +90,12 @@ module userprofile {
          */
         const unsigned short USERPROFILE_NOT_EXIST = 101;
     };
+	
+	/**
+	 * \brief The UserProfileError Interface implements all attributes from the ContactError interface.
+	 *
+	 */
+	UserProfileError implements Contacts::ContactError;
         
     /**
      * \brief This is the wrapper interface for callbacks indicating failure of the createUserProfile(), updateUserProfile() and deleteUserProfile() operation. 
@@ -139,6 +133,8 @@ module userprofile {
 		 */
 		attribute SocialNetworkProfile[] socialProfiles;	
 	};
+	
+	UserProfile implements Contacts::Contact;
 	
 	/**
 	 * \brief The SocialNetworkProfile interface
