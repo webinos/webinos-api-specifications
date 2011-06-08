@@ -74,7 +74,7 @@ module serviceDiscovery {
 	 * \endcode
 	 *
 	 */
-	interface ServiceDiscoveryManager  {
+	[NoInterfaceObject] interface ServiceDiscoveryManager  {
 		/**
 		 * \brief The findServices method initiates an asynchronous search query for services matching the requested zoneId, serviceType and filter parameters. The method continues to execute until the findService method is canceled by the application or when maximum search timer expires.     
 		 * \param zoneId Identity of a Personal Zone that is hosting the service. The zoneId 'self' is reserved for the Personal Zone of the user authenticated against the device. The zoneId 'shared' is reserved for services that are shared on the current network.
