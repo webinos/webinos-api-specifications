@@ -83,19 +83,13 @@ module userprofile {
      * \brief Contacts specific errors.
      */
     [NoInterfaceObject]
-	interface UserProfileError {
+	interface UserProfileError : ContactError {
 		
 		/**
          * \brief The userprofile does not exist in the webinos system.
          */
         const unsigned short USERPROFILE_NOT_EXIST = 101;
     };
-	
-	/**
-	 * \brief The UserProfileError Interface implements all attributes from the ContactError interface.
-	 *
-	 */
-	UserProfileError implements Contacts::ContactError;
         
     /**
      * \brief This is the wrapper interface for callbacks indicating failure of the createUserProfile(), updateUserProfile() and deleteUserProfile() operation. 
@@ -117,7 +111,7 @@ module userprofile {
 	 *
 	 * 
 	 */
-	interface UserProfile {
+	interface UserProfile : Contact {
 	
 		/**
 		 * \brief preferredUsername of type DOMString
@@ -133,8 +127,6 @@ module userprofile {
 		 */
 		attribute SocialNetworkProfile[] socialProfiles;	
 	};
-	
-	UserProfile implements Contacts::Contact;
 	
 	/**
 	 * \brief The SocialNetworkProfile interface
