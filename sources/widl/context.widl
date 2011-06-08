@@ -1,0 +1,126 @@
+/**
+ * \brief The Context API 
+ *
+ * TODO: WIKI DESCRIPTION
+ *
+ * \def-api-feature http://webinos.org/api/context
+ * Acccess to all the module. This feature provides access to the whole API.
+ * Security enforcement may depend on the query requested by the developer.
+ *
+ * \author No Name &lt;noname@nodomain.org&gt;
+ * \version 0.1 
+ */
+module context {
+
+  /**
+   * \brief Defines what is instantiated in initialization 
+   * 
+   * There will be a webinos.context object that allows accessing the
+   * functionality of this module
+   * 
+   * \def-instantiated 
+   * \api-feature http://webinos.org/api/context
+   */
+  [NoInterfaceObject] interface ContextManager {
+    readonly attribute ContextManager context; 
+  };
+  webinos implements ContextManager;
+
+  /**
+   * \brief Entry point for the context API  
+   *
+   * TODO: Long description
+   *
+   * \code
+   * TODO
+   * \endcode
+   */
+  [NoInterfaceObject] interface ContextManager {
+
+    /**
+     * \brief Performs a context query
+     *
+     * TODO: Process that is performed when the query executed. 
+     *
+     * \code
+     * // This should include a more meaningful example
+     * var text = foo.getFoo("webinos");
+     * alert("Foo returned " + text);
+     * \endcode
+     *
+     * \param successCallback To be invoked if the query executes successfully
+     * \param errorCallback To be invoked in case an error occurs
+     * \param query 
+     * \return A string with a human readable string
+     * \throw ContextError with error code TYPE_MISMATCH_ERR if 
+     * the input parameter is not compatible with the expected type for 
+     * that parameter.
+     */
+    void performQuery(in QuerySuccessCallback successCallback,
+                      in ErrorCallback? errorCallback,
+                      in Query query)
+         raises(ContextError);
+  };
+
+  /**
+   * \brief Query interface,
+   *
+   * TODO: Detail if this the right content for the query 
+   */
+   [Callback, NoInterfaceObject] interface Query {
+
+    /**
+     * \brief query content in xml format
+     *
+     * Long description
+     */
+    attribute DOMString xmlQuery;
+  };
+  
+  /**
+   * \brief Defines the  error codes for this module
+   */
+  [NoInterfaceObject] interface ContextError {
+    /**
+     * \brief Security Error 
+     */
+     const unsigned short SECURITY_ERR = 1;
+
+    /**
+     * \brief invalid query 
+     */
+     const unsigned short INVALID_QUERY_ERR = 2;
+
+    /**
+     * \brief invalid query 
+     */
+     const unsigned short TYPE_MISMATCH_ERR = 3;
+   };
+
+  /**
+   * \brief Interface for callbacks indicating success of performQuery() operation. 
+   *
+   */         
+  [Callback=FunctionOnly, NoInterfaceObject] interface QuerySuccessCallback {        
+    /**
+     * \brief Callback on success of a performQuery() operation
+     * \param queryResult Result of the query operation serialized as a json string. 
+     * \return void                 
+     */
+    void onsuccess (DOMString queryResult);
+  };
+        
+  /**
+   * \brief Interface for callbacks indicating error of performQuery() operation. 
+   */         
+  [Callback=FunctionOnly, NoInterfaceObject] interface ErrorCallback  {        
+    /**
+     * \brief Callback on failure of a performQuery() operation
+     * \param error The ContextError object capturing the type of the error.
+     * \return void                 
+     */
+    void onerror (ContextError error);
+  };
+        
+};
+

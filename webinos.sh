@@ -68,7 +68,8 @@ done
 
 for i in $WIDLFILES
 do
-        #DATE=`(cd "$REPOS/widl" ; git log --pretty=format:'%aD' -1  "$i"|cut -d " " -f 2-4)`
+	echo git log --pretty=format:'%aD' -1 "$REPOS/widl/$i"\|cut -d " " -f 2-4
+        #DATE=$(git log --pretty=format:'%aD' -1 "$REPOS/widl/$i"|cut -d " " -f 2-4)
 	LD_LIBRARY_PATH="${XSLTLIB}" "$XSLPROC" --stringparam date "$DATE" "$SPECHOME/apis/$XSL" "$SPECHOME/apis/${i}procxml" > "$SPECHOME/apis/$(basename "$i" .widl).html"
 done
 
