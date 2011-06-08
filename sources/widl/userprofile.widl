@@ -6,22 +6,22 @@
  * \author WIDL version for webinos created by Ronny Gr&auml;fe &lt;ronny.graefe@t-systems.com&gt;
  * \version 0.2 
  */
-module Userprofile {
+module userprofile {
 
 	/**
 	 * \brief The UserProfile Interface implements all attributes from the Contact interface to describe the user.
 	 *
 	 */
-	Userprofile::UserProfile implements Contacts::Contact;
+	userprofile::UserProfile implements Contacts::Contact;
 	
 	/**
 	 * \brief The UserProfileError Interface implements all attributes from the ContactError interface.
 	 *
 	 */
-	UserProfile::UserProfileError implements Contacts::ContactError;
+	userProfile::UserProfileError implements Contacts::ContactError;
 	
 	/**
-	 * \brief The UserProfileManager interface provides methods to create, update and delete a userprofile. There could be several userprofiles assigned to one sepcific webinos user.
+	 * \brief The UserProfileManager interface provides methods to create, replace and delete a userprofile. There could be several userprofiles assigned to one sepcific webinos user.
 	 *
 	 */
 	interface UserProfileManager {
@@ -32,56 +32,56 @@ module Userprofile {
 		 * 
 		 * \param userProfile A new UserProfile object.
 		 * \param successCallBack Callback issued when the creating of the user is correctly finished.
-		 * \param errorCallback Callback issued if an error occurs during the opening. E.g. the id already exist.
+		 * \param errorCallback Callback issued if an error occurs during the processing time.
 		 *
 		 * \code
-		 * //create a new user
-		 * var user = new Object();
+		 * //create a new userProfile
+		 * var userProfile = new Object();
 		 *
 		 * //add attributes
-		 * user.displayName = 'John Smith';
-		 * user.nickname = 'johnny2011';
+		 * userProfile.displayName = 'John Smith';
+		 * userProfile.nickname = 'johnny2011';
 		 * ...
-		 * user.timezone = 'CET';
+		 * userProfile.timezone = 'CET';
 		 * 
-		 * //creates a new user profile in the webinos system
-		 * webinos.user.createuserProfile(user, successCB, errorCB);
+		 * //creates a new userprofile in the webinos system
+		 * webinos.userprofile.createuserProfile(userProfile, successCB, errorCB);
 		 *
 		 * \endcode
 		 */
 		void createUserProfile(in UserProfile userProfile, optional SuccessCB successCallBack, in UserProfileErrorCB errorCallback);
 		
 		/**
-		 * \brief The updateUserProfile() method - Updates a userprofile
+		 * \brief The replaceUserProfile() method - Replaces a userprofile
 		 *
 		 * \param id The id of the existing object
-		 * \param user The updated user object.
+		 * \param userProfile The UserProfile object which should be replaced in the webinos system.
 		 * \param successCallBack Callback issued when the creating of the user is correctly finished.
-		 * \param errorCallback Callback issued if an error occurs during the opening. E.g. the id is wrong.
+		 * \param errorCallback Callback issued if an error occurs during the opening. E.g. the userprofile id does not exist.
 		 *
 		 * \code
-		 * // Obtain a single existing Contact object resulting from webinos.userprofile.find()
-		 * var existingContactObj = ...;
+		 * // Obtain a single existing UserProfile object resulting from webinos.userprofile.find()
+		 * var existingUserProfileObj = ...;
 		 *
 		 * // Modify some parameters as required. e.g. add a new phone number
-		 * existingContactObj.phoneNumbers.push({
+		 * existingUserProfileObj.phoneNumbers.push({
 		 * type: 'home', 
 		 * value: '654321'
 		 * });
 		 *
 		 * //update the userprofile
-		 * webinos.userprofile.updateUserProfile(existingContactObj.id, existingContactObj, successCB, errorCB);
+		 * webinos.userprofile.replaceUserProfile(existingUserProfileObj.id, existingUserProfileObj, successCB, errorCB);
 		 * \endcode
 		 *
 		 */
-		void updateUserProfile(in DOMString id, in UserProfile user, optional SuccessCB successCallBack, in UserProfileErrorCB errorCallback);
+		void replaceUserProfile(in DOMString id, in UserProfile userProfile, optional SuccessCB successCallBack, in UserProfileErrorCB errorCallback);
 		
 		/**
-		 * \brief The deleteUserProfile() method - Deletes an existing userprofile from the user in the PZH/PZP.
+		 * \brief The deleteUserProfile() method - Deletes an existing userprofile from the user in the webinos system.
 		 *
 		 * \param id The id of the existing object
 		 * \param successCallBack Callback issued when the creating of the user is correctly finished.
-		 * \param errorCallback Callback issued if an error occurs during the opening. E.g. the id does not exist.
+		 * \param errorCallback Callback issued if an error occurs during the opening. E.g. the userprofile id does not exist.
 		 *
 		 * \code
 		 * //delete the userprofile
@@ -98,20 +98,9 @@ module Userprofile {
 	interface UserProfileError {
 		
 		/**
-         * \brief Access to the requested information was denied by the implementation or by the user.
+         * \brief The userprofile does not exist in the webinos system.
          */
-        const unsigned short USER_NOT_EXIST = 101;
-		
-		/**
-         * \brief Access to the requested information was denied by the implementation or by the user.
-         */
-        const unsigned short USER_ID_ALREADY_EXIST = 102;
-        
-		/**
-         * \brief An error code assigned by an implementation when an error has occurred in Contacts API processing.
-         * No exceptions.
-         */
-        readonly attribute unsigned short code;
+        const unsigned short USERPROFILE_NOT_EXIST = 101;
     };
         
     /**
@@ -119,7 +108,8 @@ module Userprofile {
      *
      */         
     [Callback=FunctionOnly, NoInterfaceObject]
-    interface UserProfileErrorCB  {        
+    interface UserProfileErrorCB  {  
+	
         /**
          * \brief Callback on failure of a find() operation
          * \param error The UserProfileError object capturing the type of the error.
@@ -175,7 +165,7 @@ module Userprofile {
 		/**
 		 * \brief socialId of type DOMString
 		 *
-		 * 	The user's IDs in the social network, that is one or more elements that can be used to uniquely identify the user (i.e. userName, social network ID number, email.
+		 * 	The user's IDs in the social network, that is one or more elements that can be used to uniquely identify the user (i.e. userName, social network ID number, email).
 		 */
 		attribute DOMString? socialId;
 	};
