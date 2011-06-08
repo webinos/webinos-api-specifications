@@ -80,7 +80,7 @@ module userprofile {
 	};
 	
 	/**
-     * \brief Contacts specific errors.
+     * \brief The UserProfileError interface. It is a userprofile specific extension to the interface ContactError in the Contacts module.
      */
     [NoInterfaceObject]
 	interface UserProfileError : ContactError {
@@ -107,7 +107,7 @@ module userprofile {
     };
 	
 	/**
-	 * \brief The UserProfile interface
+	 * \brief The UserProfile interface. It is a userprofile specific extension to the interface Contact in the Contacts module.
 	 *
 	 * 
 	 */
