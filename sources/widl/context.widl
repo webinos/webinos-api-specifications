@@ -52,7 +52,7 @@ module context {
      * \param errorCallback To be invoked in case an error occurs
      * \param query 
      * \return A string with a human readable string
-     * \throw Error with error code TYPE_MISMATCH_ERR if 
+     * \throw ContextError with error code TYPE_MISMATCH_ERR if 
      * the input parameter is not compatible with the expected type for 
      * that parameter.
      */
@@ -124,5 +124,3 @@ module context {
         
 };
 
-
-};
