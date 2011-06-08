@@ -74,9 +74,10 @@ module serviceDiscovery {
 	 * \endcode
 	 *
 	 */
-	interface ServiceDiscoveryManager  {
+	[NoInterfaceObject] interface ServiceDiscoveryManager  {
 		/**
 		 * \brief The findServices method initiates an asynchronous search query for services matching the requested zoneId, serviceType and filter parameters. The method continues to execute until the findService method is canceled by the application or when maximum search timer expires.     
+		 * The zones in which services are to be searched are expected to be managed by the Webinos runtime engine (rather than the application developer). As an example on how this zone management can be presented by a runtime engine, see a possible infobar (at http://dev.webinos.org/specifications/draft/infobar.png )  that would lead to a personal zones management UI (http://dev.webinos.org/specifications/draft/pz-add-ui.png )
 		 * \param zoneId Identity of a Personal Zone that is hosting the service. The zoneId 'self' is reserved for the Personal Zone of the user authenticated against the device. The zoneId 'shared' is reserved for services that are shared on the current network.
 		 * \param serviceType An input argument that defines which type of service that is requested.
 		 * \param successCallBack Callback issued every time a service is found matching search criteria.  The callback is called every time a new service is found matching the zoneId, serviceType and filter.

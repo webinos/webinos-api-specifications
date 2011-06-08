@@ -21,7 +21,7 @@ module context {
    * \def-instantiated 
    * \api-feature http://webinos.org/api/context
    */
-  [NoInterfaceObject] interface ContextManager {
+  [NoInterfaceObject] interface ContextManagerHook {
     readonly attribute ContextManager context; 
   };
   webinos implements ContextManager;
