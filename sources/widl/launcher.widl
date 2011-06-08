@@ -62,9 +62,8 @@ module AppLauncher {
   
   
   /**
-   * \brief TODO: \n
-   *  - applicationID type should be defined in webinoscore module \n
-   *  - PendingOperation should be defined in webinoscore module\n
+   * \brief NOTE: \n
+   *  - applicationID type will be defined in webinoscore module. Each application will have a unique ID coming from its manifest file. applicationID is a string composed of ID from the app certificate and identifiers assigned by the maker of the app. For the purposes of phase 1 AppLauncher API, we can assume the ID is a string that will be known to the application that starts another application and is known to the runtime based on manifests of installed apps. \n
    *
    * This is the main interface for the AppLauncher API.
    *
