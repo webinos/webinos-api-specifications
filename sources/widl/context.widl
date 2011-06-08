@@ -56,7 +56,7 @@ module context {
      * the input parameter is not compatible with the expected type for 
      * that parameter.
      */
-    void performQuery(in QuerySuccessCallback successCallback,
+    void executeQuery(in QuerySuccessCallback successCallback,
                       in ErrorCallback? errorCallback,
                       in Query query)
          raises(ContextError);
