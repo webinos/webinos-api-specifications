@@ -1,5 +1,5 @@
 /**
- * \brief The webinos userprofile API to access user information. This API uses the Contact interface of the webinos Contacts API (http://dev.webinos.org/specifications/draft/contacts.html) and extend it with social network attributes.
+ * \brief The webinos userprofile API to access user information. This API uses the Contact interface of the webinos Contacts API (http://dev.webinos.org/specifications/draft/contacts.html) and extend it with social network attributes from Portablecontacts from August 5, 2008 (http://portablecontacts.net/draft-spec.html). 
  *
  * This API offers access to information of the user. Therefore, the webinos Contact interface will be used as a basis to provide fundamental information about the user (e.g. name, nickname, gender, birthday, etc.) and extends it with social network attributes. These social network attributes are a simple pointer where the webinos user has non-webinos profiles. These information then could be used by the application to query the external API for additional information (e.g. query the Facebook Graph API for the buddylist).
  *
@@ -158,15 +158,15 @@ module userprofile {
 		/**
 		 * \brief socialNetworkProvider of type DOMString
 		 *
-		 * The identifier of the social network provider 
+		 * The identifier of the social network provider, for the purposes of sorting and filtering.
 		 */
 		attribute DOMString? socialNetworkProvider;
 		
 		/**
-		 * \brief socialId of type DOMString
+		 * \brief userId of type DOMString
 		 *
-		 * 	The user's IDs in the social network, that is one or more elements that can be used to uniquely identify the user (i.e. userName, social network ID number, email).
+		 * 	The user's IDs in the social network, that is one or more elements that can be used to uniquely identify the user (i.e. userName, social network ID number, email). Usually chosen automatically, and usually numeric but sometimes alphanumeric, e.g. "12345" or "1Z425A". 
 		 */
-		attribute DOMString? socialId;
+		attribute DOMString? userId;
 	};
 };
