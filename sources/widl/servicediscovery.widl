@@ -6,7 +6,7 @@
  * Service Discovery can be used to find services that are exposed in a personal zone
  * or via legacy discovery methods, e.g. Bluetooth service discovery, UPnP, USB
  * or DNS-SD. The discovery process is not limited to services available via 
- * local connectivity bearers. It is also possible remote services. 
+ * local connectivity bearers. It is also possible discover remote services. 
  * 
  * The api assumes that the web application is installed, trusted and that the user is
  * authenticated/authorized to use the api.
@@ -87,7 +87,14 @@ module serviceDiscovery {
 		 * \throw DiscoveryExceptions 
 		 */
 		 PendingOperation findServices(in DOMString zoneId, in ServiceType serviceType, in SuccessCallBack successCallBack, in optional ErrorCallBack errorCallBack, in optional Options options, in optional Filter filter)
-		 raises(DiscoveryExceptions);		 
+		 raises(DiscoveryExceptions);
+		/**
+		 * \brief The getServiceId method generates an service identity that can be shared to other peers to directly bind to a service without invoking a findServices operation.
+		 * \param sharedFunctionId Identity of the service exposed with the webinos:shared-function element in the manifest.
+		 * \throw DiscoveryExceptions 
+		 */
+		 DOMString getServiceId (in DOMString sharedFunctionId)
+		 raises(DiscoveryExceptions);                                                          
 	};
 		
 	/**
