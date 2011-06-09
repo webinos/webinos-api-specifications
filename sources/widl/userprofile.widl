@@ -122,18 +122,18 @@ module userprofile {
 	interface UserProfile : Contact {
 	
 		/**
+		 * \brief updated of type DOMString
+		 *
+		 * The most recent date the details of this userprofile were updated (i.e. the modified date of this entry). The value MUST be a valid xd:dateTime (e.g. 2008-01-23T04:56:22Z). If this userprofile has never been modified since its initial creation, the value MUST be the date of creating the userprofile.
+		 */
+		attribute DOMString updated;
+	
+		/**
 		 * \brief preferredUsername of type DOMString
 		 *
 		 * The preferred username of this user on sites that ask for a username (e.g. jsmarr or daveman692). This field may be useful for describing the owner (i.e. the value when /@me/@self is requested), e.g. Consumers MAY wish to use this value to pre-populate a username for this user when signing up for a new service. See [[PORT] section 7.2.1].
 		 */
 		attribute DOMString? preferredUsername;
-		
-		/**
-		 * \brief updated of type DOMString
-		 *
-		 * The most recent date the details of this userprofile were updated (i.e. the modified date of this entry). The value MUST be a valid xd:dateTime (e.g. 2008-01-23T04:56:22Z). If this userprofile has never been modified since its initial creation, the value MUST be the date of creating the userprofile.
-		 */
-		attribute DOMString? updated;
 		
 		/**
 		 * \brief socialProfiles of type array of SocialNetworkProfile
