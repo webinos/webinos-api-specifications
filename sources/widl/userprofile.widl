@@ -129,11 +129,18 @@ module userprofile {
 		attribute DOMString? preferredUsername;
 		
 		/**
+		 * \brief updated of type DOMString
+		 *
+		 * The most recent date the details of this userprofile were updated (i.e. the modified date of this entry). The value MUST be a valid xd:dateTime (e.g. 2008-01-23T04:56:22Z). If this userprofile has never been modified since its initial creation, the value MUST be the date of creating the userprofile.
+		 */
+		attribute DOMString? updated;
+		
+		/**
 		 * \brief socialProfiles of type array of SocialNetworkProfile
 		 *
 		 * The User profile on a social network provider.
 		 */
-		attribute SocialNetworkProfile[] socialProfiles;	
+		attribute SocialNetworkProfile[]? socialProfiles;
 	};
 	
 	/**
