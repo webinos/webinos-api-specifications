@@ -10,7 +10,7 @@
  * in combination with the the general Webinos service discovery methods findServices() and bind().  
  *
  * The API consists of two interfaces: \n
- * - A sensor manager to configure a selected sensor and to initiate listening to sensor events.\n
+ * - A sensor manager to configure a selected sensor.\n
  * - A DOM level 3 event that provides sensor data.\n
  *
  * Currently 5 different sensor types are defined but the API could easily be extended with additional sensor types.
@@ -36,7 +36,7 @@
  * Identifies the pressure sensor type. 
  *
  * \author Claes Nilsson &lt;claes1.nilsson@sonyericsson.com&gt;
- * \version 0.8 
+ * \version 0.9 
  */
 
 module sensors {
@@ -101,7 +101,7 @@ module sensors {
 
 
                 // Start listening to sensor events and log values. 
-                mySensor.addSensorEventListener(mySensor.id, function (event) {
+                mySensor.addEventListener('sensor', function (event) {
                           console.log(event.sensorValues[0]);
 
                           var temp = document.getElementById('temp');
@@ -161,20 +161,7 @@ module sensors {
        PendingOp configureSensor (in DOMString uniqueId, in ConfigureSensorOptions options, in ConfigureSensorCB successCB, in optional SensorErrorCB errorCB)
            raises (SensorException);
   
-      /**
-       * \brief Adds a sensor event listener identified by the uniqueId.
-       *
-       *
-       *
-       * \param uniqueId Unique id of the sensor 
-       * \param listener Event listener call back function (see http://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/)
-       * \param useCapture If true, useCapture indicates that the user wishes to add the event listener for the capture phase only,
-       * i.e. this event listener will not be triggered during the target and bubbling phases. If false, the event listener will only be
-       * triggered during the target and bubbling phases (see http://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/)
-       * 
-       */
-       void addSensorEventListener (in DOMString uniqueId, in EventListener listener, in boolean useCapture);    
-  
+ 
     };
 
 
@@ -397,7 +384,7 @@ module sensors {
   /**
    * \brief This interface defines the "genericsensor" event type.
    *
-   *  Registration for generic sensor events is achieved by calling addSensorEventListener with event type set to uniqueId of the selected sensor.
+   *  Registration for generic sensor events is achieved by calling addEventListener instantiated on the selected sensor object with event type set to "sensor" (see code example in the beginning of this specification)
    * 
    *
    * 
@@ -452,7 +439,7 @@ module sensors {
    * sensorValue[1] = A normalized value between 0 and 1.\n
    *\n
    * http://webinos.org/api/sensors.pressure:\n
-   * sensorValue[0] = the measured atmospheric pressure around the device in hPa (millibar)
+   * sensorValue[0] = the measured atmospheric pressure around the device in hPa (millibar)\n
    * sensorValue[1] = A normalized value between 0 and 1.\n
    *\n
    * http://webinos.org/api/sensors.proximity:\n
@@ -462,6 +449,11 @@ module sensors {
    */
     readonly attribute DOMString sensorType;
 
+  /**
+   * \brief The unique identity of the of the specific sensor
+   */
+    readonly attribute DOMString sensorId;
+
 
   /**
    * \brief The accuracy of the sensor
@@ -469,7 +461,8 @@ module sensors {
     readonly attribute unsigned short accuracy;
 
   /**
-   * \brief The timestamp of the sensor. The time in nanosecond at which the event happened.
+   * \brief The timestamp of the sensor. The time in nanosecond at which the sensor data was generated at the sensor. \n
+   * (Not sure if this attribute is needed. It might be enough with the standard DOM Event attribute timeStamp. However, we might need to have a separate timestamp for when the data was generated in the sensor)
    */
     readonly attribute unsigned long? timestamp;
 
@@ -496,22 +489,24 @@ module sensors {
    *
    * The initSensorEvent() method must initialize the event in a manner analogous to the initEvent() method in http://www.w3.org/TR/2010/WD-DOM-Level-3-Events-20100907/.
    * The method can for example be used with document.createEvent() and EventTarget.dispatchEvent() to simulate a specific event.
-   * The sensorType, accuracy, timestamp, rate, interrupt and sensorvalues arguments must initialize the attributes with the same names.
+   * The sensorType, sensorId, accuracy, timestamp, rate, interrupt and sensorvalues arguments must initialize the attributes with the same names.
    *   
-   * \param uniqueId Unique id of sensor
+   * \param type Event type i.e. 'sensor'
    * \param bubbles True if event bubbles
    * \param cancelable True if event cancelable
    * \param sensorType Sensor type as a URI
+   * \param sensorId The unique identity of the specific sensor
    * \param accuracy Accuracy of sensor data
    * \param timestamp Timestamp 
    * \param rate Rate
    * \param interrupt Interrupt mode
    * \param sensorValues Array of sensor values
    */
-    void initSensorEvent(in DOMString uniqueId,
+    void initSensorEvent(in DOMString type,
                          in boolean bubbles,
                          in boolean cancelable,
-                         in SensorType sensorType,
+                         in DOMString sensorType,
+                         in DOMString sensorId,
                          in unsigned short accuracy,
                          in unsigned long timestamp,
                          in unsigned short rate,
