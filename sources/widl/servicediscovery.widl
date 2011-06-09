@@ -112,7 +112,7 @@ module serviceDiscovery {
 	};
 		
 	/**
-	 * \brief SuccessCallBack interface definition
+	 * \brief FindCallBack interface definition
 	 */
 	[Callback=FunctionOnly, NoInterfaceObject] interface FindCallBack {
 		/**
