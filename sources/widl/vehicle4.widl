@@ -24,8 +24,6 @@ module vehicle{
 	};
 	/**
 	* \brief This interface defines the address properties, which can be passed to the navigation system using the requestGuidance() function.   The <a href="http://dev.w3.org/geo/api/spec-source-v2.html#address_interface">Address interface</a> defined in the v2 of the W3C Geolocation API is beeing used for that?
-	* 
-	* Description to be completed with code examples
 	*
 	*/  
 	interface Address{
@@ -69,7 +67,6 @@ module vehicle{
 	/**
 	* \brief This interface defines the LatLng properties, which can be passed to the navigation system using the requestGuidance() function. The format is WGS84
 	* 
-	* Description to be completed with code examples
 	*
 	*/  
 	interface LatLng{
@@ -176,26 +173,27 @@ module vehicle{
 		*/		
 		readonly attribute DOMString transmission;
 		/**
-		* \brief Adds a navigation event listener identified by the NavigationEventId.
+		* \brief Register EventListener for Event inside the Vehicle
+		*
 		*
 		* \code
-		*
-		* 
+		* // registering an Event for a Shift
+		* webinos.vehicle.addEventListener("shift", shiftHandler, null);
+		* function shiftHandler(e){
+		*   document.getElementById("info").innerHTML = e.gear;
+		*  webinos.vehicle.removeListener("shift");
+		* }				
 		* \endcode
 		*
 		* \param eventId Unique id of the Event 
 		* \param listener Event listener call back function (see http://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/)
 		* \param useCapture If true, useCapture indicates that the user wishes to add the event listener for the capture phase only,
 		* i.e. this event listener will not be triggered during the target and bubbling phases. If false, the event listener will only be
-		* triggered during the target and bubbling phases (see http://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/)			*/
-		void addEventListener(in DOMString eventId, in EventListener listener, in boolean useCapture);
+		* triggered during the target and bubbling phases (see http://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/)			
+		*/
+		void addEventListener(in DOMString eventId, in EventListener listener, in boolean useCapture);		
 		/**
 		* \brief Sets the given address as the new destination of the build in-car navigation system
-		*
-		* \code
-		*
-		* 
-		* \endcode
 		*
 		* \param successCallback callback, if the address is succesully transferred
 		* \param errorCallback callback, if the address could not be transferred  
@@ -206,7 +204,23 @@ module vehicle{
 		* \brief Sets the given geolocation point as the new destination of the build in-car navigation system
 		*
 		* \code
-		*
+		*	var destinations =new Array();
+		*	destination[0] = new webinos.Address("Petuelring 130", "80788", "MÜNCHEN", "DE");
+		*      destination[1] = new webinos.Address("Hanauer Strasse 46", "80992", "MÜNCHEN", "DE");
+		*      webinos.vehicle.requestGuidance(succesCB, null, destinations);
+		*  	webinos.vehicle.addEventListener("destination-reached", handleDestinations, false);
+		*      
+		*	function handleDestinations(event){
+		*           	if(event.type == "destination-reached"){
+		*			switch(event.address){
+		*				case destination[0]:
+		*					console.log("Reached the HQ");
+		*				case destination[1]:
+		*					console.log("Reached the research center");
+		*			}
+		*		}
+		*	}
+		*      
 		* 
 		* \endcode
 		*
@@ -259,6 +273,17 @@ module vehicle{
 		* \brief A const describing the event that the navigation to a destination has been cancelled.
 		*/			
 		const DOMString DESTINATION_CANCELLED = "destination-cancelled";	
+		
+		/**
+		* \brief attribute defining the type of the NavigationEvent. The type canbe the "destination-reached", "destination-changed" and "destination-cancelled".
+		*/			
+		readonly attribute DOMString type;
+		
+		/**
+		* \brief attribute defining the event for which the address the event occured.	
+		*/
+		readonly attribute Address address;
+
 		/**
 		* \brief Method to set initial values of Navigation event
 		* \code
@@ -327,9 +352,15 @@ module vehicle{
 	};
 	/**
 	* \brief This interface defines a ParkSensor Event. 
-	* A listener can registered by vehicle.addEventLister("parksensors-front",listener,false);
+	* A listener can registered by vehicle.addEventLister("parksensor-front",listener,false);
 	* \code
-	*
+	*	webinos.vehicle.addEventListener("parksensor-front", psHandler, false);
+	*	webinos.vehicle.addEventListener("parksensor-rear", psHandler, false);
+	*	function psHandler(psEvent){
+	*		if(psEvent.left == 20){
+	*			console.log("obstacle on the left in" + psEvent.position + "is pretty close");
+	*		}
+	*	}
 	* \endcode
 	*/
 	[NoInterfaceObject]
@@ -366,7 +397,13 @@ module vehicle{
 		/**
 		* \brief Method to set initial values of ParkSensor event
 		* \code
-		* // TBD
+		* 	webinos.vehicle.addEventListener("pdc-front",pdcHandler, false);
+		*	webinos.vehicle.addEventListener("pdc-rear",pdcHandler, false);
+		*	function pdcHandler(pEvent){
+		*		if()
+		*	}
+		*
+		*	
 		* \endcode
 		* \param bubbles True if event bubbles
 		* \param cancelable True if event cancelable
@@ -389,113 +426,18 @@ module vehicle{
 	interface ClimateControllEvent : Event{
 		
 		/**
-		* \brief Method to set initial values of ParkSensor event
+		* \brief Method to set initial values of ClimateControll event
 		* \code
 		* // TBD
 		* \endcode
 		* \param bubbles True if event bubbles
 		* \param cancelable True if event cancelable
 		*/
-		void initParkControllEvent(boolean bubbles, boolean cancelable);
-	};
-	/**
-	* \brief This interface defines a Acceleration Event. 
-	* A listener can registered by vehicle.addEventLister("acceleration",listener,false);
-	* Question: Can we use the device orientation event for that?
-	* \code
-	*
-	* \endcode
-	*/
-	[NoInterfaceObject]
-	interface AccelerationEvent : Event{
-		/**
-		* \brief The current vehicle acceleration in lateral direction. The unit is is m/sÂ². 	
-		*/	
-		attribute float lateral;
-		/**
-		* \brief The current vehicle acceleration in longitudinal direction. The unit is is m/sÂ². 	
-		*/	
-		attribute float longitudinal;
-		/**
-		* \brief Method to set initial values of ParkSensor event
-		* \code
-		* // TBD
-		* \endcode
-		* \param bubbles True if event bubbles
-		* \param cancelable True if event cancelable
-		* \param lateral acceleration in lateral direction
-		* \param longitudinal acceleration in longitudinal direction
-		*/
-		void initAccelerationEvent(boolean bubbles, boolean cancelable, float lateral, float longitudinal);
-	};
-	/**
-	* \brief This interface defines a speed Event. 
-	* A listener can registered by vehicle.addEventLister("speed",listener,false);
-	* Question: Do we need this information? The Coordinates interface of the geolocation API already provides speed information (see http://dev.w3.org/geo/api/spec-source.html#coordinates_interface)
-	* \code
-	*
-	* \endcode
-	*/
-	[NoInterfaceObject]
-	interface SpeedEvent : Event{
-		/**
-		* \brief The current speed of the vehicle. The unit is kmph/10. 	
-		*/	
-		attribute unsigned short speed;
-		/**
-		* \brief Method to set initial values of ParkSensor event
-		* \code
-		* // TBD
-		* \endcode
-		* \param bubbles True if event bubbles
-		* \param cancelable True if event cancelable
-		* \param speed current speed of the vehicle
-		*/
-		void initAccelerationEvent(boolean bubbles, boolean cancelable, short speed);
-	};
-	/**
-	* \brief This interface defines a Wheel Speed Event. 
-	* A listener can registered by vehicle.addEventLister("wheel-speed",listener,false);
-	* Question: Do we need this? Or shall we just provide a singel speed Event or use the Geolocation API for speed?
-	* \code
-	*
-	* \endcode
-	*/
-	[NoInterfaceObject]
-	interface WheelSpeedEvent : Event{
-		/**
-		* \brief The current speed of the front left wheel. The unit is kmph. 	
-		*/	
-		attribute unsigned short frontLeft;
-		/**
-		* \brief The current speed of the front right wheel. The unit is kmph. 	
-		*/	
-		attribute unsigned short frontRight;
-		/**
-		* \brief The current speed of the rear left wheel. The unit is kmph. 	
-		*/	
-		attribute unsigned short rearLeft;
-		/**
-		* \brief The current speed of the rear right wheel. The unit is kmph. 	
-		*/	
-		attribute unsigned short rearRight;
-		/**
-		* \brief Method to set initial values of ParkSensor event
-		* \code
-		* // TBD
-		* \endcode
-		* \param bubbles True if event bubbles
-		* \param cancelable True if event cancelable
-		* \param frontLeft speed of the front left wheel
-		* \param frontRight speed of the front right wheel
-		* \param rearLeft speed of the rear left wheel
-		* \param rearRight speed of the rear wheel wheel
-		*/
-		void initAccelerationEvent(boolean bubbles, boolean cancelable, short frontLeft, short frontRight, short rearLeft, short rearRight);
+		void initClimateControllEvent(boolean bubbles, boolean cancelable);
 	};
 	/**
 	* \brief This interface defines a shift Event. 
-	* A listener can registered by vehicle.addEventLister("gear",listener,false);
+	* A listener can registered by vehicle.addEventLister("shift",listener,false);
 	* Question: Can we use the device orientation event for that?
 	* \code
 	*
@@ -556,13 +498,22 @@ module vehicle{
 		* \param cancelable True if event cancelable
 		* \param gear current gear of the engine
 		*/
-		void initAccelerationEvent(boolean bubbles, boolean cancelable, short gear);
+		void initShiftEvent(boolean bubbles, boolean cancelable, short gear);
 	};
 		/**
 	* \brief This interface defines a Controll Event. 
 	* Event signals a change for controll inside the vehilce (e.g. lights, wiper, etc.)
 	* \code
-	*
+	*	webinos.vehicle.addEventListener("lights-hibeam", lightHandler, false);
+	*      function lightHandler(cEvent){
+	*		if(cEvent.controlId == "light-hibeam"){
+	*			if(cEvent.active == true){
+	*				console.log("Hibeam turned on");
+	*			}else{
+	*				console.log("Hibeam turned off");
+	*			}
+	*		}
+	*	}
 	* \endcode
 	*/
 	[NoInterfaceObject]
@@ -627,8 +578,6 @@ module vehicle{
 		* \brief constant indicates front whiper is on level2
 		*/	
 		const DOMString WHIPER_FRONT_LEVEL2 = "whiper-front-level2";
-		
-
 		/**
 		* \brief describes the source of the event	
 		*/	
