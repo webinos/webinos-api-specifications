@@ -205,8 +205,8 @@ module vehicle{
 		*
 		* \code
 		*	var destinations =new Array();
-		*	destination[0] = new webinos.Address("Petuelring 130", "80788", "MÜNCHEN", "DE");
-		*      destination[1] = new webinos.Address("Hanauer Strasse 46", "80992", "MÜNCHEN", "DE");
+		*	destination[0] = new webinos.Address("Petuelring 130", "80788", "MÃœNCHEN", "DE");
+		*      destination[1] = new webinos.Address("Hanauer Strasse 46", "80992", "MÃœNCHEN", "DE");
 		*      webinos.vehicle.requestGuidance(succesCB, null, destinations);
 		*  	webinos.vehicle.addEventListener("destination-reached", handleDestinations, false);
 		*      
