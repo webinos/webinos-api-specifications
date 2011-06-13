@@ -1,0 +1,189 @@
+/**
+ * \brief The event handling API
+ *
+ * FILL ME
+ *
+ * \def-api-feature http://webinos.org/api/events
+ * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt;
+ * \version 0.1
+ */
+
+module events {
+	/**
+	 * \brief The EventEntity interface describes an addressable entity
+	 */
+	[NoInterfaceObject] interface EventEntity {
+		/**
+		 * \brief ...
+		 */
+		attribute DOMString id;
+	};
+
+	/**
+	 * \brief The EventAddressing interface ...
+	 */
+	[NoInterfaceObject] interface EventAddressing {
+		/**
+		 * \brief ...
+		 */
+		attribute EventEntity source;
+		/**
+		 * \brief ...
+		 */
+		attribute EventEntity[] to;
+		/**
+		 * \brief ...
+		 */
+		attribute EventEntity[] cc;
+		/**
+		 * \brief ...
+		 */
+		attribute EventEntity[] bcc;
+	};
+
+	/**
+	 * \brief The Event interface describes an event...
+	 */
+	interface Event {
+		/**
+		 * \brief ...
+		 */
+		readonly attribute DOMString type;
+		/**
+		 * \brief ...
+		 */
+		readonly attribute EventAddressing addressing;
+		/**
+		 * \brief ...
+		 */
+		readonly attribute DOMString id;
+		/**
+		 * \brief ...
+		 */
+		readonly attribute Event inResponseTo;
+		/**
+		 * \brief ...
+		 */
+		readonly attribute DOMTimeStamp? timeStamp;
+		/**
+		 * \brief ...
+		 */
+		readonly attribute DOMTimeStamp? expiryTimeStamp;
+		/**
+		 * \brief ...
+		 */
+		readonly attribute boolean addressingSensitive;
+		/**
+		 * \brief ...
+		 */
+		readonly attribute EventAddressing forwarding;
+		/**
+		 * \brief ...
+		 */
+		readonly attribute DOMTimeStamp? forwardingTimeStamp;
+		/**
+		 * \brief ...
+		 */
+		readonly attribute DOMString? payload;
+
+		/**
+		 * \brief ...
+		 */
+		void initEvent(in DOMString type,
+			       in EventAddressing addressing,
+			       in optional DOMString payload,
+			       in optional Event inResponseTo,
+			       in optional DOMTimeStamp timeStamp,
+			       in optional DOMTimeStamp expiryTimeStamp,
+			       in optional boolean addressingSensitive);
+		/**
+		 * \brief ...
+		 */
+		void dispatchEvent(in optional EventCallbacks callbacks,
+				   in optional DOMTimeStamp refTimeout,
+				   in optional boolean sync);
+		/**
+		 * \brief ...
+		 */
+		void forwardEvent(in EventAddressing forwarding,
+				  in optional DOMTimeStamp forwardingTimeStamp,
+				  in optional EventCallbacks callbacks,
+				  in optional DOMTimeStamp refTimeout,
+				  in optional boolean sync);
+	};
+
+	/**
+	 * \brief ...
+	 */
+	[NoInterfaceObject] interface EventDeliveryError {
+		const unsigned short INVALID_DATA = 1;
+		const unsigned short DESTINATION_UNREACHABLE = 2;
+		const unsigned short EXPIRED = 3;
+		const unsigned short DUPLICATE = 4;
+		const unsigned short REFUSED = 5;
+		const unsigned short NO_REF = 6;
+
+		readonly attribute unsigned short code;
+		readonly attribute DOMString message;
+	};
+
+	/**
+	 * \brief ...
+	 */
+	[Callback] interface EventCallback {
+		/**
+		 * \brief ...
+		 */
+		void handleEvent(in Event event);
+	};
+
+	/**
+	 * \brief ...
+	 */
+	[Callback] interface EventErrorCallback {
+		/**
+		 * \brief ...
+		 */
+		void handleEvent(in Event event, in EventDeliveryError error);
+	};
+
+	/**
+	 * \brief ...
+	 */
+	[NoInterfaceObject] interface EventCallbacks {
+		/**
+		 * \brief ...
+		 */
+		attribute EventCallback sentCB;
+		/**
+		 * \brief ...
+		 */
+		attribute EventCallback cachedCB;
+		/**
+		 * \brief ...
+		 */
+		attribute EventCallback deliveredCB;
+		/**
+		 * \brief ...
+		 */
+		attribute EventErrorCallback errorCB;
+	};
+
+	/**
+	 * \brief ...
+	 */
+	[NoInterfaceObject] interface WebinosEventListeners {
+		/**
+		 * \brief ...
+		 */
+		DOMString addEventListener(in EventCallback listener,
+					   in optional DOMString type,
+					   in optional EventEntity source,
+					   in optional EventEntity destination);
+		/**
+		 * \brief ...
+		 */
+		void removeEventListener(in DOMString listenerId);
+	};
+	Webinos implements WebinosEventListeners;
+};
