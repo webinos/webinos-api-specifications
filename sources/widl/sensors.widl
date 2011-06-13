@@ -36,7 +36,7 @@
  * Identifies the pressure sensor type. 
  *
  * \author Claes Nilsson &lt;claes1.nilsson@sonyericsson.com&gt;
- * \version 0.9 
+ * \version 0.10 
  */
 
 module sensors {
@@ -89,7 +89,7 @@ module sensors {
                       
  
        // Callback when bind has been successfully executed on the service object. The Sensor is authorized and ready to use
-        function successCB(mySensor) {
+        function bindCB(mySensor) {
  
                alert('Sensor ' + mySensor.displayName + ' with ID: ' + mySensor.id + ' ready to use');
                
@@ -110,7 +110,6 @@ module sensors {
 
                 }, true); 
 
-
         }
 
 
@@ -122,14 +121,12 @@ module sensors {
 
                 // Binds to the sensor API to initiate an authorized objects used to
                 // invoke services.  
-                sensorHandle = sensor.bind(successCB);
-                               
-
+                sensorHandle = sensor.bind({onBind:bindCB});                               
                 
         }
         
         // Get list of temperature sensors registered in the device through the Service Discovery findServices() method
-        findHandle  = window.webinos.findServices('self', {api:'http://webinos.org/api/sensors.temperature'}, sensorFoundCB);
+        findHandle  = window.webinos.findServices({api:'http://webinos.org/api/sensors.temperature'}, {onFound:sensorFoundCB});
  
        // Handle user selection of sensor
         var sensorlist = document.getElementById('sensorlist');
@@ -143,7 +140,7 @@ module sensors {
 
    * \endcode
    */  
-   interface SensorManager {
+   [NoInterfaceObject] interface SensorManager {
 
 
       /**
@@ -169,7 +166,7 @@ module sensors {
     * \brief ConfigureSensorCB interface definition
     *
     */
-    [Callback=FunctionOnly] interface ConfigureSensorCB {
+    [Callback=FunctionOnly, NoInterfaceObject] interface ConfigureSensorCB {
 
       /**
        * \brief onSuccess The onSuccess method is called when configuration of a sensor succeeded.  
@@ -183,7 +180,7 @@ module sensors {
     * \brief SensorErrorCB interface definition
     *
     */
-    [Callback=FunctionOnly] interface SensorErrorCB {
+    [Callback=FunctionOnly, NoInterfaceObject] interface SensorErrorCB {
 
       /**
        * \brief onError The onError method is called if an error occurs during the configureSensor() process.  
@@ -199,7 +196,7 @@ module sensors {
     * \brief SensorCBError interface definition
     *
     */
-    interface SensorCBError {
+    [NoInterfaceObject] interface SensorCBError {
 
       /**
        * \brief Uknown error
@@ -257,7 +254,7 @@ module sensors {
   /**
     * \brief ConfigureSensorOptions interface definition
     */
-    interface ConfigureSensorOptions {
+    [NoInterfaceObject] interface ConfigureSensorOptions {
 
       /**
        * \brief INFINITE Timeout Value
@@ -311,12 +308,12 @@ module sensors {
      * TBD: Elaborate on cancel of ongoing configureSensor() operation...
      *
      */
-     interface PendingOp {
+     [NoInterfaceObject] interface PendingOp {
 
     /**
      * \brief Method Cancel
      *
-     *  Cancel the pending asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
+     *  Cancel the pending asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return. No success or error callback for the pending operation will be invoked.
      */
         void cancel ();
      };
@@ -325,41 +322,40 @@ module sensors {
 
    /**
     * \brief This interface defines sensor properties. It is a sensor specific extension to the interface Service in the ServiceDiscovery module.
-    * The added attributes correspond to Android sensor API attributes - to be documented better
+    * The added attributes correspond to Android sensor API attributes.
     */ 
  
-    interface Sensor : Service {
+    [NoInterfaceObject] interface Sensor : Service {
  
        /**
-	* \brief Max range of sensor
+	* \brief Max range of sensor in the sensors unit.
 	*/
-    	readonly attribute float          maximumRange;
+    	readonly attribute float?          maximumRange;
 
        /**
-	* \brief Min delay of sensor
+	* \brief Min delay of sensor allowed between two events in microsecond or zero if this sensor only returns a value when the data it's measuring changes.
 	*/
-   	readonly attribute unsigned long   minDelay;
-
+   	readonly attribute unsigned long?   minDelay;
 
        /**
-	* \brief Power consumption of sensor. 
+	* \brief Power consumption of sensor in mA used by this sensor while in use. 
 	*/
-   	readonly attribute float	  power;
+   	readonly attribute float?	  power;
 
        /**
-	* \brief Resolution TBD
+	* \brief Resolution of the sensor in the sensors unit.
 	*/
-	readonly attribute float	  resolution;
+	readonly attribute float?	  resolution;
 
        /**
-	* \brief Vendor
+	* \brief Vendor string of this sensor.
 	*/
-	readonly attribute DOMString      vendor;  
+	readonly attribute DOMString?      vendor;  
 
        /**
-	* \brief Version
+	* \brief Version of the sensors module.
 	*/ 
-   	readonly attribute unsigned long   version; 
+   	readonly attribute unsigned long?  version; 
 
      };
 
@@ -370,7 +366,7 @@ module sensors {
     */ 
  
 
-    interface SensorValue {
+    [NoInterfaceObject] interface SensorValue {
 
        /**
 	* \brief Sensor value
@@ -390,7 +386,7 @@ module sensors {
    * 
    */
 
-  interface SensorEvent : Event {
+   [NoInterfaceObject] interface SensorEvent : Event {
 
  
   /**
@@ -460,12 +456,7 @@ module sensors {
    */
     readonly attribute unsigned short accuracy;
 
-  /**
-   * \brief The timestamp of the sensor. The time in nanosecond at which the sensor data was generated at the sensor. \n
-   * (Not sure if this attribute is needed. It might be enough with the standard DOM Event attribute timeStamp. However, we might need to have a separate timestamp for when the data was generated in the sensor)
-   */
-    readonly attribute unsigned long? timestamp;
-
+ 
   /**
    * \brief The rate of the sensor data
    */
@@ -489,7 +480,7 @@ module sensors {
    *
    * The initSensorEvent() method must initialize the event in a manner analogous to the initEvent() method in http://www.w3.org/TR/2010/WD-DOM-Level-3-Events-20100907/.
    * The method can for example be used with document.createEvent() and EventTarget.dispatchEvent() to simulate a specific event.
-   * The sensorType, sensorId, accuracy, timestamp, rate, interrupt and sensorvalues arguments must initialize the attributes with the same names.
+   * The sensorType, sensorId, accuracy, rate, interrupt and sensorvalues arguments must initialize the attributes with the same names.
    *   
    * \param type Event type i.e. 'sensor'
    * \param bubbles True if event bubbles
@@ -497,7 +488,6 @@ module sensors {
    * \param sensorType Sensor type as a URI
    * \param sensorId The unique identity of the specific sensor
    * \param accuracy Accuracy of sensor data
-   * \param timestamp Timestamp 
    * \param rate Rate
    * \param interrupt Interrupt mode
    * \param sensorValues Array of sensor values
@@ -508,7 +498,6 @@ module sensors {
                          in DOMString sensorType,
                          in DOMString sensorId,
                          in unsigned short accuracy,
-                         in unsigned long timestamp,
                          in unsigned short rate,
                          in boolean interrupt, 
                          in SensorValuesArray sensorValues); 
