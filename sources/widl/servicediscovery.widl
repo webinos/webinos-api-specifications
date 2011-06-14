@@ -2,14 +2,12 @@
  * \brief The Service Discovery API 
  *
  * The Webinos Service Discovery API provide web applications with 
- * an API to find and bind to services that are exposed in a personal zone of devices.
- * Service Discovery can be used to find services that are exposed in a personal zone
- * or via legacy discovery methods, e.g. Bluetooth service discovery, UPnP, USB
- * or DNS-SD. The discovery process is not limited to services available via 
- * local connectivity bearers. It is also possible remote services. 
+ * an API to find and bind to services. The API is not limited to the local device
+ * but enables the possibility to find services in a zone of trusted personal devices or
+ * services exposed legacy methods such as Bluetooth SD, mDNS or UPnP.
  * 
- * The api assumes that the web application is installed, trusted and that the user is
- * authenticated/authorized to use the api.
+ * Usage of the API assumes that the web application using the API is installed, trusted and that the user is
+ * authenticated/authorized to use the API.
  *
  * \def-api-feature http://webinos.org/api/servicediscovery
  * \author Anders Isberg &lt;anders.isberg@sonyericsson.com&gt;
@@ -19,35 +17,43 @@ module serviceDiscovery {
 	/**
 	 * \brief The ServiceDiscoveryManager interface provides functionality for service discovery. 
 	 * The API supports the possibility to find services based on a given service type either in 
-	 * a personal zone of devices or via other legacy discovery methods. When searching for a service type
+	 * a personal zone of devices or via other legacy discovery methods such as mDNS or UPnP. When searching for a service type
 	 * the operation can be restricted by providing certain constraints and/or context information.  
 	 *
 	 * The code example below shows how an application initiates a search query
-	 * to find a geolocation service. On each success callback a new selection item
-	 * is added to the option list, whilst new services are discovered. Once the user
-	 * selects a service, the usage of the service authorized and an implementation of
+	 * to find a geolocation service. Whenever a service is found, a new selection item
+	 * is added to the option list. Once the user selects a service, the usage of the service authorized and an implementation of
 	 * the API is instantiated.  
 	 * \code
 	var findHandle = 0;
 	var serviceHandle = 0;
 	var geoServices = {};
 	
-	// Success callback that displays a list of found services in a HTML selection list
+	// Callback that displays a list of found services in a HTML selection list
 	// The selection list is dynamically extended every time a new service is discovered.	
 	function serviceFoundCB(service) {	
 		var selectlist = document.getElementById('servicelist');
 		var option = document.createElement('option');
 	
 		option.value = service.id;
+		option.id = service.id;
 		option.appendChild(document.createTextNode(service.displayName));
 		geoServices[service.id] = service;
 		selectlist.appendChild(option);
 	}
 	
+	// Callback that removes a service from the selection list of found services, when the service is not available any longer, e.g. out of coverage. 
+	function serviceLostCB(service) {	
+		var option = document.getElementById(service.id);
+	
+		geoServices[service.id] = NULL;
+		option.parentNode.removeChild(option);
+	}
+	
 	// Success callback when bind has been successfully executed on the service object. 
-	function successCB(myLocationService) {
+	function bindCB(myLocationService) {
 		alert('Service ' + myLocationService.displayName + ' ready to use');
-		myLocationService.getCurrentPosition(showMap);
+		myLocationService.navigator.geolocation.getCurrentPosition(showMap);
 	}
 	
 	// Select callback method that is invoked when user selects an option in the selection list 
@@ -58,11 +64,11 @@ module serviceDiscovery {
 	
 		// Binds to the service to initiate an authorized object used to
 		// invoke services.  
-		serviceHandle = service.bind(successCB);
+		serviceHandle = service.bind({onBind:bindCB});
 	}
 	
 	// Initiate a search query for a service of the type geolocation
-	findHandle = window.webinos.findServices('self', {api:'http://webinos.org/api/geolocation'}, serviceFoundCB);
+	findHandle = window.webinos.findServices({api:'http://webinos.org/api/geolocation'}, {onFound:serviceFoundCB, onLost:serviceLostCB});
 	
 	var selectlist = document.getElementById('servicelist');
 	selectlist.addEventListener("change", function (e) {
@@ -76,18 +82,23 @@ module serviceDiscovery {
 	 */
 	[NoInterfaceObject] interface ServiceDiscoveryManager  {
 		/**
-		 * \brief The findServices method initiates an asynchronous search query for services matching the requested zoneId, serviceType and filter parameters. The method continues to execute until the findService method is canceled by the application or when maximum search timer expires.     
+		 * \brief The findServices method initiates an asynchronous search query for services matching the requested serviceType and filter parameters. The method continues to run until the findServices method is canceled by the application or when maximum search timer expires.     
 		 * The zones in which services are to be searched are expected to be managed by the Webinos runtime engine (rather than the application developer). As an example on how this zone management can be presented by a runtime engine, see a possible infobar (at http://dev.webinos.org/specifications/draft/infobar.png )  that would lead to a personal zones management UI (http://dev.webinos.org/specifications/draft/pz-add-ui.png )
-		 * \param zoneId Identity of a Personal Zone that is hosting the service. The zoneId 'self' is reserved for the Personal Zone of the user authenticated against the device. The zoneId 'shared' is reserved for services that are shared on the current network.
 		 * \param serviceType An input argument that defines which type of service that is requested.
-		 * \param successCallBack Callback issued every time a service is found matching search criteria.  The callback is called every time a new service is found matching the zoneId, serviceType and filter.
-		 * \param errorCallBack Callback issued if service discovery fails.  
+		 * \param findCallBack Callback interface used to report the outcome of the search process. 
 		 * \param options Defines search options. 
 		 * \param filter Defines a filter that be used to limit the service operation to certain constraints and context information. 
 		 * \throw DiscoveryExceptions 
 		 */
-		 PendingOperation findServices(in DOMString zoneId, in ServiceType serviceType, in SuccessCallBack successCallBack, in optional ErrorCallBack errorCallBack, in optional Options options, in optional Filter filter)
-		 raises(DiscoveryExceptions);		 
+		 PendingOperation findServices(in ServiceType serviceType, in FindCallBack findCallBack, in optional Options options, in optional Filter filter)
+		 raises(DiscoveryExceptions);
+		/**
+		 * \brief The getServiceId method generates an service identity that can be shared to other peers to directly bind to a service without invoking a findServices operation.
+		 * \param sharedFunctionId Identity of the service exposed with the webinos:shared-function element in the manifest.
+		 * \throw DiscoveryExceptions 
+		 */
+		 DOMString getServiceId (in DOMString sharedFunctionId)
+		 raises(DiscoveryExceptions);                                                          
 	};
 		
 	/**
@@ -101,27 +112,26 @@ module serviceDiscovery {
 	};
 		
 	/**
-	 * \brief SuccessCallBack interface definition
+	 * \brief FindCallBack interface definition
 	 */
-	[Callback=FunctionOnly, NoInterfaceObject] interface SuccessCallBack {
+	[Callback=FunctionOnly, NoInterfaceObject] interface FindCallBack {
 		/**
-		 * \brief Asynchronous success callback.      
-		 * \param service An input argument representing the discovered service.
+		 * \brief Asynchronous callback used whenever a new service is found.      
+		 * \param service An input argument representing the found service.
 		 */
-		 void onSuccess(in Service service);	  
-	};
-	
-	/**
-	 * \brief ErrorCallBack interface definition
-	 */
-	[Callback=FunctionOnly, NoInterfaceObject] interface ErrorCallBack {
+		 void onFound(in Service service);	  
+		/**
+		 * \brief Asynchronous callback used whenever a service that was previously found is not available any longer.       
+		 * \param service An input argument representing the lost service.
+		 */
+		 void onLost(in Service service);	  
 		/**
 		 * \brief Asynchronous error callback.   
 		 * \param error Error code. 
 		 */
-		void onErrror(in DiscoveryError error); 
+		void onErrror(in DiscoveryError error); 		 
 	};
-
+	
 	/**
 	 * \brief Service interface provides an API to bind to a specific service and monitoring
 	 * the current state of the service in an asynchronous manner. The process of binding
@@ -170,12 +180,11 @@ module serviceDiscovery {
 		attribute DOMString? description;
 		/**
 		 * \brief bind Binds to the service uniquely identified by the service identity.  
-		 * \param successCallBack Callback issued if a service is found.  The callback is called every time a new service is found matching the zoneId, serviceType and filter.
-		 * \param errorCallBack Callback issued if serviceDiscovery fails.  
+		 * \param bindCallBack Callback issued if a service is found.  The callback is called every time a new service is found matching the serviceType and filter. 
 		 * \param serviceId Unique id of the binding to the particular service. If no serviceId is provided as an in parameter, the id attribute in the Service interface will be used to bind the service.
 		 * \throw DiscoveryExceptions
 		 */
-		PendingOperation bind(in BindSuccessCallBack successCallBack, in optional BindErrorCallBack errorCallBack, in optional DOMString serviceId)
+		PendingOperation bind(in BindCallBack bindCallBack, in optional DOMString serviceId)
 		raises(DiscoveryExceptions);
 		
 		/**
@@ -189,33 +198,31 @@ module serviceDiscovery {
 	/**
 	 * \brief Bind success callback interface definition
 	 */
-	[Callback=FunctionOnly, NoInterfaceObject] interface BindSuccessCallBack {
+	 
+	 [Callback=FunctionOnly, NoInterfaceObject] interface BindCallBack {
 		/**
 		 * \brief Asynchronous success callback.      
 		 * \param service An input argument representing the service.
 		 */
-		 void onSuccess(in Service service);
+		 void onBind(in Service service);
+		/**
+		 * \brief Asynchronous callback used when a service is unbound.      
+		 */
+		 void onUnbind();
 		/**
 		 * \brief Asynchronous callback indicating that the service is available again      
 		 */		 
 		 void onServiceAvailable();
-	};
-	
-	/**
-	 * \brief Bind error callback interface definition
-	 */
-	[Callback=FunctionOnly, NoInterfaceObject] interface BindErrorCallBack {
+		/**
+		 * \brief Asynchronous indicating the service is temporarily unavailable.
+		 */		 		 
+		 void onServiceUnavailable();	  
 		/**
 		 * \brief Asynchronous error callback.   
 		 * \param error Error code. 
 		 */
 		void onErrror(in DiscoveryError error); 
-		/**
-		 * \brief Asynchronous indicating the service is temporarily unavailable.
-		 */		 		 
-		 void onServiceUnavailable();	  
 	};
-	
 	
 	/**
 	 * \brief Option interface definition

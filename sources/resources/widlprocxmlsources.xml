@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <widlprocxml>
     <file>gallery.widlprocxml</file>
-	<file>contacts.widlprocxml</file>
+    <file>contacts.widlprocxml</file>
     <file>sensors.widlprocxml</file>
     <file>tv.widlprocxml</file>
     <file>webinoscore.widlprocxml</file>
     <file>servicediscovery.widlprocxml</file>
-	  <file>userprofile.widlprocxml</file>
+    <file>userprofile.widlprocxml</file>
     <file>launcher.widlprocxml</file>
+    <file>events.widlprocxml</file>
 </widlprocxml>

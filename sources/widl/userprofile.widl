@@ -1,7 +1,7 @@
 /**
  * \brief The webinos userprofile API to access user information. This API uses the Contact interface of the webinos Contacts API (http://dev.webinos.org/specifications/draft/contacts.html) and extend it with social network attributes from Portablecontacts from August 5, 2008 (http://portablecontacts.net/draft-spec.html). 
  *
- * This API offers access to information of the user. Therefore, the webinos Contact interface will be used as a basis to provide fundamental information about the user (e.g. name, nickname, gender, birthday, etc.) and extends it with social network attributes. These social network attributes are a simple pointer where the webinos user has non-webinos profiles. These information then could be used by the application to query the external API for additional information (e.g. query the Facebook Graph API for the buddylist).
+ * This API offers access to information of the user. Therefore, the webinos Contact interface will be used as a base to provide fundamental information about the user (e.g. name, nickname, gender, birthday, etc.) and extends it with social network attributes. These social network attributes are a simple pointer where the webinos user has non-webinos profiles. These information then could be used by an application to query an external API for additional information (e.g. query the Facebook Graph API for the buddylist).
  *
  * \author WIDL version for webinos created by Ronny Gr&auml;fe &lt;ronny.graefe@t-systems.com&gt;
  * \version 0.2 
@@ -13,6 +13,41 @@ module userprofile {
 	 *
 	 */
 	interface UserProfileManager {
+	
+		/**
+		 * \brief find() method
+		 *
+		 * Find a userprofile in the webinos system according to the find user process detailed below. 
+		 *
+		 * This method takes two, three or four arguments. When called, it starts the following find userprofile process: 
+		 *
+		 * 1. Let successCallback be the callback indicated by the method's second argument. 
+		 *
+		 * 2. Let errorCallback be the callback indicated by the method's third argument, if any, or null otherwise. 
+		 *
+		 * 3. If successCallback is null, then throw a TypeError (as defined in [WEBIDL]).
+		 *
+		 * 4. If there is a task from the device task source in one of the task queues (e.g. an existing find() operation is still pending a response), run these substeps: 
+		 *
+		 * - The terms document base URL, browsing context, event handler attribute, event handler event type, task, task source and task queues are defined by the HTML5 specification [HTML5].
+		 *
+		 * 4.1 If errorCallback is not null, let error be a UserProfileError object whose code attribute has the value PENDING_OPERATION_ERROR and queue a task to invoke errorCallback with error as its argument. 
+		 *
+		 * 4.2 Abort this operation.
+		 *
+		 * 5. Return, and run the remaining steps asynchronously. 
+		 *
+		 * 6. Let results be the array of UserPofile objects obtained by searching userprofiles in the webinos system according to the rules defined in UserProfile Search Processing, or null if the search has failed.
+		 *
+		 * 7. If results is null, run these substeps: 
+		 *
+		 * 7.1 If errorCallback is not null, let error be a UserProfileError object whose code attribute has its value set according to the type of failure that occurred and queue a task to invoke errorCallback with error as its argument. 
+		 *
+		 * 7.2 Abort this operation.
+		 *
+		 * 8. Queue a task to invoke successCallback with results as its argument.
+		 */
+		caller void find(DOMString[] fields, UserProfileFindCB successCB, optional UserProfileErrorCB errorCB, optional UserProfileFindOptions options);
 			
 		/**
 		 * \brief createuserProfile() method - Creates a new user profile in the webinos system.
@@ -80,33 +115,6 @@ module userprofile {
 	};
 	
 	/**
-     * \brief The UserProfileError interface. It is a userprofile specific extension to the interface ContactError in the Contacts module.
-     */
-    [NoInterfaceObject]
-	interface UserProfileError : ContactError {
-		
-		/**
-         * \brief The userprofile does not exist in the webinos system.
-         */
-        const unsigned short USERPROFILE_NOT_EXIST = 101;
-    };
-        
-    /**
-     * \brief This is the wrapper interface for callbacks indicating failure of the createUserProfile(), updateUserProfile() and deleteUserProfile() operation. 
-     *
-     */         
-    [Callback=FunctionOnly, NoInterfaceObject]
-    interface UserProfileErrorCB  {  
-	
-        /**
-         * \brief Callback on failure of a find() operation
-         * \param error The UserProfileError object capturing the type of the error.
-         * \return void                 
-         */
-        void onerror(UserProfileError error);
-    };
-	
-	/**
 	 * \brief The UserProfile interface. It is a userprofile specific extension to the interface Contact in the Contacts module.
 	 *
 	 * 
@@ -125,7 +133,7 @@ module userprofile {
 		 *
 		 * The User profile on a social network provider.
 		 */
-		attribute SocialNetworkProfile[] socialProfiles;	
+		attribute SocialNetworkProfile[]? socialProfiles;
 	};
 	
 	/**
@@ -157,4 +165,54 @@ module userprofile {
 		 */
 		attribute DOMString? userId;
 	};
+	
+	/**
+     * \brief The UserProfileFindOptions interface describes the options that can be applied to userprofile searching. It inherits directly from ContactFindOptions and could be used to declare an filter for userprofile attributes. When a UserProfileFindOptions parameter is provided to the UserProfile find() operation, it should be processed according to the provisions detailed in Options Processing. 
+     *
+     */ 
+    [NoInterfaceObject]
+    interface UserProfileFindOptions : ContactFindOptions {
+
+    };
+	
+	/**
+     * \brief The UserProfileError interface. It is a userprofile specific extension to the interface ContactError in the Contacts module.
+     */
+    [NoInterfaceObject]
+	interface UserProfileError : ContactError {
+		
+		/**
+         * \brief The userprofile does not exist in the webinos system.
+         */
+        const unsigned short USERPROFILE_NOT_EXIST = 101;
+    };
+        
+    /**
+     * \brief This is the wrapper interface for callbacks indicating failure of the createUserProfile(), updateUserProfile() and deleteUserProfile() operation. 
+     *
+     */         
+    [Callback=FunctionOnly, NoInterfaceObject]
+    interface UserProfileErrorCB  {  
+	
+        /**
+         * \brief Callback on failure of a find() operation
+         * \param error The UserProfileError object capturing the type of the error.
+         * \return void                 
+         */
+        void onerror(UserProfileError error);
+    };
+	
+	/**
+     * \brief This is the wrapper interface for callbacks indicating success of the find() operation. 
+     *
+     */         
+    [Callback=FunctionOnly, NoInterfaceObject]
+    interface UserProfileFindCB {        
+        /**
+         * \brief Callback on success of a find() operation
+         * \param userProfileObjs An array of UserProfile objects resulting from the given UserProfile find() operation. 
+         * \return void                 
+         */
+        void onsuccess (UserProfile[] userProfileObjs);
+    };
 };
