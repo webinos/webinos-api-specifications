@@ -3,9 +3,27 @@
  *
  * The webinos Vehicle interface provides access to specific vehicle data. The Geolocation of the vehicle and the current speed can be retrieved using the Geolocation API. The API is based on the DOM3 Event model. 
  *
+ *
+ * \def-api-feature http://webinos.org/api/vehicle
+ * Identifies the light sensor type. 
+ *
+ * \def-api-feature http://webinos.org/api/vehicle.climate
+ * Identifies vehicle data related to climate controls. 
+ *
+ * \def-api-feature http://webinos.org/api/vehicle.navigation
+ * Identifies navigation module of a vehicle
+ *
+ * \def-api-feature http://webinos.org/api/vehicle.parksensors
+ * Identifies park sensor modules of a vehicle
+ *
+ * \def-api-feature http://webinos.org/api/vehicle.bordcomputer
+ * Identifies  bordcomputer information of a vehicle
+ *
+ * \def-api-feature http://webinos.org/api/vehicle.controls
+ * Identifies control data (e.g. whipers and lights) of a vehicle
  * 
  * \author Simon Isenberg &lt;Simon.Isenberg@bmw.de&gt;
- * \version 0.1
+ * \version 0.3
  */
 module vehicle{
 	/**
@@ -173,26 +191,6 @@ module vehicle{
 		*/		
 		readonly attribute DOMString transmission;
 		/**
-		* \brief Register EventListener for Event inside the Vehicle
-		*
-		*
-		* \code
-		* // registering an Event for a Shift
-		* webinos.vehicle.addEventListener("shift", shiftHandler, null);
-		* function shiftHandler(e){
-		*   document.getElementById("info").innerHTML = e.gear;
-		*  webinos.vehicle.removeListener("shift");
-		* }				
-		* \endcode
-		*
-		* \param eventId Unique id of the Event 
-		* \param listener Event listener call back function (see http://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/)
-		* \param useCapture If true, useCapture indicates that the user wishes to add the event listener for the capture phase only,
-		* i.e. this event listener will not be triggered during the target and bubbling phases. If false, the event listener will only be
-		* triggered during the target and bubbling phases (see http://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/)			
-		*/
-		void addEventListener(in DOMString eventId, in EventListener listener, in boolean useCapture);		
-		/**
 		* \brief Sets the given address as the new destination of the build in-car navigation system
 		*
 		* \param successCallback callback, if the address is succesully transferred
@@ -251,7 +249,12 @@ module vehicle{
 	*/
 	[Callback=FunctionOnly, NoInterfaceObject]
  	interface DestinationCallback {
-   		 void handleEvent(in POI[] pois);
+		/**
+		* \brief function is called, when the results for the destination
+		*
+		* \param pois 
+		*/
+   		 void handleResults(in POI[] pois);
   	};
 	
 	/**
@@ -286,9 +289,6 @@ module vehicle{
 
 		/**
 		* \brief Method to set initial values of Navigation event
-		* \code
-		* // TBD
-		* \endcode
 		* \param bubbles True if event bubbles
 		* \param cancelable True if event cancelable
 		* \param navigationEventId Sensor type
@@ -396,15 +396,6 @@ module vehicle{
 
 		/**
 		* \brief Method to set initial values of ParkSensor event
-		* \code
-		* 	webinos.vehicle.addEventListener("pdc-front",pdcHandler, false);
-		*	webinos.vehicle.addEventListener("pdc-rear",pdcHandler, false);
-		*	function pdcHandler(pEvent){
-		*		if()
-		*	}
-		*
-		*	
-		* \endcode
 		* \param bubbles True if event bubbles
 		* \param cancelable True if event cancelable
 		* \param position position of the sensors: front or rear
@@ -419,7 +410,7 @@ module vehicle{
 	* \brief This interface defines a Climate Controll Event. 
 	* A listener can registered by vehicle.addEventLister("climatecontrol",listener,false);
 	* \code
-	*
+	*	//TODO
 	* \endcode
 	*/
 	[NoInterfaceObject]
@@ -440,7 +431,12 @@ module vehicle{
 	* A listener can registered by vehicle.addEventLister("shift",listener,false);
 	* Question: Can we use the device orientation event for that?
 	* \code
-	*
+	* // registering an Event for a Shift
+	* webinos.vehicle.addEventListener("shift", shiftHandler, null);
+	* function shiftHandler(e){
+	*   document.getElementById("info").innerHTML = e.gear;
+	*  webinos.vehicle.removeListener("shift");
+	* }				
 	* \endcode
 	*/
 	[NoInterfaceObject]
@@ -486,23 +482,20 @@ module vehicle{
 		*/	
 		const short GEAR_PARKING = -2;		
 		/**
-		* \brief The current speed of the vehicle. The unit is kmph/10. 	
+		* \brief represents the current gear of the vehicle. 	
 		*/	
 		attribute short gear;
 		/**
 		* \brief Method to set initial values a shift event
-		* \code
-		* // TBD
-		* \endcode
 		* \param bubbles True if event bubbles
 		* \param cancelable True if event cancelable
 		* \param gear current gear of the engine
 		*/
 		void initShiftEvent(boolean bubbles, boolean cancelable, short gear);
 	};
-		/**
-	* \brief This interface defines a Controll Event. 
-	* Event signals a change for controll inside the vehilce (e.g. lights, wiper, etc.)
+	/**
+	* \brief This interface defines a Control Event. 
+	* Event signals a change for control inside the vehilce (e.g. lights, wiper, etc.)
 	* \code
 	*	webinos.vehicle.addEventListener("lights-hibeam", lightHandler, false);
 	*      function lightHandler(cEvent){
