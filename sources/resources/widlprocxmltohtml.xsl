@@ -409,15 +409,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
                 </xsl:choose>
                 </li>
                 <xsl:choose>
-                <xsl:when test="substring(Type/@name, (string-length(Type/@name) - string-length('StringArray'))+1) = 'StringArray'"> <li><b>Nullable: </b>No.</li></xsl:when> <!-- For non nullable arrays -->
-	<xsl:when test="substring(Type/@name, (string-length(Type/@name) - string-length('ShortArray'))+1) = 'ShortArray'"> <li><b>Nullable: </b>No.</li></xsl:when> <!-- For non nullable arrays -->
-                <xsl:when test="substring(Type/@name, (string-length(Type/@name) - string-length('UnsignedShortArray'))+1) = 'UnsignedShortArray'"> <li><b>Nullable: </b>No.</li></xsl:when> <!-- For non nullable arrays -->
-                <xsl:when test="substring(Type/@name, (string-length(Type/@name) - string-length('ByteArray'))+1) = 'ByteArray'"> <li><b>Nullable: </b>No.</li></xsl:when> <!-- For non nullable arrays -->
-                <xsl:when test="substring(Type/@name, (string-length(Type/@name) - string-length('DOMString?'))+1) = 'DOMString?'"> <li><b>Nullable: </b>Yes.</li></xsl:when> <!-- For non nullable arrays -->
-                <!-- Issue 1205 decision not to document this--> <xsl:when test="Type/@name"></xsl:when><!-- Non Nullable ifc Types -->
-                <xsl:when test="substring(Type/@type, (string-length(Type/@type) - string-length('?'))+1) = '?'"><li><b>Nullable: </b>Yes.</li> </xsl:when> <!-- Non Nullable JS Types -->
-                <xsl:otherwise><li><b>Nullable: </b>No.</li></xsl:otherwise>
-                </xsl:choose>
+		<li><b>Nullable</b>: <xsl:choose><xsl:when test="Type/@nullable">Yes</xsl:when><xsl:otherwise>No</xsl:otherwise></xsl:choose></li>
                 <li><b>Type: </b>
 <!--<xsl:value-of select="Type/@name"/><xsl:value-of select="Type/@type"/>-->
                 <xsl:call-template name="refToLink">
