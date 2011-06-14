@@ -408,7 +408,6 @@ XSLT stylesheet to convert widlprocxml into html documentation.
                 <xsl:otherwise>No.</xsl:otherwise>
                 </xsl:choose>
                 </li>
-                <xsl:choose>
 		<li><b>Nullable</b>: <xsl:choose><xsl:when test="Type/@nullable">Yes</xsl:when><xsl:otherwise>No</xsl:otherwise></xsl:choose></li>
                 <li><b>Type: </b>
 <!--<xsl:value-of select="Type/@name"/><xsl:value-of select="Type/@type"/>-->
