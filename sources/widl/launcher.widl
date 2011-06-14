@@ -91,7 +91,7 @@ module AppLauncher {
    */  
   
   
-  interface AppLauncherManager {
+  [NoInterfaceObject] interface AppLauncherManager {
 
       /**
        * \brief Starts a webinos applicaiton identified by appID. The method is asynchronous. If the app was started successfuly, successCallback is invoked. In case of error, errorCallback is called.
@@ -133,7 +133,7 @@ module AppLauncher {
      * cancelling the operation. 
      *
      */
-     interface PendingOperation {
+     [NoInterfaceObject] interface PendingOperation {
 
     /**
      * \brief Cancel method for cancelling asynchronous operation
