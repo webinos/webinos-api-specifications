@@ -1,11 +1,12 @@
 /**
  * \brief Interface for NFC Tags reader/writer.
  *
- * API to read and write to NFC tags
+ * API to read and write to NFC tags.
+ * This specification provides a new DOM event ("nfctag") to discover when a nfc tag
+ * enters the field of the device.
+ *
  * \code
- * var nfcAdapterList = webinos.nfc.getAdapters();
- * var selectedNfcAdapter = nfcAdapterList[0];
- * selectedNfcAdapter.addEventListener("nfctag", nfcListener, true);
+ * window.addEventListener("nfctag", nfcListener, true);
  *
  * function nfcListener(event)
  * {
@@ -19,21 +20,28 @@
  *     }
  *   }
  *   if(techSelected) {
- *     techSelected.connect();
  *     var ndefMessage = techSelected.readCachedNdefMessage();
+ *     for (var index=0; index &lt; ndefMessage.ndefRecords.length) {
+ *       if(ndefMessage.ndefRecords[index].type = ndefMessage.NDEFRECTYPE_URI)
+ *			alert("uri found: "+ndefMessage.ndefRecords[index].textPayload);
+ *     }
  *   }
  * }
  * \endcode
  *
- * \author 
+ * \def-api-feature http://webinos.org/api/nfc
+ * Acccess to all the module. This feature provides access to the whole API.
+ *
+ * \def-api-feature http://webinos.org/api/nfc.read
+ * Acccess to all the module except write operations.
+ *
+ * \author Hans Mirhaug &lt;hans@ambiesense.com&gt;
+ * \author Stefano Vercelli &lt;stefano.vercelli@telecomitalia.it&gt;
+ *
+ * \version 0.2 
  */
 
 module nfc {
-
-	/**
-	 * \brief Array of NCF adapters.
-	 */
-	typedef sequence<NFCAdapter>		NFCAdapterArray;
 
 	/**
 	 * \brief Array of NFCTagTechnology.
@@ -51,7 +59,7 @@ module nfc {
 	typedef sequence<octet> ByteArray;
 
 	/**
-	 * \brief Definition of pending op. Should be inserted in a common package?
+	 * \brief Definition of pending op.
 	 * 
 	 */
 	[NoInterfaceObject] interface PendingOperation {
@@ -64,75 +72,10 @@ module nfc {
 
 	
 	/**
-	 * \brief Interface for retrieving available NFC adapters.
+	 * \brief NFC tag event.
 	 *
 	 */
-	interface NFCManager {
-
-	    /**
-	     * \brief Retrieve the list of available NFC adapters.
-	     *
-	     * In case no adapter is available returns an empty list.
-		 *
-	     */
-	    NFCAdapterArray getAdapters();
-
-	};
-
-	
-	/**
-	 * \brief Interface for managing an NFC adapter
-	 *
-	 */
-	interface NFCAdapter {
-
-		/**
-		 * \brief Adds a listener to identify a new tag in range.
-		 *
-		 * \param type It must be "nfctag" to register for nfc events.
-		 * \param listener Event listener call back function (see http://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/).
-		 * \param useCapture If true, useCapture indicates that the user wishes to add the event listener for the capture phase only,
-		 * i.e. this event listener will not be triggered during the target and bubbling phases. If false, the event listener will only be
-		 * triggered during the target and bubbling phases (see http://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/).
-		 *
-		 */
-		void addEventListener (in DOMString type, in EventListener listener, in boolean useCapture);
-		
-		/**
-		 * \brief Adds a listener to identify a new tag in range.
-		 *
-		 * \param type It must be "nfctag" to unregister for nfc events.
-		 * \param listener Event listener call back function (see http://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/).
-		 * \param useCapture If true, useCapture indicates that the user wishes to add the event listener for the capture phase only,
-		 * i.e. this event listener will not be triggered during the target and bubbling phases. If false, the event listener will only be
-		 * triggered during the target and bubbling phases (see http://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/).
-		 *
-		 */
-		void removeEventListener (in DOMString type, in EventListener listener, in boolean useCapture);
-		
-	};
-
-
-	/**
-	 * \brief NFC event generated when a new tag is detected.
-	 *
-	 */
-	interface NFCEvent : Event {
-		
-		/**
-		 * \brief The tag that generated the event.
-		 *
-		 */
-		readonly attribute NFCTag tag;
-		
-	};
-	
-	
-	/**
-	 * \brief NFC tag.
-	 *
-	 */
-	interface NFCTag {
+	[NoInterfaceObject] interface NFCTag : Event {
 
 		/**
 		 * \brief The identifier of the tag.
@@ -153,7 +96,7 @@ module nfc {
 	 * \brief NFC technology.
 	 *
 	 */
-	interface NFCTagTechnology {
+	[NoInterfaceObject] interface NFCTagTechnology {
 
 		/**
 		 * \brief Constant identifying a non supported technology.
@@ -227,8 +170,42 @@ module nfc {
 	/**
 	 * \brief Ndef technology.
 	 *
+	 * \code
+	 * window.addEventListener("nfctag", nfcListener, true);
+	 *
+	 * function nfcListener(event)
+	 * {
+	 *   var techSelected = null;
+	 *   var techSupported = event.tag.techList;
+	 *   if(techSupported.length > 0) {
+	 *     for (var index=0; index &lt; techSupported.length; index++) {
+	 *       if(techSupported[index].type == techSupported[index].TECH_NDEF) {
+	 *         techSelected = techSupported[index];
+	 *       }
+	 *     }
+	 *   }
+	 *   // write to the tag
+	 *   if(techSelected) {
+	 *     var newMsg = techSelected.createNdefMessage();
+	 *     newMsg.addTextNdefRecord(newMsg.NDEFRECTYPE_URI, "http://webinos.org");
+	 *     techSelected.writeNdefMessage(wSuccess, wError, newMsg);
+	 *   }
+	 * }
+	 *
+	 * function wSuccess()
+	 * {
+	 *   alert("write successfull");
+	 * }
+	 *
+	 * function wError()
+	 * {
+	 *   alert("write error");
+	 * }
+	 *
+	 * \endcode
+	 *
 	 */
-	interface NFCTagTechnologyNdef : NFCTagTechnology {
+	[NoInterfaceObject] interface NFCTagTechnologyNdef : NFCTagTechnology {
 	
 		/**
 		 * \brief Constant identifying a non supported Ndef format.
@@ -333,31 +310,7 @@ module nfc {
 	 * \brief Ndef message.
 	 *
 	 */
-	interface NdefMessage {
-	
-		/**
-		 * \brief List of Ndef records.
-		 *
-		 */
-		readonly attribute NdefRecordArray ndefRecords;
-		
-		/**
-		 * \brief Adds a record to the Ndef message.
-		 *
-		 */
-		void addNdefRecord(in unsigned short type, in DOMString payload);
-		
-	};
-	
-	
-	/**
-	 * \brief Ndef record.
-	 *
-	 * Chunk of records are assembled by the underlying implementation and returned as
-	 * a single Ndef record.
-	 *
-	 */
-	interface NdefRecord {
+	[NoInterfaceObject] interface NdefMessage {
 	
 		/**
 		 * \brief Constant identifying an unknown Ndef record type.
@@ -395,6 +348,36 @@ module nfc {
 		 */
 		const unsigned short NDEFRECTYPE_EXTERNALRTD = 5;
 
+		/**
+		 * \brief List of Ndef records.
+		 *
+		 */
+		readonly attribute NdefRecordArray ndefRecords;
+		
+		/**
+		 * \brief Adds a text record to the Ndef message.
+		 *
+		 */
+		void addTextNdefRecord(in unsigned short type, in DOMString payload);
+		
+		/**
+		 * \brief Adds a binary record to the Ndef message.
+		 *
+		 */
+		void addBinaryNdefRecord(in unsigned short type, in ByteArray payload);
+		
+	};
+	
+	
+	/**
+	 * \brief Ndef record.
+	 *
+	 * Chunk of records are assembled by the underlying implementation and returned as
+	 * a single Ndef record.
+	 *
+	 */
+	[NoInterfaceObject] interface NdefRecord {
+	
 		/**
 		 * \brief The type of the record.
 		 *
