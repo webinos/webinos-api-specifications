@@ -8,6 +8,8 @@
  *
  * TODO: add informal description + examples here.
  *
+ * TODO: exceptions
+ *
  * \def-api-feature http://webinos.org/api/events
  * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt;
  * \version 0.2
@@ -34,10 +36,6 @@ module events {
 	 * lax non-normalized form to ease API usage.
 	 *
 	 * Details on both forms are given in each attribute's description.
-	 *
-	 * NOTE: When sending an event, please keep in mind that all recipients
-	 * SHALL get references to all entities specified in the "to" and "cc"
-	 * attributes.
 	 */
 	[NoInterfaceObject] interface EventAddressing {
 		/**
@@ -54,8 +52,9 @@ module events {
 		 *
 		 * It MUST always contain at least one element.
 		 *
-		 * In the normalized form it SHALL be sorted by Unicode code
-		 * points and SHALL NOT contain duplicate entries.
+		 * In the normalized form it SHALL be sorted in ascending order
+		 * by Unicode code points and SHALL NOT contain duplicate
+		 * entries.
 		 */
 		attribute EventEntity[] to;
 		/**
@@ -63,9 +62,10 @@ module events {
 		 *
 		 * It MAY be empty.
 		 *
-		 * In the normalized form it SHALL be sorted by Unicode code
-		 * points, SHALL NOT contain duplicate entries and SHALL NOT
-		 * contain entries that are also found in the "to" array.
+		 * In the normalized form it SHALL be sorted in ascending order
+		 * by Unicode code points, SHALL NOT contain duplicate entries
+		 * and SHALL NOT contain entries that are also found in the "to"
+		 * array.
 		 *
 		 * The non-normalized form allows to use null or undefined to
 		 * indicate no secondary recipients.
@@ -76,10 +76,10 @@ module events {
 		 *
 		 * It MAY be empty.
 		 *
-		 * In the normalized form it SHALL be sorted by Unicode code
-		 * points, SHALL NOT contain duplicate entries and SHALL NOT
-		 * contain entries that are also found in the "to" or "cc"
-		 * arrays.
+		 * In the normalized form it SHALL be sorted in ascending order
+		 * by Unicode code points, SHALL NOT contain duplicate entries
+		 * and SHALL NOT contain entries that are also found in the "to"
+		 * or "cc" arrays.
 		 *
 		 * The non-normalized form allows to use null or undefined to
 		 * indicate no blind-carbon-copy recipients.
@@ -87,8 +87,48 @@ module events {
 		attribute EventEntity[] bcc;
 	};
 
+	[NoInterfaceObject,
+	 Constructor(in DOMString type,
+		     in EventAddressing addressing,
+		     in optional DOMString payload,
+		     in optional Event inResponseTo,
+		     in optional DOMTimeStamp timeStamp,
+		     in optional DOMTimeStamp expiryTimeStamp,
+		     in optional boolean addressingSensitive)]
 	/**
 	 * \brief The Event interface describes an incoming or outgoing event.
+	 *
+	 * The arguments to be passed to the constructor have the same meaning
+	 * as the attributes of the interface with the same name.
+	 *
+	 * Furthermore, the constructor SHALL accept the "addressing" argument
+	 * both in normalized and non-normalized form and, in either case, the
+	 * resulting "addressing" attribute in the newly created Event object
+	 * SHALL reference a newly created and normalized equivalent of such
+	 * argument where: \n
+	 *  - entries that are found both in "to" and "cc" in the original
+	 *    argument are removed from the "cc" array of the resulting
+	 *    EventAddressing object; \n
+	 *  - entries that are found both in "to" and "bcc" in the original
+	 *    argument are removed from the "bcc" array of the resulting
+	 *    EventAddressing object; \n
+	 *  - entries that are found both in "cc" and "bcc" in the original
+	 *    argument are removed from the "bcc" array of the resulting
+	 *    EventAddressing object.
+	 *
+	 * The constructor SHALL only make sure that it is valid for the
+	 * application to create the event on the behalf of the specified
+	 * source.
+	 *
+	 * The default values for unspecified optional arguments are the
+	 * following: \n
+	 *  - \b payload: null \n
+	 *  - \b inResponseTo: null \n
+	 *  - \b timeStamp: null \n
+	 *  - \b expiryTimeStamp: null \n
+	 *  - \b addressingSensitive: false
+	 *
+	 * TODO: constructor fail because of invalid arguments?
 	 */
 	interface Event {
 		/**
@@ -100,6 +140,10 @@ module events {
 		readonly attribute DOMString type;
 		/**
 		 * \brief References to the original sender and recipients.
+		 *
+		 * The Webinos runtime SHALL ensure that this is an
+		 * EventAddressing object in normalized form when the Event
+		 * object is constructed.
 		 */
 		readonly attribute EventAddressing addressing;
 		/**
@@ -172,50 +216,168 @@ module events {
 		readonly attribute DOMString? payload;
 
 		/**
-		 * \brief ...
+		 * \brief Sends an event.
+		 *
+		 * W.r.t. the "Delivery notification wanted" attribute described
+		 * in the Webinos system specification, its value in the
+		 * implementation is to be deferred from the callbacks parameter
+		 * and allowed to change between dispatchEvent() and
+		 * forwardEvent() calls. It SHALL be true when delivery, timeout
+		 * and/or error callbacks are been passed via the callbacks
+		 * argument, false otherwise.
+		 *
+	 	 * \b NOTE: Please, keep in mind that all recipients SHALL get
+		 * references to all entities specified in the "to" and "cc"
+		 * attributes.
+		 *
+		 * \param callbacks Set of callbacks to monitor sending status
+		 *	  (null and unspecified are considered as equivalent to
+		 *	  an EventCallbacks object with all attributes set to
+		 *	  null).
+		 * \param referenceTimeout Moment in time until which the
+		 *	  Webinos runtime SHALL ensure that the Event object
+		 *	  being sent is not garbage collected (null, unspecified
+		 *	  and values up to the current date/time mean that no
+		 *	  special action is taken by the runtime in this regard)
+		 * \param sync If false, null or unspecified, the function is
+		 *	  non-blocking, otherwise if true it will block until
+		 *	  one of the following conditions becomes true: \n
+		 *	   - if referenceTimeout represents a moment of time in
+		 *	     the future at call time, that moment is reached; \n
+		 *	   - otherwise, if the "expiryTimeStamp" attribute is
+		 *	     specified as a moment of time in the future at call
+		 *	     time, that moment is reached; \n
+		 *	   - in any case, the end result of the operation is
+		 *	     completely determined for all recipients and all
+		 *	     callbacks that were to be called have run.
 		 */
-		void initEvent(in DOMString type,
-			       in EventAddressing addressing,
-			       in optional DOMString payload,
-			       in optional Event inResponseTo,
-			       in optional DOMTimeStamp timeStamp,
-			       in optional DOMTimeStamp expiryTimeStamp,
-			       in optional boolean addressingSensitive);
+		void dispatchEvent(in optional EventCallbacks? callbacks,
+				   in optional DOMTimeStamp? referenceTimeout,
+				   in optional boolean? sync);
 		/**
-		 * \brief ...
-		 */
-		void dispatchEvent(in optional EventCallbacks callbacks,
-				   in optional DOMTimeStamp referenceTimeout,
-				   in optional boolean sync);
-		/**
-		 * \brief ...
+		 * \brief Forwards an event.
+		 *
+		 * W.r.t. the "Delivery notification wanted" attribute described
+		 * in the Webinos system specification, its value in the
+		 * implementation is to be deferred from the callbacks parameter
+		 * and allowed to change between dispatchEvent() and
+		 * forwardEvent() calls. It SHALL be true when delivery, timeout
+		 * and/or error callbacks are been passed via the callbacks
+		 * argument, false otherwise.
+		 *
+	 	 * \b NOTE: Please, keep in mind that all recipients referenced
+		 * by the forwarding argument SHALL get references to all
+		 * entities specified in the "to", "cc" and "bcc" arrays of the
+		 * "addressing" attribute, as well as references to all entities
+		 * specified in the "to" and "cc" arrays of the forwarding
+		 * argument.
+		 *
+		 * \param forwarding References to the entity on the behalf of
+		 *        which the application wants to forward the event and
+		 *        to the recipients of such forwarding. This argument
+		 *        SHALL be processed in the same way as the constructor
+		 *        processes its "addressing" argument (i.e., make a
+		 *        normalized copy).
+		 * \param withTimeStamp Whether to set the forwarding timestamp
+		 *        (null and unspecified are considered as equivalent to
+		 *        false).
+		 * \param callbacks Set of callbacks to monitor forwarding
+		 *        status (null and unspecified are considered as
+		 *        equivalent to an EventCallbacks object with all
+		 *        attributes set to null).
+		 * \param referenceTimeout Moment in time until which the
+		 *	  Webinos runtime SHALL ensure that the Event object
+		 *	  being sent is not garbage collected (null, unspecified
+		 *	  and values up to the current date/time mean that no
+		 *	  special action is taken by the runtime in this regard)
+		 * \param sync If false, null or unspecified, the function is
+		 *	  non-blocking, otherwise if true it will block until
+		 *	  one of the following conditions becomes true: \n
+		 *	   - if referenceTimeout represents a moment of time in
+		 *	     the future at call time, that moment is reached; \n
+		 *	   - otherwise, if the "expiryTimeStamp" attribute is
+		 *	     specified as a moment of time in the future at call
+		 *	     time, that moment is reached; \n
+		 *	   - in any case, the end result of the operation is
+		 *	     completely determined for all recipients and all
+		 *	     callbacks that were to be called have run.
 		 */
 		void forwardEvent(in EventAddressing forwarding,
-				  in optional DOMTimeStamp forwardingTimeStamp,
-				  in optional EventCallbacks callbacks,
-				  in optional DOMTimeStamp referenceTimeout,
-				  in optional boolean sync);
+				  in optional boolean? withTimeStamp,
+				  in optional EventCallbacks? callbacks,
+				  in optional DOMTimeStamp? referenceTimeout,
+				  in optional boolean? sync);
 	};
 
 	/**
 	 * \brief ...
 	 */
 	[NoInterfaceObject] interface EventDeliveryError {
-		const unsigned short INVALID_DATA = 1;
-		const unsigned short DESTINATION_UNREACHABLE = 2;
-		const unsigned short EXPIRED = 3;
-		const unsigned short DUPLICATE = 4;
-		const unsigned short REFUSED = 5;
-		const unsigned short NO_REFERENCE = 6;
+		/**
+		 * \brief ...
+		 */
+		const unsigned short INVALID_DATA		= 1;
+		/**
+		 * \brief ...
+		 */
+		const unsigned short DESTINATION_UNREACHABLE	= 2;
+		/**
+		 * \brief ...
+		 */
+		const unsigned short EXPIRED			= 3;
+		/**
+		 * \brief ...
+		 */
+		const unsigned short DUPLICATE			= 4;
+		/**
+		 * \brief ...
+		 */
+		const unsigned short REFUSED			= 5;
+		/**
+		 * \brief ...
+		 */
+		const unsigned short NO_REFERENCE		= 6;
 
+		/**
+		 * \brief ...
+		 */
 		readonly attribute unsigned short code;
+		/**
+		 * \brief ...
+		 */
 		readonly attribute DOMString message;
 	};
 
 	/**
 	 * \brief ...
 	 */
-	[Callback] interface EventCallback {
+	[Callback, NoInterfaceObject] interface EventCallbacks {
+		/**
+		 * \brief ...
+		 */
+		void onSending(in Event event);
+		/**
+		 * \brief ...
+		 */
+		void onCaching(in Event event);
+		/**
+		 * \brief ...
+		 */
+		void onDelivery(in Event event);
+		/**
+		 * \brief ...
+		 */
+		void onTimeout(in Event event);
+		/**
+		 * \brief ...
+		 */
+		void onError(in Event event, in EventDeliveryError error);
+	};
+
+	/**
+	 * \brief ...
+	 */
+	[Callback=FunctionOnly] interface EventListener {
 		/**
 		 * \brief ...
 		 */
@@ -225,50 +387,29 @@ module events {
 	/**
 	 * \brief ...
 	 */
-	[Callback] interface EventErrorCallback {
+	[NoInterfaceObject] interface WebinosEventsInterface {
 		/**
 		 * \brief ...
 		 */
-		void handleEvent(in Event event, in EventDeliveryError error);
-	};
-
-	/**
-	 * \brief ...
-	 */
-	[NoInterfaceObject] interface EventCallbacks {
-		/**
-		 * \brief ...
-		 */
-		attribute EventCallback sentCB;
-		/**
-		 * \brief ...
-		 */
-		attribute EventCallback cachedCB;
-		/**
-		 * \brief ...
-		 */
-		attribute EventCallback deliveredCB;
-		/**
-		 * \brief ...
-		 */
-		attribute EventErrorCallback errorCB;
-	};
-
-	/**
-	 * \brief ...
-	 */
-	[NoInterfaceObject] interface WebinosEventListeners {
-		/**
-		 * \brief ...
-		 */
-		DOMString addEventListener(in EventCallback listener,
-					   in optional DOMString type,
-					   in optional EventEntity source,
-					   in optional EventEntity destination);
+		DOMString addEventListener(in EventListener listener,
+					   in optional DOMString? type,
+					   in optional EventEntity? source,
+					   in optional EventEntity? destination);
 		/**
 		 * \brief ...
 		 */
 		void removeEventListener(in DOMString listenerId);
 	};
-	Webinos implements WebinosEventListeners;
+
+	/**
+	 * \brief ...
+	 */
+	[NoInterfaceObject] interface WebinosEvents {
+		/**
+		 * \brief ...
+		 */
+		readonly attribute WebinosEventsInterface events;
+	};
+
+	webinoscore::Webinos implements WebinosEvents;
 };
