@@ -1,7 +1,7 @@
 /**
  * \brief webinos Vehicle interface.
  *
- * The webinos Vehicle interface provides access to specific vehicle data. The Geolocation of the vehicle and the current speed can be retrieved using the Geolocation API. The API is based on the DOM3 Event model. 
+ * The webinos Vehicle interface provides access to specific vehicle data. The Geolocation of the vehicle and the current speed can be retrieved using the Geolocation API. The API is based on the DOM Level 3 Events model. Eventypes for retrieving information about vehicle including bordcomputer data, gears or park sensors are defined as well as methods for interacting with the on-board navigation system.
  *
  *
  * \def-api-feature http://webinos.org/api/vehicle
@@ -41,7 +41,7 @@ module vehicle{
 		const short NOT_AVAILABLE = 2;
 	};
 	/**
-	* \brief This interface defines the address properties, which can be passed to the navigation system using the requestGuidance() function.   The <a href="http://dev.w3.org/geo/api/spec-source-v2.html#address_interface">Address interface</a> defined in the v2 of the W3C Geolocation API is beeing used for that?
+	* \brief This interface defines the address properties, which can be passed to the navigation system using the requestGuidance() function.   The <a href="http://dev.w3.org/geo/api/spec-source-v2.html#address_interface">Address interface</a> defined in the v2 of the W3C Geolocation API is beeing used for this purpose.
 	*
 	*/  
 	interface Address{
@@ -99,9 +99,7 @@ module vehicle{
 	};
 	/**
 	* \brief This interface defines a Point of Interest (POI)
-	* 
-	* Description to be completed with code examples
-	*
+	*  The interface contains the name of "POI" and its address and/or geolocation as a LatLng object.
 	*/  
 	interface POI{
 		/**
@@ -119,32 +117,32 @@ module vehicle{
 	};
 
 	/**
-	* \brief This interface defines callback, for successfull asynchronous function call
+	* \brief This interface defines the callback for a asynchronous function call
 	*
 	*/
 	[Callback=FunctionOnly, NoInterfaceObject]
 	interface SuccessCallback{
 		/**
-		* \brief method is triggered, if function has been succesfully called
+		* \brief method is triggered, if function has been succesfully called.
 		*
 		*/
 		void onSuccess();
 	};
 	/**
-	* \brief This interface defines callback, for successfull asynchronous function call
+	* \brief This interface defines the callback for a failed asynchronous function call
 	*
 	*/
 	[Callback=FunctionOnly, NoInterfaceObject]
 	interface ErrorCallback{
 		/**
-		* \brief method is triggered, if asychronous function call fails...
+		* \brief method is triggered, if asychronous function call fails.
 		* 
 		* \param error contains information about the error 
 		*/		
 		void onError(in VehicleError error);
 	};
 	/**
-	* \brief This interface defines some general information about the vehicle
+	* \brief This interface defines general information about the vehicle.
 	* \code
 	*
 	* \endcode
@@ -191,11 +189,11 @@ module vehicle{
 		*/		
 		readonly attribute DOMString transmission;
 		/**
-		* \brief Sets the given address as the new destination of the build in-car navigation system
+		* \brief Sets the given addresses as the next destinations of the build-in navigation systems. The method is able to handle intermediate stops.
 		*
 		* \param successCallback callback, if the address is succesully transferred
 		* \param errorCallback callback, if the address could not be transferred  
-		* \param destinations  in form of an Address array. The last address in the array is the destination point.  
+		* \param destinations in form of an Address array. The last address in the array is the destination point. The other destinations are  intermediate stops along the route.
 		*/
 		void requestGuidance(in SuccessCallback successCallback, in ErrorCallback errorCallback, in Address[] destinations);
 		/**
@@ -231,7 +229,13 @@ module vehicle{
 		* \brief Queries the navigation system to retrieve POIs for a given search string.
 		*
 		* \code
+		*	var destinations =new Array();
+		*      webinos.vehicle.findDestination(destinationCB, errorCB,"BMW");
+		*      function destinationCB(pois){
+		*	    destinations[0] == pois[0].latlng
+		*          webinos.requestGuidance(successCB, errorCB, destinations);            
 		*
+		*	}
 		* 
 		* \endcode
 		*
@@ -250,9 +254,9 @@ module vehicle{
 	[Callback=FunctionOnly, NoInterfaceObject]
  	interface DestinationCallback {
 		/**
-		* \brief function is called, when the results for the destination
+		* \brief function is called, when the results for a POI search are retrieved
 		*
-		* \param pois 
+		* \param pois array of Point of interests
 		*/
    		 void handleResults(in POI[] pois);
   	};
@@ -364,7 +368,7 @@ module vehicle{
 	* \endcode
 	*/
 	[NoInterfaceObject]
-	interface ParkControllEvent : Event{
+	interface ParkSensorsEvent : Event{
 		/**
 		* \brief constant describing Event is emitted by the ParkSensors in the front  
 		*/
@@ -404,27 +408,7 @@ module vehicle{
 		* \param midRight data from the middle right sensor
 		* \param right data from the right sensor
 		*/
-		void initParkControllEvent(boolean bubbles, boolean cancelable, DOMString position, short left, short midLeft, short midRight, short right);
-	};
-	/**
-	* \brief This interface defines a Climate Controll Event. 
-	* A listener can registered by vehicle.addEventLister("climatecontrol",listener,false);
-	* \code
-	*	//TODO
-	* \endcode
-	*/
-	[NoInterfaceObject]
-	interface ClimateControllEvent : Event{
-		
-		/**
-		* \brief Method to set initial values of ClimateControll event
-		* \code
-		* // TBD
-		* \endcode
-		* \param bubbles True if event bubbles
-		* \param cancelable True if event cancelable
-		*/
-		void initClimateControllEvent(boolean bubbles, boolean cancelable);
+		void initParkSensorsEvent(boolean bubbles, boolean cancelable, DOMString position, short left, short midLeft, short midRight, short right);
 	};
 	/**
 	* \brief This interface defines a shift Event. 
