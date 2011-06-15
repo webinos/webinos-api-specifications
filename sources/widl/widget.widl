@@ -1,0 +1,267 @@
+/**
+ * \brief Webinos widget interfaces 
+ *
+ * This specification defines the common widget interface. \n
+ *
+ * \author Andre Paul andre.paul@fokus.fraunhofer.de;
+ * \version 0.1 
+ */
+module widget {
+
+   /**
+    * \brief Callback for successfull notifications
+    * 
+   */
+   [NoInterfaceObject] interface NotifySuccessCallback {
+ 
+    /**
+     * \brief Accepted Notification.
+     *
+     * Called if an event was accepted by the user. If provided, the notification
+     * id is passed in to link the success to a specific notification request.
+    */
+    void onSuccess(in DOMString id);
+  };
+  
+   /**
+    * \brief Callback for failed notifications
+    * 
+   */
+   [NoInterfaceObject] interface NotifyErrorCallback {
+ 
+    /**
+     * \brief Discarded Notification.
+     *
+     * Called if an event was not accepted by the user. If provided, the notification
+     * id is passed in to link the error to a specific notification request.
+    */
+    void onError(in DOMString id);
+  };
+  
+   /**
+    * \brief Callback for successfull installations
+    * 
+   */
+   [NoInterfaceObject] interface DeploymentSuccessCallback {
+
+      /**
+       * \brief Called when an application was successfully deployed.
+       *
+       * Called when an application was successfully deployed on another device
+       * using deployChild.
+      */
+     void onSuccess(in DOMString childID, in DOMString serviceID);
+   };
+
+
+  /**
+   * \brief Widget Interface
+   * 
+   * Defines that the webinos interface is part of the window global object.
+   *
+  */
+  interface Widget {
+    
+    /**
+     * \brief An distributor attribute that represents people or an organization that distributed the widget.
+    */
+    readonly attribute DOMString     distributor;
+    
+    /**
+     * \brief A string attribute that represents an email address associated with the distributor.
+    */
+    readonly attribute DOMString     distributorEmail;
+    
+    /**
+     * \brief A string attribute that represents an email address associated with the distributor.
+    */
+    readonly attribute DOMString     distributorHref;
+    
+    /**
+     * \brief A human readable version name.
+    */
+    readonly attribute DOMString     versionName;
+    
+    /**
+     * \brief The validfor attributed defines a time interval until when the application is valid and can be used.
+     *
+     * The time frame is specified in elapsed milliseconds after the first application execution.
+    */
+    readonly attribute unsigned long long validfor;
+    
+    /**
+     * \brief The validuntil attributed defines a date and time until the application is valid and can be used.
+     *
+     * The time frame is specified as in milliseconds whereas the date and time is encoded as milliseconds since midnight of January 1, 1970, according to universal time. 
+    */
+    readonly attribute unsigned long long validuntil;
+
+   
+    /**
+     * \brief An author attribute that represents people or an organization attributed with the creation of the widget.
+    */
+    readonly attribute DOMString     author;
+    
+    /**
+     * \brief A string attribute that represents an email address associated with the author.
+    */
+    readonly attribute DOMString     authorEmail;
+    
+    /**
+     * \brief An IRI attribute whose value represents an IRI that the author associates with himself or herself (e.g., a homepage, a profile on a social network, etc.).
+    */
+    readonly attribute DOMString     authorHref;
+    
+    /**
+     * \brief The description element represents a human-readable description of the widget.
+    */
+    readonly attribute DOMString     description;
+    
+    /**
+     * \brief An IRI attribute that denotes an identifier for the widget.
+    */
+    readonly attribute DOMString     id;
+    
+    /**
+     * \brief The name element represents the full human-readable name for a widget that is used, for example, in an application menu or in other contexts.
+    */
+    readonly attribute DOMString     name;
+    
+    /**
+     * \brief A displayable-string attribute intended to represent a condensed name for a widget (e.g., a name that could be used in context were only limited space is available, such as underneath an icon).
+    */
+    readonly attribute DOMString     shortName;
+    
+    /**
+     * \brief The preference element allows authors to declare one or more preferences: a preference is a persistently stored name-value pair that is associated with the widget the first time the widget is initiated. 
+    */
+ 	readonly attribute Storage       preferences;
+ 	
+    /**
+     * \brief A version attribute that specifies the version of the widget.
+    */
+    readonly attribute DOMString     version;
+    
+    /**
+     * \brief A numeric attribute greater than 0 that indicates the preferred viewport height of the instantiated custom start file in CSS pixels.
+    */
+    readonly attribute unsigned long height;
+    
+    /**
+     * \brief A numeric attribute greater than 0 that indicates the preferred viewport width of the instantiated custom start file in CSS pixels.
+    */
+    readonly attribute unsigned long width;
+    
+    /**
+     * \brief Close the running application.
+     *
+     * Allows an application to trigger calling destroy from the runtime which results in stopping the
+     * application execution and closing the application.
+    */
+    void exit();
+
+    /**
+     * \brief Hide the running application.
+     *
+     * Sends the application to background if possible so that it is not visible to the user anymore
+     * if possible by the platform the application execution goes on
+    */
+    void hide();
+
+    /**
+     * \brief Checks visibility status.
+     *
+     * Asks the WRT wheather the application is currently hidden (not visible to the user) or not
+     * if the application is hidden and want to come to foreground it may notify an event to
+     * the user.
+    */
+    boolean isHidden();
+
+    /**
+     * \brief Issues a notification to the user.
+     *
+     * Triggers the WRT to notify occurence of an event, as described using the parameters, to the user
+     * The user can click the event. If the application is in background the application must be brought to foreground.
+     * After that onSuccess is called.
+     * \param title A short title describing the notification.
+     * \param onSuccess NotifySuccessCallback issued when the user accepts the notification.
+     * \param onError ErrorCallback issued when the notification is discarded.
+     * \param shortDescription A short description about the notification.
+     * \param icon A relative path within the application package to an icon describing the notification. 
+     * \param id An local identifier that represents the event and can be used to cancel the event or to
+     *        take actions within the callbacks. 
+     * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if an invalid argument is passed
+    */
+    void notify(in DOMString title, in NotifySuccessCallback onSuccess, in NotifyErrorCallback onError, in optional DOMString shortDescription, in optional DOMString icon, in optional DOMString id)
+     raises(DeviceAPIError);
+
+    /**
+     * \brief Cancels an ongoing notification.
+     *
+     * To cancel a previous notify because it is updated or expired (if ongoing / not clicked by the user)
+     * \param id
+    */
+    void cancelNotify(in DOMString id);
+
+    /**
+     * \brief Asynchronous callback indicating that the application will be terminated. 
+     *
+     * Application will be destroyed and all memory freed after returning out of this function.
+     * 
+    */
+    void onDestroy();
+
+    /**
+     * \brief Asynchronous callback indicating that the application is gone to background. 
+     *
+     * Application goes to background / another application goes to foreground and the application is not visible anymore
+     * the application is still running.
+     * 
+    */
+    void onBackground();
+
+    /**
+     * \brief Asynchronous callback indicating that the application is gone to foreground. 
+     *
+     * Application goes to foreground after previously going to background.
+    */
+    void onForeground();
+
+    /**
+     * \brief Asynchronous callback indicating that application execution is going to be stopped. 
+     *
+     * Application execution is stopped.
+    */
+    void onStop();
+
+    /**
+     * \brief Asynchronous callback indicating that application execution is continued. 
+     *
+     * Application execution is continued after previously stopped.
+    */
+    void onStart();
+    
+    /**
+     * \brief Requests to install an application on another device.
+     *
+     * Deploys a child application known to the WRT through the definition in the application s manifest
+     * file on another device. If local = false or not specified the WRT has to provide a list of available
+     * devices to the user, if local = true the WRT has to install the selected child on the same device as
+     * the calling application.
+     * \param onSuccess SuccessCallback called after successfull installation.
+     * \param onError ErrorCallback called if installation was not possible.
+     * \param childApplication Package name of the application to be installed.
+     * \param local Indicates if application should be installed on the same device as the requesting application or not.
+     * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if an invalid argument is passed.
+    */
+    void deployChild(in DeploymentSuccessCallback onSuccess, in ErrorCallback onError, in DOMString childApplication, in optional boolean local)
+      raises(DeviceAPIError);
+  };
+  
+  [Supplemental, NoInterfaceObject]interface WindowWidget {
+     readonly attribute Widget widget;
+   };
+   
+  Window implements WindowWidget;
+
+};
