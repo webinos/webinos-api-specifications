@@ -3,7 +3,7 @@
  *
  * The webinos vehicle interface provides access to specific vehicle data. The API is based on the DOM Level 3 Events model and defines event types for retrieving information about the vehicle including trip computer data, gears or park sensors. Furthermore  it provides methods for interacting with the on-board navigation system. The geolocation, speed and acceleation can be retrieved using the geolocation and device orientation API. 
  *
- * The API provides access to vehicle data, which is available on the infotainment vehicle bus (e.g. <a href="http://en.wikipedia.org/wiki/MOST_Bus">MOST</a>). Since the in-car headunit is connected to this vehicle bus (<a href="http://dev.webinos.org/redmine/attachments/download/666/vehicle_bus_infrastructure.pdf">diagram on vehicle bus architecture</a>), the infotainment bus is used as the primarly source for vehicle data. Some data from other busses (high/low speed can or ) are routed into the bus over the central gateway such as speed and gear. Some data such as RPM is not routed into the infotainment bus.
+ * The API provides access to vehicle data, which is available on the infotainment vehicle bus (e.g. <a href="http://en.wikipedia.org/wiki/MOST_Bus">MOST</a>). The infotainment bus is the only access point for the headunit for receveiving vehicle data (<a href="http://dev.webinos.org/redmine/attachments/download/666/vehicle_bus_infrastructure.pdf" target="_blank">diagram on vehicle bus architecture</a>). Some data from other busses (high/low speed <a href="http://en.wikipedia.org/wiki/Controller_area_network" target="_blank">CAN</a>) are routed into the bus over the central gateway such as speed or gear (RPM is currently not provided on the MOST). 
  *
  * \def-api-feature http://webinos.org/api/vehicle
  * Identifies the light sensor type. 
@@ -42,7 +42,7 @@ module vehicle{
 		const short NOT_AVAILABLE = 2;
 	};
 	/**
-	* \brief This interface defines the address properties, which can be passed to the navigation system using the requestGuidance() function.   The <a href="http://dev.w3.org/geo/api/spec-source-v2.html#address_interface">Address interface</a> defined in the v2 of the W3C Geolocation API is beeing used for this purpose.
+	* \brief This interface defines the address properties, which can be passed to the navigation system using the requestGuidance() function.   The <a href="http://dev.w3.org/geo/api/spec-source-v2.html#address_interface" target="_blank">Address interface</a> defined in the v2 of the W3C Geolocation API is beeing used for this purpose.
 	*
 	*/ 
 	[NoInterfaceObject]
@@ -85,7 +85,8 @@ module vehicle{
 		attribute DOMString postalCode;
 	};
 	/**
-	* \brief This interface defines the LatLng properties, which can be passed to the navigation system using the requestGuidance() function. The format is WGS84
+	* \brief This interface defines the LatLng properties, which can be passed to the navigation system using the requestGuidance() function. The format is WGS84. 
+	* <em>Note: The <a href="http://dev.w3.org/geo/api/spec-source-v2.html#coordinates">coordinate</a> interface from the Geolocation API v2 includes attributes, which are not feasible for beeing handled by the navigation system (accurancy, alitude accurency, heading, speed). In some special cases (destination is on a bridge, which crosses another stree) it might make sense to add the alitude to LatLng interface. </em> 
 	* 
 	*
 	*/ 
@@ -102,7 +103,7 @@ module vehicle{
 	};
 	/**
 	* \brief This interface defines a Point of Interest (POI)
-	*  The interface contains the name of "POI" and its address and/or geolocation as a LatLng object.
+	*  The interface contains the name of "POI" and its address and/or geolocation as a LatLng object. <em> Note: The <a href="http://www.w3.org/2010/POI/" target="_blank">W3C POI WG</a> provided a <a href="http://www.w3.org/TR/2011/WD-poi-core-20110512/" target="_blank">first working draft</a> for the POI handling. The draft focuses on a XML representation of a POI and does not seem handy for beeing handled by a navigation system,</em>
 	*/ 
 	[NoInterfaceObject]
 	interface POI{
@@ -200,7 +201,7 @@ module vehicle{
 		*/
 		void requestGuidance(in SuccessCallback successCallback, in ErrorCallback errorCallback, Address[] destinations);
 		/**
-		* \brief Sets the given geolocation point as the new destination of the build in-car navigation system
+		* \brief Sets the given geolocation point as the new destination of the in-car navigation system
 		*
 		* \code
 		*	var destinations =new Array();
@@ -502,7 +503,7 @@ module vehicle{
 	* \code
 	*	webinos.vehicle.addEventListener("lights-hibeam", lightHandler, false);
 	*      function lightHandler(cEvent){
-	*		if(cEvent.controlId == "light-hibeam"){
+	*		if(cEvent.controlId == "lights-hibeam"){
 	*			if(cEvent.active == true){
 	*				console.log("Hibeam turned on");
 	*			}else{
@@ -584,9 +585,6 @@ module vehicle{
 		readonly attribute boolean active;
 		/**
 		* \brief Method to set initial values of controll event
-		* \code
-		* // TBD
-		* \endcode
 		* \param bubbles True if event bubbles
 		* \param cancelable True if event cancelable
 		* \param controlId specifies the control unit
