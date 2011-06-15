@@ -82,8 +82,13 @@ module serviceDiscovery {
 	 */
 	[NoInterfaceObject] interface ServiceDiscoveryManager  {
 		/**
-		 * \brief The findServices method initiates an asynchronous search query for services matching the requested serviceType and filter parameters. The method continues to run until the findServices method is canceled by the application or when maximum search timer expires.     
-		 * The zones in which services are to be searched are expected to be managed by the Webinos runtime engine (rather than the application developer). As an example on how this zone management can be presented by a runtime engine, see a possible infobar (at http://dev.webinos.org/specifications/draft/infobar.png )  that would lead to a personal zones management UI (http://dev.webinos.org/specifications/draft/pz-add-ui.png )
+		 * \brief The findServices method initiates an asynchronous search query for services matching the requested serviceType and filter parameters. The method continues to run until the findServices method is canceled by the application or when maximum search timer expires.
+		 * 
+		 * The zones in which services are to be searched are expected to be managed by the Webinos runtime engine (rather than the application developer).
+		 * As an example on how this zone management can be presented by a runtime engine:
+		 * <p><img src="http://dev.webinos.org/specifications/draft/infobar.png" alt="Illustration of possible Infobar" /><br /> Infobar offering to add new personal zones</p>
+		 * This infobar would lead to a personal zones management UI:
+		 * <p><img src="http://dev.webinos.org/specifications/draft/pz-add-ui.png" alt="Personal zone management UI" /><br />Personal zone management UI</p>
 		 * \param serviceType An input argument that defines which type of service that is requested.
 		 * \param findCallBack Callback interface used to report the outcome of the search process. 
 		 * \param options Defines search options. 

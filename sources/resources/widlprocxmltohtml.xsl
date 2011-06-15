@@ -585,7 +585,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 
 <!--html elements-->
-<xsl:template match="a|b|br|dd|dl|dt|em|li|p|table|td|th|tr|ul">
+<xsl:template match="a|b|br|dd|dl|dt|em|li|p|table|td|th|tr|ul|img">
     <xsl:element name="{name()}"><xsl:for-each select="@*"><xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute></xsl:for-each><xsl:apply-templates/></xsl:element>
 </xsl:template>
 
@@ -672,6 +672,11 @@ XSLT stylesheet to convert widlprocxml into html documentation.
     </xsl:when>
     <xsl:when test="$reference-clean='EventListener'">
       <a href="http://www.w3.org/TR/DOM-Level-3-Events/#interface-EventListener">
+                    <xsl:value-of select="$reference-clean"/>
+      </a>
+    </xsl:when>
+    <xsl:when test="$reference-clean='EventTarget'">
+      <a href="http://dvcs.w3.org/hg/domcore/raw-file/tip/Overview.html#eventtarget">
                     <xsl:value-of select="$reference-clean"/>
       </a>
     </xsl:when>
