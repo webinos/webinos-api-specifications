@@ -151,7 +151,7 @@ module vehicle{
 	* 
 	*/
 	[NoInterfaceObject]
-	interface vehicle{
+	interface vehicle : EventTarget {
 		/**
 		* \brief A const describing the fuel type unleaded
 		*/		
