@@ -1,214 +1,283 @@
 /**
- * \brief The TV control webinos API.
+* \brief Interface for TV control and managment.
+*
+* The interface provides means to acquire a list of tv sources and tv channels.
+* The TV channel streams can be displayed in HTMLVideoElement object
+* (http://dev.w3.org/html5/spec/video.html). Alternatively the API provides
+* means to control channel management of the native hardware TV, by allowing
+* to set a channel or watch for channel changes that are invoked otherwise.
+*
+* The tv object is made available under the navigator interface, i.e.
+* navigator.tv.
+*/
+module tv {
+
+/**
+* \brief Creates tv object.
+*/
+[NoInterfaceObject] 
+interface NavigatorTV {
+  readonly attribute TVManager tv;
+};
+
+/**
+* \brief Access to tuner and display managers.
+*/
+[NoInterfaceObject] 
+interface TVManager {
+  readonly attribute TVDisplayManager display;
+  readonly attribute TVTunerManager tuner;
+}; 
+
+/**
+ * \brief Interface to manage what's currently displayed on TV screen.
  *
- * This API has the following goals: \n
- * - Provide functionality to access the channel list and information like type and name of a channel. \n
- * - Switch between channels. \n
- * - Stop/start the broadcast. \n
- * \n
- * This API builds on two existing approaches and merges both. The basis for this API is the HTML5 video element interface (HTMLVideoElement). The here specified interface HTMLTVElement extends the video element and provides the functionality necessary to achieve the mentioned goals on top of it. This added functionality is based on the Open IPTV Forum Release 2 Volume 5 Specification for Declarative Application Environment.
- *
+ * This interface is useful when an app doesn't want to show the broadcast
+ * itself, but let the TV natively handle playback, i.e. not in a web context.
+ * Useful to build an control interface that allows channel switching.
  * \code
-\<p>Now viewing: \<span id='channel'>Nothing\</span>\</p>
-\<video width="640" height="480" controls id='mytv'>
-  \<source src="tv">
-\</video>
-\<script>
-var mytv = document.getElementById('mytv');
-var numberOfChannels = mytv.channelList.length;
-
-// pick a random channel
-var randomChannel = mytv.channelList[Math.floor(Math.random()*numberOfChannels)];
-mytv.setChannel(randomChannel, function(channel) {
-  // Updating name of channel
-  document.getElementById('channel').normalize();
-  document.getElementById('channel').removeChild(document.getElementById('channel').childNodes[0]);
-  document.getElementById('channel').appendChild(document.createTextNode(channel.name));
-});
-
-\</script>
+  \<p>Currently shown on TV: \<span id='tv'>Undetermined\</span>\</p>
+  \<script>
+  var channel; // holding a previously obtained channel object.
+  navigator.tv.display.setChannel(channel, success);
+  var ontv = document.getElementById('tv');
+  function success(channel) {
+    ontv.normalize();
+    ontv.removeChild(ontv.childNodes[0]);
+    ontv.appendChild(document.createTextNode(channel.name + ' (source: ' + channel.tvsource.name + ')'));
+  }
+  \</script>
  * \endcode
- * \author Alexander Fut&aacute;sz &lt;alexander.futasz@fokus.fraunhofer.de&gt;
+*/
+[NoInterfaceObject]
+interface TVDisplayManager {
+  /**
+   * \brief Switches the channel natively on the TV (same as when a hardware remote control would be used).
+   *
+   * \param channel The TV channel to switch to.
+   * \param successCallback The callback to notify the caller that the channel change succeeded.
+   * \param errorCallback The callback called in case the channel could not be switched and an error occured.
+   */
+  void setChannel(Channel channel, TVDisplaySuccessCB successCallback, optional TVErrorCB errorCallback);
+};
+
+/**
+ * \brief Callback function when current channel changed successfully.
+*/
+[NoInterfaceObject]
+interface TVDisplaySuccessCB {
+  void onSuccess(Channel channel);
+};
+
+/**
+* \brief Get a list of all available TV tuners.
+* \code
+  \<label>Pick a TV Source: \<select id='source'>
+  \<option>None\</option>
+  \</select>\</label>
+  \<label>Pick a  channel: \<select id='channel'>
+  \<option>None\</option>
+  \</select>\</label>
+  \<video id='display' width='640' height='400' poster='nochannel.png'>\</video>
+  \<script>
+  navigator.tv.tuner.getTVSources(successCB);
+  var tvsourceselector = document.getElementById('source');
+  var channelselector = document.getElementById('channel');
+  var v = document.getElementById('display');
+  var currentTVSource;
+  var tvsources = [];
+  function successCB(sources) {
+    tvsources = sources;
+    for (var i in sources) {
+      var o = document.createElement('option');
+      o.value = i;
+      o.appendChild(document.createTextNode(sources[i].name);
+      tvsourceselector.appendChild(o);
+    }
+  }
+  tvsourceselector.addEventListener('change', function (e) {
+    currentTVSource = tvsources[e.target.value];
+    // start showing first channel
+    if (currentTVSource.channelList.length) {
+      v.src = currentTVSource.channelList[0].stream;
+      for (var i in currentTVSource.channelList) {
+          var channel = currentTVSource.channelList[i];
+	  var o = document.createElement('option');
+	  o.appendChild(document.createTextNode(channel.name);          
+	  o.value = i;
+	  channelselector.appendChild(o);
+    }
+  }, false);
+  channelselector.addEventListener('change', function (e) {
+     if (e.target.value) {
+       v.src = currentTVSource.channelList[e.target.value].stream;
+     }
+  }, false);
+  \</script>
+* \endcode
+*/
+[NoInterfaceObject] 
+interface TVTunerManager {
+  /**
+   * \brief Get a list of all available TV tuners.
+   *
+   * \param successCallback Callback that receives all available TV sources.
+   * \param errorCallback Callback called in case something goes wrong.
+   */
+  void getTVSources(TVSuccessCB successCallback, optional TVErrorCB errorCallback);
+};
+
+/**
+* \brief Callback for found TV tuners.
+*/
+[NoInterfaceObject] 
+interface TVSuccessCB {
+  /**
+   * \brief Callback that is called with the found TV sources.
+   *
+   * \param sources An array of TVSource objects representing available tuners.
+   */
+  void onSuccess(TVSource[] sources);
+};
+
+/**
+* \brief Error callback for errors when trying to get TV tuners.
+*/
+[NoInterfaceObject] 
+interface TVErrorCB {
+  /**
+   * \brief Callback that is called when an error occures while getting TV sources
+   *
+   * \param error Error object detailing what went wrong.
+   */
+  void onError(TVError error);
+};
+
+/**
+* \brief Error codes.
+*/
+[NoInterfaceObject] 
+interface TVError {
+  /**
+   * \brief An unknown error.
+   */
+  const unsigned short UNKNOWN_ERROR = 0;
+  
+  /**
+   * \brief Invalid input channel.
+   */
+  const unsigned short ILLEGAL_CHANNEL_ERROR = 1;
+  
+  /**
+   * \brief Code.
+   */
+  readonly attribute unsigned short code;
+};
+
+/**
+* \brief TV source: a list of channels with a name.
+*/
+[NoInterfaceObject] 
+interface TVSource {
+  /**
+   * \brief The name of the source.
+   *
+   * The name should describe the kind of tuner this source represents, e.g. DVB-T, DVB-C.
+   */
+  readonly attribute DOMString name;
+  
+  /**
+   * \brief List of channels for this source.
+   */
+  readonly attribute Channel[] channelList;
+};
+
+/**
+ * \brief The Channel Interface
+ *
+ * Channel objects provide access to the video stream.
  */
-module tvcontrol {
-
+[NoInterfaceObject]
+interface Channel {
+ /**
+   * \brief Indicates a TV channel.
+   */
+  const unsigned short TYPE_TV = 0;
+  
   /**
-   * \brief The HTMLTVElement interface
+   * \brief Indicates a radio channel.
+   */
+  const unsigned short TYPE_RADIO = 1;
+  
+  /**
+   * \brief The type of channel.
    *
-   * The HTMLTVElement interface extends the HTMLVideoElement from HTML5 to
-   * support TV video broadcast streams which are mapped as channels. The API
-   * supports listing, setting and switching these channels.
+   * Type of channel is defined by one of the TYPE_* constants defined above.
+   */
+  readonly attribute unsigned short channelType;
+  
+ /**
+   * \brief The name of the channel.
    *
-   * See http://dev.w3.org/html5/spec/video.html
+   * The name of the channel will typically be the call sign of the station.
    */
-  interface HTMLTVElement : HTMLVideoElement {
-    
-    /**
-     * \brief Indicates whether the media element is stopped or not. 
-     */
-    readonly attribute boolean stopped; 
-
-    /**
-     * \brief An array holding all channels that can be switched to.
-     *
-     * The order in this array defines the behaviour of the nextChannel() and
-     * prevChannel() functions.
-     */
-    readonly attribute Channel[] channelList;
-    
-    /**
-     * \brief Get the current channel, if no channel was set this will be null.
-     */
-    readonly attribute Channel currentChannel;
-
-    /**
-     * \brief Requests the tuner to switch to the channel specified.
-     *
-     * Request to switch to the specified channel and render the received broadcast. 
-     *
-     * \param channel A channel object, obtained from the channelList.
-     * \param successCb Callback issued if channel change succeeds.
-     * \param errorCb Callback issued if channel change fails.
-     */
-    void setChannel(in Channel channel, in ChannelChangeSuccessCallback successCb, in optional ChannelChangeErrorCallback errorCb);
-    
-    /**
-     * \brief Request to switch the tuner to the previous channel.
-     *
-     * The previous channel is the channel preceding the current channel in
-     * channelList. The list shall be cycled in case the end has been reached.
-     * \param successCb Callback issued if channel change succeeds.
-     * \param errorCb Callback issued if channel change fails.
-     */
-    void prevChannel(in ChannelChangeSuccessCallback successCb, in optional ChannelChangeErrorCallback errorCb);
-    
-    /**
-     * \brief Request to switch the tuner to the next channel.
-     *
-     * The next channel is the channel succeeding the current channel in
-     * channelList. The list shall be cycled in case the end has been reached.
-     * \param successCb Callback issued if channel change succeeds.
-     * \param errorCb Callback issued if channel change fails.
-     */
-    void nextChannel(in ChannelChangeSuccessCallback successCb, in optional ChannelChangeErrorCallback errorCb);
-    
-    /**
-     * \brief Stop video broadcast.
-     *
-     * If a video broadcast is currently playing, stop the broadcast and transition
-     * to a stopped state.
-     */
-    void stop();
-    
-  };
+  readonly attribute DOMString name;
   
   /**
-   * \brief ChannelChangeSuccessCallback interface.
-   */
-  [NoInterfaceObject, Callback=FunctionOnly] interface ChannelChangeSuccessCallback {
-  
-    /**
-     * \brief This callback is called once the issued channel change successfully
-     * completed.
-     *
-     * \param channel The channel that was asked to change to.
-     */
-    void onSuccess(in Channel channel);
-  };
-
-  /**
-   * \brief ChannelChangeErrorCallback interface.
-   */
-  [NoInterfaceObject, Callback=FunctionOnly] interface ChannelChangeErrorCallback {
-  
-    /**
-     * \brief This callback is called once the issued channel change successfully
-     * completed.
-     *
-     * \param error Error object detailing what went wrong during channel change.
-     */
-    void onError(in ChannelChangeError error);
-  };
-
-  /**
-   * \brief The error interface used in the ChannelChangeErrorCallback. 
-   */  
-  [NoInterfaceObject] interface ChannelChangeError {
-  
-    /**
-     * \brief An unknown error.
-     */
-    const unsigned short UNKNOWN_ERROR = 0;
-    
-    /**
-     * \brief Invalid input channel.
-     */
-    const unsigned short ILLEGAL_CHANNEL_ERROR = 1;
-    
-  };
-
-  /**
-   * \brief The Channel Interface
+   * \brief The long name of the channel.
    *
-   * Channel objects represent broadcast streams. 
+   * The long name of the channel if transmitted. Can be undefined if not available.
    */
-  [NoInterfaceObject] interface Channel {
-
-    /**
-     * \brief Indicates a TV channel.
-     */
-    const unsigned short TYPE_TV = 0;
-    
-    /**
-     * \brief Indicates a radio channel.
-     */
-    const unsigned short TYPE_RADIO = 1;
-    
-    /**
-     * \brief The type of channel.
-     *
-     * Type of channel is defined by one of the TYPE_* constants defined above.
-     */
-    readonly attribute unsigned short channelType;
-
-    /**
-     * \brief The name of the channel.
-     *
-     * The name of the channel will typically be the call sign of the station.
-     */
-    readonly attribute DOMString name;
-    
-    /**
-     * \brief The long name of the channel.
-     *
-     * The long name of the channel if transmitted. Can be undefined if not available.
-     */
-    readonly attribute DOMString longName;
-    
-  };
+  readonly attribute DOMString longName;
   
   /**
-   * \brief Event that fires when the channel is changed.
+   * \brief The video stream.
    *
-   * Provides the channel that was switched to.
+   * This stream is a represents a valid source for a HTMLVideoElement.
    */
-  [NoInterfaceObject] interface ChannelChangeEvent : Event {
+  readonly attribute Stream stream;
+  
+  /**
+   * \brief The source this channels belongs too.
+   */
+  readonly attribute TVSource tvsource;
+};
 
-    /**
-     * \brief The new channel.
-     */
-    readonly attribute Channel channel;
+/**
+ * \brief Event that fires when the channel is changed.
+ *
+ * Changing channels could also be invoked by other parties, e.g. a hardware
+ * remote control. A ChannelChange event will be fire in these cases which
+ * provides the channel that was switched to.
+ * \code
+  \<p>Currently shown on TV: \<span id='tv'>Undetermined\</span>\</p>
+  \<script>
+  window.addEventListener('channelchange', success);
+  var ontv = document.getElementById('tv');
+  function success(channel) {
+    ontv.normalize();
+    ontv.removeChild(ontv.childNodes[0]);
+    ontv.appendChild(document.createTextNode(channel.name + ' (source: ' + channel.tvsource.name + ')'));
+  }
+  \</script>
+ \endcode
+ */
+[NoInterfaceObject] interface ChannelChangeEvent : Event {
+ /**
+   * \brief The new channel.
+   */
+  readonly attribute Channel channel;
 
-    /**
-     * \brief Initializes a new channel change event.
-     *
-     * \param type The type of event. Pass 'channelchange'.
-     * \param bubbles Indicates whether the event bubbles.
-     * \param cancelable Indicates whether the event is cancelable.
-     * \param channel The channel that was changed to.
-     */
-    void initChannelChangeEvent(in DOMString type, in boolean bubbles, in boolean cancelable, in Channel channel);
-    
-  };
-    
+  /**
+   * \brief Initializes a new channel change event.
+   *
+   * \param type The type of event. Pass 'channelchange'.
+   * \param bubbles Indicates whether the event bubbles.
+   * \param cancelable Indicates whether the event is cancelable.
+   * \param channel The channel that was changed to.
+   */
+  void initChannelChangeEvent(DOMString type, boolean bubbles, boolean cancelable, Channel channel);
+  
+};
+
 };
