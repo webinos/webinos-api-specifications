@@ -592,8 +592,71 @@ module vehicle{
 		*/
 		void initControlEvent(boolean bubbles, boolean cancelable, DOMString controlId, boolean active);
 	};
-	
-	
+		/**
+	* \brief This interface defines a climate control event. 
+	* The event provides information about changes to the climate control system inside the vehicle. ;
+	* \code
+	*
+	* webinos.vehicle.addEventListener("climate", climateHandler, null);
+	* function climateHandler(data){
+	*		console.log(data.zone + " desired temperature is " + data.desiredTemperature + "° C"); 		
+	*	}				
+	* \endcode
+	*/
+	[NoInterfaceObject]
+	interface ClimateControlEvent : Event{
+		/**
+		* \brief constant describing the single climate zone
+		*/	
+		const DOMString ZONE_DRIVER = "all";
+		/**
+		* \brief constant describing the climate zone of the driver	
+		*/	
+		const DOMString ZONE_DRIVER = "driver";
+		/**
+		* \brief constant describing the climate zone of the passenger seat in the front	
+		*/	
+		const DOMString ZONE_PASSENGER_FRONT = "passenger-front";
+		/**
+		* \brief constant describing the climate zone of the rear set passenger seat on the left
+		*/	
+		const DOMString ZONE_PASSENGER_REAR_LEFT = "passenger-rear-left";
+		/**
+		* \brief constant describing the climate zone of the rear set passenger seat on the right	
+		*/	
+		const DOMString ZONE_PASSENGER_REAR_RIGHT = "passenger-rear-right";
+		/**
+		* \brief attribute defining the zone of the climate control event	
+		*/	
+		readonly attribute DOMString zone;
+		/**
+		* \brief attribute defining the desired temperature  in celsius degree
+		*/	
+		readonly attribute unsigned short desiredTemperature ;
+		/**
+		* \brief attribute defining, if the AC is on or not	
+		*/	
+		readonly attribute boolean acStatus;
+		/**
+		* \brief attribute defining the level of the vent's setting. This value can be 1-9  	
+		*/	
+		readonly attribute unsigned short ventLevel;
+		/**
+		* \brief attribute defines if the vent is automatic mode or not  	
+		*/	
+		readonly attribute boolean ventMode;
+		/**
+		* \brief Method to set initial values a climate control event
+		* \param bubbles True if event bubbles
+		* \param cancelable True if event cancelable
+		* \param zone zone where event climate settings have been changed
+		* \param desiredTemperature desired temperature in celsius degree 
+		* \param acStatus true if the air conditioning is running
+		* \param ventLevel level of the vent
+		* \param ventMode true, if the vent is in automatic mode
+		*/
+		void initClimateControlEvent(boolean bubbles, boolean cancelable, DOMString zone, short desiredTemperature, boolean acStatus, short ventLevel, short ventMode);
+	};
 };
 
 
