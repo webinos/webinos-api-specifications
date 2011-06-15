@@ -1,7 +1,7 @@
 /**
  * \brief webinos Vehicle interface.
  *
- * The webinos Vehicle interface provides access to specific vehicle data. The Geolocation of the vehicle and the current speed can be retrieved using the Geolocation API. The API is based on the DOM Level 3 Events model. Eventypes for retrieving information about vehicle including bordcomputer data, gears or park sensors are defined as well as methods for interacting with the on-board navigation system.
+ * The webinos vehicle interface provides access to specific vehicle data. The API is based on the DOM Level 3 Events model and defines event types for retrieving information about the vehicle including bordcomputer data, gears or park sensors. Furthermore  it ptovides methods for interacting with the on-board navigation system. The geolocation, speed and acceleation can be retrieved using the geolocation and device orientation API. 
  *
  *
  * \def-api-feature http://webinos.org/api/vehicle
