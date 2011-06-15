@@ -653,7 +653,7 @@ module vehicle{
 		* \param desiredTemperature desired temperature in celsius degree 
 		* \param acStatus true if the air conditioning is running
 		* \param ventLevel level of the vent
-		* \param ventMode value is true, if the vent is automatic mode
+		* \param ventMode true, if the vent is in automatic mode
 		*/
 		void initClimateControlEvent(boolean bubbles, boolean cancelable, DOMString zone, short desiredTemperature, boolean acStatus, short ventLevel, short ventMode);
 	};
