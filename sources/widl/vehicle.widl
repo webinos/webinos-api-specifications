@@ -559,11 +559,11 @@ module vehicle{
 		/**
 		* \brief describes the source of the event	
 		*/	
-		attribute readonly DOMString conrolId;
+		readonly attribute DOMString conrolId;
 		/**
 		* \brief describes the status of the control unit	
 		*/	
-		attribute readonly boolean active;
+		readonly attribute boolean active;
 		/**
 		* \brief Method to set initial values of controll event
 		* \code
