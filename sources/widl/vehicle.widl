@@ -106,7 +106,7 @@ module vehicle{
 	*  The interface contains the name of "POI" and its address and/or geolocation as a LatLng object. <em> Note: The <a href="http://www.w3.org/2010/POI/" target="_blank">W3C POI WG</a> provided a <a href="http://www.w3.org/TR/2011/WD-poi-core-20110512/" target="_blank">first working draft</a> for the POI handling. The draft focuses on a XML representation of a POI and does not seem handy for beeing handled by a navigation system,</em>
 	*/ 
 	[NoInterfaceObject]
-	interface POI{
+	interface Poi{
 		/**
 		* \brief denotes the name of the POI
 		*/		
@@ -193,21 +193,19 @@ module vehicle{
 		*/		
 		readonly attribute DOMString transmission;
 		/**
-		* \brief Sets the given addresses as the next destinations of the build-in navigation systems. The method is able to handle intermediate stops.
-		*
-		* \param successCallback callback, if the address is succesully transferred
-		* \param errorCallback callback, if the address could not be transferred  
-		* \param destinations in form of an Address array. The last address in the array is the destination point. The other destinations are  intermediate stops along the route.
-		*/
-		void requestGuidance(in SuccessCallback successCallback, in ErrorCallback errorCallback, Address[] destinations);
-		/**
-		* \brief Sets the given geolocation point as the new destination of the in-car navigation system
-		*
+		* \brief Sets the given POIs as the next destinations of the build-in navigation systems. The method handles intermediate stops. The last Poi in the array in the final destination.
 		* \code
 		*	var destinations =new Array();
-		*	destination[0] = new webinos.Address("Petuelring 130", "80788", "MÜNCHEN", "DE");
-		*      destination[1] = new webinos.Address("Hanauer Strasse 46", "80992", "MÜNCHEN", "DE");
-		*      webinos.vehicle.requestGuidance(succesCB, null, destinations);
+		*	
+		*	var address = new webinos.Address("Petuelring 130", "80788", "MÜNCHEN", "DE");
+		*	var poi = new webinos.Poi("BMW AG", address);
+		*	destinations[0] = poi;
+		*	address = new webinos.Address("Hanauer Strasse 46", "80992", "MÜNCHEN", "DE");
+		*	poi = new webinos.Poi("BMW Forschung und Technik", address);
+		*	destinations[1] = poi;
+		*      
+		*
+		*	webinos.vehicle.requestGuidance(succesCB, null, destinations);
 		*  	webinos.vehicle.addEventListener("destination-reached", handleDestinations, false);
 		*      
 		*	function handleDestinations(event){
@@ -220,27 +218,25 @@ module vehicle{
 		*			}
 		*		}
 		*	}
-		*      
-		* 
 		* \endcode
-		*
 		* \param successCallback callback, if the address is succesully transferred
 		* \param errorCallback callback, if the address could not be transferred  
-		* \param destinations new destinations in form of a Geolocation LatLng array. The last address in the array is the destination point.
+		* \param destinations in form of an POI array. The last address in the array is the destination point. The other destinations are  intermediate stops along the route.
 		*/
-		void requestGuidance(in SuccessCallback successCallback, in ErrorCallback errorCallback, LatLng[] destinations);
+		void requestGuidance(in SuccessCallback successCallback, in ErrorCallback errorCallback, Poi[] destinations);
 		 /**
 		* \brief Queries the navigation system to retrieve POIs for a given search string.
 		*
-		* \code
-		*	var destinations =new Array();
-		*      webinos.vehicle.findDestination(destinationCB, errorCB,"BMW");
-		*      function destinationCB(pois){
-		*	    destinations[0] == pois[0].latlng
-		*          webinos.requestGuidance(successCB, errorCB, destinations);            
-		*
-		*	}
-		* 
+		*\code
+		*var destinations =new Array();
+		*webinos.vehicle.findDestination(destinationCB, errorCB,"BMW");
+		*function destinationCB(pois){
+		*	if(pois.length > 0){
+		*		webinos.requestGuidance(successCB, errorCB, pois[0]);            
+		*	}else{
+		*		console.log("nothing found");
+			}
+		*} 
 		* \endcode
 		*
 		* \param destinationCallback callback to handle the results to the search string
@@ -248,8 +244,6 @@ module vehicle{
 		* \param search search string for resolving a address 
 		*/
 		void findDestination(DestinationCallback destinationCallback, in ErrorCallback errorCallback, DOMString search);
-
-			
 	};
 	/**
 	* \brief This interface defines the result callback for the asynchronous findDestination method.
@@ -653,7 +647,7 @@ module vehicle{
 		* \param desiredTemperature desired temperature in celsius degree 
 		* \param acStatus true if the air conditioning is running
 		* \param ventLevel level of the vent
-		* \param ventMode true, if the vent is in automatic mode
+		* \param ventMode value is true, if the vent is automatic mode
 		*/
 		void initClimateControlEvent(boolean bubbles, boolean cancelable, DOMString zone, short desiredTemperature, boolean acStatus, short ventLevel, short ventMode);
 	};
