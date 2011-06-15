@@ -63,7 +63,8 @@ cp "$REPOS/resources/$XSL" "$SPECHOME/apis/"
 for i in $WIDLFILES
 do
 	cp "$REPOS/widl/$i" "$SPECHOME/apis/"
-	"$WIDLPROC" "$SPECHOME/apis/$i" > "$SPECHOME/apis/$(basename "$i" .widl).widlprocxml" 2>/dev/null
+	"$WIDLPROC" "$SPECHOME/apis/$i" > "$SPECHOME/apis/$(basename "$i" .widl).widlprocxml" 
+#2>/dev/null
 done
 
 unset GIT_DIR
