@@ -608,7 +608,7 @@ module vehicle{
 		/**
 		* \brief constant describing the single climate zone
 		*/	
-		const DOMString ZONE_DRIVER = "all";
+		const DOMString ZONE_ALL = "all";
 		/**
 		* \brief constant describing the climate zone of the driver	
 		*/	
