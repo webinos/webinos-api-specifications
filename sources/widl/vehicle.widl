@@ -211,11 +211,11 @@ module vehicle{
 		*  	webinos.vehicle.addEventListener("destination-reached", handleDestinations, false);
 		*      
 		*	function handleDestinations(event){
-		*                       if (event.address.street == destination[0].street) {
-		*					console.log("Reached the HQ");
-		*                       } else if (event.address.street == destination[1].street) {
-		*					console.log("Reached the research center");
-		*			}
+		*          if (event.address.street == destination[0].street) {
+		*	       console.log("Reached the HQ");
+		*          } else if (event.address.street == destination[1].street) {
+		*	        console.log("Reached the research center");
+		*          }
 		*	}
 		*      
 		* 
@@ -233,7 +233,7 @@ module vehicle{
 		*	var destinations =new Array();
 		*      webinos.vehicle.findDestination(destinationCB, errorCB,"BMW");
 		*      function destinationCB(pois){
-		*	   destinations[0] = pois[0].position;
+		*          destinations[0] = pois[0].position;
 		*          webinos.requestGuidance(successCB, errorCB, destinations);            
 		*
 		*	}
@@ -312,17 +312,17 @@ module vehicle{
 	*function tripDataHandler(data){
 	*	//Calculating, if the fuel efficiency increased, since the last update
 	*	var gap = latestConsumption - data.averageConsumption1;
-	*	if(gap < 0){
-	*	console.log("Thumbs down. You decreased your fuel efficiency");
-	*	}else if(gap > 0){
-	*		console.log("Thumbs up. You increased your fuel efficiency");
-	*	}else{
-	*		console.log("nothing changed");
+	*	if(gap \< 0){
+	*	    console.log("Thumbs down. You decreased your fuel efficiency");
+	*	} else if (gap > 0){
+	*	    console.log("Thumbs up. You increased your fuel efficiency");
+	*	} else {
+	*	    console.log("nothing changed");
 	*	}
 	*	latestConsumption = data.averageConsumption1;
 	*      
-	*	if(data.range < 20){
-	*		console.log("You really need " + webinos.vehicle.fuel + "soon.");	
+	*	if (data.range \< 20){
+	*	    console.log("You really need " + webinos.vehicle.fuel + "soon.");	
 	*	}
 	*}
 	* \endcode
