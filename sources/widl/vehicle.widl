@@ -193,8 +193,8 @@ module vehicle{
 		*/		
 		readonly attribute DOMString transmission;
 		/**
-		* \brief Sets the given addresses as the next destinations of the build-in navigation systems. The method is able to handle intermediate stops.
-		*		* \code
+		* \brief Sets the given POIs as the next destinations of the build-in navigation systems. The method handles intermediate stops. The last Poi in the array is the final destination.
+		* \code
 		*	var destinations =new Array();
 		*	destination.push(name:"BMW AG" ,address : {street:"Petuelring", streetNumber: "130", postalCode: "80788", city: "MUENCHEN", country: "DE"));
 		*      destination.push(name: "BMW Forschung und Technik" ,address:{street: "Hanauer Strasse", streetNumber: "46", postalCode: "80992", city: "MUENCHEN", country: "DE"});
@@ -222,9 +222,12 @@ module vehicle{
 		*	var destinations =new Array();
 		*      webinos.vehicle.findDestination(destinationCB, errorCB,"BMW");
 		*      function destinationCB(pois){
-		*          destinations[0] = pois[0].position;
-		*          webinos.requestGuidance(successCB, errorCB, destinations);            
-		*
+		*	if(destinations.length > 0){
+		*      	webinos.requestGuidance(successCB, errorCB, destinations);            
+		*	else{
+		*		console.log("No POI found");
+		*	}
+		*		
 		*	}
 		* 
 		* \endcode
