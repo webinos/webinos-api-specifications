@@ -211,14 +211,11 @@ module vehicle{
 		*  	webinos.vehicle.addEventListener("destination-reached", handleDestinations, false);
 		*      
 		*	function handleDestinations(event){
-		*           	if(event.type == "destination-reached"){
-		*			switch(event.address){
-		*				case destination[0]:
+		*                       if (event.address.street == destination[0].street) {
 		*					console.log("Reached the HQ");
-		*				case destination[1]:
+		*                       } else if (event.address.street == destination[1].street) {
 		*					console.log("Reached the research center");
 		*			}
-		*		}
 		*	}
 		*      
 		* 
