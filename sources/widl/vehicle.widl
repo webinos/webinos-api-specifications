@@ -236,7 +236,7 @@ module vehicle{
 		*	var destinations =new Array();
 		*      webinos.vehicle.findDestination(destinationCB, errorCB,"BMW");
 		*      function destinationCB(pois){
-		*	    destinations[0] == pois[0].latlng
+		*	   destinations[0] = pois[0].position;
 		*          webinos.requestGuidance(successCB, errorCB, destinations);            
 		*
 		*	}
