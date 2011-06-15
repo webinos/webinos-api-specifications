@@ -308,9 +308,10 @@ module vehicle{
 	*
 	* \code
 	*var latestConsuption = 0;
-	*webinos.vehicle.addEventListener("tripcomputer", tipdataHandler, false);
+	*webinos.vehicle.addEventListener("tripcomputer", tripdataHandler, false);
 	*      
 	*function tripDataHandler(data){
+	*	//Calculating, if the fuel efficiency increased, since the last update
 	*	var gap = latestConsumption - data.averageConsumption1;
 	*	if(gap > 0){
 	*	console.log("Thumbs down. You decreased your fuel efficiency");
@@ -318,6 +319,11 @@ module vehicle{
 	*		console.log("Thumbs up. You increased your fuel efficiency");
 	*	}
 	*	latestConsumption = data.averageConsumption1;
+	*      
+	*	if(data.range < 20){
+	*		console.log("You really need " + webinos.vehicle.fuel + "soon.");	
+	*	}
+	*	
 	*}
 	* \endcode
 	*/
