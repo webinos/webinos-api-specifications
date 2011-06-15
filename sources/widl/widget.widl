@@ -136,7 +136,10 @@ module widget {
     readonly attribute DOMString     shortName;
     
     /**
-     * \brief The preference element allows authors to declare one or more preferences: a preference is a persistently stored name-value pair that is associated with the widget the first time the widget is initiated. 
+     * \brief The preference element allows authors to access preferences declared in the manifest file. 
+     *
+     * For a complete definition of the Storage attribute please read the W3C specification of
+     * the storage attribute in the Widget specification (http://www.w3.org/TR/2011/WD-widgets-apis-20110607/). 
     */
  	readonly attribute Storage       preferences;
  	
