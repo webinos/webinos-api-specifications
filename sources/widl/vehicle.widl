@@ -307,7 +307,20 @@ module vehicle{
 	* A listener can registered by vehicle.addEventLister("tripcomputer",listener,false);
 	*
 	* \code
+	*      var latestConsuption = 0;
+	*	webinos.vehicle.addEventListener("tripcomputer", tipdataHandler, false);
+	*      
+	*	function tripDataHandler(data){
+	*         	var gap = latestConsumption - data.averageConsumption1;
+	*		if(gap > 0){
+	*			console.log("Thumbs down. You decreased your fuel efficiency");
+	*		}else if(gap <= 0){
+	*			console.log("Thumbs up. You increased your fuel efficiency");
+	*		}
+	*		latestConsumption = dataAverageConsumption1;		
+	*	
 	*
+	*        }
 	* \endcode
 	*/
 	[NoInterfaceObject]
@@ -353,7 +366,7 @@ module vehicle{
 		* \param mileage overall driven distance in km
 		* \param range range of the vehicle in km 
 		*/
-		void initBoardComputerEvent(boolean bubbles, boolean cancelable, float averageConsumption1, float averageConsumption2, float averageSpeed1, float averageSpeed2, float tripDistance, float mileage, float range);
+		void initTripComputerEvent(boolean bubbles, boolean cancelable, float averageConsumption1, float averageConsumption2, float averageSpeed1, float averageSpeed2, float tripDistance, float mileage, float range);
 	};
 	/**
 	* \brief This interface defines a ParkSensor Event. 
