@@ -236,15 +236,6 @@ module vehicle{
 		* \param search search string for resolving a address 
 		*/
 		void findDestination(DestinationCallback destinationCallback, in ErrorCallback errorCallback, DOMString search);
-		/**
-		* \brief cancels the guidance to a given POI
-		*
-		* \param successCallback callback to handle success
-		* \param errorCallback callback to handle erros
-		* \param poi POI to which the guidance shall be canceled 
-		*/
-		void findDestination(SuccessCallback successCallback, in ErrorCallback errorCallback, POI poi);
-
 	};
 	/**
 	* \brief This interface defines the result callback for the asynchronous findDestination method.
