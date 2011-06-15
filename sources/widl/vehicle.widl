@@ -3,7 +3,7 @@
  *
  * The webinos vehicle interface provides access to specific vehicle data. The API is based on the DOM Level 3 Events model and defines event types for retrieving information about the vehicle including trip computer data, gears or park sensors. Furthermore  it provides methods for interacting with the on-board navigation system. The geolocation, speed and acceleation can be retrieved using the geolocation and device orientation API. 
  *
- * The API provides access to vehicle data, which is available on the infotainment vehicle bus (e.g. <a href="http://en.wikipedia.org/wiki/MOST_Bus">MOST</a>). Since the in-car headunit is connected to this vehicle bus (<a href="http://dev.webinos.org/redmine/attachments/download/666/vehicle_bus_infrastructure.pdf">diagram on vehicle bus architecture</a>), the infotainment bus is used as the primarly source for vehicle data. Some data from other busses (high/low speed can or ) are routed into the bus over the central gateway such as speed and gear. Some data such as RPM is not routed into the infotainment bus.
+ * The API provides access to vehicle data, which is available on the infotainment vehicle bus (e.g. <a href="http://en.wikipedia.org/wiki/MOST_Bus">MOST</a>). The infotainment bus is the only access point for the headunit for receveiving vehicle data (<a href="http://dev.webinos.org/redmine/attachments/download/666/vehicle_bus_infrastructure.pdf">diagram on vehicle bus architecture</a>). Some data from other busses (high/low speed can or ) are routed into the bus over the central gateway such as speed or gear (RPM is currently not provided on the MOST bus). 
  *
  * \def-api-feature http://webinos.org/api/vehicle
  * Identifies the light sensor type. 
