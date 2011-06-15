@@ -32,10 +32,6 @@ mytv.setChannel(randomChannel, function(channel) {
  */
 module tvcontrol {
 
-  // these interface are placeholders so we can inherit from them
-  interface HTMLVideoElement {};
-  interface Event {};
-
   /**
    * \brief The HTMLTVElement interface
    *
