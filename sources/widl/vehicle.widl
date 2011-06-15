@@ -1,11 +1,29 @@
 /**
  * \brief webinos Vehicle interface.
  *
- * The webinos Vehicle interface provides access to specific vehicle data. The Geolocation of the vehicle and the current speed can be retrieved using the Geolocation API. The API is based on the DOM3 Event model. 
+ * The webinos vehicle interface provides access to specific vehicle data. The API is based on the DOM Level 3 Events model and defines event types for retrieving information about the vehicle including trip computer data, gears or park sensors. Furthermore  it provides methods for interacting with the on-board navigation system. The geolocation, speed and acceleation can be retrieved using the geolocation and device orientation API. 
  *
+ *
+ * \def-api-feature http://webinos.org/api/vehicle
+ * Identifies the light sensor type. 
+ *
+ * \def-api-feature http://webinos.org/api/vehicle.climate
+ * Identifies vehicle data related to climate controls. 
+ *
+ * \def-api-feature http://webinos.org/api/vehicle.navigation
+ * Identifies navigation module of a vehicle
+ *
+ * \def-api-feature http://webinos.org/api/vehicle.parksensors
+ * Identifies park sensor modules of a vehicle
+ *
+ * \def-api-feature http://webinos.org/api/vehicle.bordcomputer
+ * Identifies  bordcomputer information of a vehicle
+ *
+ * \def-api-feature http://webinos.org/api/vehicle.controls
+ * Identifies control data (e.g. whipers and lights) of a vehicle
  * 
  * \author Simon Isenberg &lt;Simon.Isenberg@bmw.de&gt;
- * \version 0.1
+ * \version 0.3
  */
 module vehicle{
 	/**
@@ -23,9 +41,10 @@ module vehicle{
 		const short NOT_AVAILABLE = 2;
 	};
 	/**
-	* \brief This interface defines the address properties, which can be passed to the navigation system using the requestGuidance() function.   The <a href="http://dev.w3.org/geo/api/spec-source-v2.html#address_interface">Address interface</a> defined in the v2 of the W3C Geolocation API is beeing used for that?
+	* \brief This interface defines the address properties, which can be passed to the navigation system using the requestGuidance() function.   The <a href="http://dev.w3.org/geo/api/spec-source-v2.html#address_interface">Address interface</a> defined in the v2 of the W3C Geolocation API is beeing used for this purpose.
 	*
-	*/  
+	*/ 
+	[NoInterfaceObject]
 	interface Address{
 		/**
 		* \brief attribute is specified using the two-letter [ISO 3166-1] code.
@@ -68,7 +87,8 @@ module vehicle{
 	* \brief This interface defines the LatLng properties, which can be passed to the navigation system using the requestGuidance() function. The format is WGS84
 	* 
 	*
-	*/  
+	*/ 
+	[NoInterfaceObject]
 	interface LatLng{
 		/**
 		* \brief Latitude of a geolocation in WGS84
@@ -81,10 +101,9 @@ module vehicle{
 	};
 	/**
 	* \brief This interface defines a Point of Interest (POI)
-	* 
-	* Description to be completed with code examples
-	*
-	*/  
+	*  The interface contains the name of "POI" and its address and/or geolocation as a LatLng object.
+	*/ 
+	[NoInterfaceObject]
 	interface POI{
 		/**
 		* \brief denotes the name of the POI
@@ -101,36 +120,35 @@ module vehicle{
 	};
 
 	/**
-	* \brief This interface defines callback, for successfull asynchronous function call
+	* \brief This interface defines the callback for a asynchronous function call
 	*
 	*/
 	[Callback=FunctionOnly, NoInterfaceObject]
 	interface SuccessCallback{
 		/**
-		* \brief method is triggered, if function has been succesfully called
+		* \brief method is triggered, if function has been succesfully called.
 		*
 		*/
 		void onSuccess();
 	};
 	/**
-	* \brief This interface defines callback, for successfull asynchronous function call
+	* \brief This interface defines the callback for a failed asynchronous function call
 	*
 	*/
 	[Callback=FunctionOnly, NoInterfaceObject]
 	interface ErrorCallback{
 		/**
-		* \brief method is triggered, if asychronous function call fails...
+		* \brief method is triggered, if asychronous function call fails.
 		* 
 		* \param error contains information about the error 
 		*/		
 		void onError(in VehicleError error);
 	};
 	/**
-	* \brief This interface defines some general information about the vehicle
-	* \code
-	*
-	* \endcode
+	* \brief This interface defines general information about the vehicle and is the object, where vehicle related event listener can be registered.
+	* 
 	*/
+	[NoInterfaceObject]
 	interface vehicle{
 		/**
 		* \brief A const describing the fuel type unleaded
@@ -173,33 +191,13 @@ module vehicle{
 		*/		
 		readonly attribute DOMString transmission;
 		/**
-		* \brief Register EventListener for Event inside the Vehicle
-		*
-		*
-		* \code
-		* // registering an Event for a Shift
-		* webinos.vehicle.addEventListener("shift", shiftHandler, null);
-		* function shiftHandler(e){
-		*   document.getElementById("info").innerHTML = e.gear;
-		*  webinos.vehicle.removeListener("shift");
-		* }				
-		* \endcode
-		*
-		* \param eventId Unique id of the Event 
-		* \param listener Event listener call back function (see http://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/)
-		* \param useCapture If true, useCapture indicates that the user wishes to add the event listener for the capture phase only,
-		* i.e. this event listener will not be triggered during the target and bubbling phases. If false, the event listener will only be
-		* triggered during the target and bubbling phases (see http://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/)			
-		*/
-		void addEventListener(in DOMString eventId, in EventListener listener, in boolean useCapture);		
-		/**
-		* \brief Sets the given address as the new destination of the build in-car navigation system
+		* \brief Sets the given addresses as the next destinations of the build-in navigation systems. The method is able to handle intermediate stops.
 		*
 		* \param successCallback callback, if the address is succesully transferred
 		* \param errorCallback callback, if the address could not be transferred  
-		* \param destinations  in form of an Address array. The last address in the array is the destination point.  
+		* \param destinations in form of an Address array. The last address in the array is the destination point. The other destinations are  intermediate stops along the route.
 		*/
-		void requestGuidance(in SuccessCallback successCallback, in ErrorCallback errorCallback, in Address[] destinations);
+		void requestGuidance(in SuccessCallback successCallback, in ErrorCallback errorCallback, Address[] destinations);
 		/**
 		* \brief Sets the given geolocation point as the new destination of the build in-car navigation system
 		*
@@ -228,12 +226,18 @@ module vehicle{
 		* \param errorCallback callback, if the address could not be transferred  
 		* \param destinations new destinations in form of a Geolocation LatLng array. The last address in the array is the destination point.
 		*/
-		void requestGuidance(in SuccessCallback successCallback, in ErrorCallback errorCallback, in LatLng[] destinations);
+		void requestGuidance(in SuccessCallback successCallback, in ErrorCallback errorCallback, LatLng[] destinations);
 		 /**
 		* \brief Queries the navigation system to retrieve POIs for a given search string.
 		*
 		* \code
+		*	var destinations =new Array();
+		*      webinos.vehicle.findDestination(destinationCB, errorCB,"BMW");
+		*      function destinationCB(pois){
+		*	    destinations[0] == pois[0].latlng
+		*          webinos.requestGuidance(successCB, errorCB, destinations);            
 		*
+		*	}
 		* 
 		* \endcode
 		*
@@ -241,17 +245,22 @@ module vehicle{
 		* \param errorCallback callback to handle erros
 		* \param search search string for resolving a address 
 		*/
-		void findDestination(in DestinationCallback destinationCallback, in ErrorCallback errorCallback, DOMString search);
+		void findDestination(DestinationCallback destinationCallback, in ErrorCallback errorCallback, DOMString search);
 
 			
 	};
 	/**
-	* \brief This interface defines callback, for successfull asynchronous function call
+	* \brief This interface defines the result callback for the asynchronous findDestination method.
 	*
 	*/
 	[Callback=FunctionOnly, NoInterfaceObject]
  	interface DestinationCallback {
-   		 void handleEvent(in POI[] pois);
+		/**
+		* \brief function is called, when the results for a POI search are retrieved
+		*
+		* \param pois array of Point of interests
+		*/
+   		 void handleResults(in POI[] pois);
   	};
 	
 	/**
@@ -275,7 +284,7 @@ module vehicle{
 		const DOMString DESTINATION_CANCELLED = "destination-cancelled";	
 		
 		/**
-		* \brief attribute defining the type of the NavigationEvent. The type canbe the "destination-reached", "destination-changed" and "destination-cancelled".
+		* \brief attribute defining the type of the NavigationEvent. The type can be the "destination-reached", "destination-changed" and "destination-cancelled".
 		*/			
 		readonly attribute DOMString type;
 		
@@ -286,9 +295,6 @@ module vehicle{
 
 		/**
 		* \brief Method to set initial values of Navigation event
-		* \code
-		* // TBD
-		* \endcode
 		* \param bubbles True if event bubbles
 		* \param cancelable True if event cancelable
 		* \param navigationEventId Sensor type
@@ -297,47 +303,46 @@ module vehicle{
 		void initNavigationEvent(boolean bubbles, boolean cancelable, DOMString navigationEventId, Address destination);	
 	};
 	/**
-	* \brief This interface defines a Boardcomputer Event. 
-	* A listener can registered by vehicle.addEventLister("boardcomputer",listener,false);
+	* \brief This interface defines a trip computer event. 
+	* A listener can registered by vehicle.addEventLister("tripcomputer",listener,false);
+	*
 	* \code
 	*
 	* \endcode
 	*/
 	[NoInterfaceObject]
-	interface BoardComputerEvent : Event{
+	interface TripComputerEvent : Event{
 		/**
 		* \brief average consumption 1 of the vehicle in l/100km 
 		*/		
-		attribute float averageConsumption1;
+		readonly attribute float averageConsumption1;
 		/**
 		* \brief average consumption 2 of the vehicle in l/100km 
 		*/		
-		attribute float averageConsumption2;
+		readonly attribute float averageConsumption2;
 		/**
 		* \brief avergage speed of the vehicle in kmph
 		*/
-		attribute float averageSpeed1;
+		readonly attribute float averageSpeed1;
 		/**
 		* \brief avergage speed of the vehicle in kmph
 		*/		
-		attribute float averageSpeed2;
+		readonly attribute float averageSpeed2;
 		/**
 		* \brief tripdistance in km
 		*/
-		attribute float tripDistance;
+		readonly attribute float tripDistance;
 		/**
 		* \brief milage in km
 		*/
-		attribute float milage;
+		readonly attribute float milage;
 		/**
 		* \brief range in km
 		*/
-		attribute float range;
+		readonly attribute float range;
 		/**
-		* \brief Method to set initial values of Boardcomputer event
-		* \code
-		* // TBD
-		* \endcode
+		* \brief Method to set the initial values of a trip computer event
+		*
 		* \param bubbles True if event bubbles
 		* \param cancelable True if event cancelable
 		* \param averageConsumption1 average consumption 1 of the vehicle in l/100km 
@@ -364,7 +369,7 @@ module vehicle{
 	* \endcode
 	*/
 	[NoInterfaceObject]
-	interface ParkControllEvent : Event{
+	interface ParkSensorsEvent : Event{
 		/**
 		* \brief constant describing Event is emitted by the ParkSensors in the front  
 		*/
@@ -376,35 +381,26 @@ module vehicle{
 		/**
 		* \brief Defining the position of the sensor. values: front or rear
 		*/
-		attribute DOMString position;
+		readonly attribute DOMString position;
 		/**
 		* \brief Destination to an object sensed by the sensor in cm. Minimum distance is 20 cm. Maximum distance is 250 cm. A value of 254 indiactes that no object has been sensed.
 		*/    		
-		attribute unsigned short left;
+		readonly attribute unsigned short left;
 		/**
 		* \brief Destination to an object sensed by the sensor in cm. Minimum distance is 20 cm. Maximum distance is 250 cm. A value of 254 indiactes that no object has been sensed.
 		*/
-		attribute unsigned short midLeft;	
+		readonly attribute unsigned short midLeft;	
 		/**
 		* \brief Destination to an object sensed by the sensor in cm. Minimum distance is 20 cm. Maximum distance is 250 cm. A value of 254 indiactes that no object has been sensed.
 		*/
-		attribute unsigned short midRigth;
+		readonly attribute unsigned short midRigth;
 		/**
 		* \brief Destination to an object sensed by the sensor in cm. Minimum distance is 20 cm. Maximum distance is 250 cm. A value of 254 indiactes that no object has been sensed.
 		*/
-		attribute unsigned short rigth;
+		readonly attribute unsigned short rigth;
 
 		/**
 		* \brief Method to set initial values of ParkSensor event
-		* \code
-		* 	webinos.vehicle.addEventListener("pdc-front",pdcHandler, false);
-		*	webinos.vehicle.addEventListener("pdc-rear",pdcHandler, false);
-		*	function pdcHandler(pEvent){
-		*		if()
-		*	}
-		*
-		*	
-		* \endcode
 		* \param bubbles True if event bubbles
 		* \param cancelable True if event cancelable
 		* \param position position of the sensors: front or rear
@@ -413,34 +409,19 @@ module vehicle{
 		* \param midRight data from the middle right sensor
 		* \param right data from the right sensor
 		*/
-		void initParkControllEvent(boolean bubbles, boolean cancelable, DOMString position, short left, short midLeft, short midRight, short right);
-	};
-	/**
-	* \brief This interface defines a Climate Controll Event. 
-	* A listener can registered by vehicle.addEventLister("climatecontrol",listener,false);
-	* \code
-	*
-	* \endcode
-	*/
-	[NoInterfaceObject]
-	interface ClimateControllEvent : Event{
-		
-		/**
-		* \brief Method to set initial values of ClimateControll event
-		* \code
-		* // TBD
-		* \endcode
-		* \param bubbles True if event bubbles
-		* \param cancelable True if event cancelable
-		*/
-		void initClimateControllEvent(boolean bubbles, boolean cancelable);
+		void initParkSensorsEvent(boolean bubbles, boolean cancelable, DOMString position, short left, short midLeft, short midRight, short right);
 	};
 	/**
 	* \brief This interface defines a shift Event. 
 	* A listener can registered by vehicle.addEventLister("shift",listener,false);
 	* Question: Can we use the device orientation event for that?
 	* \code
-	*
+	* // registering an Event for a Shift
+	* webinos.vehicle.addEventListener("shift", shiftHandler, null);
+	* function shiftHandler(e){
+	*   document.getElementById("info").innerHTML = e.gear;
+	*  webinos.vehicle.removeListener("shift");
+	* }				
 	* \endcode
 	*/
 	[NoInterfaceObject]
@@ -486,23 +467,20 @@ module vehicle{
 		*/	
 		const short GEAR_PARKING = -2;		
 		/**
-		* \brief The current speed of the vehicle. The unit is kmph/10. 	
+		* \brief represents the current gear of the vehicle. 	
 		*/	
-		attribute short gear;
+		readonly attribute short gear;
 		/**
 		* \brief Method to set initial values a shift event
-		* \code
-		* // TBD
-		* \endcode
 		* \param bubbles True if event bubbles
 		* \param cancelable True if event cancelable
 		* \param gear current gear of the engine
 		*/
 		void initShiftEvent(boolean bubbles, boolean cancelable, short gear);
 	};
-		/**
-	* \brief This interface defines a Controll Event. 
-	* Event signals a change for controll inside the vehilce (e.g. lights, wiper, etc.)
+	/**
+	* \brief This interface defines a Control Event. 
+	* Event signals a change for control inside the vehilce (e.g. lights, wiper, etc.)
 	* \code
 	*	webinos.vehicle.addEventListener("lights-hibeam", lightHandler, false);
 	*      function lightHandler(cEvent){
@@ -581,11 +559,11 @@ module vehicle{
 		/**
 		* \brief describes the source of the event	
 		*/	
-		attribute DOMString conrolId;
+		readonly attribute DOMString conrolId;
 		/**
 		* \brief describes the status of the control unit	
 		*/	
-		attribute boolean active;
+		readonly attribute boolean active;
 		/**
 		* \brief Method to set initial values of controll event
 		* \code
