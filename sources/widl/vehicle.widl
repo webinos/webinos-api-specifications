@@ -215,7 +215,7 @@ module vehicle{
 		* \param destinations in form of an POI array. The last POI in the array is the destination point. The other POIs are intermediate stops along the route.
 		*/
 		void requestGuidance(in SuccessCallback successCallback, in ErrorCallback errorCallback, POI[] destinations);
-		 /**
+		/**
 		* \brief Queries the navigation system to retrieve POIs for a given search string.
 		*
 		* \code
@@ -236,8 +236,6 @@ module vehicle{
 		* \param search search string for resolving a address 
 		*/
 		void findDestination(DestinationCallback destinationCallback, in ErrorCallback errorCallback, DOMString search);
-
-			
 	};
 	/**
 	* \brief This interface defines the result callback for the asynchronous findDestination method.
