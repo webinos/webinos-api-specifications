@@ -212,7 +212,7 @@ module vehicle{
 
 		* \param successCallback callback, if the POIs are succesully transferred
 		* \param errorCallback callback, if the address could not be transferred  
-		* \param destinations in form of an Address array. The last address in the array is the destination point. The other destinations are  intermediate stops along the route.
+		* \param destinations in form of an POI array. The last POI in the array is the destination point. The other POIs are intermediate stops along the route.
 		*/
 		void requestGuidance(in SuccessCallback successCallback, in ErrorCallback errorCallback, POI[] destinations);
 		 /**
