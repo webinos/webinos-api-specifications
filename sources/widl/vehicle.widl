@@ -3,6 +3,7 @@
  *
  * The webinos vehicle interface provides access to specific vehicle data. The API is based on the DOM Level 3 Events model and defines event types for retrieving information about the vehicle including trip computer data, gears or park sensors. Furthermore  it provides methods for interacting with the on-board navigation system. The geolocation, speed and acceleation can be retrieved using the geolocation and device orientation API. 
  *
+ * The API provides access to vehicle data, which is available on the infotainment vehicle bus (e.g. <a href="http://en.wikipedia.org/wiki/MOST_Bus">MOST</a>). Since the in-car headunit is connected to this vehicle bus (<a href="http://dev.webinos.org/redmine/attachments/download/666/vehicle_bus_infrastructure.pdf">diagram on vehicle bus architecture</a>), the infotainment bus is used as the primary source vehicle data. Some data from other vehicle busses (high/low speed can or ) are routed into the bus over the central gateway such as speed and gear. Currently rotation per minutes are not available on the bus.
  *
  * \def-api-feature http://webinos.org/api/vehicle
  * Identifies the light sensor type. 
@@ -307,23 +308,24 @@ module vehicle{
 	* A listener can registered by vehicle.addEventLister("tripcomputer",listener,false);
 	*
 	* \code
-	*var latestConsuption = 0;
-	*webinos.vehicle.addEventListener("tripcomputer", tripdataHandler, false);
+	*var latestConsumption = 0;
+	*webinos.vehicle.addEventListener("tripcomputer", tripDataHandler, false);
 	*      
 	*function tripDataHandler(data){
 	*	//Calculating, if the fuel efficiency increased, since the last update
 	*	var gap = latestConsumption - data.averageConsumption1;
-	*	if(gap > 0){
+	*	if(gap < 0){
 	*	console.log("Thumbs down. You decreased your fuel efficiency");
-	*	}else if(gap <= 0){
+	*	}else if(gap > 0){
 	*		console.log("Thumbs up. You increased your fuel efficiency");
+	*	}else{
+	*		console.log("nothing changed");
 	*	}
 	*	latestConsumption = data.averageConsumption1;
 	*      
 	*	if(data.range < 20){
 	*		console.log("You really need " + webinos.vehicle.fuel + "soon.");	
 	*	}
-	*	
 	*}
 	* \endcode
 	*/
@@ -431,7 +433,6 @@ module vehicle{
 	/**
 	* \brief This interface defines a shift Event. 
 	* A listener can registered by vehicle.addEventLister("shift",listener,false);
-	* Question: Can we use the device orientation event for that?
 	* \code
 	* // registering an Event for a Shift
 	* webinos.vehicle.addEventListener("shift", shiftHandler, null);
