@@ -147,11 +147,11 @@ module vehicle{
 		void onError(in VehicleError error);
 	};
 	/**
-	* \brief This interface defines general information about the vehicle and is the object, where vehicle related event listener can be registered.
+	* \brief This interface defines general information about the vehicle and is the object, where vehicle related event listener can be registered. The interface is accessible through the webinos.vehicle object. 
 	* 
 	*/
 	[NoInterfaceObject]
-	interface vehicle : EventTarget {
+	interface VehicleInterface : EventTarget {
 		/**
 		* \brief A const describing the fuel type unleaded
 		*/		
@@ -237,6 +237,15 @@ module vehicle{
 		*/
 		void findDestination(DestinationCallback destinationCallback, in ErrorCallback errorCallback, DOMString search);
 	};
+	
+	/**
+	* \brief The Vehicle interface describes the part of the Vehicle API accessible through the webinos object. 
+	*
+	*/
+	[NoInterfaceObject] interface Vehicle {
+                readonly attribute VehicleInterface vehicle;
+        };
+	webinoscore::Webinos implements Vehicle;
 	/**
 	* \brief This interface defines the result callback for the asynchronous findDestination method.
 	*
