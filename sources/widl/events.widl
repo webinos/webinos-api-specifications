@@ -3,14 +3,104 @@
  *
  * The Webinos Event Handling API provides means to exchange data in terms of
  * events among addressable entities (e.g., applications, services), either
- * locally or remotely, taking advantage of the features offered by the Webinos
- * overlay networking model.
+ * locally or remotely.
  *
- * TODO: add informal description + examples here.
+ * This is an advanced API that is mostly meant to be used by third-party
+ * developers to implement custom event-based protocols by taking advantage of
+ * the features offered by the Webinos event handling system, that in turn
+ * leverages off of the features offered by Webinos overlay networking model.
+ *
+ * It this, therefore, strongly recommended to carefully read the Messaging
+ * section in the Webinos system specifications before committing to the usage
+ * of this API.
+ *
+ * Despite its apparent complexity, this API revolves around three simple basic
+ * concepts: generating events, sending/forwarding events and
+ * registering/unregistering event listeners for incoming events.
+ *
+ * The following example demonstrates what the core functionality of a
+ * simplicistic textual chat application could look like if implemented using
+ * this API.
+ *
+ * \code
+// Array of objects implementing the EventEntity interface that represents the
+// list of participants to the chat session, excluding the current application.
+var participants = [...];
+
+// DOM element that keeps a log of the whole session.
+var logElem;
+
+// DOM Text object that allows the user to insert text messages.
+var inputElem;
+
+// Function that somehow returns a human-readable name associated to the input
+// entity.
+function getName(entity) {
+  ...
+}
+
+// Function that returns a copy of the input string with HTML control characters
+// ('&lt;', '&gt;', '&amp;') escaped ('&amp;lt;', '&amp;gt;', '&amp;amp;').
+function escapeHTML(str) {
+  str = str.replace(/&amp;/g, '&amp;amp;');
+  return str.replace(/&lt;/g, '&amp;lt;').replace(/&gt;/g, '&amp;gt;');
+}
+
+// Listener callback for incoming events.
+function onMsg(evt) {
+  // Appends event data to logElem.
+  // E.g.: [00:00:00] Stefano said: Hi all!
+  logElem.innerHTML += "[" + new Date(evt.timeStamp).toLocaleTimeString() + "] "
+                       + getName(evt.addressing.source) + " said: "
+                       + escapeHTML(evt.payload) + "\\n";
+}
+
+// Delivery error notification callback.
+function onMsgError(evt, recipient, error)
+{
+  // Pops up an alert dialog with error details.
+  // E.g.: Stefano did not receive your message saying: "How are you?"
+  //       Event refused (4)
+  alert(getName(recipient) + ' did not receive your message saying: "'
+        + evt.payload + '\\n' + error.message + '(' + error.code + ')');
+}
+
+// Listener to DOM "click" event for some "Send Message" button.
+function onSendButtonClicked() {
+  // Creates a new event of type "chatMessage" directed to all the chat
+  // participants with payload containing the text in inputElem and with
+  // timestamp.
+  var evt = webinos.events.createEvent("chatMessage", {to: participants},
+                                       inputElem.value, null, true, null, true);
+
+  // Sends the event and specifies the onMsgError callback for handling error
+  // delivery notifications.
+  msg.dispatchEvent({onError: onMsgError}, null, false);
+
+  // Appends the input message to logElem.
+  // E.g.: [00:01:00] you said: "Let's try again... how are you?"
+  logElem.innerHTML += "[" + new Date(evt.timeStamp).toLocaleTimeString()
+                       + "] you said: " + escapeHTML(evt.payload) + "\\n";
+}
+
+// Initialization stuff.
+document.onLoad = function() {
+  // Gets "log" element.
+  logElem = document.getElementById("log");
+
+  // Gets "input" element.
+  inputElem = document.getElementById("input");
+
+  // Adds the onMsg() callback as an event listener for incoming events with
+  // type "chatMessage", from any source and to any destination (within the
+  // application).
+  webinos.events.addEventListener(onMsg, "chatMessage");
+}
+ * \endcode
  *
  * \def-api-feature http://webinos.org/api/events
  * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt;
- * \version 0.4
+ * \version 0.9
  */
 
 module events {
@@ -95,6 +185,9 @@ module events {
 		 *
 		 * It MUST match the following regular expression:
 		 * [_a-zA-Z][_a-zA-Z0-9]*
+		 *
+		 * Identifiers "deliveryNotification", "JSONRPC20Request" and
+		 * "JSONRPC20Response" are reserved, hence not allowed.
 		 */
 		readonly attribute DOMString type;
 		/**
