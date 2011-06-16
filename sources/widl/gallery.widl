@@ -5,7 +5,7 @@
  * This specification defines an Application Programming Interface (API) that provides access to media gallery located on the device. 
  *
  * The Gallery API defines a high-level interface for accessing media gallery located on the device. A media gallery is a collection of media objects such as video, audio and image. 
- *
+ * *
  * \author W3C Editor's Draft 04 November 2010
  * \author WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
  * \version 1.0
@@ -132,7 +132,7 @@ module gallery {
    * 3. If the attempt was successful, dispatch a success event. If the attempt fails, and the method was invoked with a non-null errorCB argument, this method must dispatch an error event with the code attribute set according to the type of failure that has occurred.
    *
    * \param fields The search qualifier. 
-   * \param successCB 	Function to call when the asynchronous operation completes 
+   * \param successCB   Function to call when the asynchronous operation completes 
    * \param errorCB Function to call when the asynchronous operation fails. 
    * \param options The options to apply to the output of this method. 
    * \return PendingOperation to cancel the asynchronous call 
@@ -182,163 +182,163 @@ module gallery {
     *
     * No exceptions.
     */ 
-    readonly attribute DOMString       title;
+    readonly attribute DOMString?       title;
    /**
     * \brief The language used in the media object.
     *
     * No exceptions.
     */ 
-    readonly attribute DOMString       language;
+    readonly attribute DOMString?       language;
    /**
     * \brief The logical address at which the media object can be accessed.
     *
     * No exceptions.
     */ 
-    readonly attribute DOMString       locator;
+    readonly attribute DOMString?       locator;
    /**
     * \brief The contributor related with the media object. e.g., actor, cameraman, director, singer, author, artist, etc.
     *
     * No exceptions.
     */ 
-    readonly attribute DOMString       contributor;
+    readonly attribute DOMString?       contributor;
    /**
     * \brief The author of the media object.
     *
     * No exceptions.
     */ 
-    readonly attribute DOMString       Creator;
+    readonly attribute DOMString?       Creator;
    /**
     * \brief The date and time the media object was originally created.
     *
     * No exceptions.
     */ 
-    readonly attribute Date            CreateDate;
+    readonly attribute Date?            CreateDate;
    /**
     * \brief The description where the media object has been created, developed, recorded, or otherwise authored.
     *
     * No exceptions.
     */ 
-    readonly attribute DOMString       location;
+    readonly attribute DOMString?       location;
    /**
     * \brief A free-form text describing the content of the media object.
     *
     * No exceptions.
     */ 
-    readonly attribute DOMString       description;
+    readonly attribute DOMString?       description;
    /**
     * \brief A concept, descriptive phrase or keyword that specifies the topic of the media object.
     *
     * No exceptions.
     */ 
-    readonly attribute DOMString       keyword;
+    readonly attribute DOMString?       keyword;
    /**
     * \brief The category of the content of the media object.
     *
     * No exceptions.
     */ 
-    readonly attribute DOMString       genre;
+    readonly attribute DOMString?       genre;
    /**
     * \brief The rating value related with the media object.
     *
     * No exceptions.
     */ 
-    readonly attribute unsigned long   rating;
+    readonly attribute unsigned long?   rating;
    /**
     * \brief The description related with resource that the current media object is related with.
     *
     * No exceptions.
     */ 
-    readonly attribute DOMString       relation;
+    readonly attribute DOMString?       relation;
    /**
     * \brief The name of the collection from which the media object originates or to which it belongs.
     *
     * No exceptions.
     */ 
-    readonly attribute DOMString       collection;
+    readonly attribute DOMString?      collection;
    /**
     * \brief The copyright statement. Identification of the copyrights holder.
     *
     * No exceptions.
     */ 
-    readonly attribute DOMString       copyright;
+    readonly attribute DOMString?       copyright;
    /**
     * \brief A policy statement (typically human-readable) associated with the media object.
     *
     * No exceptions.
     */ 
-    readonly attribute DOMString       policy;
+    readonly attribute DOMString?       policy;
    /**
     * \brief The publisher of a media object.
     *
     * No exceptions.
     */ 
-    readonly attribute DOMString       publisher;
+    readonly attribute DOMString?       publisher;
    /**
     * \brief The classification information related with media object including the issuer of the classification (e.g., a parental guidance issuing agency, or a targeted geographical region).
     *
     * No exceptions.
     */ 
-    readonly attribute DOMString       targetAudience;
+    readonly attribute DOMString?       targetAudience;
    /**
     * \brief A fragment identifier. A fragment is a portion of the resource
     *
     * No exceptions.
     */ 
-    readonly attribute DOMString       fragment;
+    readonly attribute DOMString?       fragment;
    /**
     * \brief A named fragment identifier.
     *
     * No exceptions.
     */ 
-    readonly attribute DOMString       namedFragment;
+    readonly attribute DOMString?       namedFragment;
    /**
     * \brief The frame size of the media object (e.g., width and height of 720 and 480 units, respectively).
     *
     * No exceptions.
     */ 
-    readonly attribute unsigned long   frameSize;
+    readonly attribute unsigned long?   frameSize;
    /**
     * \brief The compression type used.
     *
     * No exceptions.
     */ 
-    readonly attribute DOMString       compression;
+    readonly attribute DOMString?       compression;
    /**
     * \brief The actual duration of the media object.
     *
     * No exceptions.
     */ 
-    readonly attribute unsigned long   duration;
+    readonly attribute unsigned long?   duration;
    /**
     * \brief The MIME type of the media object (e.g., wrapper or bucket media types).
     *
     * No exceptions.
     */ 
-    readonly attribute DOMString       format;
+    readonly attribute DOMString?       format;
    /**
     * \brief The audio sampling rate.
     *
     * No exceptions.
     */ 
-    readonly attribute unsigned long   samplingRate;
+    readonly attribute unsigned long?   samplingRate;
    /**
     * \brief The video frame rate.
     *
     * No exceptions.
     */ 
-    readonly attribute unsigned long   framerate;
+    readonly attribute unsigned long?   framerate;
    /**
     * \brief The average bit rate.
     *
     * No exceptions.
     */ 
-    readonly attribute unsigned long   averageBitRate;
+    readonly attribute unsigned long?   averageBitRate;
    /**
     * \brief The number of tracks of a resource.
     *
     * No exceptions.
     */ 
-    readonly attribute unsigned short  numTracks;
+    readonly attribute unsigned short?  numTracks;
 };
 
 
@@ -388,49 +388,49 @@ module gallery {
     *
     * No exceptions.
     */ 
-    attribute DOMString      filter;
+    attribute DOMString?      filter;
    /**
     * \brief Specify the scope of media type for finding the media object
     *
     * No exceptions.
     */ 
-    attribute short          mediaType;
+    attribute short?          mediaType;
    /**
     * \brief Specify the scope of gallery for finding the media object
     *
     * No exceptions.
     */ 
-    attribute GalleryInfo[]  gallery;
+    attribute GalleryInfo[]?  gallery;
    /**
     * \brief Specify wheither media objects are ordered in ascending or descending order. Default is an ascending order. 
     *
     * No exceptions.
     */ 
-    attribute short          order;
+    attribute short?          order;
    /**
     * \brief Primary criteria to order the media object of the gallery.
     *
     * No exceptions.
     */ 
-    attribute short          firstSortOption;
+    attribute short?          firstSortOption;
    /**
     * \brief Second criteria to order the media object of the gallery.
     *
     * No exceptions.
     */ 
-    attribute short          secondSortOption;
+    attribute short?          secondSortOption;
    /**
     * \brief Start date for performing the search. Media object with date previous to that date will not be returned.
     *
     * No exceptions.
     */ 
-    attribute Date           startDate;
+    attribute Date?           startDate;
    /**
     * \brief End date for performing the search. Media object with date later to that date will not be returned.
     *
     * No exceptions.
     */ 
-    attribute Date           endDate;
+    attribute Date?           endDate;
 };
 
  /**                       

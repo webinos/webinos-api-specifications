@@ -9,7 +9,9 @@
  *    A Contacts interface, which provides the method needed to access a user's unified address book.
  *    A Contact interface, which captures the individual contact information that can be returned following a successful read operation.
  *
- * 
+ * Note that while the W3C version, on which this specification is based on, provides only the ServiceContacts
+ * to retrieve contacts, in webinos contacts can also be retrieved using the findServices method of the
+ * Service Discovery API.
  * 
  * \author W3C Editor's Draft 25 May 2011
  * \author WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
@@ -171,37 +173,37 @@ module Contacts {
            *
            * No exceptions.
            */
-             attribute ContactField[]        phoneNumbers;
+             attribute ContactField[]?        phoneNumbers;
            /**
            * \brief This attribute represents one or more email addresses associated with this Contact. 
            *
            * No exceptions.
            */
-             attribute ContactField[]        emails;
+             attribute ContactField[]?        emails;
            /**
            * \brief This attribute represents one or more physical addresses associated with this Contact. 
            *
            * No exceptions.
            */
-             attribute ContactAddress[]      addresses;
+             attribute ContactAddress[]?      addresses;
            /**
            * \brief This attribute represents one or more instant messaging identifiers associated with this Contact. 
            *
            * No exceptions.
            */
-             attribute ContactField[]        ims;
+             attribute ContactField[]?        ims;
            /**
            * \brief This attribute represents one or more organizations associated with this Contact. 
            *
            * No exceptions.
            */
-             attribute ContactOrganization[] organizations;
+             attribute ContactOrganization[]? organizations;
            /**
            * \brief This attribute contains the timestamp information associated with this Contact, which represents the last known modification time. If no modification time exists, then this object contains the timestamp of the object's creation time. 
            *
            * No exceptions.
            */
-             attribute Date                  revision;
+             attribute Date?                  revision;
            /**
            * \brief     This attribute contains birthday of this Contact.
            *
@@ -209,7 +211,7 @@ module Contacts {
            *
            * No exceptions.
            */
-             attribute Date                  birthday;
+             attribute Date?                  birthday;
            /**
            * \brief This attribute contains the gender of this Contact. This attribute should have one of the following values:
            *
@@ -223,13 +225,13 @@ module Contacts {
            *
            * No exceptions.
            */
-             attribute DOMString             gender;
+             attribute DOMString?             gender;
            /**
            * \brief This attribute contains the personal notes (free-text) for this Contact that is managed by the user of the address book. 
            *
            * No exceptions.
            */
-             attribute DOMString             note;
+             attribute DOMString?             note;
            /**
            * \brief This attribute represents one or more photos associated with this Contact.
            * 
@@ -237,13 +239,13 @@ module Contacts {
            *
            * No exceptions.
            */
-             attribute ContactField[]        photos;
+             attribute ContactField[]?        photos;
            /**
            * \brief This attribute contains one or more user-defined categories/tags/labels associated with this Contact. e.g. "family", "favourite", "cryptozoologists". 
            *
            * No exceptions.
            */
-             attribute DOMString[]           categories;
+             attribute DOMString[]?           categories;
            /**
            * \brief This attribute represents one or more URLs associated with this Contact e.g. personal web page, blog.
            *
@@ -251,7 +253,7 @@ module Contacts {
            *
            * No exceptions.
            */
-             attribute ContactField[]        urls;
+             attribute ContactField[]?        urls;
            /**
            * \brief This attribute represents the time zone of this Contact.
            *
@@ -261,7 +263,7 @@ module Contacts {
            *
            * No exceptions.
            */
-             attribute DOMString             timezone;
+             attribute DOMString?             timezone;
         };
         
         /**
