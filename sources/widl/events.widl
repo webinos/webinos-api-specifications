@@ -10,7 +10,7 @@
  *
  * \def-api-feature http://webinos.org/api/events
  * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt;
- * \version 0.3
+ * \version 0.4
  */
 
 module events {
@@ -93,8 +93,8 @@ module events {
 		/**
 		 * \brief Event type identifier.
 		 *
-		 * String other than "any" that matches the following regular
-		 * expression: [_a-zA-Z][_a-zA-Z0-9]*
+		 * It MUST match the following regular expression:
+		 * [_a-zA-Z][_a-zA-Z0-9]*
 		 */
 		readonly attribute DOMString type;
 		/**
@@ -118,9 +118,11 @@ module events {
 		 *  - the payload, if present.
 		 *
 		 * Even though not strictly required, conforming implementations
-		 * SHOULD implement some strategy to try to limit the likelihood
-		 * that an application instance is delivered more than one event
-		 * with a given id.
+		 * are recommended to implement some strategy to try to limit
+		 * the likelihood that an application instance is delivered more
+		 * than one event with a given id. Users of this API MUST assume
+		 * that no more than one event with a given id is ever delivered
+		 * to a given recipient.
 		 *
 		 * For more details, please refer to the Webinos system
 		 * specifications.
@@ -195,17 +197,17 @@ module events {
 		 * attributes.
 		 *
 		 * \param callbacks Set of callbacks to monitor sending status
-		 *	  (null and unspecified are considered as equivalent to
-		 *	  an EventCallbacks object with all attributes set to
+		 *	  (null and undefined are considered as equivalent to an
+		 *	  EventCallbacks object with all attributes set to
 		 *	  null).
 		 * \param referenceTimeout Moment in time until which the
 		 *	  Webinos runtime SHALL ensure that the Event object
 		 *	  being sent is not garbage collected for the purpose of
 		 *        receiving events in response to the event being sent
-		 *        (null, unspecified and values up to the current
+		 *        (null, undefined and values up to the current
 		 *        date/time mean that no special action is taken by the
 		 *        runtime in this regard).
-		 * \param sync If false, null or unspecified, the function is
+		 * \param sync If false, null or undefined, the function is
 		 *	  non-blocking, otherwise if true it will block until
 		 *	  one of the following conditions becomes true: \n
 		 *	   - if referenceTimeout represents a moment of time in
@@ -249,19 +251,19 @@ module events {
 		 *        webinos.events.createEvent() function processes its
 		 *        "addressing" argument (i.e., make a normalized copy).
 		 * \param withTimeStamp Whether to set the forwarding timestamp
-		 *        (unspecified is considered as equivalent to false).
+		 *        (undefined is considered as equivalent to false).
 		 * \param callbacks Set of callbacks to monitor forwarding
-		 *        status (null and unspecified are considered as
+		 *        status (null and undefined are considered as
 		 *        equivalent to an EventCallbacks object with all
 		 *        attributes set to null).
 		 * \param referenceTimeout Moment in time until which the
 		 *	  Webinos runtime SHALL ensure that the Event object
 		 *	  being forwarded is not garbage collected for the
 		 *        purpose of receiving events in response to the event
-		 *        being forwarded (null, unspecified and values up to
-		 *        the current date/time mean that no special action is
-		 *        taken by the runtime in this regard).
-		 * \param sync If false, null or unspecified, the function is
+		 *        being forwarded (null, undefined and values up to the
+		 *        current date/time mean that no special action is taken
+		 *        by the runtime in this regard).
+		 * \param sync If false, null or undefined, the function is
 		 *	  non-blocking, otherwise if true it will block until
 		 *	  one of the following conditions becomes true: \n
 		 *	   - if referenceTimeout represents a moment of time in
@@ -469,14 +471,14 @@ module events {
 		 * \param addressing References to the sending entity on the
 		 *        behalf of which the application wants to create the
 		 *        event and to the event recipients.
-		 * \param payload Event type-specific data or null (unspecified
+		 * \param payload Event type-specific data or null (undefined
 		 *        is considered as equivalent to null).
 		 * \param inResponseTo Event that this event is a response to
-		 *        (unspecified is considered as equivalent to null).
+		 *        (undefined is considered as equivalent to null).
 		 * \param withTimeStamp Whether to set the generation timestamp
-		 *        (unspecified is considered as equivalent to false).
+		 *        (undefined is considered as equivalent to false).
 		 * \param expiryTimeStamp Moment in time past which the event is
-		 *        no more valid or meaningful (unspecified is considered
+		 *        no more valid or meaningful (undefined is considered
 		 *        as equivalent to false).
 		 * \param addressingSensitive Whether the addressing information
 		 *        is part of the informative content of the event.
@@ -489,22 +491,61 @@ module events {
 		 */
 		Event createEvent(in DOMString type,
 				  in EventAddressing addressing,
-				  in optional DOMString? payload,
+				  [TreatUndefinedAs=Null]
+				    in optional DOMString? payload,
 				  in optional Event? inResponseTo,
 				  in optional boolean withTimeStamp,
 				  in optional DOMTimeStamp? expiryTimeStamp,
 				  in optional boolean addressingSensitive)
 		      raises(EventException);
 		/**
-		 * \brief ...
+		 * \brief Registers an event listener.
+		 *
+		 * The arguments to this function act as filters, in the sense
+		 * that when a new event is received, the listener is called if
+		 * the event's attributes match with all arguments passed to
+		 * this function.
+		 *
+		 * When a new event is received, all listeners that were
+		 * registered via this function with matching arguments SHALL be
+		 * called, yet the order of such calls is unspecified.
+		 *
+		 * Registering a listener SHALL NOT have consequences on other
+		 * listeners, hence it SHALL be possible to register multiple
+		 * listeners to the same event type/source/destination
+		 * combinations.
+		 *
+		 * \param listener The event listener.
+		 * \param type Specific event type or null for any type
+		 *        (undefined is considered as null).
+		 * \param source Specific event source or null for any source
+		 *        (undefined is considered as null).
+		 * \param destination Specific event recipient (whether primary
+		 *        or not) or null for any destination (undefined is
+		 *        considered as null).
+		 *
+		 * \throw EventException INVALID_ARGUMENT_ERROR if any of the
+		 *        supplied arguments is not valid.
+		 *
+		 * \return Listener identifier.
 		 */
 		DOMString addEventListener(in EventListener listener,
-					   in optional DOMString? type,
+					   [TreatUndefinedAs=Null]
+					     in optional DOMString? type,
 					   in optional EventEntity? source,
 					   in optional EventEntity? destination)
 		          raises(EventException);
 		/**
-		 * \brief ...
+		 * \brief Unregisters an event listener.
+		 *
+		 * Unregistering a listener SHALL NOT have consequences on other
+		 * listeners.
+		 *
+		 * \param listenerId Listener identifier as returned by
+		 *        addEventListener().
+		 *
+		 * \throw EventException INVALID_ARGUMENT_ERROR if any of the
+		 *        supplied arguments is not valid.
 		 */
 		void removeEventListener(in DOMString listenerId)
 		     raises(EventException);
