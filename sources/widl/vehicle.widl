@@ -54,11 +54,11 @@ module vehicle{
 		/**
 		* \brief attribute denotes the name of a country subdivision (e.g. the state name in the US).
 		*/		
-		attribute DOMString region;
+		attribute DOMString? region;
 		/**
 		* \brief attribute denotes the name of a land area within the larger region.
 		*/		
-		attribute DOMString county;
+		attribute DOMString? county;
 		/**
 		* \brief attribute reflects the name of the city.
 		*/		
@@ -74,7 +74,7 @@ module vehicle{
 		/**
 		* \brief attribute denotes the details of the premises, such as a building name, block of flats, etc.
 		*/		
-		attribute DOMString premises;
+		attribute DOMString? premises;
 		/**
 		* \brief attribute contains other address details that are not captured by the rest of the attributes in this interface. Examples include a floor number in a building, an apartment number, the name of an office occupant, etc..
 		*/		
@@ -110,11 +110,11 @@ module vehicle{
 		/**
 		* \brief denotes the name of the POI
 		*/		
-		attribute DOMString name;
+		attribute DOMString? name;
 		/**
 		* \brief denotes the geolocation  of the POI in WGS84 format
 		*/		
-		attribute LatLng position;
+		attribute LatLng? position;
 		/**
 		* \brief denotes the address of the POI
 		*/		
