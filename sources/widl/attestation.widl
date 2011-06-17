@@ -1,54 +1,131 @@
 /**
  * \brief Attestation: find the identity and integrity of running software
  *
- * The purpose of this API is to provide a secure means to query the device to find out the identity and integrity of running software. The example use case is Trusted Computing Mobile Reference Architecture . However, this is aimed at a lower layer than webinos. The aim of the attestation API is simply to allow access to existing functionality. \n
-* \n 
-* Requirement/architectural reference: ID-DEV-POLITO-005, ID-DEV-POLITO-006, ID-DEV-POLITO-007, ID-DEV-POLITO-008 \n
-*
-* [paste high level requirements here??] \n
-* \n
+ * The attestation API provides a secure means to query the underlying device to find out the identity and integrity of running software. This API should allow connection with a Trusted Platform Module, as defined by the Trusted Computing Group specifications. \n
  *
-* Mediation by policy and security requirements:
-* All of these three methods should be grouped into the same policy set
-* Attestation is well known to have privacy and security issues and should therefore be restricted to trusted applications
-* The "getKeyCredential" call may have privacy implications. The platform should be capable of ignoring requests even if a key certificate could be returned, if the policy dictates this
-*
-
-* TO BE DONE: \n
-* check/add data types where needed (typedefs commented out at present; attestationData flagged as needing checking) \n
-* check/improve comments \n
-* fix up error reporting for third method (by analogy with others...) \n
-
-
+ * However, the TCG specs are aimed at a lower layer than webinos. The aim of the attestation API is simply to allow access to existing functionality. \n
+ * \n 
+ * Requirement/architectural reference: ID-DEV-POLITO-005, ID-DEV-POLITO-006, ID-DEV-POLITO-007, ID-DEV-POLITO-008 \n
+ *
+ *
+ * Mediation by policy and security requirements:
+ * All of these three methods should be grouped into the same policy set
+ * Attestation is well known to have privacy and security issues and should therefore be restricted to trusted applications
+ * The "getKeyCredential" call may have privacy implications. The platform should be capable of ignoring requests even if a key 
+ * certificate could be returned, if the policy dictates this
+ *
+ *
  * \author Andrew Martin; andrew.martin@cs.ox.ac.uk; \n
  * John Lyle; john.lyle@cs.ox.ac.uk
  */
 module attestation {
 
-    /* 
-     * The following need to be defined, but not with the types
-     * given.  Hence these lines are commented-out.
+	
+	/** X509 interface taken from the ASN1 X509 Specifications
+	  * We expect for TCG attestation that the SKAE extension to also be introduced, definition: 
+	  * http://www.trustedcomputinggroup.org/files/resource_files/876A7F79-1D09-3519-AD321B21144AE93C/IWG_SKAE_Extension_1-00.pdf
+	  * however it is not defined here.
+	  */
+	interface X509 {		
+		attribute TBSCertificate certificate;
+		attribute AlgorithmIdentifier signatureAlgorithm;
+		attribute byte[] signature;
+	};
 
-    typedef unsigned long Nonce; 
+	interface TBSCertificate { 
+		attribute DOMString version;
+		attribute Integer serialNumber;
+		attribute AlgorithmIdentifier signature;
+		attribute Name issuer;
+		attribute Validity validity;
+		attribute Name subject;
+		attribute SubjectPublicKeyInfo subjectPublicKeyInfo;
+		attribute Any? extensions;
+	};
+	
+	interface Validity { 
+	    /* These are properly formatted dates */
+		attribute DOMString notBefore; 
+		attribute DOMString notAfter;
+	};
+	
+	interface Name {
+		/* the name should consist of a number of key-value attribute type/value pairs. */
+		attribute DOMString[][] attributes; 
+	};
+	
+	interface AlgorithmIdentifier {
+	    attribute DOMString identifier;
+		/* These are optional parameters */
+		attribute DOMString? parameters;
+	};
+	
+	interface SubjectPublicKeyInfo {
+		attribute AlgorithmIdentifier algorithm;
+		attribute byte[] publickKey;
+	};
 
-    typedef DOMString RSAKey;
+	
+	
+	exception AttestationException  {
+     /**
+	   * \brief An unknown error occurred. 
+	   */
+	const unsigned short UNKNOWN_ERROR = 0;
+	
+     /**
+	   * \brief An invalid parameter was provided when the requested method was invoked. 
+	   */
+	const unsigned short INVALID_ARGUMENT_ERROR = 1;
 
-    typedef DOMString X509Certificate;
-    */
+	/**
+	  * \brief An error occurred in communication with the underlying implementation that meant the requested method could not complete. 
+	  */
+	const unsigned short IO_ERROR = 4;
+	
+	 /**
+	   * \brief The requested method is not supported by the current implementation. 
+	   */
+	const unsigned short NOT_SUPPORTED_ERROR = 5;
+	
+	 /**
+	   * \brief Access to the requested method was denied at the implementation or by the user.  
+	   */
+	const unsigned short PERMISSION_DENIED_ERROR = 20;
 
+	 /**
+	   * \brief The requested method is not supported by the current implementation. 
+	   */
+	const unsigned short KEY_NOT_FOUND_ERROR = 21;
 
+	
+	 /**
+       * \brief An error code assigned by an implementation when an error has occurred 
+	   *        in authentication API processing.
+	   */	
+	   
+	unsigned short code;
+
+	DOMString message;
+	
+	};
+  
+  
+	
+	
+	
   /**
    * \brief The data returned by an attestation request
    * 
-   * Question: DID I GET THIS RIGHT?
+   *
    */
 
   interface attestationData  {
 
      /**
       * \brief List of binary data representing the identities of running 
-	  * software.  In the TCG scheme, this corresponds to the integrity 
-	  * measurement log
+      * software.  In the TCG scheme, this corresponds to the integrity 
+      * measurement log
       */
 
      attribute byte[][] trustChain;
@@ -81,14 +158,19 @@ module attestation {
      * return values are loose, to support arbitrary schemes of attestation
      *
      * \param nonce is a 20 byte value used to guarantee freshness of the result
-     * \param key is the (identifier of the) RSA key which should be used for  attestation.  This will have been retrieved from getAttestationKey().
+     * \param key is the (identifier of the) key which should be used for attestation.  This will have been retrieved from getAttestationKey().
      * \return data structure returned is described above.
+     * 
+     * Note for implementation: there will need to be configuration of attestation modules to
+     * support any authentication at the hardware layer.
+	 *
+	 * Synchronous.
      *
-     * No error conditions: attestation data is always be returned (but scheme may be vacuous).
+     * Error conditions due to policy enforcement, as well as potentially from hardware failure.
      */
 
-     attestationData attestPlatform (in Nonce nonce,
-    	       		             in RSAKey key);
+     attestationData attestPlatform (in byte[] nonce, in SubjectPublicKeyInfo key )
+			raises(AttestationAPIException);
 
 
     /**
@@ -97,12 +179,14 @@ module attestation {
      * in TCG terminology tis would be the Attestation Identity Key (AIK)
      * 
      * \return returns public key
+	 *
+	 * Synchronous
      * 
-     * No error conditions: key must always exist.
+     * Errors due to permission denied or not implemented
      */
 
 
-     RSAKey getAttestationKey ();
+     SubjectPublicKeyInfo getAttestationKey () raises(AttestationAPIException);
 
 
     /**
@@ -112,12 +196,15 @@ module attestation {
      * \return returns certificate data structure corresponding to key
      * 
      * If the key identifier is unknown, or the user policy does not allow access to it, an error "not found" is returned.
+	 *
+	 * Synchronous
+	 *
      */
     
-     X509Certificate getKeyCredential (in RSAKey key);
+     X509Certificate getKeyCredential (in SubjectPublicKeyInfo key) raises(AttestationAPIException);
 
 
-};
+  };
 
 };
 
