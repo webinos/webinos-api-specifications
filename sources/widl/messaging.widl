@@ -11,8 +11,22 @@
  *
  * This API is a read only API that does not allow message or folder management.
  * 
- * Please note that in order to add attachments to any message (i.e MMS or e-mail) access to the http://wacapps.net/api/filesystem.read has to be explicitly declared by the developer indicating the root locations that are going to be used. In order to read message attachments the special root location ("attachments") must be declared by developers.
-
+ *
+ * \def-api-feature http://webinos.org/api/messaging
+ * Access to the full Messaging module except the methods Messaging.sendMessage and Messaging.find and the attribute Message.attachments 
+ *
+ * \def-api-feature http://webinos.org/api/messaging.send
+ * Access to the Messaging.sendMessage() method 
+ *
+ * \def-api-feature http://webinos.org/api/messaging.find
+ * Access to the Messaging.findMessages method 
+ *
+ * \def-api-feature http://webinos.org/api/messaging.subscribe
+ * Access to the Messaging.onSMS, Messaging.onMMS, Messaging.onEmail, Messaging.onIM methods 
+ *
+ * \def-api-feature http://webinos.org/api/messaging.attach
+ * Access to the Message.attachments attribute. 
+ *
  * \author WAC 2.0 Proposed Release Version (PRV) 28 January 2011
  * \author Extended with InstantMessaging functionality for webinos by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
  * \version 1.0
@@ -20,6 +34,9 @@
  
 module messaging {
 
+ /**
+   * \brief Sequence of Message objects
+   */
   typedef sequence<Message> MessageArray;
 
 /**
@@ -120,21 +137,16 @@ module messaging {
    *
    * Only the parameters supported by a specific technology and that can be set up by the developer (see Message interface attribute definition) are sent as specified in the following table (the rest are ignored):
    *
-   * Attribute          SMS     MMS     Email   IM
-   *
-   *    to              Yes     Yes     Yes     Yes
-   *    
-   *    body            Yes     Yes     Yes     Yes
-   *    
-   *    subject         No      Yes     Yes     No
-   *
-   *    attachments     No      Yes     Yes     No
-   *
-   *    cc              No      No      Yes     Yes
-   *    
-   *    bcc             No      No      Yes     Yes
-   *
-   *    priority        No      No      Yes     No
+   * <table>
+   * <tr><td>Attribute</td><td>SMS</td><td>MMS</td><td>Email</td><td>IM</td></tr>
+   *    <tr><td>to              </td><td>Yes     </td><td>Yes     </td><td>Yes     </td><td>Yes</td></tr>
+   *    <tr><td>body           </td><td> Yes     </td><td>Yes     </td><td>Yes     </td><td>Yes</td></tr>
+   *    <tr><td>subject         </td><td>No      </td><td>Yes     </td><td>Yes     </td><td>No</td></tr>
+   *    <tr><td>attachments     </td><td>No      </td><td>Yes     </td><td>Yes     </td><td>No</td></tr>
+   *    <tr><td>cc              </td><td>No      </td><td>No      </td><td>Yes     </td><td>Yes</td></tr>
+   *    <tr><td>bcc             </td><td>No      </td><td>No      </td><td>Yes     </td><td>Yes</td></tr>
+   *    <tr><td>priority        </td><td>No      </td><td>No      </td><td>Yes     </td><td>No</td></tr>
+   * </table>
    *
    * When a message has been successfully or unsuccessfully sent, it will be stored in the relevant folder (e.g. sent folder if successfully sent). Please not that some platforms may store multiple copies of the message if multiple recipients were included.
    * 
@@ -192,21 +204,16 @@ module messaging {
    *
    * Only the parameters supported by a specific technology and that can be set up by the developer (see Message interface attribute definition) are sent as specified in the following table (the rest are ignored):
    *
-   * Attribute          SMS     MMS     Email   IM
-   *
-   *    to              Yes     Yes     Yes     Yes
-   *    
-   *    body            Yes     Yes     Yes     Yes
-   *    
-   *    subject         No      Yes     Yes     No
-   *
-   *    attachments     No      Yes     Yes     No
-   *
-   *    cc              No      No      Yes     Yes
-   *    
-   *    bcc             No      No      Yes     Yes
-   *
-   *    priority        No      No      Yes     No
+   * <table>
+   * <tr><td>Attribute</td><td>SMS</td><td>MMS</td><td>Email</td><td>IM</td></tr>
+   *    <tr><td>to              </td><td>Yes     </td><td>Yes     </td><td>Yes     </td><td>Yes</td></tr>
+   *    <tr><td>body            </td><td>Yes     </td><td>Yes     </td><td>Yes     </td><td>Yes</td></tr>
+   *    <tr><td>subject        </td><td>No      </td><td>Yes     </td><td>Yes     </td><td>No</td></tr>
+   *    <tr><td>attachments     </td><td>No      </td><td>Yes     </td><td>Yes     </td><td>No</td></tr>
+   *    <tr><td>cc              </td><td>No      </td><td>No      </td><td>Yes     </td><td>Yes</td></tr>
+   *    <tr><td>bcc             </td><td>No      </td><td>No      </td><td>Yes     </td><td>Yes</td></tr>
+   *    <tr><td>priority        </td><td>No      </td><td>No      </td><td>Yes     </td><td>No</td></tr>
+   * </table>
    *
    * When a message has been successfully or unsuccessfully sent, it will be stored in the relevant folder (e.g. sent folder if successfully sent). Please not that some platforms may store multiple copies of the message if multiple recipients were included.
    * 
@@ -705,21 +712,22 @@ module messaging {
    /**                       
    * \brief Describes a message attachement 
    *
-   * This attribute extends the File interface by implementing at the same time the synchronizable interface. It allows attachments to be downloaded only if the user is interested in reading them by the use of the sync method specified in the Synchronizable interface. 
+   * This attribute extends combines a byte array with a MIME type.
    *
    */           
   
-   interface MessageAttachment : File {
+   interface MessageAttachment {
    /**
     * \brief    Describes the mime type of the attachment, e.g. "text/html". 
     *
-    */
-  
-    readonly attribute DOMString  MIMEType; 
-  };
-  
-  MessageAttachment implements Synchronisable;
-
+    */  
+     attribute DOMString  MIMEType; 
+   /**
+    * \brief    Contains the actual attachment in binary form. 
+    *
+    */  
+     attribute ByteArray binaryPayload;
+   };
   
    /**                       
    * \brief findMessages specific success callback. 
@@ -801,4 +809,22 @@ module messaging {
      void onmessagesenderror(in DeviceAPIError error, in DOMString recipient);
   };
   
+      /**
+     * \brief The PendingOperation interface
+     *
+     * The PendingOperation interface describes operation of cancellable aynchronous methods.
+     * Cancellable asynchronous methods return PendingOperation objects exporting methods for
+     * cancelling the operation. 
+     *
+     */
+     [NoInterfaceObject] interface PendingOperation {
+
+    /**
+     * \brief Cancel method for cancelling asynchronous operation
+     *
+     *  Cancel ongoing asynchronous method call. Upon calling this method the runtime must immediately stop
+     *  the pending operation and return.
+     */
+        void cancel ();
+     };
 };
