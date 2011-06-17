@@ -1,14 +1,20 @@
 /**
 * \brief Interface for TV control and managment.
 *
-* The interface provides means to acquire a list of tv sources and tv channels.
+* The interface provides means to acquire a list of tv sources, channels and
+* their streams.
+* 
 * The TV channel streams can be displayed in HTMLVideoElement object
 * (http://dev.w3.org/html5/spec/video.html). Alternatively the API provides
 * means to control channel management of the native hardware TV, by allowing
 * to set a channel or watch for channel changes that are invoked otherwise.
 *
-* The tv object is made available under the navigator interface, i.e.
-* navigator.tv.
+* The tv object is made available under the webinos namespace, i.e.
+* webinos.tv.
+*
+* \def-api-feature http://webinos.org/api/tv
+* \author Fraunhofer FOKUS, Alexander Fut&aacute;sz &lt;alexander.futasz@fokus.fraunhofer.de&gt;
+* \author Dominique Hazael-Massieux
 */
 module tv {
 
@@ -16,9 +22,11 @@ module tv {
 * \brief Creates tv object.
 */
 [NoInterfaceObject] 
-interface NavigatorTV {
+interface WebinosTV {
   readonly attribute TVManager tv;
 };
+
+webinoscore::Webinos implements WebinosTV;
 
 /**
 * \brief Access to tuner and display managers.
@@ -39,7 +47,7 @@ interface TVManager {
   \<p>Currently shown on TV: \<span id='tv'>Undetermined\</span>\</p>
   \<script>
   var channel; // holding a previously obtained channel object.
-  navigator.tv.display.setChannel(channel, success);
+  webinos.tv.display.setChannel(channel, success);
   var ontv = document.getElementById('tv');
   function success(channel) {
     ontv.normalize();
@@ -80,7 +88,7 @@ interface TVDisplaySuccessCB {
   \</select>\</label>
   \<video id='display' width='640' height='400' poster='nochannel.png'>\</video>
   \<script>
-  navigator.tv.tuner.getTVSources(successCB);
+  webinos.tv.tuner.getTVSources(successCB);
   var tvsourceselector = document.getElementById('source');
   var channelselector = document.getElementById('channel');
   var v = document.getElementById('display');
