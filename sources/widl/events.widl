@@ -100,7 +100,7 @@ document.onLoad = function() {
  *
  * \def-api-feature http://webinos.org/api/events
  * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt;
- * \version 0.9
+ * \version 0.9.1
  */
 
 module events {
@@ -574,7 +574,8 @@ module events {
 		 *        no more valid or meaningful (undefined is considered
 		 *        as equivalent to false).
 		 * \param addressingSensitive Whether the addressing information
-		 *        is part of the informative content of the event.
+		 *        is part of the informative content of the event
+		 *        (undefined is considered as equivalent to false).
 		 *
 		 * \return Newly created Event object or null if an error
 		 *         occurred.
