@@ -3,16 +3,17 @@
  *
  * This API offers access to information of the user. Therefore, the webinos Contact interface will be used as a base to provide fundamental information about the user (e.g. name, nickname, gender, birthday, etc.) and extends it with social network attributes. These social network attributes are a simple pointer where the webinos user has non-webinos profiles. These information then could be used by an application to query an external API for additional information (e.g. query the Facebook Graph API for the buddylist).
  *
+ * \def-api-feature http://webinos.org/api/userprofile
  * \author WIDL version for webinos created by Ronny Gr&auml;fe &lt;ronny.graefe@t-systems.com&gt;
- * \version 0.2 
+ * \version 0.3 
  */
 module userprofile {
 	
 	/**
-	 * \brief The UserProfileManager interface provides methods to create, replace and delete a userprofile. There could be several userprofiles assigned to one sepcific webinos user.
+	 * \brief The UserProfileInterface interface provides methods to find, create, replace and delete a userprofile. There could be several userprofiles assigned to one sepcific webinos user.
 	 *
 	 */
-	interface UserProfileManager {
+	interface UserProfileInterface {
 	
 		/**
 		 * \brief find() method
@@ -215,4 +216,17 @@ module userprofile {
          */
         void onsuccess (UserProfile[] userProfileObjs);
     };
+	
+	/**
+	 * \brief The WebinosUserProfile interface describes the part of the user profile
+	 *        API accessible through the webinos object.
+	 */
+	[NoInterfaceObject] interface WebinosUserProfile {
+		/**
+		 * \brief webinos.userprofile object.
+		 */
+		readonly attribute UserProfileInterface userprofile;
+	};
+
+	webinoscore::Webinos implements UserProfileInterface;
 };
