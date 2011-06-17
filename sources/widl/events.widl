@@ -101,7 +101,7 @@ document.onLoad = function() {
  *
  * \def-api-feature http://webinos.org/api/events
  * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt;
- * \version 0.9.3
+ * \version 0.9.4
  */
 
 module events {
@@ -302,7 +302,7 @@ module events {
 		 *        being sent (null, undefined and values up to the
 		 *        current date/time mean that no special action is taken
 		 *        by the runtime in this regard).
-		 * \param sync If false, null or undefined, the function is
+		 * \param sync If false or undefined, the function is
 		 *	  non-blocking, otherwise if true it will block until
 		 *	  one of the following conditions becomes true: \n
 		 *	   - if referenceTimeout represents a moment of time in
@@ -362,7 +362,7 @@ module events {
 		 *        event being forwarded (null, undefined and values up
 		 *        to the current date/time mean that no special action
 		 *        is taken by the runtime in this regard).
-		 * \param sync If false, null or undefined, the function is
+		 * \param sync If false or undefined, the function is
 		 *	  non-blocking, otherwise if true it will block until
 		 *	  one of the following conditions becomes true: \n
 		 *	   - if referenceTimeout represents a moment of time in
