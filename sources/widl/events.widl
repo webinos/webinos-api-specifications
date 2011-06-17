@@ -100,7 +100,7 @@ document.onLoad = function() {
  *
  * \def-api-feature http://webinos.org/api/events
  * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt;
- * \version 0.9.1
+ * \version 0.9.2
  */
 
 module events {
@@ -329,6 +329,10 @@ module events {
 		 * forwardEvent() calls. It SHALL be true when delivery and/or
 		 * error callbacks are passed via the callbacks argument, false
 		 * otherwise.
+		 *
+		 * Conforming implementations SHALL NOT modify the "Forwarding"
+		 * attribute of the local Event object when this function is
+		 * called.
 		 *
 	 	 * \b NOTE: Please, keep in mind that all recipients referenced
 		 * by the forwarding argument SHALL get references to all
