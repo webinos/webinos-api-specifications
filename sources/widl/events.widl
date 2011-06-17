@@ -101,7 +101,7 @@ document.onLoad = function() {
  *
  * \def-api-feature http://webinos.org/api/events
  * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt;
- * \version 0.9.4
+ * \version 0.9.5
  */
 
 module events {
@@ -474,7 +474,9 @@ module events {
 		void onCaching(in WebinosEvent event);
 		/**
 		 * \brief Called as soon as successful event delivery has been
-		 *        reported by a given recipient.
+		 *        reported by a given recipient or if the recipient
+		 *        notifies that it did already receive an event with the
+		 *        same ID.
 		 *
 		 * This callback SHALL NOT be called more than once per
 		 * recipient for each send/forward.
