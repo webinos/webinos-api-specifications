@@ -101,7 +101,7 @@ document.onLoad = function() {
  *
  * \def-api-feature http://webinos.org/api/events
  * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt;
- * \version 0.9.5
+ * \version 0.9.6
  */
 
 module events {
@@ -203,7 +203,6 @@ module events {
 		 * It is calculated by hashing a partial serialization of the
 		 * WebinosEvent object that involves: \n
 		 *  - the event type; \n
-		 *  - the original event source; \n
 		 *  - the original event source and primary recipients, in case
 		 *    the "addressingSensitive" attribute is true; \n
 		 *  - the identifier of the event that this event is a response
