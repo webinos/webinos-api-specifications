@@ -10,7 +10,7 @@
  * the features offered by the Webinos event handling system, that in turn
  * leverages off of the features offered by Webinos overlay networking model.
  *
- * It this, therefore, strongly recommended to carefully read the Messaging
+ * It is, therefore, strongly recommended to carefully read the Messaging
  * section in the Webinos system specifications before committing to the usage
  * of this API.
  *
@@ -76,7 +76,7 @@ function onSendButtonClicked() {
 
   // Sends the event and specifies the onMsgError callback for handling error
   // delivery notifications.
-  evt.dispatchEvent({onError: onMsgError}, null, false);
+  evt.dispatchEvent({onError: onMsgError});
 
   // Appends the input message to logElem.
   // E.g.: [00:01:00] you said: "Let's try again... how are you?"
@@ -101,7 +101,7 @@ document.onLoad = function() {
  *
  * \def-api-feature http://webinos.org/api/events
  * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt;
- * \version 0.9.7
+ * \version 0.9.8
  */
 
 module events {
