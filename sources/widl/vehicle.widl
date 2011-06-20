@@ -468,9 +468,9 @@ module vehicle{
 		*/	
 		const short GEAR_SEVEN = 7;
 		/**
-		* \brief constant describing the revers gear	
+		* \brief constant describing the reverse gear	
 		*/	
-		const short GEAR_REVERS = -1;
+		const short GEAR_REVERSE = -1;
 		/**
 		* \brief constant describing the neutral gear	
 		*/	
