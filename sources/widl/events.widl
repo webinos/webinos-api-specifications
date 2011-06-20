@@ -101,7 +101,7 @@ document.onLoad = function() {
  *
  * \def-api-feature http://webinos.org/api/events
  * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt;
- * \version 0.9.6
+ * \version 0.9.7
  */
 
 module events {
@@ -585,7 +585,7 @@ module events {
 		 *        (undefined is considered as equivalent to false).
 		 * \param expiryTimeStamp Moment in time past which the event is
 		 *        no more valid or meaningful (undefined is considered
-		 *        as equivalent to false).
+		 *        as equivalent to null).
 		 * \param addressingSensitive Whether the addressing information
 		 *        is part of the informative content of the event
 		 *        (undefined is considered as equivalent to false).
