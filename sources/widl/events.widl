@@ -101,7 +101,7 @@ document.onLoad = function() {
  *
  * \def-api-feature http://webinos.org/api/events
  * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt;
- * \version 0.9.8
+ * \version 0.9.9
  */
 
 module events {
@@ -304,17 +304,19 @@ module events {
 		 * \param sync If false or undefined, the function is
 		 *	  non-blocking, otherwise if true it will block until
 		 *	  one of the following conditions becomes true: \n
-		 *	   - if referenceTimeout represents a moment of time in
+		 *	   - if referenceTimeout represents a moment in time in
 		 *	     the future at call time, that moment is reached; \n
 		 *	   - otherwise, if the "expiryTimeStamp" attribute is
-		 *	     specified as a moment of time in the future at call
+		 *	     specified as a moment in time in the future at call
 		 *	     time, that moment is reached; \n
 		 *	   - in any case, the end result of the operation is
 		 *	     completely determined for all recipients and all
 		 *	     callbacks that were to be called have run.
 		 *
 		 * \throw WebinosEventException INVALID_ARGUMENT_ERROR if any of
-		 *        the supplied arguments is not valid.
+		 *        the supplied arguments is not valid. \n
+		 *        PERMISSION_DENIED_ERROR if some local policy rule does
+		 *        not allow for the event to be sent.
 		 */
 		void dispatchEvent(in optional WebinosEventCallbacks? callbacks,
 				   in optional DOMTimeStamp? referenceTimeout,
@@ -364,17 +366,19 @@ module events {
 		 * \param sync If false or undefined, the function is
 		 *	  non-blocking, otherwise if true it will block until
 		 *	  one of the following conditions becomes true: \n
-		 *	   - if referenceTimeout represents a moment of time in
+		 *	   - if referenceTimeout represents a moment in time in
 		 *	     the future at call time, that moment is reached; \n
 		 *	   - otherwise, if the "expiryTimeStamp" attribute is
-		 *	     specified as a moment of time in the future at call
+		 *	     specified as a moment in time in the future at call
 		 *	     time, that moment is reached; \n
 		 *	   - in any case, the end result of the operation is
 		 *	     completely determined for all recipients and all
 		 *	     callbacks that were to be called have run.
 		 *
 		 * \throw WebinosEventException INVALID_ARGUMENT_ERROR if any of
-		 *        the supplied arguments is not valid.
+		 *        the supplied arguments is not valid. \n
+		 *        PERMISSION_DENIED_ERROR if some local policy rule does
+		 *        not allow for the event to be forwarded.
 		 */
 		void forwardEvent(in WebinosEventAddressing forwarding,
 				  in optional boolean withTimeStamp,
@@ -393,6 +397,11 @@ module events {
 		 *        method was invoked.
 		 */
 		const unsigned short INVALID_ARGUMENT_ERROR	= 1;
+		/**
+		 * \brief Access to the requested information was denied by the
+		 *        implementation or by the user.
+		 */
+		const unsigned short PERMISSION_DENIED_ERROR	= 2;
 	};
 
 	/**
@@ -450,8 +459,8 @@ module events {
 	 */
 	[Callback, NoInterfaceObject] interface WebinosEventCallbacks {
 		/**
-		 * \brief Called right after the event has been physically
-		 *        transmitted to a given recipient.
+		 * \brief Called right after the event has been successfully
+		 *        transmitted to the "next hop".
 		 *
 		 * This callback SHALL NOT be called more than once per
 		 * recipient for each send/forward.
@@ -464,7 +473,7 @@ module events {
 			       in WebinosEventEntity recipient);
 		/**
 		 * \brief Called right after the event has been put into the
-		 *        local event cache for later transmission (e.g., when
+		 *        Local Event Cache for later transmission (e.g., when
 		 *        trying to send it to a remote entity but no
 		 *        connectivity is currently available).
 		 *
@@ -511,7 +520,11 @@ module events {
 			       in WebinosEventEntity recipient);
 		/**
 		 * \brief Called as soon as unsuccessful event delivery has been
-		 *        reported by a given recipient.
+		 *        reported w.r.t. a given recipient.
+		 *
+		 * This callback SHALL be called when the recipient reports
+		 * unsuccessful delivery or when it was not possible to send the
+		 * message and the event expired.
 		 *
 		 * This callback SHALL NOT be called more than once per
 		 * recipient for each send/forward.
