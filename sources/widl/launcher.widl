@@ -144,5 +144,18 @@ module AppLauncher {
         void cancel ();
      };
 
-  
+	/**
+	 * \brief The WebinosLauncher interface describes the part of the App Execution
+	 *        API accessible through the webinos object.
+	 */
+	[NoInterfaceObject] interface WebinosLauncher {
+		/**
+		 * \brief webinos.launcher object.
+		 */
+		readonly attribute AppLauncherManager launcher;
+	};
+
+
+	webinoscore::Webinos implements WebinosLauncher;
+
 };
