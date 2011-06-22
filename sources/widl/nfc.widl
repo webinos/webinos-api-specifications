@@ -308,8 +308,10 @@ module nfc {
 	     * \param successCallback function to be invoked in case of success.
 	     * \param errorCallback function to be invoked in case of failure.
 		 * \return PendingOperation to cancel the asynchronous call 
+		 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
 		 */
-		PendingOperation makeReadOnly(in SuccessCallback successCallback, in optional ErrorCallback? errorCallback);
+		PendingOperation makeReadOnly(in SuccessCallback successCallback, in optional ErrorCallback? errorCallback)
+			raises(NfcException);
 		
 		/**
 		 * \brief Retrieves the Ndef message received at discovery time.
@@ -331,8 +333,10 @@ module nfc {
 	     * \param successCallback function to be invoked in case of success.
 	     * \param errorCallback function to be invoked in case of failure.
 		 * \return PendingOperation to cancel the asynchronous call 
+		 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
 		 */
-		PendingOperation readNdefMessage(in NdefSuccessCallback successCallback, in optional ErrorCallback? errorCallback);
+		PendingOperation readNdefMessage(in NdefSuccessCallback successCallback, in optional ErrorCallback? errorCallback)
+			raises(NfcException);
 		
 		/**
 		 * \brief Writes a Ndef message to the tag.
@@ -348,8 +352,10 @@ module nfc {
 	     * \param errorCallback function to be invoked in case of failure.
 	     * \param message The message to be written.
 		 * \return PendingOperation to cancel the asynchronous call 
+		 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
 		 */
-		PendingOperation writeNdefMessage(in SuccessCallback successCallback, in ErrorCallback? errorCallback, NdefMessage message);
+		PendingOperation writeNdefMessage(in SuccessCallback successCallback, in ErrorCallback? errorCallback, NdefMessage message)
+			raises(NfcException);
 		
 		/**
 		 * \brief Create a new Ndef message.
@@ -416,8 +422,10 @@ module nfc {
 		 *
 		 * \param type The type of the ndef record
 		 * \param payload The text payload of the record
+		 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
 		 */
-		void addTextNdefRecord(in unsigned short type, in optional DOMString payload);
+		void addTextNdefRecord(in unsigned short type, in optional DOMString payload)
+			raises(NfcException);
 		
 		/**
 		 * \brief Adds a binary record to the Ndef message.
@@ -426,8 +434,10 @@ module nfc {
 		 *
 		 * \param type The type of the ndef record
 		 * \param payload The binary payload of the record
+		 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
 		 */
-		void addBinaryNdefRecord(in unsigned short type, in ByteArray payload);
+		void addBinaryNdefRecord(in unsigned short type, in ByteArray payload)
+			raises(NfcException);
 		
 	};
 	
