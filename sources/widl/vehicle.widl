@@ -212,9 +212,17 @@ module vehicle{
 		*/		
 		readonly attribute DOMString transmission;
 		/**
-		* \brief method allows to request vehicle data once in an asynchron way. 
+		* \brief method allows to request vehicle data once and idenpendant from events (changes in vehicle data). 
 		* \code
-		* ----TODO
+		* webinos.vehicle.get(webinos.vehicle.ClimateControlEvent.ZONE_ALL, dataHandler);
+		* function dataHandler(data){
+		*	if(data.acStatus){
+		* 		console.log("Airconditioning is on");
+		*		if(data.desiredTemperature < 19){
+		*			console.log("This is not so good for your health");
+				}
+		*	}
+		* }
 		* \endcode
 
 		* \param vehicleDataId specifies the type of data, which shall be retrieved.
@@ -631,6 +639,26 @@ module vehicle{
 	*/
 	[NoInterfaceObject]
 	interface ClimateControlEvent : VehicleEvent{
+		/**
+		* \brief constant describing the single climate zone
+		*/	
+		const DOMString ZONE_ALL = "climat-all";
+		/**
+		* \brief constant describing the climate zone of the driver	
+		*/	
+		const DOMString ZONE_DRIVER = "climate-driver";
+		/**
+		* \brief constant describing the climate zone of the passenger seat in the front	
+		*/	
+		const DOMString ZONE_PASSENGER_FRONT = "climate-passenger-front";
+		/**
+		* \brief constant describing the climate zone of the rear set passenger seat on the left
+		*/	
+		const DOMString ZONE_PASSENGER_REAR_LEFT = "climate-passenger-rear-left";
+		/**
+		* \brief constant describing the climate zone of the rear set passenger seat on the right	
+		*/	
+		const DOMString ZONE_PASSENGER_REAR_RIGHT = "climate-passenger-rear-right";
 		/**
 		* \brief attribute defining the zone of the climate control event	
 		*/	
