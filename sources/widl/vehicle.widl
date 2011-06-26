@@ -221,7 +221,7 @@ module vehicle{
 		* \param hanlder specifies function to handle the result.
 		* \param errorCB specifies the callback function in case of an error.
 		*/
-		void void get(DOMString vehicleDataId, VehicleDataHandler handler, in ErrorCallback errorCB);
+		void get(DOMString vehicleDataId, VehicleDataHandler handler, in ErrorCallback errorCB);
 		/**
 		* \brief Sets the given POIs as the next destinations of the build-in navigation systems. The method handles intermediate stops. The last Poi in the array is the final destination.
 		* \code
@@ -229,7 +229,7 @@ module vehicle{
 		*	destination.push({name:"BMW AG", address : {street:"Petuelring", streetNumber: "130", postalCode: "80788", city: "MÜNCHEN", country: "DE"}});
 		*      destination.push({name:"BMW Forschung und Technik", address:{street: "Hanauer Strasse", streetNumber: "46", postalCode: "80992", city: "MÜNCHEN", country: "DE"}});
 		*      webinos.vehicle.requestGuidance(succesCB, null, destinations);
-		*  	webinos.vehicle.addEventListener("destination-reached", handleDestinations, false);
+		*  	webinos.vehicle.addEventListener(webinos.vehicle.NavigationEvent.DESTINATION_REACHED, handleDestinations, false);
 		*      
 		*	function handleDestinations(event){
 		*          if (event.address.street == destination[0].address.street) {
