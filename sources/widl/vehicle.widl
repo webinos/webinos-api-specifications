@@ -218,7 +218,7 @@ module vehicle{
 		* function dataHandler(data){
 		*	if(data.acStatus){
 		* 		console.log("Airconditioning is on");
-		*		if(data.desiredTemperature < 19){
+		*		if(data.desiredTemperature \< 19){
 		*			console.log("This is not so good for your health");
 				}
 		*	}
