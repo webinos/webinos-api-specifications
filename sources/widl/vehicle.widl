@@ -218,7 +218,7 @@ module vehicle{
 		* \endcode
 
 		* \param vehicleDataId specifies the type of data, which shall be retrieved.
-		* \param hanlder specifies function to handle the result.
+		* \param handler specifies function to handle the result.
 		* \param errorCB specifies the callback function in case of an error.
 		*/
 		void get(DOMString vehicleDataId, VehicleDataHandler handler, in ErrorCallback errorCB);
