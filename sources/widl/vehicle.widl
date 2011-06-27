@@ -54,11 +54,11 @@ module vehicle{
 		/**
 		* \brief attribute denotes the name of a country subdivision (e.g. the state name in the US).
 		*/		
-		attribute DOMString region;
+		attribute DOMString? region;
 		/**
 		* \brief attribute denotes the name of a land area within the larger region.
 		*/		
-		attribute DOMString county;
+		attribute DOMString? county;
 		/**
 		* \brief attribute reflects the name of the city.
 		*/		
@@ -74,7 +74,7 @@ module vehicle{
 		/**
 		* \brief attribute denotes the details of the premises, such as a building name, block of flats, etc.
 		*/		
-		attribute DOMString premises;
+		attribute DOMString? premises;
 		/**
 		* \brief attribute contains other address details that are not captured by the rest of the attributes in this interface. Examples include a floor number in a building, an apartment number, the name of an office occupant, etc..
 		*/		
@@ -83,6 +83,15 @@ module vehicle{
 		* \brief attribute reflects the postal code of the location (e.g. the zip code in the US).
 		*/		
 		attribute DOMString postalCode;
+	};
+	
+	/**
+	* \brief This interface defines a generic event for vehicle events.
+	*
+	*/ 
+	[NoInterfaceObject]
+	interface VehicleEvent : Event{
+	
 	};
 	/**
 	* \brief This interface defines the LatLng properties, which can be passed to the navigation system using the requestGuidance() function. The format is WGS84. 
@@ -110,11 +119,11 @@ module vehicle{
 		/**
 		* \brief denotes the name of the POI
 		*/		
-		attribute DOMString name;
+		attribute DOMString? name;
 		/**
 		* \brief denotes the geolocation  of the POI in WGS84 format
 		*/		
-		attribute LatLng position;
+		attribute LatLng? position;
 		/**
 		* \brief denotes the address of the POI
 		*/		
@@ -146,6 +155,16 @@ module vehicle{
 		*/		
 		void onError(in VehicleError error);
 	};
+	
+	/**
+	* \brief This interface defines the callback function for receiving vehicle once in a asynchronous way.
+	*
+	*/ 	
+	interface VehicleDataHandler{
+		void handleVehicleData(in VehicleEvent data);
+	
+	};
+	
 	/**
 	* \brief This interface defines general information about the vehicle and is the object, where vehicle related event listener can be registered. The interface is accessible through the webinos.vehicle object. 
 	* 
@@ -193,13 +212,32 @@ module vehicle{
 		*/		
 		readonly attribute DOMString transmission;
 		/**
+		* \brief method allows to request vehicle data once and idenpendant from events (changes in vehicle data). 
+		* \code
+		* webinos.vehicle.get(webinos.vehicle.ClimateControlEvent.ZONE_ALL, dataHandler);
+		* function dataHandler(data){
+		*	if(data.acStatus){
+		* 		console.log("Airconditioning is on");
+		*		if(data.desiredTemperature \< 19){
+		*			console.log("This is not so good for your health");
+				}
+		*	}
+		* }
+		* \endcode
+
+		* \param vehicleDataId specifies the type of data, which shall be retrieved.
+		* \param handler specifies function to handle the result.
+		* \param errorCB specifies the callback function in case of an error.
+		*/
+		void get(DOMString vehicleDataId, VehicleDataHandler handler, in ErrorCallback errorCB);
+		/**
 		* \brief Sets the given POIs as the next destinations of the build-in navigation systems. The method handles intermediate stops. The last Poi in the array is the final destination.
 		* \code
 		*	var destinations =new Array();
 		*	destination.push({name:"BMW AG", address : {street:"Petuelring", streetNumber: "130", postalCode: "80788", city: "MÜNCHEN", country: "DE"}});
 		*      destination.push({name:"BMW Forschung und Technik", address:{street: "Hanauer Strasse", streetNumber: "46", postalCode: "80992", city: "MÜNCHEN", country: "DE"}});
 		*      webinos.vehicle.requestGuidance(succesCB, null, destinations);
-		*  	webinos.vehicle.addEventListener("destination-reached", handleDestinations, false);
+		*  	webinos.vehicle.addEventListener(webinos.vehicle.NavigationEvent.DESTINATION_REACHED, handleDestinations, false);
 		*      
 		*	function handleDestinations(event){
 		*          if (event.address.street == destination[0].address.street) {
@@ -266,7 +304,7 @@ module vehicle{
 	*  Registration for navigation events is achieved by calling navigation.addEventListener with event type set to NavigationEventTypeId.
 	*/
 	[NoInterfaceObject]
-	interface NavigationEvent : Event{
+	interface NavigationEvent : VehicleEvent{
 		/**
 		* \brief A const describing the event that the destination has been reached.
 		*/		
@@ -326,7 +364,8 @@ module vehicle{
 	* \endcode
 	*/
 	[NoInterfaceObject]
-	interface TripComputerEvent : Event{
+	interface TripComputerEvent : VehicleEvent{
+		const DOMString TRIPCOMPUTER = "tripcomputer";
 		/**
 		* \brief average consumption 1 of the vehicle in l/100km 
 		*/		
@@ -384,7 +423,7 @@ module vehicle{
 	* \endcode
 	*/
 	[NoInterfaceObject]
-	interface ParkSensorsEvent : Event{
+	interface ParkSensorsEvent : VehicleEvent{
 		/**
 		* \brief constant describing Event is emitted by the ParkSensors in the front  
 		*/
@@ -398,19 +437,19 @@ module vehicle{
 		*/
 		readonly attribute DOMString position;
 		/**
-		* \brief Destination to an object sensed by the sensor in cm. Minimum distance is 20 cm. Maximum distance is 250 cm. A value of 254 indiactes that no object has been sensed.
+		* \brief Destination to an object sensed by the sensor in cm. Minimum distance is 20 cm. Maximum distance is 250 cm. A value of -1 indiactes that no object has been sensed.
 		*/    		
 		readonly attribute unsigned short left;
 		/**
-		* \brief Destination to an object sensed by the sensor in cm. Minimum distance is 20 cm. Maximum distance is 250 cm. A value of 254 indiactes that no object has been sensed.
+		* \brief Destination to an object sensed by the sensor in cm. Minimum distance is 20 cm. Maximum distance is 250 cm. A value of -1 indiactes that no object has been sensed.
 		*/
 		readonly attribute unsigned short midLeft;	
 		/**
-		* \brief Destination to an object sensed by the sensor in cm. Minimum distance is 20 cm. Maximum distance is 250 cm. A value of 254 indiactes that no object has been sensed.
+		* \brief Destination to an object sensed by the sensor in cm. Minimum distance is 20 cm. Maximum distance is 250 cm. A value of -1 indiactes that no object has been sensed.
 		*/
 		readonly attribute unsigned short midRigth;
 		/**
-		* \brief Destination to an object sensed by the sensor in cm. Minimum distance is 20 cm. Maximum distance is 250 cm. A value of 254 indiactes that no object has been sensed.
+		* \brief Destination to an object sensed by the sensor in cm. Minimum distance is 20 cm. Maximum distance is 250 cm. A value of -1 indiactes that no object has been sensed.
 		*/
 		readonly attribute unsigned short rigth;
 		/**
@@ -438,7 +477,8 @@ module vehicle{
 	* \endcode
 	*/
 	[NoInterfaceObject]
-	interface ShiftEvent : Event{
+	interface ShiftEvent : VehicleEvent{
+		const DOMString SHIFT = "shift";
 		/**
 		* \brief constant describing the first gear	
 		*/	
@@ -468,9 +508,9 @@ module vehicle{
 		*/	
 		const short GEAR_SEVEN = 7;
 		/**
-		* \brief constant describing the revers gear	
+		* \brief constant describing the reverse gear	
 		*/	
-		const short GEAR_REVERS = -1;
+		const short GEAR_REVERSE = -1;
 		/**
 		* \brief constant describing the neutral gear	
 		*/	
@@ -508,7 +548,7 @@ module vehicle{
 	* \endcode
 	*/
 	[NoInterfaceObject]
-	interface ControlEvent : Event{
+	interface ControlEvent : VehicleEvent{
 		/**
 		* \brief constant indicates change for the fog light in the front
 		*/	
@@ -598,27 +638,27 @@ module vehicle{
 	* \endcode
 	*/
 	[NoInterfaceObject]
-	interface ClimateControlEvent : Event{
+	interface ClimateControlEvent : VehicleEvent{
 		/**
 		* \brief constant describing the single climate zone
 		*/	
-		const DOMString ZONE_ALL = "all";
+		const DOMString ZONE_ALL = "climat-all";
 		/**
 		* \brief constant describing the climate zone of the driver	
 		*/	
-		const DOMString ZONE_DRIVER = "driver";
+		const DOMString ZONE_DRIVER = "climate-driver";
 		/**
 		* \brief constant describing the climate zone of the passenger seat in the front	
 		*/	
-		const DOMString ZONE_PASSENGER_FRONT = "passenger-front";
+		const DOMString ZONE_PASSENGER_FRONT = "climate-passenger-front";
 		/**
 		* \brief constant describing the climate zone of the rear set passenger seat on the left
 		*/	
-		const DOMString ZONE_PASSENGER_REAR_LEFT = "passenger-rear-left";
+		const DOMString ZONE_PASSENGER_REAR_LEFT = "climate-passenger-rear-left";
 		/**
 		* \brief constant describing the climate zone of the rear set passenger seat on the right	
 		*/	
-		const DOMString ZONE_PASSENGER_REAR_RIGHT = "passenger-rear-right";
+		const DOMString ZONE_PASSENGER_REAR_RIGHT = "climate-passenger-rear-right";
 		/**
 		* \brief attribute defining the zone of the climate control event	
 		*/	

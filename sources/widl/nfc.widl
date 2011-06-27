@@ -298,11 +298,20 @@ module nfc {
 		/**
 		 * \brief This method makes a tag read-only.
 		 *
+		 * When the operation is fully completed the onsuccess method of the successCallback is called.
+		 * Otherwise, the errorCallback will be invoked with an appropriate error code amongst the following:
+		 * <ul>
+		 * <li>
+		 *  IO_ERR: if the write operation fails.
+		 * <ul>
+		 *
 	     * \param successCallback function to be invoked in case of success.
 	     * \param errorCallback function to be invoked in case of failure.
 		 * \return PendingOperation to cancel the asynchronous call 
+		 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
 		 */
-		PendingOperation makeReadOnly(in SuccessCallback successCallback, in ErrorCallback errorCallback);
+		PendingOperation makeReadOnly(in SuccessCallback successCallback, in optional ErrorCallback? errorCallback)
+			raises(NfcException);
 		
 		/**
 		 * \brief Retrieves the Ndef message received at discovery time.
@@ -314,26 +323,44 @@ module nfc {
 		/**
 		 * \brief This method reads a Ndef message.
 		 *
+		 * When the operation is fully completed the onsuccess method of the successCallback is called.
+		 * Otherwise, the errorCallback will be invoked with an appropriate error code amongst the following:
+		 * <ul>
+		 * <li>
+		 *  IO_ERR: if the read operation fails.
+		 * <ul>
+		 *
 	     * \param successCallback function to be invoked in case of success.
 	     * \param errorCallback function to be invoked in case of failure.
 		 * \return PendingOperation to cancel the asynchronous call 
+		 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
 		 */
-		PendingOperation readNdefMessage(in NdefSuccessCallback successCallback, in ErrorCallback errorCallback);
+		PendingOperation readNdefMessage(in NdefSuccessCallback successCallback, in optional ErrorCallback? errorCallback)
+			raises(NfcException);
 		
 		/**
 		 * \brief Writes a Ndef message to the tag.
+		 *
+		 * When the operation is fully completed the onsuccess method of the successCallback is called.
+		 * Otherwise, the errorCallback will be invoked with an appropriate error code amongst the following:
+		 * <ul>
+		 * <li>
+		 *  IO_ERR: if the write operation fails.
+		 * <ul>
 		 *
 	     * \param successCallback function to be invoked in case of success.
 	     * \param errorCallback function to be invoked in case of failure.
 	     * \param message The message to be written.
 		 * \return PendingOperation to cancel the asynchronous call 
+		 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
 		 */
-		PendingOperation writeNdefMessage(in SuccessCallback successCallback, in ErrorCallback errorCallback, NdefMessage message);
+		PendingOperation writeNdefMessage(in SuccessCallback successCallback, in ErrorCallback? errorCallback, NdefMessage message)
+			raises(NfcException);
 		
 		/**
 		 * \brief Create a new Ndef message.
 		 *
-		 * \return The new Ndef message; it is empty, that is does not contain ndef records
+		 * \return The new Ndef message; it is empty, that is does not contain ndef records.
 		 */
 		NdefMessage createNdefMessage();
 
@@ -395,8 +422,10 @@ module nfc {
 		 *
 		 * \param type The type of the ndef record
 		 * \param payload The text payload of the record
+		 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
 		 */
-		void addTextNdefRecord(in unsigned short type, in optional DOMString payload);
+		void addTextNdefRecord(in unsigned short type, in optional DOMString payload)
+			raises(NfcException);
 		
 		/**
 		 * \brief Adds a binary record to the Ndef message.
@@ -405,8 +434,10 @@ module nfc {
 		 *
 		 * \param type The type of the ndef record
 		 * \param payload The binary payload of the record
+		 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
 		 */
-		void addBinaryNdefRecord(in unsigned short type, in ByteArray payload);
+		void addBinaryNdefRecord(in unsigned short type, in ByteArray payload)
+			raises(NfcException);
 		
 	};
 	
@@ -441,6 +472,88 @@ module nfc {
 	};
 	
 	
+	/**
+	 * \brief Interface for reporting Nfc specific errors.
+	 *
+	 */
+	[NoInterfaceObject] interface NfcError {
+	    
+		/**
+		 * \brief Code assigned when an error has occurred in Nfc API processing.
+		 *
+		 */
+		readonly attribute unsigned short code;
+
+		/**
+		 * \brief Human readable message assigned when an error has occurred in Nfc API processing.
+		 *
+		 */
+		readonly attribute DOMString message;
+
+		/**
+		 * \brief Unknown error.
+		 *
+		 */
+		const unsigned short UNKNOWN_ERR = 0;
+
+		/**
+		 * \brief I/O error.
+		 *
+		 */
+		const unsigned short IO_ERR = 1;
+		
+	};
+
+
+	/*
+	 * \brief The NfcException
+	 *
+	 */
+	exception NfcException {
+
+		/**
+		 * \brief Unknown error.
+		 *
+		 */
+		const unsigned short UNKNOWN_ERR = 0;
+
+		/**
+		 * \brief An invalid parameter was provided when the requested method was invoked.
+		 *
+		 */
+		const unsigned short INVALID_ARGUMENT_ERR	= 1;
+
+		/**
+	     * \brief Error code.
+		 * 
+		 */	
+		unsigned short code;
+
+		/**
+	     * \brief Error message.
+		 * 
+		 */	
+		DOMString message;
+
+	};
+	
+	
+	/**
+	 * \brief Callback to be invoked in case of success.
+	 *
+	 */
+	[Callback=FunctionOnly, NoInterfaceObject] interface SuccessCallback {
+		void onsuccess();
+	};
+
+	/**
+	 * \brief Callback to be invoked when an error occurs.
+	 *
+	 */
+	[Callback=FunctionOnly, NoInterfaceObject] interface ErrorCallback {
+		void onError(in NfcError error);
+	};
+
 	/**
 	 * \brief Callback to be invoked when reading a Ndef message.
 	 *
