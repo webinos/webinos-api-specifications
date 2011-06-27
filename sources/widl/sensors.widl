@@ -6,7 +6,7 @@
  * The Webinos Generic Sensor API provides web applications with an API to access data from sensors in the device, connected to the device or in another device.
  *
  * The API is agnostic to underlying low level methods for sensor discovery and communication with sensors. However, the sensor API should be used
- * in combination with the the general Webinos service discovery methods findServices() and bind(). The sensors services can be located in the user's personal zone or be shared on the current network.
+ * in combination with the general Webinos service discovery methods findServices() and bind(). The sensors services can be located in the user's personal zone or be shared on the current network.
  *
  * The API consists of two interfaces: \n
  * - A sensor interface that provides attributes for the sensors and a method to configure a selected sensor.\n
@@ -55,6 +55,12 @@ module sensors {
        * \brief Exception code
        */
        unsigned short code;
+
+
+     /**
+       * \brief Exception message
+       */
+       DOMString message;
 
    };
 
@@ -279,9 +285,16 @@ module sensors {
 
 
       /**
-       * \brief An error code assigned by an implementation when an error has occurred in configureSensor() processing.
+       * \brief Error code assigned when an error has occurred in configureSensor() processing.
        */
        readonly attribute unsigned short code;
+
+
+     /**
+       * \brief Human readable message assigned when an error has occurred in configureSensor() processing.
+       */
+       readonly attribute DOMString message;
+
     };    
 
 
@@ -416,7 +429,7 @@ module sensors {
    *\n
    * http://webinos.org/api/sensors.proximity:\n
    * sensorValue[0] =  Proximity sensor distance measured in centimeters.\n
-   * sensorValue[1] = A normalized value between 0 and 1.Some sensor can only state "near" (o) and "far" (1) \n
+   * sensorValue[1] = A normalized value between 0 and 1.Some sensor can only state "near" (0) and "far" (1) \n
    *   
    */
     readonly attribute DOMString sensorType;
