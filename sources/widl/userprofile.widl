@@ -1,7 +1,7 @@
 /**
  * \brief The webinos userprofile API to access user information. This API uses the Contact interface of the webinos Contacts API (http://dev.webinos.org/specifications/draft/contacts.html) and extend it with social network attributes from Portablecontacts from August 5, 2008 (http://portablecontacts.net/draft-spec.html). 
  *
- * This API offers access to information of the user. Therefore, the webinos Contact interface will be used as a base to provide fundamental information about the user (e.g. name, nickname, gender, birthday, etc.) and extends it with social network attributes. These social network attributes are a simple pointer where the webinos user has non-webinos profiles. These information then could be used by an application to query an external API for additional information (e.g. query the Facebook Graph API for the buddylist).
+ * This API offers access to information of the user. UserProfile API is an extension of webinos Contact API. It uses Contact interface to gather basic information about the user (e.g. name, nickname, gender, birthday, etc.) and extends it with social network attributes. These social network attributes are a simple pointer where the webinos user has non-webinos profiles. These information could be used by an application to query an external API for an additional information (e.g. query the Facebook Graph API for the buddylist).
  *
  * \def-api-feature http://webinos.org/api/userprofile
  * \author WIDL version for webinos created by Ronny Gr&auml;fe &lt;ronny.graefe@t-systems.com&gt;
@@ -26,11 +26,9 @@ module userprofile {
 		 *
 		 * 2. Let errorCallback be the callback indicated by the method's third argument, if any, or null otherwise. 
 		 *
-		 * 3. If successCallback is null, then throw a TypeError (as defined in [WEBIDL]).
+		 * 3. If successCallback is null, then throw a TypeError (as defined in the WEBIDL Sepcification - http://dev.w3.org/2006/webapi/WebIDL/).
 		 *
 		 * 4. If there is a task from the device task source in one of the task queues (e.g. an existing find() operation is still pending a response), run these substeps: 
-		 *
-		 * - The terms document base URL, browsing context, event handler attribute, event handler event type, task, task source and task queues are defined by the HTML5 specification [HTML5].
 		 *
 		 * 4.1 If errorCallback is not null, let error be a UserProfileError object whose code attribute has the value PENDING_OPERATION_ERROR and queue a task to invoke errorCallback with error as its argument. 
 		 *
@@ -76,9 +74,16 @@ module userprofile {
 		void createUserProfile(in UserProfile userProfile, optional SuccessCB successCallBack, in UserProfileErrorCB errorCallback);
 		
 		/**
-		 * \brief The replaceUserProfile() method - Replaces a userprofile
+		 * \brief The replaceUserProfile() method - Replaces a userprofile. This method should be used to update a userprofile. 
 		 *
-		 * \param id The id of the existing object
+		 * Three steps are necessary to use this method.
+		 *
+		 * 1. Get the existing user profile object
+		 *
+		 * 2. Update attributes
+		 *
+		 * 3. Use replaceUserProfile() method to update the existing user profile with new attributes by providing the entire user profile object to the method.
+		 *
 		 * \param userProfile The UserProfile object which should be replaced in the webinos system.
 		 * \param successCallBack Callback issued when the creating of the user is correctly finished.
 		 * \param errorCallback Callback issued if an error occurs during the opening. E.g. the userprofile id does not exist.
@@ -94,7 +99,7 @@ module userprofile {
 		 * });
 		 *
 		 * //update the userprofile
-		 * webinos.userprofile.replaceUserProfile(existingUserProfileObj.id, existingUserProfileObj, successCB, errorCB);
+		 * webinos.userprofile.replaceUserProfile(existingUserProfileObj, successCB, errorCB);
 		 * \endcode
 		 *
 		 */
