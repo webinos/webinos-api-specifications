@@ -205,7 +205,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 <xsl:template match="Exception">
   <div class="exception" id="{@id}">
-        <h3>3.<xsl:number value="position()"/>. <xsl:value-of select="@name"/></h3>
+        <h3><xsl:value-of select="$base-section-number - 1" />.<xsl:number value="position()"/>. <xsl:value-of select="@name"/></h3>
         <xsl:apply-templates select="descriptive/brief"/>
         <xsl:apply-templates select="webidl"/>
         <xsl:apply-templates select="descriptive"/>
