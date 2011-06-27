@@ -212,7 +212,7 @@ module vehicle{
 		*/		
 		readonly attribute DOMString transmission;
 		/**
-		* \brief this method allows to request vehicle data non-recurring and idenpendant from value changes (cf. events). The same identifiers for the vehicle data are used as for the different vehicle events (ClimateControlEvent, ControlEvent, NavigationEvent, ParkSensorsEvent, ShiftEvent) 
+		* \brief Method allows to request vehicle data in non-recurring way and idenpendant from value changes (cf. events). The same identifiers for the vehicle data are used as for the different vehicle events (ClimateControlEvent, ControlEvent, NavigationEvent, ParkSensorsEvent, ShiftEvent) 
 		* \code
 		* webinos.vehicle.get(webinos.vehicle.ClimateControlEvent.CLIMATE_ALL, dataHandler);
 		* function dataHandler(data){
@@ -225,7 +225,7 @@ module vehicle{
 		* }
 		* \endcode
 
-		* \param vehicleDataId specifies the type of data, which shall be retrieved. The identifiers for the different data types are defined in the different vehilce event interfaces (ClimateControlEvent, ControlEvent, NavigationEvent, ParkSensorsEvent, ShiftEvent). The identifiers for climate control data in  constants CLIMATE_*, for control data in  constants LIGTS_* and WHIPER_*,  for navigation data in  constants DESTINATION_*, for park sensors data in the constants PARKSENSORS_*, for shift data in constant SHIFT and for trip computer data in constant TRIPCOMPUTER.
+		* \param vehicleDataId specifies the type of data, which shall be retrieved. The identifiers for the different data types are defined in the different vehilce event interfaces (ClimateControlEvent, ControlEvent, NavigationEvent, ParkSensorsEvent, ShiftEvent). The identifiers for climate control data  are defined in constants CLIMATE_*, for control data in  constants LIGTS_* and WHIPER_*,  for navigation data in  constants DESTINATION_*, for park sensors data in the constants PARKSENSORS_*, for shift data in constant SHIFT and for trip computer data in constant TRIPCOMPUTER.
 		* \param handler specifies function to handle the result.
 		* \param errorCB specifies the callback function in case of an error.
 		*/
