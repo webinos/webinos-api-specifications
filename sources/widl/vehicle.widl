@@ -212,7 +212,7 @@ module vehicle{
 		*/		
 		readonly attribute DOMString transmission;
 		/**
-		* \brief Method allows to request vehicle data in non-recurring way and idenpendant from value changes (cf. events). The same identifiers for the vehicle data are used as for the different vehicle events (ClimateControlEvent, ControlEvent, NavigationEvent, ParkSensorsEvent, ShiftEvent) 
+		* \brief Method allows to request vehicle data in a non-recurring way and idenpendant from value changes (cf. events). The same identifiers for the vehicle data are used as for the different vehicle events (ClimateControlEvent, ControlEvent, NavigationEvent, ParkSensorsEvent, ShiftEvent) 
 		* \code
 		* webinos.vehicle.get(webinos.vehicle.ClimateControlEvent.CLIMATE_ALL, dataHandler);
 		* function dataHandler(data){
