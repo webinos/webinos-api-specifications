@@ -600,7 +600,7 @@ module vehicle{
 		/**
 		* \brief constant describing the eight gear	
 		*/	
-		const short GEAR_SEVEN = 8;
+		const short GEAR_EIGHT = 8;
 		/**
 		* \brief constant describing the reverse gear	
 		*/	
