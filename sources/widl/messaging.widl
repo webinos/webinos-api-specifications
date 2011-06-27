@@ -716,18 +716,14 @@ module messaging {
    *
    */           
   
-   interface MessageAttachment {
+    interface MessageAttachment : File {
    /**
     * \brief    Describes the mime type of the attachment, e.g. "text/html". 
     *
     */  
-     attribute DOMString  MIMEType; 
-   /**
-    * \brief    Contains the actual attachment in binary form. 
-    *
-    */  
-     attribute ByteArray binaryPayload;
-   };
+    readonly attribute DOMString MIMEType; 
+  };
+  
   
    /**                       
    * \brief findMessages specific success callback. 
