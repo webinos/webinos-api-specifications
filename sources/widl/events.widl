@@ -101,7 +101,7 @@ document.onLoad = function() {
  *
  * \def-api-feature http://webinos.org/api/events
  * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt;
- * \version 0.9.9
+ * \version 0.9.10
  */
 
 module events {
@@ -123,6 +123,12 @@ module events {
 	 * This interfaces comes in two flavors: a strict normalized form for
 	 * events generated and/or processed by the Webinos runtime, and a more
 	 * lax non-normalized form to ease API usage.
+	 *
+	 * Please, keep in mind that the Webinos runtime always operates on
+	 * normalized equivalents of user-supplied objects implementing this
+	 * interface in non-normalized form, hence it creates those equivalents
+	 * by applying the normalization process described in the documentation
+	 * of the createEvent() function of the WebinosEvents interface.
 	 *
 	 * Details on both forms are given in each attribute's description.
 	 */
@@ -180,8 +186,7 @@ module events {
 	 * \brief The WebinosEvent interface describes an incoming or outgoing
 	 *        event.
 	 */
-	[NoInterfaceObject]
-	interface WebinosEvent {
+	[NoInterfaceObject] interface WebinosEvent {
 		/**
 		 * \brief Event type identifier.
 		 *
