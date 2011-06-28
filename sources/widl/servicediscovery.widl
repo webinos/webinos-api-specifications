@@ -13,9 +13,9 @@
  * \author Anders Isberg &lt;anders.isberg@sonyericsson.com&gt;
  * \version 0.5 
  */
-module serviceDiscovery {
+module discovery {
 	/**
-	 * \brief The ServiceDiscoveryManager interface provides functionality for service discovery. 
+	 * \brief The ServiceDiscoveryInterface interface provides functionality for service discovery. 
 	 * The API supports the possibility to find services based on a given service type either in 
 	 * a personal zone of devices or via other legacy discovery methods such as mDNS or UPnP. When searching for a service type
 	 * the operation can be restricted by providing certain constraints and/or context information.  
@@ -68,7 +68,7 @@ module serviceDiscovery {
 	}
 	
 	// Initiate a search query for a service of the type geolocation
-	findHandle = window.webinos.findServices({api:'http://webinos.org/api/geolocation'}, {onFound:serviceFoundCB, onLost:serviceLostCB});
+	findHandle = window.webinos.discovery.findServices({api:'http://webinos.org/api/geolocation'}, {onFound:serviceFoundCB, onLost:serviceLostCB});
 	
 	var selectlist = document.getElementById('servicelist');
 	selectlist.addEventListener("change", function (e) {
@@ -80,7 +80,7 @@ module serviceDiscovery {
 	 * \endcode
 	 *
 	 */
-	[NoInterfaceObject] interface ServiceDiscoveryManager  {
+	[NoInterfaceObject] interface ServiceDiscoveryInterface  {
 		/**
 		 * \brief The findServices method initiates an asynchronous search query for services matching the requested serviceType and filter parameters. The method continues to run until the findServices method is canceled by the application or when maximum search timer expires.
 		 * 
@@ -98,11 +98,17 @@ module serviceDiscovery {
 		 PendingOperation findServices(in ServiceType serviceType, in FindCallBack findCallBack, in optional Options options, in optional Filter filter)
 		 raises(DiscoveryExceptions);
 		/**
-		 * \brief The getServiceId method generates an service identity that can be shared to other peers to directly bind to a service without invoking a findServices operation.
+		 * \brief The getServiceId method generates a service identity that can be shared to other peers to directly bind to a service without invoking a findServices operation.
 		 * \param sharedFunctionId Identity of the service exposed with the webinos:shared-function element in the manifest.
 		 * \throw DiscoveryExceptions 
 		 */
-		 DOMString getServiceId (in DOMString sharedFunctionId)
+		 DOMString getServiceId(in DOMString sharedFunctionId)
+		 raises(DiscoveryExceptions);
+		/**
+		 * \brief The createService method creates a Service object that can used to bind to service directly if the service identity is known. 
+		 * \throw DiscoveryExceptions 
+		 */                                                          
+		 Service createService()
 		 raises(DiscoveryExceptions);                                                          
 	};
 		
@@ -119,7 +125,7 @@ module serviceDiscovery {
 	/**
 	 * \brief FindCallBack interface definition
 	 */
-	[Callback=FunctionOnly, NoInterfaceObject] interface FindCallBack {
+	[Callback, NoInterfaceObject] interface FindCallBack {
 		/**
 		 * \brief Asynchronous callback used whenever a new service is found.      
 		 * \param service An input argument representing the found service.
@@ -134,7 +140,7 @@ module serviceDiscovery {
 		 * \brief Asynchronous error callback.   
 		 * \param error Error code. 
 		 */
-		void onErrror(in DiscoveryError error); 		 
+		void onError(in DiscoveryError error); 		 
 	};
 	
 	/**
@@ -148,7 +154,7 @@ module serviceDiscovery {
 	 * 5. instantiate an implementation of the api that can be used by applications to request services from the requested API.
 	 */
 	
-	interface Service {
+	[NoInterfaceObject] interface Service {
 		/**
 		 * \brief A constant describing the service is in the process of binding to the service. 
 		 */
@@ -204,7 +210,7 @@ module serviceDiscovery {
 	 * \brief Bind success callback interface definition
 	 */
 	 
-	 [Callback=FunctionOnly, NoInterfaceObject] interface BindCallBack {
+	 [Callback, NoInterfaceObject] interface BindCallBack {
 		/**
 		 * \brief Asynchronous success callback.      
 		 * \param service An input argument representing the service.
@@ -212,21 +218,24 @@ module serviceDiscovery {
 		 void onBind(in Service service);
 		/**
 		 * \brief Asynchronous callback used when a service is unbound.      
+		 * \param service An input argument representing the service.
 		 */
-		 void onUnbind();
+		 void onUnbind(in Service service);
 		/**
-		 * \brief Asynchronous callback indicating that the service is available again      
+		 * \brief Asynchronous callback indicating that the service is available again
+		 * \param service An input argument representing the service.      
 		 */		 
-		 void onServiceAvailable();
+		 void onServiceAvailable(in Service service);
 		/**
 		 * \brief Asynchronous indicating the service is temporarily unavailable.
+		 * \param service An input argument representing the service.
 		 */		 		 
-		 void onServiceUnavailable();	  
+		 void onServiceUnavailable(in Service service);	  
 		/**
 		 * \brief Asynchronous error callback.   
 		 * \param error Error code. 
 		 */
-		void onErrror(in DiscoveryError error); 
+		void onError(in DiscoveryError error); 
 	};
 	
 	/**
@@ -234,11 +243,9 @@ module serviceDiscovery {
    	 */
 	[NoInterfaceObject] interface Options {
 		/**
-		 * \brief INFINITE Timeout Value
-		 */
-		const unsigned short INFINITE = 0;		
-		/**
-		 * \brief A timeout value for the findService operation in seconds between 0-65535. Default value is 120 seconds.
+		 * \brief A timeout value for the findService operation in seconds between 0-65535. 
+		 * 		  Default value is 120 seconds. It is possible to disable the timeout by setting 
+		 *		  the timeout value to Number.POSITIVE_INFINITY.
 		 */
 		attribute unsigned short timeout;
 	};
@@ -287,4 +294,18 @@ module serviceDiscovery {
 		 */
 		 const unsigned short INVALID_ARGUMENT_ERROR = 101;
 	};
+	
+	
+	/**
+	 * \brief The WebinosDiscovery interface describes the part of the Discovery
+	 *        API accessible through the webinos object.
+	 */
+	[NoInterfaceObject] interface WebinosDiscovery {
+		/**
+		 * \brief webinos.discovery object.
+		 */
+		readonly attribute ServiceDiscoveryInterface discovery;
+	};
+
+    webinoscore::Webinos implements WebinosDiscovery;
 };
