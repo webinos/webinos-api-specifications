@@ -126,6 +126,30 @@ module AppLauncher {
     
     
     /**
+     * \brief API-specific error handling  interface
+     *
+     * The LaucnherAPIError interface describes error interface for the Launcher API.
+     *
+     */
+    [NoInterfaceObject] interface LauncherAPIError {
+    
+        readonly attribute unsigned short code;
+        
+        readonly attribute DOMString message;
+        
+        const unsigned short      UNKNOWN_ERR                    = 0;
+        const unsigned short      NOT_SUPPORTED_ERR              = 9;
+        const unsigned short      TYPE_MISMATCH_ERR              = 17;
+        const unsigned short      SECURITY_ERR                   = 18;
+        const unsigned short      NETWORK_ERR                    = 19;
+        const unsigned short      INVALID_APP_ID                 = 100; 
+        const unsigned short      APP_NOT_FOUND                  = 101; 
+        const unsigned short      NO_RESOURCES                   = 102; 
+        const unsigned short      ALREADY_STARTED                = 103; 
+        const unsigned short      POLICY_NOT_ALLOWED             = 104; 
+    };
+    
+    /**
      * \brief The PendingOperation interface
      *
      * The PendingOperation interface describes operation of cancellable aynchronous methods.

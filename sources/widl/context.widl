@@ -1,13 +1,14 @@
 /**
  * \brief The Context API 
  *
- * TODO: WIKI DESCRIPTION
+ * The Context API defines the high-level interfaces required to obtain access to a user's context data.
  *
  * \def-api-feature http://webinos.org/api/context
  * Acccess to all the module. This feature provides access to the whole API.
  * Security enforcement may depend on the query requested by the developer.
  *
- * \author No Name &lt;noname@nodomain.org&gt;
+ * \author Heiko Desruelle &lt;heiko.desruelle@intec.ugent.be&gt;
+ * \author Dieter Blomme &lt;dieter.blomme@intec.ugent.be&gt;
  * \version 0.1 
  */
 module context {
@@ -72,9 +73,9 @@ module context {
     /**
      * \brief query content in xml format
      *
-     * Long description
+     * <a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL query language for RDF</a>
      */
-    attribute DOMString xmlQuery;
+    attribute SPARQLquery xmlQuery;
   };
   
   /**
@@ -104,10 +105,10 @@ module context {
   [Callback=FunctionOnly, NoInterfaceObject] interface QuerySuccessCallback {        
     /**
      * \brief Callback on success of a performQuery() operation
-     * \param queryResult Result of the query operation serialized as a json string. 
+     * \param queryResult Result of the query operation serialized as a json string, see <a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL query language for RDF</a>. 
      * \return void                 
      */
-    void onsuccess (DOMString queryResult);
+    void onsuccess (SPARQLquery queryResult);
   };
         
   /**

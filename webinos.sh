@@ -27,6 +27,7 @@ DTD=widlprocxml.dtd
 $(widlproc 2> /dev/null)
 [ $? != 127 ] && WIDLPROC=widlproc || WIDLPROC=$REPOS/resources/linux/widlproc 
 [ -n "$OS" ] && [ "$OS" = "Windows_NT" ] && WIDLPROC=$REPOS/resources/win32/widlproc.exe
+[ "$(uname)" = "Darwin" ] && WIDLPROC=$REPOS/resources/macos/widlproc
 
 $(ls /opt/bitnami/common/lib/libxslt.so > /dev/null 2>&1)
 [ $? = 0 ] && XSLTLIB=/opt/bitnami/common/lib

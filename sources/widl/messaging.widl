@@ -2,12 +2,9 @@
  * \brief WAC based Messaging interface.
  *
  * The messaging API provides access to the following capabilities:
- *
  *  Sending messages through different technologies: SMS, MMS, Email and Instant Messages.
- *
  *  Search for messages in the different folders.
- *
- * Subscribe for being notified upon incoming message events.
+ *  Subscribe for being notified upon incoming message events.
  *
  * This API is a read only API that does not allow message or folder management.
  * 
@@ -38,6 +35,13 @@ module messaging {
    * \brief Sequence of Message objects
    */
   typedef sequence<Message> MessageArray;
+
+   /**
+    * \brief     Array of files 
+    */
+   typedef File[]  FileArray;
+
+
 
 /**
  * \brief Defines what is instantiated in the deviceapis object 
@@ -560,6 +564,7 @@ module messaging {
     */
     attribute FileArray attachments;
 
+
    /**                       
    * \brief Updates a message retrieved with the findMessages method 
    *
@@ -712,22 +717,18 @@ module messaging {
    /**                       
    * \brief Describes a message attachement 
    *
-   * This attribute extends combines a byte array with a MIME type.
+   * This attribute extends the File interface (from W3C File reader (http://dev.w3.org/2006/webapi/FileAPI/#file)) by concurrently implementing the synchronizable interface. It allows attachments to be downloaded only if the user requests them by the use of the sync method specified in the Synchronizable interface. 
    *
    */           
   
-   interface MessageAttachment {
+    interface MessageAttachment : File {
    /**
     * \brief    Describes the mime type of the attachment, e.g. "text/html". 
     *
     */  
-     attribute DOMString  MIMEType; 
-   /**
-    * \brief    Contains the actual attachment in binary form. 
-    *
-    */  
-     attribute ByteArray binaryPayload;
-   };
+    readonly attribute DOMString MIMEType; 
+  };
+  
   
    /**                       
    * \brief findMessages specific success callback. 
