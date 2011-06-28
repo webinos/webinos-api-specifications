@@ -2,12 +2,9 @@
  * \brief WAC based Messaging interface.
  *
  * The messaging API provides access to the following capabilities:
- *
  *  Sending messages through different technologies: SMS, MMS, Email and Instant Messages.
- *
  *  Search for messages in the different folders.
- *
- * Subscribe for being notified upon incoming message events.
+ *  Subscribe for being notified upon incoming message events.
  *
  * This API is a read only API that does not allow message or folder management.
  * 
