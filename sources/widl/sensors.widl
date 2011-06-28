@@ -35,7 +35,7 @@
  * Identifies the pressure sensor type. 
  *
  * \author Claes Nilsson &lt;claes1.nilsson@sonyericsson.com&gt;
- * \version 0.10 
+ * \version 0.9 
  */
 
 module sensors {
@@ -130,7 +130,7 @@ module sensors {
         }
         
         // Get list of temperature sensors registered in the device through the Service Discovery findServices() method
-        findHandle  = window.webinos.findServices({api:'http://webinos.org/api/sensors.temperature'}, {onFound:sensorFoundCB});
+        findHandle  = window.webinos.discovery.findServices({api:'http://webinos.org/api/sensors.temperature'}, {onFound:sensorFoundCB});
  
        // Handle user selection of sensor
         var sensorlist = document.getElementById('sensorlist');
@@ -491,20 +491,5 @@ module sensors {
                          in boolean interrupt, 
                          in float[] sensorValues); 
     };
-
-  /**
-   * \brief The WebinosSensors interface describes the part of the Senors API accessible through the webinos object.
-   */
-
-   [NoInterfaceObject] interface WebinosSensors {
-
-     /**
-      * \brief webinos.sensors object.
-      */
-      readonly attribute WebinosSensorsInterface sensors;
-   };
-
-   webinoscore::Webinos implements WebinosSensors;
-
 
 };
