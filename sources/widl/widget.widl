@@ -87,12 +87,22 @@ module widget {
       /**
        * \brief Not Authorized to use the service. 
       */
-      const unsigned short PERMISSION_DENIED_ERROR  = 103;
+      const unsigned short PERMISSION_DENIED_ERROR  = 102;
+                       
+      /**
+       * \brief Device where the application should be installed on is not reachable. Consider retrying later. 
+      */
+      const unsigned short NOT_REACHABLE  = 103;
+      
+      /**
+       * \brief Device where the application should be installed on is not reachable. Consider retrying later. 
+      */
+      const unsigned short UNKNOWN_APPLICATION_ID  = 104;
                        
       /**
        * \brief Any other error. 
       */
-      const unsigned short INSTALLATION_ERROR_OTHER = 103;
+      const unsigned short INSTALLATION_ERROR_OTHER = 105;
 
       /**
        * \brief An error code assigned by an implementation when an error has occurred.
@@ -288,10 +298,8 @@ module widget {
      * \param icon A relative path within the application package to an icon describing the notification. 
      * \param id An local identifier that represents the event and can be used to cancel the event or to
      *        take actions within the callbacks. 
-     * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if an invalid argument is passed
     */
-    void notify(in NotifySuccessCallback onSuccess, in NotifyErrorCallback onError, in DOMString title, in optional DOMString shortDescription, in optional DOMString id, in optional DOMString icon)
-     raises(DeviceAPIError);
+    void notify(in NotifySuccessCallback onSuccess, in NotifyErrorCallback onError, in DOMString title, in optional DOMString shortDescription, in optional DOMString id, in optional DOMString icon);
 
     /**
      * \brief Cancels an ongoing notification.
@@ -376,10 +384,8 @@ module widget {
      * \param onError ErrorCallback called if installation was not possible.
      * \param childApplication Package name of the application to be installed.
      * \param local Indicates if application should be installed on the same device as the requesting application or not.
-     * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if an invalid argument is passed.
     */
-    void deployChild(in DeploymentSuccessCallback onSuccess, in DeploymentErrorCallback onError, in DOMString childApplication, in optional boolean local)
-      raises(DeviceAPIError);
+    void deployChild(in DeploymentSuccessCallback onSuccess, in DeploymentErrorCallback onError, in DOMString childApplication, in optional boolean local);
   };
   
   [Supplemental, NoInterfaceObject]interface WindowWidget {
