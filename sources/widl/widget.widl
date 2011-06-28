@@ -388,6 +388,9 @@ module widget {
     void deployChild(in DeploymentSuccessCallback onSuccess, in DeploymentErrorCallback onError, in DOMString childApplication, in optional boolean local);
   };
   
+  /**
+   * \brief The WindowWidget interface describes the part of the Widget API accessible through the window object.
+   */
   [Supplemental, NoInterfaceObject]interface WindowWidget {
      readonly attribute Widget widget;
    };
