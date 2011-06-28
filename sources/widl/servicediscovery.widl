@@ -1,10 +1,9 @@
 /**
- * \brief The Service Discovery API 
+ * \brief The Discovery API 
  *
- * The Webinos Service Discovery API provide web applications with 
- * an API to find and bind to services. The API is not limited to the local device
- * but enables the possibility to find services in a zone of trusted personal devices or
- * services exposed legacy methods such as Bluetooth SD, mDNS or UPnP.
+ * The Webinos Discovery API provide web applications with an API to find and bind to services. 
+ * The API is not limited to the local device but enables the possibility to find services in a 
+ * zone of trusted personal devices or services exposed by legacy methods such as Bluetooth SD, mDNS or UPnP.
  * 
  * Usage of the API assumes that the web application using the API is installed, trusted and that the user is
  * authenticated/authorized to use the API.
@@ -15,7 +14,7 @@
  */
 module discovery {
 	/**
-	 * \brief The DiscoveryInterface interface provides functionality for service discovery. 
+	 * \brief The DiscoveryInterface interface provides functionality for discovery of services. 
 	 * The API supports the possibility to find services based on a given service type either in 
 	 * a personal zone of devices or via other legacy discovery methods such as mDNS or UPnP. When searching for a service type
 	 * the operation can be restricted by providing certain constraints and/or context information.  
@@ -251,19 +250,63 @@ module discovery {
    	 */
 	[NoInterfaceObject] interface Options {
 		/**
-		 * \brief A timeout value for the findService operation in seconds between 0-65535. 
-		 * 		  Default value is 120 seconds. It is possible to disable the timeout by setting 
-		 *		  the timeout value to Number.POSITIVE_INFINITY.
+		 * \brief 	A timeout value for the findService operation in seconds between 0-65535. 
+		 * 		  	Default value is 120 seconds. It is possible to disable the timeout by setting 
+		 *		  	the timeout value to Number.POSITIVE_INFINITY.
 		 */
 		attribute unsigned short timeout;
 	};
 	
 	/**
-	* \brief TBD: Some nice attributes to express filters. 
-	*/
+	 * \brief Filter interface 
+	 */
 	[NoInterfaceObject] interface Filter {
-	 
+		/**
+		 * \brief 	Identities of personal zones that shall be used during the findServices process. 
+		 *			If no zoneId is specified, the search will be limited to the personal zone
+		 *			managed by the user that is currently logged on the device. 	   	
+		 *			The zoneId "self" is reserved to indicate the personal zone managed by the
+		 *			user that is currently logged on the device. 
+		 */
+		attribute DOMString[] zoneId;
+		 
+	 	/**
+		 * \brief 	Remote Services If remoteService is false the findServices method will limit the search for services that are  
+		 *		  	connected directly to the device or to the same local IP network. If remoteServices is true, the findServices  
+		 *		  	method will extend the search for services outside the local IP network. Default value is false. 
+		 */
+		attribute boolean remoteServices;
+
+	 	/**
+		 * \brief 	Service Location With the serviceLocation attribute it is possible to indicate where the service shall be located.
+		 *			If the service location is Null, the location of the service is not considered during the findServices process.  
+		 */
+		attribute ServiceLocation? serviceLocation;	
 	};
+	
+	/**
+	 * \brief ServiceLocation interface 
+	 */
+	[NoInterfaceObject] interface ServiceLocation {
+		/**
+		 * \brief 	The latitude attribute is the geographic coordinate specified in decimal degrees. 
+		 *			If the latitude is Null the latitude of the device invoking the findServices method will be used. 	
+		 */
+		attribute double? latitude;
+
+		/**
+		 * \brief 	The longitude attribute is the geographic coordinate specified in decimal degrees.	
+		 *			If the longitude is Null the longitude of the device invoking the findServices method will be used.
+		 */
+		attribute double? longitude;
+		
+		/**
+		 * \brief 	The accuracy denotes the accuracy level of the latitude and longitude coordinates in meters.  	   	
+		 *			This is used to limit the geographical area for finding services.
+		 */
+		attribute double accuracy;    	    	
+	};
+	
 	
 	/**
 	 * \brief Pending Operation interface 
