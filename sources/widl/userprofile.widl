@@ -233,5 +233,5 @@ module userprofile {
 		readonly attribute UserProfileInterface userprofile;
 	};
 
-	webinoscore::Webinos implements UserProfileInterface;
+	webinoscore::Webinos implements WebinosUserProfile;
 };
