@@ -250,7 +250,7 @@ module nfc {
 	 * \brief NFC tag event.
 	 *
 	 */
-	[NoInterfaceObject] interface NFCTag : Event {
+	interface NFCTag : Event {
 
 		/**
 		 * \brief The identifier of the tag.
