@@ -1,7 +1,182 @@
 /**
- * \brief Interface for NFC Tags reader/writer.
  *
- * API to read and write to NFC tags.
+ * \brief Near Field Communication (NFC) is an international standard (ISO/IEC 
+ * 18092) that specifies an interface and protocol for simple wireless 
+ * interconnection of closely coupled devices operating at 13.56 MHz. 
+ * (http://www.nfc-forum.org/specs/spec_list/).
+ * There are three groups of application scenarios for NFC: The first one 
+ * is to hold a device close to a wireless tag to exchange some digital 
+ * information or data. The second is to hold two devices close to each 
+ * other in order to exchange some information or data between them. The 
+ * third one is to make payments by holding mobile phones close to point of 
+ * sales terminals instead of swiping smart cards.
+ * 
+ * Near Field Communication is a kind of radio-frequency identification 
+ * (RFID) technology that uses short-hold wireless communication to 
+ * transfer messages between wireless NFC devices and NFC tags. The 
+ * wireless tags are physically attached onto/ mounted nearby a physical 
+ * object.
+ * 
+ * The most common use case is for an NFC device to read the identifier 
+ * and/or the contents of an NFC tag. Another quite common use case is for 
+ * an NFC device to write content to an NFC tag, if the NFC tag allows 
+ * this. The webinos NFC module supports both. There is also a third use 
+ * case where NFC devices pretend to be contactless smart cards e.g. for 
+ * payment or ticketing purposes. In general, our objective is with the 
+ * webinos NFC module is to enable free competition for NFC applications. 
+ * This means that the goal is to allow any application developers to fully 
+ * operate on any of these modes.
+ * 
+ * The purpose of an NFC tag is to provide a small amount of digital data 
+ * about the physical object that it is associated with - or to help 
+ * perform a task for the user. One can use either the tag identifier, or 
+ * some data stored on the tag, to achieve this.
+ * 
+ * An NFC tag can be viewed as a wireless bar code. It can be read by NFC 
+ * devices within a range of up to 10 centimetres. The amount of power and 
+ * resources needed by the NFC device to read and write to an NFC tag is 
+ * very low.
+ * 
+ * - NFC APPLICATIONS AND USE CASES
+ * 
+ * NFC technology is increasingly taking part in every day activities. NFC 
+ * enables digital data to be associated with real world objects. NFC tags 
+ * are more advanced than printed bar codes, because one can store a few 
+ * kilobytes of data on each NFC tag in addition to using its identifier.
+ * 
+ * NFC is a wireless standard where messages must be exchanged and 
+ * communicated in a standardised way. This makes NFC very suitable for a 
+ * wide range of ubiquitous applications. Example applications are within 
+ * logistics, health care, social media, infotainment, gaming, mobile 
+ * payments, access to places, system access, inventory control, exchange 
+ * of business cards, email addresses, web links, images, and so on.
+ * 
+ * - NFC CORE CONCEPTS
+ * 
+ * The core concepts of the NFC standard are:
+ * 
+ * * The NFC devices and NFC tags
+ * * The NFC Data Exchange Format
+ * 
+ * NFC devices are are typically mobile phones or computers with some NFC 
+ * hardware and a driver installed. Such devices are typically active and 
+ * try to detect tags, or other devices, nearby. The devices and tags can 
+ * be provided with identifiers, and these can be both fixed or dynamic 
+ * depending on the application.
+ * 
+ * NFC tags can be worn by people or attached to objects in the 
+ * environment. It enables identification and exchange of a small amount of 
+ * data in the form of standardised messages that can contain up to several 
+ * data records each. Each data record contains a header identifying the 
+ * data followed by the actual data itself. It is completely up to 
+ * application developers to identify the data, to understand it, and to 
+ * use the data. Please note that sometimes the term payload is also being 
+ * used in NFC. Payload in an NFC context simply refers to the raw data or 
+ * information being stored.
+ * 
+ * - THE NFC DATA EXCHANGE FORMAT
+ * 
+ * The NFC Forum has specified the NFC Data Exchange Format (NDEF) to 
+ * enable interoperability when exchanging data between NFC devices and NFC 
+ * tags. NDEF is a standard that specifies the NDEF data structure format 
+ * along with rules on how to compose an NDEF message as a complete 
+ * collection of NDEF records. An NDEF message is a lightweight, binary 
+ * message format.
+ * 
+ * It defines how to package application data as NDEF records. NDEF only 
+ * specified the data structure format to exchange application specific 
+ * data in an interoperable way. It does not define any record types in 
+ * detail. Providing the record header and the actual record data is 
+ * completely up to the application developer to do.
+ * 
+ * NDEF is a compact and lightweight binary format. It can contain any data 
+ * such as web links, business cards, tiny applications, images, and so on. 
+ * It is up the application developers to define and fill it with literally 
+ * any data suitable or needed for the application. It is the capabilities 
+ * of the NFC target that matters. Most NFC tags have generally a few 
+ * kilobytes of available memory to store the data (payload). NFC devices 
+ * typically have much more memory available. There are currently four 
+ * types of NFC tags defined in the standard: type1, type 2, type 3, and 
+ * type 4. The type vary because of computing capabilities and low level 
+ * commands, but all NFC targets have to support the exchange of NDEF 
+ * messages and records.
+ * 
+ * The advantage of NDEF is that it abstracts away from the specific NFC 
+ * tags/ targets. An NDEF message consists of a set of NDEF records. Each 
+ * record must carry data/ payload. The type of data can for instance be 
+ * web links, MIME media types, or pre-defined NFC data types.
+ * An NDEF record consists of two parts: 1) the header part, and 2) the 
+ * data (payload) part. The compact header part specifies the: i) type of 
+ * data, ii) the length of the data in terms of octets, and iii) an 
+ * optional data identifier. The optional data identifier could for 
+ * instance be used by applications to nest data and records, or for other 
+ * purposes such as signing. i) and ii) are mandatory to specify in the 
+ * header of a record. Also, the data (payload) part needs to be provided 
+ * to the record. The approach to specifying headers allows for compact the 
+ * identification of standardised data formats across NFC applications. It 
+ * also allows for the identification of new and custom data formats for 
+ * any future NFC application.
+ * 
+ * The NDEF message format can accommodate literally any information or 
+ * data of known and initially unknown sizes. It allows an arbitrary set of 
+ * information and data to be grouped together into a single message. It 
+ * also allows for the compact encapsulation of well-known data such as web 
+ * links. An NDEF message is not a general message description or document 
+ * format like MIME media types, HTML, XML and so on. Rather, the purpose 
+ * is to enable applications to take advantage of such descriptions and 
+ * formats by encapsulating any of these as NDEF messages and records.
+ * 
+ * The data (payload) length is an unsigned integer indicating the number 
+ * of octets in the payload. A compact, short-record layout is provided for 
+ * very small payloads. The optional payload identifier enables association 
+ * of multiple data (payloads) and cross-referencing between them. NDEF 
+ * payloads may include nested NDEF messages or chains
+ * of linked chunks of unknown length at the time the data is generated.
+ * 
+ * - BRIEFLY HOW NFC RADIOS AND MODULES WORK
+ * 
+ * NFC tags differ from many other RFID tags mainly because of the signal 
+ * range of the NFC transceivers. Some RFID tags can be read from 100 
+ * meters, which is the case when you drive a car through a toll ring with 
+ * an RFID tag. Such long range wireless tag needs an embedded battery to 
+ * be able to broadcast the identifier/ data back to the reader. However, 
+ * because the signal reach of NFC tags and devices is only a few 
+ * centimetres, the actual NFC tags require no battery. Instead, the active 
+ * NFC device activates the passive NFC tag with an electro-magnetic field. 
+ * This field is sufficient to power the NFC chip and drive the data exchange.
+ * 
+ * - PLANNED OPERATING MODES FOR THE WEBINOS NFC
+ * 
+ * NFC devices can run in either reader-writer mode, peer-to-peer mode, or 
+ * card emulation mode. These three modes are based on the ISO/IEC 18092 
+ * NFC IP-1 and ISO/IEC 14443 contactless smart card standards. Webinos aim 
+ * to provide all three modes:
+ * 
+ * 1. NFC reader/writer mode - the NFC device can read and write data to 
+ * NFC tags. This is the original intention of the NFC technologies. We 
+ * foresee that most NFC applications will be using this mode in the 
+ * beginning. One use case is to hold a mobile towards a smart poster to 
+ * obtain information about a concert.
+ * 
+ * 2. NFC peer to peer mode - two NFC devices exchange data with each other 
+ * when held close. The devices can connect and share any data/ files 
+ * through the NFC Logical Link Control Protocol (LLCP). This capability 
+ * was added to the NFC standard because of the introduction of NFC 
+ * adapters to mobile phones.
+ * 
+ * 3. NFC card emulation mode - an NFC device appears to another NFC device 
+ * as a contactless smart card. It makes the NFC device appear as a 
+ * contactless smart card for payment/ ticketing to other NFC devices. A 
+ * contactless card an NFC tag with a tiny, secure application embedded on 
+ * it. Therefore, one needs to emulate cards through the execution of tiny, 
+ * secure payment applications towards the NFC module.
+ * 
+ * The implementation priority for the webinos NFC module is in the order 
+ * if the above three modes: We first will provide the NFC reader/writer 
+ * mode, then we will deliver the NFC peer to peer mode. Finally, we aim to 
+ * get the NFC card emulation mode implemented, however, at the moment this 
+ * latter mode has a lower priority in webinos.
+ * 
  * This specification provides a new DOM event ("nfctag") to discover when a nfc tag
  * enters the field of the device.
  *
@@ -35,10 +210,10 @@
  * \def-api-feature http://webinos.org/api/nfc.read
  * Acccess to all the module except write operations.
  *
- * \author Hans Mirhaug &lt;hans@ambiesense.com&gt;
- * \author Stefano Vercelli &lt;stefano.vercelli@telecomitalia.it&gt;
+ * \author Hans Myrhaug (AmbieSense Ltd.) &lt;hans@ambiesense.com&gt;
+ * \author Stefano Vercelli (Telecom Italia) &lt;stefano.vercelli@telecomitalia.it&gt;
  *
- * \version 0.3
+ * \version 0.4
  */
 
 module nfc {
@@ -56,7 +231,7 @@ module nfc {
 	/**
 	 * \brief Array of 8-bit unsigned integer values.
 	 */
-	typedef sequence<unsigned short>	ByteArray;
+	typedef sequence<octet>	ByteArray;
 
 	/**
 	 * \brief Definition of pending op.
@@ -110,11 +285,11 @@ module nfc {
 		                     in boolean bubbles,
 		                     in boolean cancelable,
 		                     in ByteArray tagId,
-							 in unsigned short technologyType,
-							 in unsigned short ndefType,
-							 in unsigned short ndefRecType,
-							 in DOMString? ndefRecordTextPayload,
-							 in optional ByteArray ndefRecordBinaryPayload
+		                     in unsigned short technologyType,
+		                     in unsigned short ndefType,
+		                     in unsigned short ndefRecType,
+		                     in DOMString? ndefRecordTextPayload,
+		                     in optional ByteArray ndefRecordBinaryPayload
 		                     );
 								 
 	};
