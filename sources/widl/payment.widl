@@ -393,7 +393,13 @@ module payment {
   };  
 
 
- [NoInterfaceObject] interface PaymentAPIError {
+        /**
+         * \brief Payment API specific errors.
+         *
+         * The PaymentAPIError interface encapsulates all errors in calling of the Payment API. 
+         */
+
+         [NoInterfaceObject] interface PaymentAPIError {
 
                 /**
                  * \brief Invalid argument
