@@ -1,7 +1,7 @@
 /**
- * \brief The webinos userprofile API to access user information. This API uses the Contact interface of the webinos Contacts API (http://dev.webinos.org/specifications/draft/contacts.html) and extend it with social network attributes from Portablecontacts from August 5, 2008 (http://portablecontacts.net/draft-spec.html). 
+ * \brief The webinos userprofile API to access user information.
  *
- * This API offers access to information of the user. UserProfile API is an extension of webinos Contact API. It uses Contact interface to gather basic information about the user (e.g. name, nickname, gender, birthday, etc.) and extends it with social network attributes. These social network attributes are a simple pointer where the webinos user has non-webinos profiles. These information could be used by an application to query an external API for an additional information (e.g. query the Facebook Graph API for the buddylist).
+ * This API offers access to information of the user. UserProfile API is an extension of webinos Contact API to gather basic information about the user (e.g. name, nickname, gender, birthday, etc.) and extends it with social network attributes from Portablecontacts from August 5, 2008 (http://portablecontacts.net/draft-spec.html). These social network attributes are a simple pointer where the webinos user has non-webinos profiles. These information could be used by an application to query an external API for an additional information (e.g. query the Facebook Graph API for the buddylist).
  *
  * \def-api-feature http://webinos.org/api/userprofile
  * \author WIDL version for webinos created by Ronny Gr&auml;fe &lt;ronny.graefe@t-systems.com&gt;
