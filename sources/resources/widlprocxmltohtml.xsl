@@ -24,24 +24,37 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <xsl:variable name="title" select="concat('APIs: The ',/Definitions/*[1]/@name,' module')"/>
 
 <!-- section number of the features section. If there are typedefs, this is 4, otherwise 5 -->
+<xsl:variable name="base-section-number">
+  <xsl:choose>
+    <xsl:when test="/Definitions/Module/Typedef">
+      <xsl:choose>
+	<xsl:when test="/Definitions/Module/Exception">5</xsl:when>
+	<xsl:otherwise>4</xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:when test="/Definitions/Module/Exception">4</xsl:when>
+    <xsl:otherwise>3</xsl:otherwise>
+  </xsl:choose>
+</xsl:variable>
+
 <xsl:variable name="api-features-section-number">
   <xsl:choose>
-    <xsl:when test="/Definitions/Module/Typedef">4</xsl:when>
-    <xsl:otherwise>3</xsl:otherwise>
+    <xsl:when test="/Definitions/Module/Typedef"><xsl:value-of select="$base-section-number + 1"/></xsl:when>
+    <xsl:otherwise><xsl:value-of select="$base-section-number"/></xsl:otherwise>
   </xsl:choose>
 </xsl:variable>
 
 <xsl:variable name="method-summary-section-number">
   <xsl:choose>
-    <xsl:when test="/Definitions/Module/Typedef">5</xsl:when>
-    <xsl:otherwise>4</xsl:otherwise>
+    <xsl:when test="/Definitions/Module/Typedef"><xsl:value-of select="$base-section-number + 2"/></xsl:when>
+    <xsl:otherwise><xsl:value-of select="$base-section-number + 1"/></xsl:otherwise>
   </xsl:choose>
 </xsl:variable>
 
 <xsl:variable name="full-webidl-section-number">
   <xsl:choose>
-    <xsl:when test="/Definitions/Module/Typedef">5</xsl:when>
-    <xsl:otherwise>4</xsl:otherwise>
+    <xsl:when test="/Definitions/Module/Typedef"><xsl:value-of select="$base-section-number + 2"/></xsl:when>
+    <xsl:otherwise><xsl:value-of select="$base-section-number + 1"/></xsl:otherwise>
   </xsl:choose>
 </xsl:variable>
 
@@ -105,6 +118,16 @@ XSLT stylesheet to convert widlprocxml into html documentation.
             </ul>
             </li>
           </xsl:if>
+          <xsl:if test="Exception">
+          <li><xsl:value-of select="$base-section-number - 1"/>. <a href="#exceptions">Exceptions</a>
+            <ul class="toc">
+              <xsl:for-each select="Exception">
+                <li><xsl:value-of select="$base-section-number - 1"/>.<xsl:number value="position()"/>. <a href="#{@id}"><xsl:value-of select="@name"/></a></li>
+              </xsl:for-each>
+            </ul>
+            </li>
+          </xsl:if>
+
           <li><xsl:number value="$api-features-section-number"/>. <a href="#api-features">Features</a></li>
           <li><xsl:number value="$full-webidl-section-number"/>. <a href="#full-webidl">Full WebIDL</a></li>
         </ul>
@@ -128,6 +151,14 @@ XSLT stylesheet to convert widlprocxml into html documentation.
                 <xsl:apply-templates select="Typedef[descriptive]"/>
             </div>
         </xsl:if>
+
+	<xsl:if test="Exception">
+            <div class="exceptions" id="exceptions">
+                <h2><xsl:value-of select="$base-section-number - 1"/>. Exceptions</h2>
+                <xsl:apply-templates select="Exception"/>
+            </div>
+
+	</xsl:if>
 
         <h2 id="api-features"><xsl:value-of select="$api-features-section-number"/>. Features</h2>
 
@@ -172,15 +203,43 @@ XSLT stylesheet to convert widlprocxml into html documentation.
       </dl>
 </xsl:template>
 
+<xsl:template match="Exception">
+  <div class="exception" id="{@id}">
+        <h3>3.<xsl:number value="position()"/>. <xsl:value-of select="@name"/></h3>
+        <xsl:apply-templates select="descriptive/brief"/>
+        <xsl:apply-templates select="webidl"/>
+        <xsl:apply-templates select="descriptive"/>
+        <xsl:apply-templates select="descriptive/Code"/>
+        <xsl:if test="ExceptionField/descriptive">
+            <div class="fields">
+                <h4>Field</h4>
+                <dl>
+                  <xsl:apply-templates select="ExceptionField"/>
+                </dl>
+            </div>
+        </xsl:if>
 
+  </div>
 
-<!--Exception: not implemented-->
-<!--Valuetype: not implemented-->
-<xsl:template match="Exception|Valuetype|Const">
-    <xsl:if test="descriptive">
-        <xsl:message terminate="yes">element <xsl:value-of select="name()"/> not supported</xsl:message>
-    </xsl:if>
 </xsl:template>
+
+<!--ExceptionField-->
+<xsl:template match="ExceptionField">
+    <dt class="attribute" id="{concat(parent::*/@name,'_',@name)}">
+        <code>
+        <span class='attrName'><b>
+            <xsl:apply-templates select="Type"/>
+            <xsl:text> </xsl:text>
+            <xsl:value-of select="@name"/>
+        </b></span>
+        </code></dt>
+        <dd>
+          <xsl:apply-templates select="descriptive/brief"/>
+          <xsl:apply-templates select="descriptive"/>
+          <xsl:apply-templates select="descriptive/Code"/>
+        </dd>
+</xsl:template>
+
 
 <!--Typedef.-->
 <xsl:template match="Typedef[descriptive]">

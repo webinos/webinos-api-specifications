@@ -1,0 +1,249 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link media="screen" href="webinos-apis.css" type="text/css" rel="stylesheet">
+  <script type="text/javascript" src="webinos-apis.js"></script><title>APIs: The device status module</title>
+</head>
+
+<body id="content" onload="prettyPrint()">
+  <div class="api">
+     <a href="http://webinos.org"><img src="http://webinos.org/wp-content/uploads/2011/press_releases/webinos_thumb_150x48.png" alt="Webinos Logo"></a>
+     <h1 class="head">APIs: The device status module</h1>
+     <h2 class="head">Webinos Specification</h2>
+     <h3>June 2011</h3>
+  </div>
+   <div><p class="copyright"><small>© 2011 webinos consortium, www.webinos.org.</small></p> </div>
+<hr>
+<h2>Abstract</h2>
+<div class="brief"><p>
+This document describes the functionality that Webinos devices should implement for retrieving device status information. 
+</p></div>
+
+<div class="toc">
+<h2>Table of Contents</h2>
+<dl>
+  <dt><span class="section"><a href="#introduction">1 - Introduction</a></span> </dt>
+  <dt><span class="section"><a href="#api">2 - API</a></span> </dt>
+  <dt><span class="section"><a href="#security">3 - Security</a></span> </dt>
+  <dt><span class="section"><a href="#webidl">4 - WebIDL</a></span> </dt>
+  <dt><span class="bibliography"><a href="#references">References</a></span> </dt>
+</dl>
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="introduction"></a>1 - Introduction</h2>
+</div>
+</div>
+</div>
+<p> This section is INFORMATIVE.<p> 
+<p> Webinos is fully committed to the use of Open Standards whenever available. The access to Device Status information is done through the WAC Device Status API <a href="#ref-devicestatus" shape=rect>[DEVICESTATUS]</a>.<p> 
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="api"></a>2 - API</h2>
+</div>
+</div>
+</div>
+<p> This section is NORMATIVE.<p> 
+<p> Webinos implementations MUST support WAC Device Status specification <a href="#ref-devicestatus" shape=rect>[DEVICESTATUS]</a>.<p> 
+<p> In order to use this API, access to it must be declared in the widget configuration document (i.e. config.xml). This declaration is done through the features http://wacapps.net/api/devicestatus, http://wacapps.net/api/devicestatus.deviceinfo or http://wacapps.net/api/devicestatus.networkinfo. </p>
+</div>
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="security"></a>3 - Security</h2>
+</div>
+</div>
+</div>
+<p> This section is NORMATIVE.<p> 
+<p>The implementation MUST NOT enable access to this API by default, but only if the declaration is present in the widget configuration document through the appropriate feature tag.</p>
+
+<p>Please note that Webinos Security Framework, depending on its configuration and in the widget level of trust, MAY deny access to this API even if it is declared in the configuration document.</p>
+<p> </p>
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="webidl"></a>4 - WebIDL</h2>
+</div>
+</div>
+</div>
+<p> This section is INFORMATIVE.<p> 
+<p> For completeness, this specification includes a copy of the WebIDL declaration included in the WAC Device Status specification <a href="#ref-devicestatus" shape=rect>[DEVICESTATUS]</a>. The referred specification includes all the details needed to create a conformant implementationas well as a reference to the WAC Vocabulary <a href="#ref-vocabulary" shape=rect>[DEVICESTATUSVOC]</a>.</p>
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>DeviceapisDeviceStatusManager Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject] interface DeviceapisDeviceStatusManager {
+    readonly attribute DeviceStatusManager devicestatus; 
+};
+webinos implements DeviceapisDeviceStatusManager;
+</div>
+</pre>
+</div>
+
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>DeviceStatusManager Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject] interface DeviceStatusManager {
+
+    StringArray getComponents(in DOMString aspect)
+        raises(DeviceAPIError);
+
+    boolean isSupported(in DOMString aspect, 
+                        [TreatUndefinedAs=Null] in optional DOMString? property)
+                        raises(DeviceAPIError);  
+
+    PendingOperation getPropertyValue(in PropertyValueSuccessCallback successCallback, 
+                                      in ErrorCallback errorCallback,
+                                      in PropertyRef prop)
+                                      raises(DeviceAPIError);
+
+    long watchPropertyChange(in PropertyValueSuccessCallback successCallback,
+                             in ErrorCallback errorCallback,
+                             in PropertyRef prop,
+                             in optional WatchOptions options)
+                             raises(DeviceAPIError);
+
+    void clearPropertyChange(in unsigned long watchHandler)
+                             raises(DeviceAPIError);
+  };
+
+</div>
+</pre>
+</div>
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>PropertyRef Interface</b></span><pre class="webidl prettyprint">
+[Callback, NoInterfaceObject] interface PropertyRef {
+
+    attribute DOMString component;
+
+    attribute DOMString aspect;
+
+    attribute DOMString property;
+  };
+  
+</div>
+</pre>
+</div>
+
+
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>WatchOptions Interface</b></span><pre class="webidl prettyprint">
+[Callback, NoInterfaceObject] interface WatchOptions {
+    attribute long minNotificationInterval;
+
+    attribute long maxNotificationInterval;
+  
+    attribute long minChangePercent;  
+  };
+
+
+</div>
+</pre>
+</div>
+
+
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>DeviceAPIError Interface</b></span><pre class="webidl prettyprint">
+  [NoInterfaceObject] interface DeviceAPIError {
+    readonly attribute unsigned short code;
+
+    readonly attribute DOMString message;
+
+    const unsigned short      UNKNOWN_ERR                    = 0;
+
+    const unsigned short      INDEX_SIZE_ERR                 = 1;
+    const unsigned short      DOMSTRING_SIZE_ERR             = 2;
+    const unsigned short      HIERARCHY_REQUEST_ERR          = 3;
+    const unsigned short      WRONG_DOCUMENT_ERR             = 4;
+    const unsigned short      INVALID_CHARACTER_ERR          = 5;
+    const unsigned short      NO_DATA_ALLOWED_ERR            = 6;
+    const unsigned short      NO_MODIFICATION_ALLOWED_ERR    = 7;
+    const unsigned short      NOT_FOUND_ERR                  = 8;
+
+    const unsigned short      NOT_SUPPORTED_ERR              = 9;
+    const unsigned short      INUSE_ATTRIBUTE_ERR            = 10;
+    const unsigned short      INVALID_STATE_ERR              = 11;
+    const unsigned short      SYNTAX_ERR                     = 12;
+    const unsigned short      INVALID_MODIFICATION_ERR       = 13;
+    const unsigned short      NAMESPACE_ERR                  = 14;
+    const unsigned short      INVALID_ACCESS_ERR             = 15;
+    const unsigned short      VALIDATION_ERR                 = 16;
+
+    const unsigned short      TYPE_MISMATCH_ERR              = 17;
+  
+    const unsigned short      SECURITY_ERR                   = 18;
+
+    const unsigned short      NETWORK_ERR                    = 19;
+  
+    const unsigned short      ABORT_ERR                      = 20;
+
+    const unsigned short      TIMEOUT_ERR                    = 21;
+
+    const unsigned short      INVALID_VALUES_ERR             = 22;
+    const unsigned short      NOT_AVAILABLE_ERR              = 101;
+  };
+
+</div>
+</pre>
+</div>
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>PropertyValueSucessCallback Interface</b></span><pre class="webidl prettyprint">
+ [Callback=FunctionOnly, NoInterfaceObject] interface GetPropertySuccessCallback {
+    void onpropertyvalue(in Object value, in PropertyRef property);
+  };
+</div>
+</pre>
+</div>
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>ErrorCallback Interface</b></span><pre class="webidl prettyprint">
+[Callback=FunctionOnly, NoInterfaceObject] interface ErrorCallback {
+   void onerror(in DeviceAPIError error);
+};
+</div>
+</pre>
+</div>
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>PendingOperation Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject] interface PendingOperation {
+   boolean cancel();
+ };
+</div>
+</pre>
+</div>
+
+<div class="bibliography">
+
+<div class="titlepage">
+
+<div>
+
+<div>
+<h2 class="title"><a name="references"></a>References</h2>
+</div>
+</div>
+</div>
+<dl>
+  <dt><a id=ref-devicestatus>[DEVICESTATUS]</a></dt>
+    <dd>NORMATIVE: WAC Device Status (Approved Release Version - June 2011)
+      , see <a href="http://specs.wacapps.net/2.0/jun2011/deviceapis/devicestatus.html">http://specs.wacapps.net/2.0/jun2011/deviceapis/devicestatus.html</a>
+    </dd>
+  <dt><a id=ref-vocabulary>[DEVICESTATUSVOC]</a></dt>
+    <dd>NORMATIVE: WAC Device Status Vocabulary (Approved Release Version - June 2011)
+      , see <a href="http://specs.wacapps.net/2.0/jun2011/deviceapis/vocabulary.html">http://specs.wacapps.net/2.0/jun2011/deviceapis/vocabulary.html</a>
+    </dd>
+</dl>
+</div>
+
+
+</div>
+</body>
+</html>

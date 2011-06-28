@@ -1,0 +1,242 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link media="screen" href="webinos-apis.css" type="text/css" rel="stylesheet">
+  <script type="text/javascript" src="webinos-apis.js"></script><title>APIs: The file reader module</title>
+</head>
+
+<body id="content" onload="prettyPrint()">
+  <div class="api">
+     <a href="http://webinos.org"><img src="http://webinos.org/wp-content/uploads/2011/press_releases/webinos_thumb_150x48.png" alt="Webinos Logo"></a>
+     <h1 class="head">APIs: The file reader module</h1>
+     <h2 class="head">Webinos Specification</h2>
+     <h3>June 2011</h3>
+  </div>
+   <div><p class="copyright"><small>© 2011 webinos consortium, www.webinos.org.</small></p> </div>
+<hr>
+<h2>Abstract</h2>
+<div class="brief"><p>
+This document describes the functionality that Webinos devices should implement for retrieving information. 
+</p></div>
+
+<div class="toc">
+<h2>Table of Contents</h2>
+<dl>
+  <dt><span class="section"><a href="#introduction">1 - Introduction</a></span> </dt>
+  <dt><span class="section"><a href="#api">2 - API</a></span> </dt>
+  <dt><span class="section"><a href="#security">3 - Security</a></span> </dt>
+  <dt><span class="section"><a href="#webidl">4 - WebIDL</a></span> </dt>
+  <dt><span class="bibliography"><a href="#references">References</a></span> </dt>
+</dl>
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="introduction"></a>1 - Introduction</h2>
+</div>
+</div>
+</div>
+<p> This section is INFORMATIVE.<p> 
+<p> Webinos is fully committed to the use of Open Standards whenever available. The access to File Reader is done through the W3C File Reader API <a href="#ref-filereader" shape=rect>[FILEREADER]</a>.<p> 
+<p> This module is accessed (as W3C specification mandates) through the blobal object (i.e. <code>Window</code>).</p>
+
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="api"></a>2 - API</h2>
+</div>
+</div>
+</div>
+<p> This section is NORMATIVE.<p> 
+<p> Webinos implementations MUST support W3C File Reader specification <a href="#ref-filereader" shape=rect>[FILEREADER]</a>.<p> 
+<p> In order to use this API, access to it must be declared in the widget configuration document (i.e. config.xml). This declaration is done through the feature http://www.w3.org/TR/filereader-API/. </p>
+</div>
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="security"></a>3 - Security</h2>
+</div>
+</div>
+</div>
+<p> This section is NORMATIVE.<p> 
+<p>The implementation MUST NOT enable access to this API by default, but only if the declaration is present in the widget configuration document through the appropriate feature tag.</p>
+
+<p>Please note that Webinos Security Framework, depending on its configuration and in the widget level of trust, MAY deny access to this API even if it is declared in the configuration document.</p>
+<p> </p>
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="webidl"></a>4 - WebIDL</h2>
+</div>
+</div>
+</div>
+<p> This section is INFORMATIVE.<p> 
+<p> For completeness, this specification includes a copy of the WebIDL declaration included in the W3C File Reader specification <a href="#ref-filereader" shape=rect>[FILEREADER]</a>. The referred specification includes all the details needed to create a conformant implementation. </p>
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>Blob Interface</b></span><pre class="webidl prettyprint">
+    interface Blob {
+      
+      readonly attribute unsigned long long size;
+      readonly attribute DOMString type;
+      //slice Blob into byte-ranged chunks
+      
+      Blob slice(in unsigned long long start,
+                 in unsigned long long length,
+                 optional DOMString contentType); 
+    
+    };
+</div>
+</pre>
+</div>
+
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>File Interface</b></span><pre class="webidl prettyprint">
+  interface File : Blob {
+
+      readonly attribute DOMString name;
+      readonly attribute DOMString lastModifiedDate;
+};
+</div>
+</pre>
+</div>
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>File Reader Interface</b></span><pre class="webidl prettyprint">
+[Constructor]
+interface FileReader {
+
+  // async read methods
+  void readAsArrayBuffer(in Blob blob);
+  void readAsBinaryString(in Blob blob);
+  void readAsText(in Blob blob, [Optional] in DOMString encoding);
+  void readAsDataURL(in Blob blob);
+
+  void abort();
+
+  // states
+  const unsigned short EMPTY = 0;
+  const unsigned short LOADING = 1;
+  const unsigned short DONE = 2;
+  
+  
+  readonly attribute unsigned short readyState;
+
+  // File or Blob data
+  readonly attribute any result;
+  
+  readonly attribute FileError error;
+
+  // event handler attributes
+  attribute Function onloadstart;
+  attribute Function onprogress;
+  attribute Function onload;
+  attribute Function onabort;
+  attribute Function onerror;
+  attribute Function onloadend;
+
+};
+FileReader implements EventTarget;
+</div>
+</pre>
+</div>
+
+
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>FileReaderSync Interface</b></span><pre class="webidl prettyprint">
+[Constructor]
+interface FileReaderSync {
+
+  // Synchronously return strings
+  // All three methods raise FileException
+  
+  ArrayBuffer readAsArrayBuffer(in Blob blob);
+  DOMString readAsBinaryString(in Blob blob); 
+  DOMString readAsText(in Blob blob, [Optional] in DOMString encoding);                                                       
+  DOMString readAsDataURL(in Blob blob); 
+};
+</div>
+</pre>
+</div>
+
+
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>FileError Interface</b></span><pre class="webidl prettyprint">
+ interface FileError {
+   // File error codes
+   // Found in DOMException
+   const unsigned short NOT_FOUND_ERR = 1;
+   const unsigned short SECURITY_ERR = 2;
+   const unsigned short ABORT_ERR = 3;
+   
+   // Added by this specification
+   const unsigned short NOT_READABLE_ERR = 4;
+   const unsigned short ENCODING_ERR = 5;
+ 
+   readonly attribute unsigned short code;
+ };
+</div>
+</pre>
+</div>
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>FileException Exception</b></span><pre class="webidl prettyprint">
+ exception FileException {
+  
+  const unsigned short NOT_FOUND_ERR = 1;
+  const unsigned short SECURITY_ERR = 2;
+  const unsigned short ABORT_ERR = 3;
+  
+  const unsigned short NOT_READABLE_ERR = 4;
+  const unsigned short ENCODING_ERR = 5;
+ 
+  unsigned short code;
+};
+</div>
+</pre>
+</div>
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>WindowBlobURIMethods Interface</b></span><pre class="webidl prettyprint">
+[Supplemental, NoInterfaceObject]
+interface WindowBlobURIMethods {
+
+    DOMString createObjectURL(in Blob blob);
+    void revokeObjectURL(in DOMString url);
+};
+Window implements WindowBlobURIMethods;
+
+WorkerUtils implements WindowBlobURIMethods;
+</div>
+</pre>
+</div>
+<div class="bibliography">
+
+<div class="titlepage">
+
+<div>
+
+<div>
+<h2 class="title"><a name="references"></a>References</h2>
+</div>
+</div>
+</div>
+<dl>
+  <dt><a id=ref-filereader>[FILEREADER]</a></dt>
+    <dd>NORMATIVE: File API (W3C Working Draft 26 September 2010)
+      , see <a href="http://www.w3.org/TR/2010/WD-FileAPI-20101026/">http://www.w3.org/TR/2010/WD-FileAPI-20101026/</a>
+    </dd>
+</dl>
+</div>
+
+
+</div>
+</body>
+</html>

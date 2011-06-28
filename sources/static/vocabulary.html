@@ -1,0 +1,639 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link media="screen" href="webinos-apis.css" type="text/css" rel="stylesheet">
+  <script type="text/javascript" src="webinos-apis.js"></script><title>APIs: Device status vocabulary</title>
+</head>
+
+<body id="content" onload="prettyPrint()">
+  <div class="api">
+     <a href="http://webinos.org"><img src="http://webinos.org/wp-content/uploads/2011/press_releases/webinos_thumb_150x48.png" alt="Webinos Logo"></a>
+     <h1 class="head">APIs: Device status vocabulary</h1>
+     <h2 class="head">Webinos Specification</h2>
+     <h3>June 2011</h3>
+  </div>
+   <div><p class="copyright"><small>© 2011 webinos consortium, www.webinos.org.</small></p> </div>
+<hr>
+<h2>Abstract</h2>
+<div class="brief"><p>
+This document describes the Webinos Vocabulary for being used by the Device Status API.
+</p></div>
+
+<div class="toc">
+<h2>Table of Contents</h2>
+<dl>
+  <dt><span class="section"><a href="#introduction">1 - Introduction</a></span> </dt>
+  <dt><span class="section"><a href="#aspects">2 - Aspects</a></span> </dt>
+  <dt><span class="section"><a href="#properties">3 - Properties</a></span> </dt>
+  <dt><span class="bibliography"><a href="#references">References</a></span> </dt>
+</dl>
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="introduction"></a>1 - Introduction</h2>
+</div>
+</div>
+</div>
+<p> This section is INFORMATIVE.<p> 
+<p> Webinos is fully committed to the use of Open Standards whenever available. The vocabulary chosen is an extension of the WAC Vocabulary <a href="#ref-vocabulary" shape=rect>[DEVICESTATUSVOC]</a>.<p> 
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<h2 class="title" style="clear: both;"><a name="aspects"></a>2 - Aspects</h2>
+</div>
+
+<table border="1">
+  <thead>
+    <tr>
+      <th align="left">Aspect</th>
+      <th align="left">Properties</th>
+      <th align="left">Supported Component Aliases</th>
+      <th align="left">Description</th>
+    </tr>
+  </thead>
+  
+  <tbody>
+    <tr>
+      <td align="left">Battery</td>
+      <td align="left">batteryLevel, batteryBeingCharged</td>
+      <td align="left">_default</td>
+      <td align="left">Describes one battery in a device. See also Delivery Context Ontology:
+	    <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/hardware.html#battery">hard:battery</a>
+	  </td>
+    </tr>
+	
+    <tr>
+      <td align="left">CellularHardware</td>
+      <td align="left">status</td>
+      <td align="left">_default</td>
+      <td align="left">It represents a device hardware that can be used to access to mobile operator telephony networks. See also Delivery Context Ontology: 
+	    <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/hardware.html#CellularHardware">hard:CellularHardware</a>
+	  </td>
+    </tr>
+	
+    <tr>
+      <td align="left">CellularNetwork</td>
+      <td align="left">isInRoaming, mcc, mnc, signalStrength, operatorName</td>
+      <td align="left">_default</td>
+      <td align="left">It represents a Cellular Network. See also Delivery Context Ontology: 
+	    <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/network.html#Network">net:Network</a>
+	  </td>
+    </tr>
+	
+    <tr>
+      <td align="left"><a name="_aspect_CPU"></a>CPU (*)</td>
+      <td align="left">
+	    <a class="ulink" href="#_prop_cpu_model">model (*)</a>, 
+        <a class="ulink" href="#_prop_cpu_currentLoad">currentLoad (*)</a>
+      </td>
+      <td align="left">_default</td>
+      <td align="left">It represents the CPU of the device. See also Delivery Context Ontology: 
+	    <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/hardware.html#CPU">hard:CPU</a>
+	  </td>
+    </tr>
+	
+    <tr>
+      <td align="left">Device</td>
+      <td align="left">imei, model, version, vendor</td>
+      <td align="left">_default</td>
+      <td align="left">It represents the device. See also Delivery Context Ontology: 
+	    <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/deliverycontext.html#Device">dcn:Device</a>
+	  </td>
+    </tr>
+	
+    <tr>
+      <td align="left">Display</td>
+      <td align="left">resolutionHeight, pixelAspectRatio, dpiY, resolutionWidth, dpiX, colorDepth</td>
+      <td align="left">_active, _default</td>
+      <td align="left">It represents a visual display on the device. See also Delivery Context Ontology: 
+	    <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/hardware.html#Display">hard:Display</a>
+	  </td>
+    </tr>
+	
+    <tr>
+      <td align="left"><a name="_aspect_InputDevice"></a>InputDevice (*)</td>
+      <td align="left">
+        <a class="ulink" href="#_prop_id_type">type (*)</a>
+	  </td>
+      <td align="left">_default</td>
+      <td align="left">It represents an input device. See also Delivery Context Ontology: 
+	    <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/hardware.html#inputDevice">hard:InputDevice</a>
+	  </td>
+    </tr>
+	
+    <tr>
+      <td align="left"><a name="_aspect_MemoryUnit"></a>MemoryUnit</td>
+      <td align="left">size, removable, availableSize,
+        <a class="ulink" href="#_prop_mu_volatile">volatile (*)</a>
+	  </td>
+      <td align="left">_default</td>
+      <td align="left">It represents a memory unit used in the device. See also Delivery Context Ontology: 
+	    <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/hardware.html#MemoryUnit">hard:MemoryUnit</a>
+	  </td>
+    </tr>
+	
+    <tr>
+      <td align="left">OperatingSystem</td>
+      <td align="left">language, version, name, vendor</td>
+      <td align="left">_active, _default</td>
+      <td align="left">It represents the device operating system. See also Delivery Context Ontology: 
+	    <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/software.html#OperatingSystem">soft:OperatingSystem</a>
+	  </td>
+    </tr>
+	
+    <tr>
+      <td align="left"><a name="_aspect_ParentalRating"></a>ParentalRating (*)</td>
+      <td align="left"><a class="ulink" href="#_prop_pr_name">name (*)</a>,
+	    <a class="ulink" href="#_prop_pr_scheme">scheme (*)</a>,
+		<a class="ulink" href="#_prop_pr_region">region (*)</a>
+      </td>
+      <td align="left">_default</td>
+      <td align="left">The parental rating which was set for this device. Properties description aligns with the OIPF R2 Vol5 DAE Spec.</td>
+    </tr>
+	
+    <tr>
+      <td align="left">WebRuntime</td>
+      <td align="left">wacVersion, supportedImageFormats, version, name, vendor</td>
+      <td align="left">_active, _default</td>
+      <td align="left">It represents a Web runtime capable of executing widgets. See also Delivery Context Ontology: 
+	    <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/web.html#WebRuntime">web:WebRuntime</a>
+	  </td>
+    </tr>
+	
+    <tr>
+      <td align="left">WiFiHardware</td>
+      <td align="left">status</td>
+      <td align="left">_default</td>
+      <td align="left">It represents hardware in a device that can be used to access to WiFi networks. See also Delivery Context Ontology: 
+	    <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/hardware.html#WiFiHardware">hard:WiFiHardware</a>
+	  </td>
+    </tr>
+	
+    <tr>
+      <td align="left">WiFiNetwork</td>
+      <td align="left">ssid, signalStrength, networkStatus</td>
+      <td align="left">_active, _default</td>
+      <td align="left">It represents a WiFi Network. See also Delivery Context Ontology: 
+	    <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/network.html#WiFiNetwork">net:WiFiNetwork</a>
+	  </td>
+    </tr>
+	
+    <tr>
+      <td align="left"><a name="_aspect_WiredNetwork"></a>WiredNetwork (*)</td>
+      <td align="left">
+	    <a class="ulink" href="#_prop_wn_networkStatus">networkStatus (*)</a>
+      </td>
+      <td align="left">_active, _default</td>
+      <td align="left">It represents a Wired Network. See also Delivery Context Ontology: 
+	    <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/network.html#WiredNetwork">net:WiredNetwork</a>
+	  </td>
+    </tr>
+  </tbody>
+</table>
+ 
+(*) This aspect/property has been added by Webinos.
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<h2 class="title" style="clear: both;"><a name="properties"></a>3 - Properties</h2>
+</div>
+<p> For informations about all other properties check the WAC Vocabulary <a href="#ref-vocabulary" shape=rect>[DEVICESTATUSVOC]</a>.<p> 
+</div>
+
+
+<div class="section" lang="en">
+  <div class="titlepage">
+  <h3 class="title"><a name="_prop_cpu_model"></a>Model</h3>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+    <h4 class="title">ID</h4>
+    </div>
+    <p>model</p>
+  </div>
+ 
+  <div class="section" lang="en">
+    <div class="titlepage">
+      <h4 class="title">Associated Aspect</h4>
+    </div>
+    <p><a class="ulink" href="#_aspect_CPU">CPU</a> </p>
+  </div>
+  
+  <div class="section" lang="en">
+    <div class="titlepage">
+    <h4 class="title">Description</h4>
+	</div>
+	<p>This property indicates the model of the CPU. See also Delivery Context Ontology.</p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">Delivery Context Ontology Associated Entity</h4>
+	</div>
+	<p><a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/common.html#model">common:model</a></p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">WebIDL Type</h4>
+	</div>
+	<a class="ulink" href="http://dev.w3.org/2006/webapi/WebIDL/#idl-domstring">DOMString</a>
+  </div>
+  
+</div>
+
+<div><br></div>
+
+<div class="section" lang="en">
+  <div class="titlepage">
+  <h3 class="title"><a name="_prop_cpu_currentLoad"></a>Current load</h3>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+    <h4 class="title">ID</h4>
+    </div>
+    <p>currentLoad</p>
+  </div>
+ 
+  <div class="section" lang="en">
+    <div class="titlepage">
+      <h4 class="title">Associated Aspect</h4>
+    </div>
+    <p><a class="ulink" href="#_aspect_CPU">CPU</a> </p>
+  </div>
+  
+  <div class="section" lang="en">
+    <div class="titlepage">
+    <h4 class="title">Description</h4>
+	</div>
+	<p>This property indicates the current load of the CPU as a percentage. In case of multi processor CPU, it reports the average.</p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">WebIDL Type</h4>
+	</div>
+	<a class="ulink" href="http://dev.w3.org/2006/webapi/WebIDL/#idl-unsigned-short">unsigned short</a>
+  </div>
+  
+</div>
+
+<div><br></div>
+
+<div class="section" lang="en">
+  <div class="titlepage">
+  <h3 class="title"><a name="_prop_id_type"></a>Type</h3>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+    <h4 class="title">ID</h4>
+    </div>
+    <p>type</p>
+  </div>
+ 
+  <div class="section" lang="en">
+    <div class="titlepage">
+      <h4 class="title">Associated Aspect</h4>
+    </div>
+    <p><a class="ulink" href="#_aspect_inputDevice">inputDevice</a> </p>
+  </div>
+  
+  <div class="section" lang="en">
+    <div class="titlepage">
+    <h4 class="title">Description</h4>
+	</div>
+	<p>This property indicates the type of input devices. See also Delivery Context Ontology.</p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">WebIDL Type</h4>
+	</div>
+	<p><a class="ulink" href="http://dev.w3.org/2006/webapi/WebIDL/#idl-domstring">DOMString</a> with a value chosen from the following:</p>
+  </div>
+
+  <div class="informaltable">
+  <table border="1">
+	<thead>
+	  <tr>
+	    <th align="left">Value</th>
+	    <th align="left">Description</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr>
+	    <td align="left">clickWheel</td>
+	    <td align="left">See context delivery ontology 
+		  <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/hardware.html#InputDevice_CLICK_WHEEL">hard:InputDevice_CLICK_WHEEL</a>
+		</td>
+	  </tr>
+	  <tr>
+	    <td align="left">fourWayScroller</td>
+	    <td align="left">See context delivery ontology 
+		  <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/hardware.html#InputDevice_FOUR_WAY_SCROLLER">hard:InputDevice_FOUR_WAY_SCROLLER</a>
+		</td>
+	  </tr>
+	  <tr>
+	    <td align="left">jogDial</td>
+	    <td align="left">See context delivery ontology 
+		  <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/hardware.html#InputDevice_JOG_DIAL">hard:InputDevice_JOG_DIAL</a>
+		</td>
+	  </tr>
+	  <tr>
+	    <td align="left">mouse</td>
+	    <td align="left">See context delivery ontology 
+		  <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/hardware.html#InputDevice_MOUSE">hard:InputDevice_MOUSE</a>
+		</td>
+	  </tr>
+	  <tr>
+	    <td align="left">numericKeypad</td>
+	    <td align="left">See context delivery ontology 
+		  <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/hardware.html#InputDevice_NUMERIC_KEYPAD">hard:InputDevice_NUMERIC_KEYPAD</a>
+		</td>
+	  </tr>
+	  <tr>
+	    <td align="left">phoneKeypad</td>
+	    <td align="left">See context delivery ontology 
+		  <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/hardware.html#InputDevice_PHONE_KEYPAD">hard:InputDevice_PHONE_KEYPAD</a>
+		</td>
+	  </tr>
+	  <tr>
+	    <td align="left">qwertyKeyboard</td>
+	    <td align="left">See context delivery ontology 
+		  <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/hardware.html#InputDevice_QWERTY_KEYBOARD">hard:InputDevice_QWERTY_KEYBOARD</a>
+		</td>
+	  </tr>
+	  <tr>
+	    <td align="left">stylus</td>
+	    <td align="left">See context delivery ontology 
+		  <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/hardware.html#InputDevice_STYLUS">hard:InputDevice_STYLUS</a>
+		</td>
+	  </tr>
+	  <tr>
+	    <td align="left">touchScreen</td>
+	    <td align="left">See context delivery ontology 
+		  <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/hardware.html#InputDevice_TOUCH_SCREEN">hard:InputDevice_TOUCH_SCREEN</a>
+		</td>
+	  </tr>
+	  <tr>
+	    <td align="left">trackBall</td>
+	    <td align="left">See context delivery ontology 
+		  <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/hardware.html#InputDevice_TRACK_BALL">hard:InputDevice_TRACK_BALL</a>
+		</td>
+	  </tr>
+	</tbody>
+  </table>
+  </div>
+
+</div>
+
+<div><br></div>
+
+<div class="section" lang="en">
+  <div class="titlepage">
+  <h3 class="title"><a name="_prop_mu_volatile"></a>Volatile</h3>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+    <h4 class="title">ID</h4>
+    </div>
+    <p>volatile</p>
+  </div>
+ 
+  <div class="section" lang="en">
+    <div class="titlepage">
+      <h4 class="title">Associated Aspect</h4>
+    </div>
+    <p><a class="ulink" href="#_aspect_MemoryUnit">MemoryUnit</a> </p>
+  </div>
+  
+  <div class="section" lang="en">
+    <div class="titlepage">
+    <h4 class="title">Description</h4>
+	</div>
+	<p>This property indicates if a memory unit is volatile or not. See also Delivery Context Ontology.</p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">Delivery Context Ontology Associated Entity</h4>
+	</div>
+	<p><a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/hardware.html#volatile">hard:volatile</a></p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">WebIDL Type</h4>
+	</div>
+	<a class="ulink" href="http://dev.w3.org/2006/webapi/WebIDL/#idl-boolean">boolean</a>
+  </div>
+  
+</div>
+
+<div><br></div>
+
+<div class="section" lang="en">
+  <div class="titlepage">
+  <h3 class="title"><a name="_prop_pr_name"></a>Name</h3>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+    <h4 class="title">ID</h4>
+    </div>
+    <p>name</p>
+  </div>
+ 
+  <div class="section" lang="en">
+    <div class="titlepage">
+      <h4 class="title">Associated Aspect</h4>
+    </div>
+    <p><a class="ulink" href="#_aspect_ParentalRating">ParentalRating</a> </p>
+  </div>
+  
+  <div class="section" lang="en">
+    <div class="titlepage">
+    <h4 class="title">Description</h4>
+	</div>
+	<p>Rating value as denoted by scheme, eg. "PG-13".</p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">WebIDL Type</h4>
+	</div>
+	<p><a class="ulink" href="http://dev.w3.org/2006/webapi/WebIDL/#idl-domstring">DOMString</a></p>
+  </div>
+  
+</div>
+
+<div><br></div>
+
+<div class="section" lang="en">
+  <div class="titlepage">
+  <h3 class="title"><a name="_prop_pr_scheme"></a>Scheme</h3>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+    <h4 class="title">ID</h4>
+    </div>
+    <p>scheme</p>
+  </div>
+ 
+  <div class="section" lang="en">
+    <div class="titlepage">
+      <h4 class="title">Associated Aspect</h4>
+    </div>
+    <p><a class="ulink" href="#_aspect_ParentalRating">ParentalRating</a> </p>
+  </div>
+  
+  <div class="section" lang="en">
+    <div class="titlepage">
+    <h4 class="title">Description</h4>
+	</div>
+	<p>Guidance scheme URIs as defined in MPEG-7.</p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">WebIDL Type</h4>
+	</div>
+	<p><a class="ulink" href="http://dev.w3.org/2006/webapi/WebIDL/#idl-domstring">DOMString</a></p>
+  </div>
+  
+</div>
+
+<div><br></div>
+
+<div class="section" lang="en">
+  <div class="titlepage">
+  <h3 class="title"><a name="_prop_pr_region"></a>Region</h3>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+    <h4 class="title">ID</h4>
+    </div>
+    <p>region</p>
+  </div>
+ 
+  <div class="section" lang="en">
+    <div class="titlepage">
+      <h4 class="title">Associated Aspect</h4>
+    </div>
+    <p><a class="ulink" href="#_aspect_ParentalRating">ParentalRating</a> </p>
+  </div>
+  
+  <div class="section" lang="en">
+    <div class="titlepage">
+    <h4 class="title">Description</h4>
+	</div>
+	<p>Indicates region.</p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">WebIDL Type</h4>
+	</div>
+	<p><a class="ulink" href="http://dev.w3.org/2006/webapi/WebIDL/#idl-domstring">DOMString</a></p>
+  </div>
+  
+</div>
+
+<div><br></div>
+
+<div class="section" lang="en">
+  <div class="titlepage">
+  <h3 class="title"><a name="_prop_wn_networkStatus"></a>Network Status</h3>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+    <h4 class="title">ID</h4>
+    </div>
+    <p>networkStatus</p>
+  </div>
+ 
+  <div class="section" lang="en">
+    <div class="titlepage">
+      <h4 class="title">Associated Aspect</h4>
+    </div>
+    <p><a class="ulink" href="#_aspect_WiredNetwork">WiredNetwork</a> </p>
+  </div>
+  
+  <div class="section" lang="en">
+    <div class="titlepage">
+    <h4 class="title">Description</h4>
+	</div>
+	<p>Indicates the status of a wired network.</p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">WebIDL Type</h4>
+	</div>
+	<p><a class="ulink" href="http://dev.w3.org/2006/webapi/WebIDL/#idl-domstring">DOMString</a> with a value chosen from the following:</p>
+  </div>
+  
+  <div class="informaltable">
+  <table border="1">
+	<thead>
+	  <tr>
+	    <th align="left">Value</th>
+	    <th align="left">Description</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr>
+	    <td align="left">connected</td>
+	    <td align="left">connected</td>
+	  </tr>
+	  <tr>
+	    <td align="left">unconnected</td>
+	    <td align="left">unconnected</td>
+	  </tr>
+	</tbody>
+  </table>
+  </div>
+
+</div>
+
+<div><br></div>
+
+
+
+<div class="bibliography">
+
+<div class="titlepage">
+
+<div>
+
+<div>
+<h2 class="title"><a name="references"></a>References</h2>
+</div>
+</div>
+</div>
+<dl>
+  <dt><a id=ref-vocabulary>[DEVICESTATUSVOC]</a></dt>
+    <dd>NORMATIVE: WAC Device Status Vocabulary (Approved Release Version - June 2011)
+      , see <a href="http://specs.wacapps.net/2.0/jun2011/deviceapis/vocabulary.html">http://specs.wacapps.net/2.0/jun2011/deviceapis/vocabulary.html</a>
+    </dd>
+</dl>
+</div>
+
+
+</div>
+</body>
+</html>

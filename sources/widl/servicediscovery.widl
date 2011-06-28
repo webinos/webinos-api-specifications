@@ -1,21 +1,20 @@
 /**
- * \brief The Service Discovery API 
+ * \brief The Discovery API 
  *
- * The Webinos Service Discovery API provide web applications with 
- * an API to find and bind to services. The API is not limited to the local device
- * but enables the possibility to find services in a zone of trusted personal devices or
- * services exposed legacy methods such as Bluetooth SD, mDNS or UPnP.
+ * The Webinos Discovery API provide web applications with an API to find and bind to services. 
+ * The API is not limited to the local device but enables the possibility to find services in a 
+ * zone of trusted personal devices or services exposed by legacy methods such as Bluetooth SD, mDNS or UPnP.
  * 
  * Usage of the API assumes that the web application using the API is installed, trusted and that the user is
  * authenticated/authorized to use the API.
  *
- * \def-api-feature http://webinos.org/api/servicediscovery
+ * \def-api-feature http://webinos.org/api/discovery
  * \author Anders Isberg &lt;anders.isberg@sonyericsson.com&gt;
  * \version 0.5 
  */
-module serviceDiscovery {
+module discovery {
 	/**
-	 * \brief The ServiceDiscoveryManager interface provides functionality for service discovery. 
+	 * \brief The DiscoveryInterface interface provides functionality for discovery of services. 
 	 * The API supports the possibility to find services based on a given service type either in 
 	 * a personal zone of devices or via other legacy discovery methods such as mDNS or UPnP. When searching for a service type
 	 * the operation can be restricted by providing certain constraints and/or context information.  
@@ -28,6 +27,7 @@ module serviceDiscovery {
 	var findHandle = 0;
 	var serviceHandle = 0;
 	var geoServices = {};
+	var serviceId;
 	
 	// Callback that displays a list of found services in a HTML selection list
 	// The selection list is dynamically extended every time a new service is discovered.	
@@ -57,8 +57,7 @@ module serviceDiscovery {
 	}
 	
 	// Select callback method that is invoked when user selects an option in the selection list 
-	function serviceSelected(service) {
-	
+	function serviceSelected(service) {	
 		// Stops the findServices operation
 		findHandle.cancel();
 	
@@ -67,20 +66,27 @@ module serviceDiscovery {
 		serviceHandle = service.bind({onBind:bindCB});
 	}
 	
-	// Initiate a search query for a service of the type geolocation
-	findHandle = window.webinos.findServices({api:'http://webinos.org/api/geolocation'}, {onFound:serviceFoundCB, onLost:serviceLostCB});
+	if (serviceId) {
+		// If serviceId is known bind to the service directly
+		 
+		serviceHandle = window.webinos.discovery.createServices().bind({onBind:bindCB}, serviceId);
+	} 
+	else {
+		// Initiate a search query for a service of the type geolocation
+		findHandle = window.webinos.discovery.findServices({api:'http://webinos.org/api/geolocation'}, {onFound:serviceFoundCB, onLost:serviceLostCB});
 	
-	var selectlist = document.getElementById('servicelist');
-	selectlist.addEventListener("change", function (e) {
-		var service = geoServices[e.target.value];
-		if (service) {
-			serviceSelected(service);
-		}
-	}, false);
+		var selectlist = document.getElementById('servicelist');
+		selectlist.addEventListener("change", function (e) {
+			var service = geoServices[e.target.value];
+			if (service) {
+				serviceSelected(service);
+			}
+		}, false);	
+	}
 	 * \endcode
 	 *
 	 */
-	[NoInterfaceObject] interface ServiceDiscoveryManager  {
+	[NoInterfaceObject] interface DiscoveryInterface  {
 		/**
 		 * \brief The findServices method initiates an asynchronous search query for services matching the requested serviceType and filter parameters. The method continues to run until the findServices method is canceled by the application or when maximum search timer expires.
 		 * 
@@ -98,14 +104,22 @@ module serviceDiscovery {
 		 PendingOperation findServices(in ServiceType serviceType, in FindCallBack findCallBack, in optional Options options, in optional Filter filter)
 		 raises(DiscoveryExceptions);
 		/**
-		 * \brief The getServiceId method generates an service identity that can be shared to other peers to directly bind to a service without invoking a findServices operation.
+		 * \brief The getServiceId method generates a service identity that can be shared to other peers to directly bind to a service without invoking a findServices operation.
 		 * \param sharedFunctionId Identity of the service exposed with the webinos:shared-function element in the manifest.
 		 * \throw DiscoveryExceptions 
 		 */
-		 DOMString getServiceId (in DOMString sharedFunctionId)
+		 DOMString getServiceId(in DOMString sharedFunctionId)
+		 raises(DiscoveryExceptions);
+		/**
+		 * \brief 	The createService method creates an instance of a Service object. 
+		 * 			The method is used when the service identity is known and the 
+		 *			application wants to bind to a service directly without searching 
+		 *			for services with the findServices method. 
+		 * \throw DiscoveryExceptions 
+		 */                                                          
+		 Service createService()
 		 raises(DiscoveryExceptions);                                                          
-	};
-		
+	};		
 	/**
 	 * \brief The Service Type interface is used to define which type of service that is requested. 
 	 */
@@ -119,7 +133,7 @@ module serviceDiscovery {
 	/**
 	 * \brief FindCallBack interface definition
 	 */
-	[Callback=FunctionOnly, NoInterfaceObject] interface FindCallBack {
+	[Callback, NoInterfaceObject] interface FindCallBack {
 		/**
 		 * \brief Asynchronous callback used whenever a new service is found.      
 		 * \param service An input argument representing the found service.
@@ -134,7 +148,7 @@ module serviceDiscovery {
 		 * \brief Asynchronous error callback.   
 		 * \param error Error code. 
 		 */
-		void onErrror(in DiscoveryError error); 		 
+		void onError(in DiscoveryError error); 		 
 	};
 	
 	/**
@@ -148,7 +162,7 @@ module serviceDiscovery {
 	 * 5. instantiate an implementation of the api that can be used by applications to request services from the requested API.
 	 */
 	
-	interface Service {
+	[NoInterfaceObject] interface Service {
 		/**
 		 * \brief A constant describing the service is in the process of binding to the service. 
 		 */
@@ -168,21 +182,21 @@ module serviceDiscovery {
 		/**
 	 	 * \brief API is a global unique URI identifying the feature set provided when the bind has been successfully executed.
 	 	 */
-		attribute DOMString api;
+		readonly attribute DOMString api;
 		/**
 		 * \brief Id is a globally unique id representing the binding to the service. The id can be used
 		 * to resume the binding again to the service without invoking the 
 		 * findServices process again. 
 		 */
-		attribute DOMString id;
+		readonly attribute DOMString id;
 		/**
 		 * \brief A human readable name of the service. 
 		 */
-		attribute DOMString displayName;
+		readonly attribute DOMString displayName;
 		/**
 		 * \brief An URL referring to a detailed description of the service. 
 		 */ 
-		attribute DOMString? description;
+		readonly attribute DOMString? description;
 		/**
 		 * \brief bind Binds to the service uniquely identified by the service identity.  
 		 * \param bindCallBack Callback issued if a service is found.  The callback is called every time a new service is found matching the serviceType and filter. 
@@ -191,7 +205,6 @@ module serviceDiscovery {
 		 */
 		PendingOperation bind(in BindCallBack bindCallBack, in optional DOMString serviceId)
 		raises(DiscoveryExceptions);
-		
 		/**
 		 * \brief unbind Releases all resources and connections allocated by the service object.  
 		 * \throw DiscoveryExceptions
@@ -204,7 +217,7 @@ module serviceDiscovery {
 	 * \brief Bind success callback interface definition
 	 */
 	 
-	 [Callback=FunctionOnly, NoInterfaceObject] interface BindCallBack {
+	 [Callback, NoInterfaceObject] interface BindCallBack {
 		/**
 		 * \brief Asynchronous success callback.      
 		 * \param service An input argument representing the service.
@@ -212,21 +225,24 @@ module serviceDiscovery {
 		 void onBind(in Service service);
 		/**
 		 * \brief Asynchronous callback used when a service is unbound.      
+		 * \param service An input argument representing the service.
 		 */
-		 void onUnbind();
+		 void onUnbind(in Service service);
 		/**
-		 * \brief Asynchronous callback indicating that the service is available again      
+		 * \brief Asynchronous callback indicating that the service is available again
+		 * \param service An input argument representing the service.      
 		 */		 
-		 void onServiceAvailable();
+		 void onServiceAvailable(in Service service);
 		/**
 		 * \brief Asynchronous indicating the service is temporarily unavailable.
+		 * \param service An input argument representing the service.
 		 */		 		 
-		 void onServiceUnavailable();	  
+		 void onServiceUnavailable(in Service service);	  
 		/**
 		 * \brief Asynchronous error callback.   
 		 * \param error Error code. 
 		 */
-		void onErrror(in DiscoveryError error); 
+		void onError(in DiscoveryError error); 
 	};
 	
 	/**
@@ -234,21 +250,63 @@ module serviceDiscovery {
    	 */
 	[NoInterfaceObject] interface Options {
 		/**
-		 * \brief INFINITE Timeout Value
-		 */
-		const unsigned short INFINITE = 0;		
-		/**
-		 * \brief A timeout value for the findService operation in seconds between 0-65535. Default value is 120 seconds.
+		 * \brief 	A timeout value for the findService operation in seconds between 0-65535. 
+		 * 		  	Default value is 120 seconds. It is possible to disable the timeout by setting 
+		 *		  	the timeout value to Number.POSITIVE_INFINITY.
 		 */
 		attribute unsigned short timeout;
 	};
 	
 	/**
-	* \brief TBD: Some nice attributes to express filters. 
-	*/
+	 * \brief Filter interface 
+	 */
 	[NoInterfaceObject] interface Filter {
-	 
+		/**
+		 * \brief 	Identities of personal zones that shall be used during the findServices process. 
+		 *			If no zoneId is specified, the search will be limited to the personal zone
+		 *			managed by the user that is currently logged on the device. 	   	
+		 *			The zoneId "self" is reserved to indicate the personal zone managed by the
+		 *			user that is currently logged on the device. 
+		 */
+		attribute DOMString[] zoneId;
+		 
+	 	/**
+		 * \brief 	Remote Services If remoteService is false the findServices method will limit the search for services that are  
+		 *		  	connected directly to the device or to the same local IP network. If remoteServices is true, the findServices  
+		 *		  	method will extend the search for services outside the local IP network. Default value is false. 
+		 */
+		attribute boolean remoteServices;
+
+	 	/**
+		 * \brief 	Service Location With the serviceLocation attribute it is possible to indicate where the service shall be located.
+		 *			If the service location is Null, the location of the service is not considered during the findServices process.  
+		 */
+		attribute ServiceLocation? serviceLocation;	
 	};
+	
+	/**
+	 * \brief ServiceLocation interface 
+	 */
+	[NoInterfaceObject] interface ServiceLocation {
+		/**
+		 * \brief 	The latitude attribute is the geographic coordinate specified in decimal degrees. 
+		 *			If the latitude is Null the latitude of the device invoking the findServices method will be used. 	
+		 */
+		attribute double? latitude;
+
+		/**
+		 * \brief 	The longitude attribute is the geographic coordinate specified in decimal degrees.	
+		 *			If the longitude is Null the longitude of the device invoking the findServices method will be used.
+		 */
+		attribute double? longitude;
+		
+		/**
+		 * \brief 	The accuracy denotes the accuracy level of the latitude and longitude coordinates in meters.  	   	
+		 *			This is used to limit the geographical area for finding services.
+		 */
+		attribute double accuracy;    	    	
+	};
+	
 	
 	/**
 	 * \brief Pending Operation interface 
@@ -275,7 +333,7 @@ module serviceDiscovery {
 		/**
 		 * \brief Not Authorized to use the service.  
 		 */
-		 const unsigned short NOT_AUTHORIZED = 103;
+		 const unsigned short PERMISSION_DENIED_ERROR  = 103;
 	};
   
 	/**
@@ -287,4 +345,18 @@ module serviceDiscovery {
 		 */
 		 const unsigned short INVALID_ARGUMENT_ERROR = 101;
 	};
+	
+	
+	/**
+	 * \brief The WebinosDiscovery interface describes the part of the Discovery
+	 *        API accessible through the webinos object.
+	 */
+	[NoInterfaceObject] interface WebinosDiscovery {
+		/**
+		 * \brief webinos.discovery object.
+		 */
+		readonly attribute DiscoveryInterface discovery;
+	};
+
+    webinoscore::Webinos implements WebinosDiscovery;
 };
