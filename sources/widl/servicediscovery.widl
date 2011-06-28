@@ -9,13 +9,13 @@
  * Usage of the API assumes that the web application using the API is installed, trusted and that the user is
  * authenticated/authorized to use the API.
  *
- * \def-api-feature http://webinos.org/api/servicediscovery
+ * \def-api-feature http://webinos.org/api/discovery
  * \author Anders Isberg &lt;anders.isberg@sonyericsson.com&gt;
  * \version 0.5 
  */
 module discovery {
 	/**
-	 * \brief The ServiceDiscoveryInterface interface provides functionality for service discovery. 
+	 * \brief The DiscoveryInterface interface provides functionality for service discovery. 
 	 * The API supports the possibility to find services based on a given service type either in 
 	 * a personal zone of devices or via other legacy discovery methods such as mDNS or UPnP. When searching for a service type
 	 * the operation can be restricted by providing certain constraints and/or context information.  
@@ -28,6 +28,7 @@ module discovery {
 	var findHandle = 0;
 	var serviceHandle = 0;
 	var geoServices = {};
+	var serviceId;
 	
 	// Callback that displays a list of found services in a HTML selection list
 	// The selection list is dynamically extended every time a new service is discovered.	
@@ -57,8 +58,7 @@ module discovery {
 	}
 	
 	// Select callback method that is invoked when user selects an option in the selection list 
-	function serviceSelected(service) {
-	
+	function serviceSelected(service) {	
 		// Stops the findServices operation
 		findHandle.cancel();
 	
@@ -67,20 +67,27 @@ module discovery {
 		serviceHandle = service.bind({onBind:bindCB});
 	}
 	
-	// Initiate a search query for a service of the type geolocation
-	findHandle = window.webinos.discovery.findServices({api:'http://webinos.org/api/geolocation'}, {onFound:serviceFoundCB, onLost:serviceLostCB});
+	if (serviceId) {
+		// If serviceId is known bind to the service directly
+		 
+		serviceHandle = window.webinos.discovery.createServices().bind({onBind:bindCB}, serviceId);
+	} 
+	else {
+		// Initiate a search query for a service of the type geolocation
+		findHandle = window.webinos.discovery.findServices({api:'http://webinos.org/api/geolocation'}, {onFound:serviceFoundCB, onLost:serviceLostCB});
 	
-	var selectlist = document.getElementById('servicelist');
-	selectlist.addEventListener("change", function (e) {
-		var service = geoServices[e.target.value];
-		if (service) {
-			serviceSelected(service);
-		}
-	}, false);
+		var selectlist = document.getElementById('servicelist');
+		selectlist.addEventListener("change", function (e) {
+			var service = geoServices[e.target.value];
+			if (service) {
+				serviceSelected(service);
+			}
+		}, false);	
+	}
 	 * \endcode
 	 *
 	 */
-	[NoInterfaceObject] interface ServiceDiscoveryInterface  {
+	[NoInterfaceObject] interface DiscoveryInterface  {
 		/**
 		 * \brief The findServices method initiates an asynchronous search query for services matching the requested serviceType and filter parameters. The method continues to run until the findServices method is canceled by the application or when maximum search timer expires.
 		 * 
@@ -105,13 +112,15 @@ module discovery {
 		 DOMString getServiceId(in DOMString sharedFunctionId)
 		 raises(DiscoveryExceptions);
 		/**
-		 * \brief The createService method creates a Service object that can used to bind to service directly if the service identity is known. 
+		 * \brief 	The createService method creates an instance of a Service object. 
+		 * 			The method is used when the service identity is known and the 
+		 *			application wants to bind to a service directly without searching 
+		 *			for services with the findServices method. 
 		 * \throw DiscoveryExceptions 
 		 */                                                          
 		 Service createService()
 		 raises(DiscoveryExceptions);                                                          
-	};
-		
+	};		
 	/**
 	 * \brief The Service Type interface is used to define which type of service that is requested. 
 	 */
@@ -174,21 +183,21 @@ module discovery {
 		/**
 	 	 * \brief API is a global unique URI identifying the feature set provided when the bind has been successfully executed.
 	 	 */
-		attribute DOMString api;
+		readonly attribute DOMString api;
 		/**
 		 * \brief Id is a globally unique id representing the binding to the service. The id can be used
 		 * to resume the binding again to the service without invoking the 
 		 * findServices process again. 
 		 */
-		attribute DOMString id;
+		readonly attribute DOMString id;
 		/**
 		 * \brief A human readable name of the service. 
 		 */
-		attribute DOMString displayName;
+		readonly attribute DOMString displayName;
 		/**
 		 * \brief An URL referring to a detailed description of the service. 
 		 */ 
-		attribute DOMString? description;
+		readonly attribute DOMString? description;
 		/**
 		 * \brief bind Binds to the service uniquely identified by the service identity.  
 		 * \param bindCallBack Callback issued if a service is found.  The callback is called every time a new service is found matching the serviceType and filter. 
@@ -197,7 +206,6 @@ module discovery {
 		 */
 		PendingOperation bind(in BindCallBack bindCallBack, in optional DOMString serviceId)
 		raises(DiscoveryExceptions);
-		
 		/**
 		 * \brief unbind Releases all resources and connections allocated by the service object.  
 		 * \throw DiscoveryExceptions
@@ -282,7 +290,7 @@ module discovery {
 		/**
 		 * \brief Not Authorized to use the service.  
 		 */
-		 const unsigned short NOT_AUTHORIZED = 103;
+		 const unsigned short PERMISSION_DENIED_ERROR  = 103;
 	};
   
 	/**
@@ -304,7 +312,7 @@ module discovery {
 		/**
 		 * \brief webinos.discovery object.
 		 */
-		readonly attribute ServiceDiscoveryInterface discovery;
+		readonly attribute DiscoveryInterface discovery;
 	};
 
     webinoscore::Webinos implements WebinosDiscovery;
