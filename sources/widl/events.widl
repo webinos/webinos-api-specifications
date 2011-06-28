@@ -101,7 +101,7 @@ document.onLoad = function() {
  *
  * \def-api-feature http://webinos.org/api/events
  * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt;
- * \version 0.9.10
+ * \version 0.9.11
  */
 
 module events {
@@ -128,7 +128,8 @@ module events {
 	 * normalized equivalents of user-supplied objects implementing this
 	 * interface in non-normalized form, hence it creates those equivalents
 	 * by applying the normalization process described in the documentation
-	 * of the createEvent() function of the WebinosEvents interface.
+	 * of the createEvent() function of the WebinosEventsInterface
+	 * interface.
 	 *
 	 * Details on both forms are given in each attribute's description.
 	 */

@@ -196,7 +196,11 @@ module discovery {
 		/**
 		 * \brief An URL referring to a detailed description of the service. 
 		 */ 
-		readonly attribute DOMString? description;
+		readonly attribute DOMString description;
+		/**
+		 * \brief Icon is an URL referring to an icon that represents the service. 
+		 */
+		readonly attribute DOMString icon;
 		/**
 		 * \brief bind Binds to the service uniquely identified by the service identity.  
 		 * \param bindCallBack Callback issued if a service is found.  The callback is called every time a new service is found matching the serviceType and filter. 
@@ -262,11 +266,9 @@ module discovery {
 	 */
 	[NoInterfaceObject] interface Filter {
 		/**
-		 * \brief 	Identities of personal zones that shall be used during the findServices process. 
-		 *			If no zoneId is specified, the search will be limited to the personal zone
-		 *			managed by the user that is currently logged on the device. 	   	
-		 *			The zoneId "self" is reserved to indicate the personal zone managed by the
-		 *			user that is currently logged on the device. 
+		 * \brief 	Identities of personal zones that will be used to search for services in addition to 
+		 *			the person zone of the user logged into to the device and all personal zones that 
+		 *			has been defined via the personal zone management UI.  
 		 */
 		attribute DOMString[] zoneId;
 		 
