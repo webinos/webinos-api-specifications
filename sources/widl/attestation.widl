@@ -40,7 +40,7 @@ module attestation {
 		attribute Validity validity;
 		attribute Name subject;
 		attribute SubjectPublicKeyInfo subjectPublicKeyInfo;
-		attribute Any? extensions;
+		attribute any extensions;
 	};
 	
 	interface Validity { 
