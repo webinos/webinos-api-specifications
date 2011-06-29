@@ -360,11 +360,11 @@ module discovery {
 		/**
        	 * \brief Exception code. 
        	 */
-       	readonly attribute unsigned short code;
+       	unsigned short code;
        	/**
        	* \brief Human readable exception message.
        	*/
-       readonly attribute DOMString message;
+       DOMString message;
 	};
 	
 	
