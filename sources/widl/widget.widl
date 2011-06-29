@@ -98,11 +98,16 @@ module widget {
        * \brief Device where the application should be installed on is not reachable. Consider retrying later. 
       */
       const unsigned short UNKNOWN_APPLICATION_ID  = 104;
+         
+      /**
+       * \brief Already Installed. 
+      */
+      const unsigned short ALREADY_INSTALLED = 105;
                        
       /**
        * \brief Any other error. 
       */
-      const unsigned short INSTALLATION_ERROR_OTHER = 105;
+      const unsigned short INSTALLATION_ERROR_OTHER = 106;
 
       /**
        * \brief An error code assigned by an implementation when an error has occurred.
