@@ -170,7 +170,7 @@ module attestation {
      */
 
      attestationData attestPlatform (in byte[] nonce, in SubjectPublicKeyInfo key )
-			raises(AttestationAPIException);
+			raises(AttestationException);
 
 
     /**
@@ -186,7 +186,7 @@ module attestation {
      */
 
 
-     SubjectPublicKeyInfo getAttestationKey () raises(AttestationAPIException);
+     SubjectPublicKeyInfo getAttestationKey () raises(AttestationException);
 
 
     /**
@@ -201,7 +201,7 @@ module attestation {
 	 *
      */
     
-     X509Certificate getKeyCredential (in SubjectPublicKeyInfo key) raises(AttestationAPIException);
+     X509Certificate getKeyCredential (in SubjectPublicKeyInfo key) raises(AttestationException);
 
 
   };
