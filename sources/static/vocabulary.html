@@ -68,6 +68,26 @@ This document describes the Webinos Vocabulary for being used by the Device Stat
     </tr>
 	
     <tr>
+      <td align="left"><a name="_aspect_Camera"></a>Camera (**)</td>
+      <td align="left">
+	    <a class="ulink" href="#_prop_cam_model">model (**)</a>, 
+	    <a class="ulink" href="#_prop_cam_vendor">vendor (**)</a>, 
+	    <a class="ulink" href="#_prop_cam_status">status (**)</a>, 
+	    <a class="ulink" href="#_prop_cam_resolutionHeight">resolutionHeight (**)</a>, 
+	    <a class="ulink" href="#_prop_cam_resolutionWidth">resolutionWidth (**)</a>, 
+	    <a class="ulink" href="#_prop_cam_maxZoom">maxZoom (**)</a>, 
+	    <a class="ulink" href="#_prop_cam_minZoom">minZoom (**)</a>, 
+	    <a class="ulink" href="#_prop_cam_currentZoom">currentZoom (**)</a>, 
+	    <a class="ulink" href="#_prop_cam_hasFlash">hasFlash (**)</a>, 
+	    <a class="ulink" href="#_prop_cam_flashOn">flashOn (**)</a>
+      </td>
+      <td align="left">_active, _default</td>
+      <td align="left">It represents a camera of the device. See also Delivery Context Ontology: 
+	    <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/hardware.html#Camera">hard:Camera</a>
+	  </td>
+    </tr>
+	
+    <tr>
       <td align="left">CellularHardware</td>
       <td align="left">status</td>
       <td align="left">_default</td>
@@ -77,8 +97,11 @@ This document describes the Webinos Vocabulary for being used by the Device Stat
     </tr>
 	
     <tr>
-      <td align="left">CellularNetwork</td>
-      <td align="left">isInRoaming, mcc, mnc, signalStrength, operatorName</td>
+      <td align="left"><a name="_aspect_CellularNetwork"></a>CellularNetwork</td>
+      <td align="left">isInRoaming, mcc, mnc, signalStrength, operatorName,
+	    <a class="ulink" href="#_prop_ipaddress">ipAddress (*)</a>, 
+	    <a class="ulink" href="#_prop_macaddress">macAddress (*)</a> 
+	  </td>
       <td align="left">_default</td>
       <td align="left">It represents a Cellular Network. See also Delivery Context Ontology: 
 	    <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/network.html#Network">net:Network</a>
@@ -86,9 +109,9 @@ This document describes the Webinos Vocabulary for being used by the Device Stat
     </tr>
 	
     <tr>
-      <td align="left"><a name="_aspect_CPU"></a>CPU (*)</td>
+      <td align="left"><a name="_aspect_CPU"></a>CPU (**)</td>
       <td align="left">
-	    <a class="ulink" href="#_prop_cpu_model">model (*)</a>, 
+	    <a class="ulink" href="#_prop_cpu_model">model (**)</a>, 
         <a class="ulink" href="#_prop_cpu_currentLoad">currentLoad (*)</a>
       </td>
       <td align="left">_default</td>
@@ -129,7 +152,7 @@ This document describes the Webinos Vocabulary for being used by the Device Stat
     <tr>
       <td align="left"><a name="_aspect_MemoryUnit"></a>MemoryUnit</td>
       <td align="left">size, removable, availableSize,
-        <a class="ulink" href="#_prop_mu_volatile">volatile (*)</a>
+        <a class="ulink" href="#_prop_mu_volatile">volatile (**)</a>
 	  </td>
       <td align="left">_default</td>
       <td align="left">It represents a memory unit used in the device. See also Delivery Context Ontology: 
@@ -157,8 +180,10 @@ This document describes the Webinos Vocabulary for being used by the Device Stat
     </tr>
 	
     <tr>
-      <td align="left">WebRuntime</td>
-      <td align="left">wacVersion, supportedImageFormats, version, name, vendor</td>
+      <td align="left"><a name="_aspect_WebRuntime"></a>WebRuntime</td>
+      <td align="left">wacVersion, supportedImageFormats, version, name, vendor,
+		<a class="ulink" href="#_prop_wrt_webinosversion">webinosVersion (*)</a>
+	  </td>
       <td align="left">_active, _default</td>
       <td align="left">It represents a Web runtime capable of executing widgets. See also Delivery Context Ontology: 
 	    <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/web.html#WebRuntime">web:WebRuntime</a>
@@ -175,8 +200,11 @@ This document describes the Webinos Vocabulary for being used by the Device Stat
     </tr>
 	
     <tr>
-      <td align="left">WiFiNetwork</td>
-      <td align="left">ssid, signalStrength, networkStatus</td>
+      <td align="left"><a name="_aspect_WiFiNetwork">WiFiNetwork</td>
+      <td align="left">ssid, signalStrength, networkStatus, 
+	    <a class="ulink" href="#_prop_ipaddress">ipAddress (*)</a>, 
+	    <a class="ulink" href="#_prop_macaddress">macAddress (*)</a> 
+	  </td>
       <td align="left">_active, _default</td>
       <td align="left">It represents a WiFi Network. See also Delivery Context Ontology: 
 	    <a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/network.html#WiFiNetwork">net:WiFiNetwork</a>
@@ -186,7 +214,9 @@ This document describes the Webinos Vocabulary for being used by the Device Stat
     <tr>
       <td align="left"><a name="_aspect_WiredNetwork"></a>WiredNetwork (*)</td>
       <td align="left">
-	    <a class="ulink" href="#_prop_wn_networkStatus">networkStatus (*)</a>
+	    <a class="ulink" href="#_prop_wn_networkStatus">networkStatus (*)</a>, 
+	    <a class="ulink" href="#_prop_ipaddress">ipAddress (*)</a>, 
+	    <a class="ulink" href="#_prop_macaddress">macAddress (*)</a> 
       </td>
       <td align="left">_active, _default</td>
       <td align="left">It represents a Wired Network. See also Delivery Context Ontology: 
@@ -196,7 +226,8 @@ This document describes the Webinos Vocabulary for being used by the Device Stat
   </tbody>
 </table>
  
-(*) This aspect/property has been added by Webinos.
+(*) This aspect/property has been added by Webinos.<br>
+(**) This aspect/property has been taken from the BONDI vocabulary <a href="#ref-bondivocabulary" shape=rect>[BONDIDEVICESTATUSVOC]</a>.
 
 </div>
 
@@ -206,6 +237,442 @@ This document describes the Webinos Vocabulary for being used by the Device Stat
 </div>
 <p> For informations about all other properties check the WAC Vocabulary <a href="#ref-vocabulary" shape=rect>[DEVICESTATUSVOC]</a>.<p> 
 </div>
+
+<div class="section" lang="en">
+  <div class="titlepage">
+  <h3 class="title"><a name="_prop_cam_model"></a>Model</h3>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+    <h4 class="title">ID</h4>
+    </div>
+    <p>model</p>
+  </div>
+ 
+  <div class="section" lang="en">
+    <div class="titlepage">
+      <h4 class="title">Associated Aspect</h4>
+    </div>
+    <p><a class="ulink" href="#_aspect_Camera">Camera</a> </p>
+  </div>
+  
+  <div class="section" lang="en">
+    <div class="titlepage">
+    <h4 class="title">Description</h4>
+	</div>
+	<p>This property indicates the model of the Camera. See also Delivery Context Ontology.</p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">Delivery Context Ontology Associated Entity</h4>
+	</div>
+	<p><a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/common.html#model">common:model</a></p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">WebIDL Type</h4>
+	</div>
+	<a class="ulink" href="http://dev.w3.org/2006/webapi/WebIDL/#idl-domstring">DOMString</a>
+  </div>
+  
+</div>
+
+<div><br></div>
+
+<div class="section" lang="en">
+  <div class="titlepage">
+  <h3 class="title"><a name="_prop_cam_vendor"></a>Vendor</h3>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+    <h4 class="title">ID</h4>
+    </div>
+    <p>vendor</p>
+  </div>
+ 
+  <div class="section" lang="en">
+    <div class="titlepage">
+      <h4 class="title">Associated Aspect</h4>
+    </div>
+    <p><a class="ulink" href="#_aspect_Camera">Camera</a> </p>
+  </div>
+  
+  <div class="section" lang="en">
+    <div class="titlepage">
+    <h4 class="title">Description</h4>
+	</div>
+	<p>This property indicates the vendor of the camera. See also Delivery Context Ontology.</p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">Delivery Context Ontology Associated Entity</h4>
+	</div>
+	<p><a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/common.html#vendor">common:vendor</a></p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">WebIDL Type</h4>
+	</div>
+	<a class="ulink" href="http://dev.w3.org/2006/webapi/WebIDL/#idl-domstring">DOMString</a>
+  </div>
+  
+</div>
+
+<div><br></div>
+
+<div class="section" lang="en">
+  <div class="titlepage">
+  <h3 class="title"><a name="_prop_cam_status"></a>Status</h3>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+    <h4 class="title">ID</h4>
+    </div>
+    <p>status</p>
+  </div>
+ 
+  <div class="section" lang="en">
+    <div class="titlepage">
+      <h4 class="title">Associated Aspect</h4>
+    </div>
+    <p><a class="ulink" href="#_aspect_Camera">Camera</a> </p>
+  </div>
+  
+  <div class="section" lang="en">
+    <div class="titlepage">
+    <h4 class="title">Description</h4>
+	</div>
+	<p>This property indicates the status of the camera. See also Delivery Context Ontology.</p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">Delivery Context Ontology Associated Entity</h4>
+	</div>
+	<p><a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/hardware.html#status">hard:status</a></p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">WebIDL Type</h4>
+	</div>
+	<p><a class="ulink" href="http://dev.w3.org/2006/webapi/WebIDL/#idl-domstring">DOMString</a> with a value chosen from the following:</p>
+	(inserire tabella)
+  </div>
+  
+</div>
+
+<div><br></div>
+
+<div class="section" lang="en">
+  <div class="titlepage">
+  <h3 class="title"><a name="_prop_cam_resolutionHeight"></a>Resolution Height</h3>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+    <h4 class="title">ID</h4>
+    </div>
+    <p>resolutionHeight</p>
+  </div>
+ 
+  <div class="section" lang="en">
+    <div class="titlepage">
+      <h4 class="title">Associated Aspect</h4>
+    </div>
+    <p><a class="ulink" href="#_aspect_Camera">Camera</a> </p>
+  </div>
+  
+  <div class="section" lang="en">
+    <div class="titlepage">
+    <h4 class="title">Description</h4>
+	</div>
+	<p>This property indicates the height resolution of the camera. See also Delivery Context Ontology.</p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">Delivery Context Ontology Associated Entity</h4>
+	</div>
+	<p><a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/common.html#resolutionHeight">common:resolutionHeight</a></p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">WebIDL Type</h4>
+	</div>
+	<a class="ulink" href="http://dev.w3.org/2006/webapi/WebIDL/#idl-unsigned-short">unsigned short</a>
+  </div>
+  
+</div>
+
+<div><br></div>
+
+<div class="section" lang="en">
+  <div class="titlepage">
+  <h3 class="title"><a name="_prop_cam_resolutionWidth"></a>Resolution Width</h3>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+    <h4 class="title">ID</h4>
+    </div>
+    <p>resolutionWidth</p>
+  </div>
+ 
+  <div class="section" lang="en">
+    <div class="titlepage">
+      <h4 class="title">Associated Aspect</h4>
+    </div>
+    <p><a class="ulink" href="#_aspect_Camera">Camera</a> </p>
+  </div>
+  
+  <div class="section" lang="en">
+    <div class="titlepage">
+    <h4 class="title">Description</h4>
+	</div>
+	<p>This property indicates the width resolution of the camera. See also Delivery Context Ontology.</p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">Delivery Context Ontology Associated Entity</h4>
+	</div>
+	<p><a class="ulink" href="http://www.w3.org/2007/uwa/editors-drafts/DeliveryContextOntology/LastCallWD-April2009/common.html#resolutionWidth">common:resolutionWidth</a></p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">WebIDL Type</h4>
+	</div>
+	<a class="ulink" href="http://dev.w3.org/2006/webapi/WebIDL/#idl-unsigned-short">unsigned short</a>
+  </div>
+  
+</div>
+
+<div><br></div>
+
+<div class="section" lang="en">
+  <div class="titlepage">
+  <h3 class="title"><a name="_prop_cam_maxZoom"></a>Max Zoom</h3>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+    <h4 class="title">ID</h4>
+    </div>
+    <p>maxZoom</p>
+  </div>
+ 
+  <div class="section" lang="en">
+    <div class="titlepage">
+      <h4 class="title">Associated Aspect</h4>
+    </div>
+    <p><a class="ulink" href="#_aspect_Camera">Camera</a> </p>
+  </div>
+  
+  <div class="section" lang="en">
+    <div class="titlepage">
+    <h4 class="title">Description</h4>
+	</div>
+	<p>This property indicates the maximum zoom of the camera.</p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">WebIDL Type</h4>
+	</div>
+	<a class="ulink" href="http://dev.w3.org/2006/webapi/WebIDL/#idl-unsigned-short">unsigned short</a>
+  </div>
+  
+</div>
+
+<div><br></div>
+
+<div class="section" lang="en">
+  <div class="titlepage">
+  <h3 class="title"><a name="_prop_cam_minZoom"></a>Min Zoom</h3>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+    <h4 class="title">ID</h4>
+    </div>
+    <p>minZoom</p>
+  </div>
+ 
+  <div class="section" lang="en">
+    <div class="titlepage">
+      <h4 class="title">Associated Aspect</h4>
+    </div>
+    <p><a class="ulink" href="#_aspect_Camera">Camera</a> </p>
+  </div>
+  
+  <div class="section" lang="en">
+    <div class="titlepage">
+    <h4 class="title">Description</h4>
+	</div>
+	<p>This property indicates the minimum zoom of the camera.</p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">WebIDL Type</h4>
+	</div>
+	<a class="ulink" href="http://dev.w3.org/2006/webapi/WebIDL/#idl-unsigned-short">unsigned short</a>
+  </div>
+  
+</div>
+
+<div><br></div>
+
+<div class="section" lang="en">
+  <div class="titlepage">
+  <h3 class="title"><a name="_prop_cam_currentZoom"></a>Current Zoom</h3>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+    <h4 class="title">ID</h4>
+    </div>
+    <p>currentZoom</p>
+  </div>
+ 
+  <div class="section" lang="en">
+    <div class="titlepage">
+      <h4 class="title">Associated Aspect</h4>
+    </div>
+    <p><a class="ulink" href="#_aspect_Camera">Camera</a> </p>
+  </div>
+  
+  <div class="section" lang="en">
+    <div class="titlepage">
+    <h4 class="title">Description</h4>
+	</div>
+	<p>This property indicates the current zoom of the camera.</p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">WebIDL Type</h4>
+	</div>
+	<a class="ulink" href="http://dev.w3.org/2006/webapi/WebIDL/#idl-unsigned-short">unsigned short</a>
+  </div>
+  
+</div>
+
+<div><br></div>
+
+<div class="section" lang="en">
+  <div class="titlepage">
+  <h3 class="title"><a name="_prop_cam_hasFlash"></a>Has Flash</h3>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+    <h4 class="title">ID</h4>
+    </div>
+    <p>hasFlash</p>
+  </div>
+ 
+  <div class="section" lang="en">
+    <div class="titlepage">
+      <h4 class="title">Associated Aspect</h4>
+    </div>
+    <p><a class="ulink" href="#_aspect_Camera">Camera</a> </p>
+  </div>
+  
+  <div class="section" lang="en">
+    <div class="titlepage">
+    <h4 class="title">Description</h4>
+	</div>
+	<p>This property indicates if the camera has the flash.</p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">WebIDL Type</h4>
+	</div>
+	<a class="ulink" href="http://dev.w3.org/2006/webapi/WebIDL/#idl-boolean">boolean</a>
+  </div>
+  
+</div>
+
+<div><br></div>
+
+<div class="section" lang="en">
+  <div class="titlepage">
+  <h3 class="title"><a name="_prop_cam_flashOn"></a>Flash On</h3>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+    <h4 class="title">ID</h4>
+    </div>
+    <p>flashOn</p>
+  </div>
+ 
+  <div class="section" lang="en">
+    <div class="titlepage">
+      <h4 class="title">Associated Aspect</h4>
+    </div>
+    <p><a class="ulink" href="#_aspect_Camera">Camera</a> </p>
+  </div>
+  
+  <div class="section" lang="en">
+    <div class="titlepage">
+    <h4 class="title">Description</h4>
+	</div>
+	<p>This property indicates if the flash of the camera is active.</p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">WebIDL Type</h4>
+	</div>
+	<a class="ulink" href="http://dev.w3.org/2006/webapi/WebIDL/#idl-boolean">boolean</a>
+  </div>
+  
+</div>
+
+<div><br></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <div class="section" lang="en">
@@ -556,6 +1023,43 @@ This document describes the Webinos Vocabulary for being used by the Device Stat
 
 <div class="section" lang="en">
   <div class="titlepage">
+  <h3 class="title"><a name="_prop_wrt_webinosversion"></a>Webinos Version</h3>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+    <h4 class="title">ID</h4>
+    </div>
+    <p>webinosVersion</p>
+  </div>
+ 
+  <div class="section" lang="en">
+    <div class="titlepage">
+      <h4 class="title">Associated Aspect</h4>
+    </div>
+    <p><a class="ulink" href="#_aspect_WebRuntime">WebRuntime</a> </p>
+  </div>
+  
+  <div class="section" lang="en">
+    <div class="titlepage">
+    <h4 class="title">Description</h4>
+	</div>
+	<p>Indicates the version of the webinos specs supported.</p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">WebIDL Type</h4>
+	</div>
+	<p><a class="ulink" href="http://dev.w3.org/2006/webapi/WebIDL/#idl-domstring">DOMString</a></p>
+  </div>
+  
+</div>
+
+<div><br></div>
+
+<div class="section" lang="en">
+  <div class="titlepage">
   <h3 class="title"><a name="_prop_wn_networkStatus"></a>Network Status</h3>
   </div>
  
@@ -612,6 +1116,84 @@ This document describes the Webinos Vocabulary for being used by the Device Stat
 
 <div><br></div>
 
+<div class="section" lang="en">
+  <div class="titlepage">
+  <h3 class="title"><a name="_prop_ipaddress"></a>IP Address</h3>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+    <h4 class="title">ID</h4>
+    </div>
+    <p>ipAddress</p>
+  </div>
+ 
+  <div class="section" lang="en">
+    <div class="titlepage">
+      <h4 class="title">Associated Aspects</h4>
+    </div>
+    <p><a class="ulink" href="#_aspect_CellularNetwork">CellularNetwork</a> </p>
+    <p><a class="ulink" href="#_aspect_WiFiNetwork">WiFiNetwork</a> </p>
+    <p><a class="ulink" href="#_aspect_WiredNetwork">WiredNetwork</a> </p>
+  </div>
+  
+  <div class="section" lang="en">
+    <div class="titlepage">
+    <h4 class="title">Description</h4>
+	</div>
+	<p>IP address of the connection (null if not connected).</p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">WebIDL Type</h4>
+	</div>
+	<p><a class="ulink" href="http://dev.w3.org/2006/webapi/WebIDL/#idl-domstring">DOMString</a></p>
+  </div>
+  
+</div>
+
+<div><br></div>
+
+<div class="section" lang="en">
+  <div class="titlepage">
+  <h3 class="title"><a name="_prop_macaddress"></a>Mac Address</h3>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+    <h4 class="title">ID</h4>
+    </div>
+    <p>macAddress</p>
+  </div>
+ 
+  <div class="section" lang="en">
+    <div class="titlepage">
+      <h4 class="title">Associated Aspects</h4>
+    </div>
+    <p><a class="ulink" href="#_aspect_CellularNetwork">CellularNetwork</a> </p>
+    <p><a class="ulink" href="#_aspect_WiFiNetwork">WiFiNetwork</a> </p>
+    <p><a class="ulink" href="#_aspect_WiredNetwork">WiredNetwork</a> </p>
+  </div>
+  
+  <div class="section" lang="en">
+    <div class="titlepage">
+    <h4 class="title">Description</h4>
+	</div>
+	<p>Mac address of the connection (null if not available).</p>
+  </div>
+ 
+  <div class="section" lang="en">
+	<div class="titlepage">
+	<h4 class="title">WebIDL Type</h4>
+	</div>
+	<p><a class="ulink" href="http://dev.w3.org/2006/webapi/WebIDL/#idl-domstring">DOMString</a></p>
+  </div>
+  
+</div>
+
+<div><br></div>
+
 
 
 <div class="bibliography">
@@ -629,6 +1211,10 @@ This document describes the Webinos Vocabulary for being used by the Device Stat
   <dt><a id=ref-vocabulary>[DEVICESTATUSVOC]</a></dt>
     <dd>NORMATIVE: WAC Device Status Vocabulary (Approved Release Version - June 2011)
       , see <a href="http://specs.wacapps.net/2.0/jun2011/deviceapis/vocabulary.html">http://specs.wacapps.net/2.0/jun2011/deviceapis/vocabulary.html</a>
+    </dd>
+  <dt><a id=ref-bondivocabulary>[BONDIDEVICESTATUSVOC]</a></dt>
+    <dd>INFORMATIVE: BONDI Device Status Vocabulary (Release 1.1)
+      , see <a href="http://bondi.omtp.org/1.1/apis/vocabulary.htm">http://bondi.omtp.org/1.1/apis/vocabulary.htm</a>
     </dd>
 </dl>
 </div>
