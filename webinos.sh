@@ -16,7 +16,7 @@ STATICFILES=$(ls "$REPOS/static/")
 
 # Device API widls
 #WIDLFILES='foo.widl'
-WIDLFILES=$(ls $REPOS/widl/) 
+WIDLFILES=$(ls -I "*~" $REPOS/widl/) 
 
 # For widlproc processing
 XSL=widlprocxmltohtml.xsl

@@ -1,9 +1,10 @@
 /**
  * \brief The Discovery API 
  *
- * The Webinos Discovery API provide web applications with an API to find and bind to services. 
- * The API is not limited to the local device but enables the possibility to find services in a 
- * zone of trusted personal devices or services exposed by legacy methods such as Bluetooth SD, mDNS or UPnP.
+ * The Webinos Discovery API provide web applications with an API to discover services without any previous knowledge of the service.  
+ * The API enables discovery of services that is in the device, directly connected to the device, available on the same local IP network or
+ * trusted services registered in a personal zone. The API enables discovery of remote services located on the public Internet or behind 
+ * a Firewall by using an overlaying networking model. The Discovery api hides the complexity of communicating with the remote peer in a trusted manner. 
  * 
  * Usage of the API assumes that the web application using the API is installed, trusted and that the user is
  * authenticated/authorized to use the API.
@@ -15,14 +16,14 @@
 module discovery {
 	/**
 	 * \brief The DiscoveryInterface interface provides functionality for discovery of services. 
-	 * The API supports the possibility to find services based on a given service type either in 
-	 * a personal zone of devices or via other legacy discovery methods such as mDNS or UPnP. When searching for a service type
-	 * the operation can be restricted by providing certain constraints and/or context information.  
+	 * The API supports the possibility to discover services based on a given service type either in 
+	 * a personal zone of trusted services or via other legacy discovery methods such as mDNS or UPnP. 
+	 * When searching for a service type the operation can be restricted by providing certain constraints and/or context information.  
 	 *
 	 * The code example below shows how an application initiates a search query
-	 * to find a geolocation service. Whenever a service is found, a new selection item
-	 * is added to the option list. Once the user selects a service, the usage of the service authorized and an implementation of
-	 * the API is instantiated.  
+	 * to find a geolocation service. Whenever a service is found, a new HTML selection item
+	 * is added to an HTML option list. Once the user selects a service, the usage of the service authorized and an implementation of
+	 * the API is instantiated by binding to the service.  
 	 * \code
 	var findHandle = 0;
 	var serviceHandle = 0;
@@ -67,13 +68,14 @@ module discovery {
 	}
 	
 	if (serviceId) {
-		// If serviceId is known bind to the service directly
-		 
+		// If serviceId is known bind to the service directly. Assumes
+		// that serviceId is stored persistently or received via an out
+		// of band channel. 	 
 		serviceHandle = window.webinos.discovery.createServices().bind({onBind:bindCB}, serviceId);
 	} 
 	else {
 		// Initiate a search query for a service of the type geolocation
-		findHandle = window.webinos.discovery.findServices({api:'http://webinos.org/api/geolocation'}, {onFound:serviceFoundCB, onLost:serviceLostCB});
+		findHandle = window.webinos.discovery.findServices({api:'http://www.w3.org/ns/api-perms/geolocation'}, {onFound:serviceFoundCB, onLost:serviceLostCB});
 	
 		var selectlist = document.getElementById('servicelist');
 		selectlist.addEventListener("change", function (e) {
@@ -88,7 +90,7 @@ module discovery {
 	 */
 	[NoInterfaceObject] interface DiscoveryInterface  {
 		/**
-		 * \brief The findServices method initiates an asynchronous search query for services matching the requested serviceType and filter parameters. The method continues to run until the findServices method is canceled by the application or when maximum search timer expires.
+		 * \brief The findServices method initiates an asynchronous search query for services matching the requested serviceType and filter parameter. The method continues to run until the findServices method is canceled by the application or when maximum search timer expires.
 		 * 
 		 * The zones in which services are to be searched are expected to be managed by the Webinos runtime engine (rather than the application developer).
 		 * As an example on how this zone management can be presented by a runtime engine:
@@ -160,6 +162,7 @@ module discovery {
 	 * 3. agreement on data handling obligations as set out in the service's privacy policy
 	 * 4. verifying access privileges and checks the need for elevated privileges
 	 * 5. instantiate an implementation of the api that can be used by applications to request services from the requested API.
+	 * Once the service object is instantiated, the object will act as an proxy communicating with the remote peer. 
 	 */
 	
 	[NoInterfaceObject] interface Service {
@@ -327,15 +330,23 @@ module discovery {
 		/**
 		 * \brief The discovery process was canceled by the application
 		 */
-		 const unsigned short FIND_SERVICE_CANCELED = 101;
+		const unsigned short FIND_SERVICE_CANCELED = 101;
 		/**
 		 * \brief The discovery process was canceled since the timeout timer expired. 
 		 */
-		 const unsigned short FIND_SERVICE_TIMEOUT = 102;		 
+		const unsigned short FIND_SERVICE_TIMEOUT = 102;		 
 		/**
 		 * \brief Not Authorized to use the service.  
 		 */
-		 const unsigned short PERMISSION_DENIED_ERROR  = 103;
+		const unsigned short PERMISSION_DENIED_ERROR  = 103;		 
+		/**
+       	 * \brief Error code assigned when an error has occurred in during the discovery process. 
+       	 */
+       	readonly attribute unsigned short code;
+       	/**
+       	 * \brief Human readable message assigned when an error has occurred the discovery process.
+       	 */
+		readonly attribute DOMString message; 
 	};
   
 	/**
@@ -345,7 +356,15 @@ module discovery {
 		/**
 		 * \brief The property cannot be currently retrieved
 		 */
-		 const unsigned short INVALID_ARGUMENT_ERROR = 101;
+		const unsigned short INVALID_ARGUMENT_ERROR = 101;
+		/**
+       	 * \brief Exception code. 
+       	 */
+       	readonly attribute unsigned short code;
+       	/**
+       	* \brief Human readable exception message.
+       	*/
+       readonly attribute DOMString message;
 	};
 	
 	
