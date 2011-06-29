@@ -101,7 +101,7 @@ document.onLoad = function() {
  *
  * \def-api-feature http://webinos.org/api/events
  * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt;
- * \version 0.9.11
+ * \version 0.9.12
  */
 
 module events {
@@ -398,6 +398,15 @@ module events {
 	 * \brief Error codes for the events module.
 	 */
 	exception WebinosEventException {
+		/**
+		 * \brief Error code.
+		 */
+		unsigned short code;
+		/**
+		 * \brief Error description.
+		 */
+		DOMString message;
+
 		/**
 		 * \brief An invalid parameter was provided when the requested
 		 *        method was invoked.
