@@ -21,7 +21,8 @@ module widget {
      * \brief Accepted Notification.
      *
      * Called if an event was accepted by the user. If provided, the notification
-     * id is passed in to link the success to a specific notification request.
+     * id is provided to link the success callback to a specific notification request.
+     * \param id the optional id of the notification request or null if no id was provided.
     */
     void onSuccess(in DOMString id);
   };
@@ -37,6 +38,8 @@ module widget {
      *
      * Called if an event was not accepted by the user. If provided, the notification
      * id is passed in to link the error to a specific notification request.
+     *
+     * \param id the optional id of the notification request or null if no id was provided.
     */
     void onError(in DOMString id);
   };
@@ -52,6 +55,9 @@ module widget {
        *
        * Called when an application was successfully deployed on another device
        * using deployChild.
+       * \param childID is the application id which was used during deployChild and declared in the manifest
+       * \param serviceID is the unique application instance id that can be used to explicitly address
+       *                  the deployed service within webinos service discovery
       */
      void onSuccess(in DOMString childID, in DOMString serviceID);
    };
@@ -69,7 +75,7 @@ module widget {
        * \param error The Widget API related error object of an unsuccessful application installation operation. 
        * \return void
       */
-      void onError (in InstallationError error);
+      void onError (in DeploymentError error);
     };
   
     /**
@@ -113,6 +119,11 @@ module widget {
        * \brief An error code assigned by an implementation when an error has occurred.
       */
       readonly attribute unsigned short code;
+      
+      /**
+       * \brief The application ID the error relates to.
+      */
+      readonly attribute DOMString applicationID;
   };  
   
 
@@ -273,6 +284,11 @@ module widget {
      * The user can click the event. If the application is in background the application must be brought to foreground.
      * After that onSuccess is called.
      *
+     * Triggers the WRT to notify occurrence of an event, as described using the parameters, to the user
+     * The user can click the event or reject it. If the application is in background and the user accepted
+     * the event, e.g., by clicking on it, the application must be brought back to foreground. The notify
+     * success callback is then called after onForeground was called.
+     *
      * \code
      *
      * function error(id){ 
@@ -325,7 +341,9 @@ module widget {
     /**
      * \brief Asynchronous callback indicating that the application will be terminated. 
      *
-     * Application will be destroyed and all memory freed after returning out of this function.
+     * Callback function which is called if the application will be shut down by the WRT.
+     * All application memory assigned to the application will be freed after returning
+     * out of this function.
      * 
     */
     void onDestroy();
@@ -333,8 +351,9 @@ module widget {
     /**
      * \brief Asynchronous callback indicating that the application is gone to background. 
      *
-     * Application goes to background / another application goes to foreground and the application is not visible anymore
-     * the application is still running.
+     * Callback function which is called after the application was put to background, e.g., another application
+     * goes to foreground and the application is not visible any more. After calling onBackground the application
+     * is still running but not visible anymore.
      * 
     */
     void onBackground();
@@ -349,7 +368,7 @@ module widget {
     /**
      * \brief Asynchronous callback indicating that application execution is going to be stopped. 
      *
-     * Application execution is stopped.
+     * Application execution is stopped aftern returning out of this function.
     */
     void onStop();
 
@@ -357,7 +376,7 @@ module widget {
      * \brief Asynchronous callback indicating that application execution is continued. 
      *
      * Application execution is continued after previously stopped.
-    */
+     */
     void onStart();
     
     /**
@@ -365,8 +384,8 @@ module widget {
      *
      * Deploys a child application known to the WRT through the definition in the application s manifest
      * file on another device. If local = false or not specified the WRT has to provide a list of available
-     * devices to the user, if local = true the WRT has to install the selected child on the same device as
-     * the calling application.
+     * devices to the user where the application should be installed on, if local = true the WRT has to
+     * install the selected child on the same device as the API is bound to.
      *
      * \code
      *
@@ -387,10 +406,10 @@ module widget {
      *
      * \param onSuccess SuccessCallback called after successfull installation.
      * \param onError ErrorCallback called if installation was not possible.
-     * \param childApplication Package name of the application to be installed.
+     * \param childApplicationID the application ID of the child package to be installed.
      * \param local Indicates if application should be installed on the same device as the requesting application or not.
     */
-    void deployChild(in DeploymentSuccessCallback onSuccess, in DeploymentErrorCallback onError, in DOMString childApplication, in optional boolean local);
+    void deployChild(in DeploymentSuccessCallback onSuccess, in DeploymentErrorCallback onError, in DOMString childApplicationID, in optional boolean local);
   };
   
   /**
