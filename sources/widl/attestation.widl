@@ -34,7 +34,7 @@ module attestation {
 
 	interface TBSCertificate { 
 		attribute DOMString version;
-		attribute Integer serialNumber;
+		attribute unsigned long serialNumber;
 		attribute AlgorithmIdentifier signature;
 		attribute Name issuer;
 		attribute Validity validity;
