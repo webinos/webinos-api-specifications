@@ -142,7 +142,7 @@ module authentication {
      *
 	 *  Errors can occur due to: a policy restricting access to this API.
      *	 
-     * \return authStatus - returns the status of the user with regards to authentication, including when \n 
+     * \return AuthStatus - returns the status of the user with regards to authentication, including when \n 
 	 *        and how he or she was last authenticated.  It does not include user identity.
      * 
 	 * This is a synchronous method.  Expected use is for when an application is determining whether the 
@@ -153,7 +153,7 @@ module authentication {
      */
 
 
-     authStatus getAuthenticationStatus () raises(AuthenticationException);
+     AuthStatus getAuthenticationStatus () raises(AuthenticationException);
 
 
 
