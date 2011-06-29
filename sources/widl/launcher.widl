@@ -27,7 +27,7 @@ module AppLauncher {
   /**
    * \brief Array of DOMStrings.
    */
-  typedef sequence<Object> ObjectArray;
+  typedef sequence<object> ObjectArray;
 
   /**
    * \brief Application ID for identifying installed webinos applications. 
