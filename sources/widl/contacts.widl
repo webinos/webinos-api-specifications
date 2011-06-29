@@ -17,7 +17,7 @@
  * \author WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
  * \version 1.0
  */
-module Contacts {
+module ContactsWrapper {
         /**
          * \brief Contacts specific errors.
          */
