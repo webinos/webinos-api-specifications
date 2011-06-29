@@ -264,7 +264,7 @@ module payment {
        *
        * No exceptions
        */
-         attribute int itemCount;
+         attribute unsigned long itemCount;
        /**
        * \brief Price for all products in this shopping item.
        *
@@ -275,7 +275,7 @@ module payment {
        * No exceptions
        *
        */
-         readonly attribute int itemsPrice;
+         readonly attribute unsigned long itemsPrice;
     };  
 
         /**
