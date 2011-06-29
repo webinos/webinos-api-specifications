@@ -30,34 +30,18 @@ module AppLauncher {
   typedef sequence<Object> ObjectArray;
 
   /**
-   * \brief Error codes for AppLauncher module
+   * \brief Application ID for identifying installed webinos applications. 
+   *  NOTE: This definition could be moved to webinos core module in the future.
+   */
+  typedef DOMString applicationID;
+
+  /**
+   * \brief Exception definition for AppLauncher module. Error codes are defined in LauncherAPIError interface.
    */
   exception AppLauncherException {
 
-     /**
-       * \brief Invalid app ID
-       */
-       const unsigned short INVALID_APP_ID = 0; 
-
-     /**
-       * \brief Requested app is not installed on the device
-       */
-       const unsigned short APP_NOT_FOUND = 1; 
-
-     /**
-       * \brief No resources to start the app
-       */
-       const unsigned short NO_RESOURCES = 2; 
-
-     /**
-       * \brief App is already running
-       */
-       const unsigned short ALREADY_STARTED = 3; 
-
-     /**
-       * \brief App is already running
-       */
-       const unsigned short POLICY_NOT_ALLOWED = 4; 
+    unsigned short code;        
+    DOMString message;
   };
   
   
@@ -124,6 +108,35 @@ module AppLauncher {
             raises( AppLauncherException);
     };
     
+
+    /**
+    * \brief This interface defines the callback for a asynchronous launchApplication method.
+    *
+    */
+    [Callback=FunctionOnly, NoInterfaceObject]
+    interface SuccessCallback{
+      /**
+      * \brief This method is called if function app was launched successfully.
+      *
+      */
+      void onSuccess();
+    };
+    
+    
+    /**
+    * \brief This interface defines the callback for a failed activation of asynchronous launchApplication method.
+    *
+    */
+    [Callback=FunctionOnly, NoInterfaceObject]
+    interface ErrorCallback{
+      /**
+      * \brief This method is called if asychronous launchApplication method fails.
+      * 
+      * \param error contains information about the error 
+      */		
+      void onError(in LaucherAPIError error);
+    };
+
     
     /**
      * \brief API-specific error handling  interface
