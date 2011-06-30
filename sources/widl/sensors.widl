@@ -94,16 +94,18 @@ module sensors {
  
        // Callback when bind has been successfully executed on the service object. The Sensor is authorized and ready to use
         function bindCB(mySensor) {
- 
-               alert('Sensor ' + mySensor.displayName + ' with ID: ' + mySensor.id + ' ready to use');
+
+                alert('Sensor ' + mySensor.displayName + ' with ID: ' + mySensor.id + ' selected');
                
 
-                // Configure the sensor. TBD 
+                // Configure the sensor.
+                mySensor.configureSensor ( {timeout: 120, rate: SENSOR_DELAY_NORMAL, interrupt: False}, 
+                                           successHandler () {alert('Sensor ' + mySensor.displayName + ' with ID: ' + mySensor.id +
+                                                                    ' is configured') },
+                                           errorHandler (error) {alert('Sensor ' + mySensor.displayName + ' with ID: ' + mySensor.id +
+                                                                       ' configuration failed' + ' with error: ' + error.message)} );
 
                
-                // More may have to be done using the sensor attributes. 
-
-
                 // Start listening to sensor events and log values. 
                 mySensor.addEventListener('sensor', function (event) {
                           console.log(event.sensorValues[0]);
