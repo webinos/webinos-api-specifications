@@ -341,7 +341,7 @@ module vehicle{
 		/**
 		* \brief Attribute defines the desired temperature in degree celsius.
 		*/	
-		readonly attribute unsigned short desiredTemperature 
+		readonly attribute unsigned short desiredTemperature; 
 		/**
 		* \brief Attribute defines, if the AC switched on or not.	
 		*/	
