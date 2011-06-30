@@ -7,10 +7,15 @@
  *
  * This API intentionally does not reveal identity information, but can give details about authentication method, which may reveal device information.
  * 
- * \author John Lyle; john.lyle@cs.ox.ac.uk
+ * \author John Lyle; &lt;john.lyle@cs.ox.ac.uk&gt;
+ * \def-api-feature http://webinos.org/api/authentication
+ * \version 0.1
  */
 module authentication {
 
+  /*
+   * \brief The object returned when user authentication status is queried.  This contains information about when and how authentication occurred.
+   */
   [NoInterfaceObject]
   interface AuthStatus  {
   
@@ -43,6 +48,9 @@ module authentication {
 	 attribute DOMString? authMethodDetails;
   };
   
+  /*
+   * \brief Definition of error codes for authentication events
+   */
   [NoInterfaceObject]
   interface AuthError  {
      /**
@@ -74,16 +82,25 @@ module authentication {
 	
   };
   
+  /*
+   * \brief Success callback for authentication events.
+   */
   [Callback=FunctionOnly, NoInterfaceObject]
   interface AuthSuccessCB {
 	void onSuccess(AuthStatus status);
   };
 
+  /*
+   * \brief Error callback for authentication events.
+   */
   [Callback=FunctionOnly, NoInterfaceObject]
   interface AuthErrorCB {
 	void onError(AuthError error);
   };
-
+  
+ /*
+  * \brief Exception codes for authentication events
+  */
   exception AuthenticationException{ 
 	unsigned short code;
 	DOMString message;
@@ -94,7 +111,13 @@ module authentication {
 	const unsigned short TIMEOUT_ERROR = 2;
   };
 
-  interface authentication {
+  
+  /*
+   * \brief The authentication interface provides three methods which allow applications to check the current user authentication status and prompt for re-authentication.
+   */
+   
+  [NoInterfaceObject]
+  interface WebinosAuthenticationInterface {
 
     /**
      * \brief this method instructs the runtime to request that the user authenticate themselves. \n
@@ -158,6 +181,20 @@ module authentication {
 
 
    };
+   
+   	/**
+	 * \brief The WebinosAuthentication interface describes the part of the Authentication
+	 *        API accessible through the webinos object.
+	 */
+	[NoInterfaceObject] interface WebinosAuthentication {
+		/**
+		 * \brief webinos.authentication object.
+		 */
+		readonly attribute WebinosAuthenticationInterface authentication;
+	};
+
+	webinoscore::Webinos implements WebinosAuthentication;
+   
 
 };
 

@@ -9,64 +9,96 @@
  *
  *
  * Mediation by policy and security requirements:
- * All of these three methods should be grouped into the same policy set
- * Attestation is well known to have privacy and security issues and should therefore be restricted to trusted applications
- * The "getKeyCredential" call may have privacy implications. The platform should be capable of ignoring requests even if a key 
- * certificate could be returned, if the policy dictates this
+ *  - All of these three methods should be grouped into the same policy set
+ *  - Attestation is well known to have privacy and security issues and should therefore be restricted to trusted applications
+ *  - The "getKeyCredential" call may have privacy implications. The platform should be capable of ignoring requests even if a key 
+ *  certificate could be returned, if the policy dictates this
+ *
+ * Example use of attestation, taken from the Security Architecture Documentation:
+ *
+ * 1.	User starts "MyBankApp" \n
+ * 2.	MyBankApp communicates with http://bank.example.com\n
+ * 3.	http://bank.example.com asks MyBankApp to attest to its current status\n
+ * 4.	MyBankApp uses the Attestation API to request a public key and key credential for the local device, Peter's Smartphone. \n
+ *			- App calls getAttestationKey() and getKeyCredential() to retrieve this information\n
+ * 5.	The key credential is forwarded to http://bank.example.com\n
+ * 6.	http://bank.example.com assesses the credential and checks to see whether the endpoint is a trusted device.\n
+ *			- If not, attestation fails.\n
+ * 7.	http://bank.example.com gives MyBankApp a fresh nonce, a 20 byte random value.\n
+ * 8.	MyBankApp uses this nonce and the public key with the attestation API on Peter's Smartphone:\n
+ * 			- call attestPlatform( nonce, key )\n
+ * 9.	Peter's Smartphone returns attestation data, which includes a log of the integrity of the platform ("trustChain"), 
+ *      as well as validation data from the hardware trusted platform module ("validation data") with schema "TPM_Quote".\n
+ * 10.	These values are passed on to http://bank.example.com\n
+ * 11.	http://bank.example.com  assesses the validation data and the integrity log using standard TCG techniques 
+ *      see http://www.trustedcomputinggroup.org/resources/tcg_architecture_overview_version_14 and related documents \n
+ *			- If the platform integrity is not trusted, attestation fails\n
+ *			- If the validation data is not trusted, attestation fails\n
+ * 12.	http://bank.example.com passes MyBankApp a temporary token which gives it access to the http://bank.example.com 
+ *      banking capabilities\n
+ * 13.	User authentication is requested via the authentication API\n
+ * 14.	The application is now able to perform transactions using remote http://bank.example.com APIs.\n
+ * 
  *
  *
- * \author Andrew Martin; andrew.martin@cs.ox.ac.uk; \n
- * John Lyle; john.lyle@cs.ox.ac.uk
+ * \author Andrew Martin; &lt;andrew.martin@cs.ox.ac.uk;&gt; \n John Lyle; &lt;john.lyle@cs.ox.ac.uk&gt;
+ * \def-api-feature http://webinos.org/api/attestation
+ * \version 0.1
  */
 module attestation {
 
 	
-	/** X509 interface taken from the ASN1 X509 Specifications
+	/** \brief Definition of X509 certificate data structure taken from the ASN1 X509 Specifications and RFC 2459 http://www.ietf.org/rfc/rfc2459.txt
 	  * We expect for TCG attestation that the SKAE extension to also be introduced, definition: 
 	  * http://www.trustedcomputinggroup.org/files/resource_files/876A7F79-1D09-3519-AD321B21144AE93C/IWG_SKAE_Extension_1-00.pdf
 	  * however it is not defined here.
 	  */
-	interface X509Certificate {		
-		attribute TBSCertificate certificate;
-		attribute AlgorithmIdentifier signatureAlgorithm;
-		attribute byte[] signature;
+	interface X509 {		
+		readonly attribute TBSCertificate certificate;
+		readonly attribute AlgorithmIdentifier signatureAlgorithm;
+		readonly attribute byte[] signature;
 	};
 
+	/* \brief as defined in http://www.ietf.org/rfc/rfc2459.txt */
 	interface TBSCertificate { 
-		attribute DOMString version;
-		attribute unsigned long serialNumber;
-		attribute AlgorithmIdentifier signature;
-		attribute Name issuer;
-		attribute Validity validity;
-		attribute Name subject;
-		attribute SubjectPublicKeyInfo subjectPublicKeyInfo;
-		attribute any extensions;
+		readonly attribute DOMString version;
+		readonly attribute Integer serialNumber;
+		readonly attribute AlgorithmIdentifier signature;
+		readonly attribute namePairArray issuer;
+		readonly attribute Validity validity;
+		readonly attribute namePairArray subject;
+		readonly attribute SubjectPublicKeyInfo subjectPublicKeyInfo;
+		readonly attribute Any? extensions;
 	};
 	
+	/* \brief as defined in http://www.ietf.org/rfc/rfc2459.txt */
 	interface Validity { 
-	    /* These are properly formatted dates */
-		attribute DOMString notBefore; 
-		attribute DOMString notAfter;
+		readonly attribute Date notBefore; 
+		readonly attribute Date notAfter;
 	};
 	
-	interface Name {
-		/* the name should consist of a number of key-value attribute type/value pairs. */
-		attribute DOMString[][] attributes; 
+	/* \brief as defined in http://www.ietf.org/rfc/rfc2459.txt */
+	typedef sequence<namePair> namePairArray;
+	interface namePair {
+		readonly attribute DOMString key;
+		readonly attribute DOMString value;
 	};
 	
+	/* \brief as defined in http://www.ietf.org/rfc/rfc2459.txt */
 	interface AlgorithmIdentifier {
-	    attribute DOMString identifier;
+	    readonly attribute DOMString identifier;
 		/* These are optional parameters */
-		attribute DOMString? parameters;
+		readonly attribute DOMString? parameters;
 	};
 	
+	/* \brief as defined in http://www.ietf.org/rfc/rfc2459.txt */
 	interface SubjectPublicKeyInfo {
-		attribute AlgorithmIdentifier algorithm;
-		attribute byte[] publickKey;
+		readonly attribute AlgorithmIdentifier algorithm;
+		readonly attribute byte[] publickKey;
 	};
 
 	
-	
+	/* Exception handling for the attestation API */
 	exception AttestationException  {
      /**
 	   * \brief An unknown error occurred. 
@@ -125,31 +157,48 @@ module attestation {
      /**
       * \brief List of binary data representing the identities of running 
       * software.  In the TCG scheme, this corresponds to the integrity 
-      * measurement log
+      * measurement log.
+	  *
+	  * For example, in a TCG scheme you would expect the following contents:
+	  *
+	  * 0x00 -> [ 0x45ac76fec..., 0x956836fbc42..., ]
+	  * 0x01 -> [ 0x23c3414f1..., 0xbb3f4d282cf..., ]
+	  * 0x02 -> [ 0x72bb76045..., 0x04ccc997056..., ]
+	  * ...
+	  * 0x0c -> [ 0x8a797441a..., 0xd642ac16d13..., ]
+	  *
+	  *
+	  *
       */
 
-     attribute byte[][] trustChain;
+     readonly attribute byte[][] trustChain;
 
      /**
       * \brief single binary blob, containing validation data for the trustChain 
+	  *
+	  * In the TCG scheme this would contain the following signed data, including:
+	  *  - The TPM Quote version (1.1.0.0)
+	  *  - A fixed byte[4] "QUOT"
+	  *  - The SHA1 digest of the composite hash of the trustChain 
+	  *  - The 20 byte nonce
       */
 
-     attribute byte[] validationData;
+     readonly attribute byte[] validationData;
 
      /**
       * \brief text string identifying the attestation scheme being used
       * for example, "TPM_Quote"
       */
 
-     attribute DOMString schema;
+     readonly attribute DOMString schema;
    };
     
   /**
     * \brief interfaces for attesting the platform
     */
 
-
-  interface platformAttestation {
+  [NoInterfaceObject]
+  interface WebinosAttestationInterface {
 
     /**
      * \brief requests platform to provide attestation data
@@ -163,8 +212,6 @@ module attestation {
      * 
      * Note for implementation: there will need to be configuration of attestation modules to
      * support any authentication at the hardware layer.
-	 *
-	 * Synchronous.
      *
      * Error conditions due to policy enforcement, as well as potentially from hardware failure.
      */
@@ -180,7 +227,6 @@ module attestation {
      * 
      * \return returns public key
 	 *
-	 * Synchronous
      * 
      * Errors due to permission denied or not implemented
      */
@@ -197,14 +243,29 @@ module attestation {
      * 
      * If the key identifier is unknown, or the user policy does not allow access to it, an error "not found" is returned.
 	 *
-	 * Synchronous
 	 *
      */
     
-     X509Certificate getKeyCredential (in SubjectPublicKeyInfo key) raises(AttestationException);
+     X509 getKeyCredential (in SubjectPublicKeyInfo key) raises(AttestationException);
 
 
   };
+  
+  
+	/**
+	 * \brief The WebinosAttestation interface describes the part of the Attestation
+	 *        API accessible through the webinos object.
+	 */
+	[NoInterfaceObject] interface WebinosAttestation {
+		/**
+		 * \brief webinos.attestation object.
+		 */
+		readonly attribute WebinosAttestationInterface attestation;
+	};
+
+	webinoscore::Webinos implements WebinosAttestation;
+   
+  
 
 };
 
