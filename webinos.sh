@@ -124,7 +124,9 @@ echo '<div class=api> <h2 class=head>Referred APIs used by Webinos</h2> </div>' 
 echo '<div id="content"><table><thead><tr><th>Specification</th><th>Summary</th></thead><tbody>' >> "$SPECHOME/apis/index.html"
 
 echo '<tr><td><a href=devicestatus.html>The WAC devicestatus module</a></td><td><p>' >> "$SPECHOME/apis/index.html"
-echo 'This WAC API provides access to the information about the device status. The status information is organised as a tree structure utilising a WAC specified vocabulary. <br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
+echo 'This WAC API provides access to the information about the device status. The status information is organised as a tree structure utilising a vocabulary. <br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
+echo '<tr><td><a href=vocabulary.html>The devicestatus vocabulary module</a></td><td><p>' >> "$SPECHOME/apis/index.html"
+echo 'The vocabulary that defines the information available in the webinos device status API.<br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
 echo '<tr><td><a href=deviceinteraction.html>The WAC deviceinteraction module</a></td><td><p>' >> "$SPECHOME/apis/index.html"
 echo 'This WAC API allows applications the capability to access functions that allow them to interact with the end user.<br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
 echo '<tr><td><a href=deviceorientation.html>The W3C DeviceOrientation Event specification</a></td><td><p>' >> "$SPECHOME/apis/index.html"
