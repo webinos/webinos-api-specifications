@@ -175,11 +175,11 @@ module attestation {
 	  *
 	  * For example, in a TCG scheme you would expect the following contents: \n
 	  * \n
-	  * \t 0x00 -> [ 0x45ac76fec..., 0x956836fbc42..., ] \n
-	  * \t 0x01 -> [ 0x23c3414f1..., 0xbb3f4d282cf..., ] \n
-	  * \t 0x02 -> [ 0x72bb76045..., 0x04ccc997056..., ] \n
-	  * \t ... \n
-	  * \t 0x0c -> [ 0x8a797441a..., 0xd642ac16d13..., ] \n
+	  *  0x00 -> [ 0x45ac76fec..., 0x956836fbc42..., ] \n
+	  *  0x01 -> [ 0x23c3414f1..., 0xbb3f4d282cf..., ] \n
+	  *  0x02 -> [ 0x72bb76045..., 0x04ccc997056..., ] \n
+	  *  ... \n
+	  *  0x0c -> [ 0x8a797441a..., 0xd642ac16d13..., ] \n
 	  *
 	  *
 	  *
@@ -191,10 +191,10 @@ module attestation {
       * \brief single binary blob, containing validation data for the trustChain 
 	  *
 	  * In the TCG scheme this would contain the following signed data, including: \n
-	  * \t - The TPM Quote version (1.1.0.0) \n
-	  * \t - A fixed byte[4] "QUOT" \n
-	  * \t - The SHA1 digest of the composite hash of the trustChain \n
-	  * \t - The 20 byte nonce \n
+	  *  - The TPM Quote version (1.1.0.0) \n
+	  *  - A fixed byte[4] "QUOT" \n
+	  *  - The SHA1 digest of the composite hash of the trustChain \n
+	  *  - The 20 byte nonce \n
       */
 
      readonly attribute byte[] validationData;
