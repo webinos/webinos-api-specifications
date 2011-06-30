@@ -1,0 +1,379 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link media="screen" href="webinos-apis.css" type="text/css" rel="stylesheet">
+  <script type="text/javascript" src="webinos-apis.js"></script><title>APIs: The file system module</title>
+</head>
+
+<body id="content" onload="prettyPrint()">
+  <div class="api">
+     <a href="http://webinos.org"><img src="http://webinos.org/wp-content/uploads/2011/press_releases/webinos_thumb_150x48.png" alt="Webinos Logo"></a>
+     <h1 class="head">APIs: The file system module</h1>
+     <h2 class="head">Webinos Specification</h2>
+     <h3>June 2011</h3>
+  </div>
+   <div><p class="copyright"><small>© 2011 webinos consortium, www.webinos.org.</small></p> </div>
+<hr>
+<h2>Abstract</h2>
+<div class="brief"><p>
+This document describes the functionality that Webinos devices should implement for accessing file system directories. 
+</p></div>
+
+<div class="toc">
+<h2>Table of Contents</h2>
+<dl>
+  <dt><span class="section"><a href="#introduction">1 - Introduction</a></span> </dt>
+  <dt><span class="section"><a href="#api">2 - API</a></span> </dt>
+  <dt><span class="section"><a href="#security">3 - Security</a></span> </dt>
+  <dt><span class="section"><a href="#webidl">4 - WebIDL</a></span> </dt>
+  <dt><span class="bibliography"><a href="#references">References</a></span> </dt>
+</dl>
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="introduction"></a>1 - Introduction</h2>
+</div>
+</div>
+</div>
+<p> This section is INFORMATIVE.<p> 
+<p> Webinos is fully committed to the use of Open Standards whenever available. The access to File System is done through the W3C File Directories and System API <a href="#ref-filesystem" shape=rect>[FILEDIRSYS]</a>.<p> 
+<p> This module is accessed (as W3C specification mandates) through the global object (i.e. <code>Window</code>).</p>
+
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="api"></a>2 - API</h2>
+</div>
+</div>
+</div>
+<p> This section is NORMATIVE.<p> 
+<p> Webinos implementations MUST support W3C File Directories and System API specification <a href="#ref-filesystem" shape=rect>[FILEDIRSYS]</a>.<p> 
+<p> In order to use this API, access to it must be declared in the widget configuration document (i.e. config.xml). This declaration is done through the feature http://www.w3.org/TR/file-dir-sys-API/. </p>
+</div>
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="security"></a>3 - Security</h2>
+</div>
+</div>
+</div>
+<p> This section is NORMATIVE.<p> 
+<p>The implementation MUST NOT enable access to this API by default, but only if the declaration is present in the widget configuration document through the appropriate feature tag.</p>
+
+<p>Please note that Webinos Security Framework, depending on its configuration and in the widget level of trust, MAY deny access to this API even if it is declared in the configuration document.</p>
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="webidl"></a>4 - WebIDL</h2>
+</div>
+</div>
+</div>
+<p> This section is INFORMATIVE.<p> 
+<p> For completeness, this specification includes a copy of the WebIDL declaration included in the W3C File Directories and System API specification <a href="#ref-filesystem" shape=rect>[FILEDIRSYS]</a>. The referred specification includes all the details needed to create a conformant implementation. </p>
+
+
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>Metadata Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject]
+interface Metadata {
+    readonly attribute Date modificationTime;
+};
+</div>
+</pre>
+</div>
+
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>Flags Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject]
+interface Flags {
+    attribute boolean create;
+    attribute boolean exclusive;
+};
+</div>
+</pre>
+</div>
+
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>FileSystem Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject]
+interface FileSystem {
+    readonly attribute DOMString      name;
+    readonly attribute DirectoryEntry root;
+};
+</div>
+</pre>
+</div>
+
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>Entry Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject]
+interface Entry {
+    readonly attribute boolean    isFile;
+    readonly attribute boolean    isDirectory;
+    void      getMetadata (MetadataCallback successCallback, optional ErrorCallback errorCallback);
+    readonly attribute DOMString  name;
+    readonly attribute DOMString  fullPath;
+    readonly attribute FileSystem filesystem;
+    void      moveTo (DirectoryEntry parent, optional DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+    void      copyTo (DirectoryEntry parent, optional DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+    DOMString toURL (optional DOMString mimeType);
+    void      remove (VoidCallback successCallback, optional ErrorCallback errorCallback);
+    void      getParent (EntryCallback successCallback, optional ErrorCallback errorCallback);
+};
+</div>
+</pre>
+</div>
+
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>DirectoryEntry Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject]
+interface DirectoryEntry : Entry {
+    DirectoryReader createReader ();
+    void            getFile (DOMString path, optional Flags options, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+    void            getDirectory (DOMString path, optional Flags options, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+    void            removeRecursively (VoidCallback successCallback, optional ErrorCallback errorCallback);
+};
+</div>
+</pre>
+</div>
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>DirectoryReader Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject]
+interface DirectoryReader {
+    void readEntries (EntriesCallback successCallback, optional ErrorCallback errorCallback);
+};
+</div>
+</pre>
+</div>
+
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>FileEntry Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject]
+interface FileEntry : Entry {
+    void createWriter (FileWriterCallback successCallback, optional ErrorCallback errorCallback);
+    void file (FileCallback successCallback, optional ErrorCallback errorCallback);
+};
+</div>
+</pre>
+</div>
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>FileSystemCallback Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject, Callback=FunctionOnly]
+interface FileSystemCallback {
+    void handleEvent (FileSystem filesystem);
+};
+</div>
+</pre>
+</div>
+
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>EntryCallback Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject, Callback=FunctionOnly]
+interface EntryCallback {
+    void handleEvent (Entry entry);
+};
+</div>
+</pre>
+</div>
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>EntriesCallback Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject, Callback=FunctionOnly]
+interface EntriesCallback {
+    void handleEvent (Entry[] entries);
+};
+</div>
+</pre>
+</div>
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>MetadataCallback Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject, Callback=FunctionOnly]
+interface MetadataCallback {
+    void handleEvent (Metadata metadata);
+};
+</div>
+</pre>
+</div>
+
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>FileWriterCallback Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject, Callback=FunctionOnly]
+interface FileWriterCallback {
+    void handleEvent (FileWriter fileWriter);
+};
+</div>
+</pre>
+</div>
+
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>FileCallback Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject, Callback=FunctionOnly]
+interface FileCallback {
+    void handleEvent (File file);
+};
+</div>
+</pre>
+</div>
+
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>VoidCallback Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject, Callback=FunctionOnly]
+interface VoidCallback {
+    void handleEvent ();
+};
+</div>
+</pre>
+</div>
+
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>ErrorCallback Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject, Callback=FunctionOnly]
+interface ErrorCallback {
+    void handleEvent (FileError err);
+};
+</div>
+</pre>
+</div>
+
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>FileSystemSync Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject]
+interface FileSystemSync {
+    readonly attribute DOMString          name;
+    readonly attribute DirectoryEntrySync root;
+};
+</div>
+</pre>
+</div>
+
+
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>EntrySync Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject]
+interface EntrySync {
+    readonly attribute boolean        isFile;
+    readonly attribute boolean        isDirectory;
+    Metadata           getMetadata () raises (FileException);
+    readonly attribute DOMString      name;
+    readonly attribute DOMString      fullPath;
+    readonly attribute FileSystemSync filesystem;
+    EntrySync          moveTo (DirectoryEntrySync parent, optional DOMString newName) raises (FileException);
+    EntrySync          copyTo (DirectoryEntrySync parent, optional DOMString newName) raises (FileException);
+    DOMString          toURL (optional DOMString mimeType);
+    void               remove () raises (FileException);
+    DirectoryEntrySync getParent ();
+};
+</div>
+</pre>
+</div>
+
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>DirectoryEntrySync Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject]
+interface DirectoryEntrySync : EntrySync {
+    DirectoryReaderSync createReader () raises (FileException);
+    FileEntrySync       getFile (DOMString path, optional Flags options) raises (FileException);
+    DirectoryEntrySync  getDirectory (DOMString path, optional Flags options) raises (FileException);
+    void                removeRecursively () raises (FileException);
+};
+</div>
+</pre>
+</div>
+
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>DirectoryReaderSync Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject]
+interface DirectoryReaderSync {
+    EntrySync[] readEntries () raises (FileException);
+};
+</div>
+</pre>
+</div>
+
+
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>FileEntrySync Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject]
+interface FileEntrySync : EntrySync {
+    FileWriterSync createWriter () raises (FileException);
+    File           file () raises (FileException);
+};
+</div>
+</pre>
+</div>
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>FileError Interface</b></span><pre class="webidl prettyprint">
+interface FileError {
+    const unsigned short NOT_FOUND_ERR = 1;
+    const unsigned short SECURITY_ERR = 2;
+    const unsigned short ABORT_ERR = 3;
+    const unsigned short NOT_READABLE_ERR = 4;
+    const unsigned short ENCODING_ERR = 5;
+    const unsigned short NO_MODIFICATION_ALLOWED_ERR = 6;
+    const unsigned short INVALID_STATE_ERR = 7;
+    const unsigned short SYNTAX_ERR = 8;
+    const unsigned short INVALID_MODIFICATION_ERR = 9;
+    const unsigned short QUOTA_EXCEEDED_ERR = 10;
+    const unsigned short TYPE_MISMATCH_ERR = 11;
+    const unsigned short PATH_EXISTS_ERR = 12;
+    attribute unsigned short code;
+};
+
+</div>
+</pre>
+</div>
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>FileException Exception</b></span><pre class="webidl prettyprint">
+exception FileException {
+    const unsigned short NOT_FOUND_ERR = 1;
+    const unsigned short SECURITY_ERR = 2;
+    const unsigned short ABORT_ERR = 3;
+    const unsigned short NOT_READABLE_ERR = 4;
+    const unsigned short ENCODING_ERR = 5;
+    const unsigned short NO_MODIFICATION_ALLOWED_ERR = 6;
+    const unsigned short INVALID_STATE_ERR = 7;
+    const unsigned short SYNTAX_ERR = 8;
+    const unsigned short INVALID_MODIFICATION_ERR = 9;
+    const unsigned short QUOTA_EXCEEDED_ERR = 10;
+    const unsigned short TYPE_MISMATCH_ERR = 11;
+    const unsigned short PATH_EXISTS_ERR = 12;
+    unsigned short code;
+};
+</div>
+</pre>
+</div>
+
+<div class="bibliography">
+
+<div class="titlepage">
+
+<div>
+
+<div>
+<h2 class="title"><a name="references"></a>References</h2>
+</div>
+</div>
+</div>
+<dl>
+  <dt><a id=ref-filesystem>[FILEDIRSYS]</a></dt>
+    <dd>NORMATIVE: File API: Directories and System (W3C Working Draft 19 April 2011)
+      , see <a href="http://www.w3.org/TR/2011/WD-file-system-api-20110419/">http://www.w3.org/TR/2011/WD-file-system-api-20110419/</a>
+    </dd>
+</dl>
+</div>
+
+
+</div>
+</body>
+</html>
