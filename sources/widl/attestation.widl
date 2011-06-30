@@ -85,7 +85,11 @@ module attestation {
 	/**
      * \brief as defined in http://www.ietf.org/rfc/rfc2459.txt 
 	 */
-	typedef sequence<namePair> namePairArray;
+	typedef namePair[] namePairArray;
+
+	/**
+     * \brief A single pair of key and value. 
+	 */
 	interface namePair {
 		readonly attribute DOMString key;
 		readonly attribute DOMString value;
