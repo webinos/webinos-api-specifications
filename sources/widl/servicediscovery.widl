@@ -101,8 +101,8 @@ module discovery {
 	[NoInterfaceObject] interface DiscoveryInterface  {
 		/**
 		 * \brief 	The findServices method initiates an asynchronous search query for services matching the requested serviceType and filter parameter. The method continues to search for services until 
-		 * the findServices method is canceled by the application or when the maximum search timer expires. The zones in which services are to be searched are expected to be managed by the Webinos runtime engine (rather than the application developer).
-		 * As an example on how this zone management can be presented by a runtime engine:
+		 * the findServices method is canceled by the application or when the maximum search timer expires. The zones in which services are to be searched are expected to be managed by the Webinos runtime engine
+		 * (rather than the application developer). Below is an example on how this zone management can be presented by a runtime engine.
 		 * <p><img src="http://dev.webinos.org/specifications/draft/infobar.png" alt="Illustration of possible Infobar" /><br /> Infobar offering to add new personal zones</p>
 		 * This infobar would lead to a personal zones management UI:
 		 * <p><img src="http://dev.webinos.org/specifications/draft/pz-add-ui.png" alt="Personal zone management UI" /><br />Personal zone management UI</p>
@@ -118,17 +118,19 @@ module discovery {
 		 								in optional Options options, 
 		 								in optional Filter filter)
 		 raises(DiscoveryExceptions);
+		 
 		/**
-		 * \brief The getServiceId method generates a service identity that can be shared to other peers to directly bind to a service without invoking a findServices operation. 
-		 * \param sharedFunctionId Identity of the service exposed with the api-name attribute in the webinos:shared-api element in the manifest.
+		 * \brief The getServiceId method generates a service identity that can be shared with other peers to establish a binding without invoking a findServices operation. If no matching API is found the method will return Null. 
+		 * \param serviceType URI identifying which type of API that shall be exposed. The URI shall be must be declared in the manifest in the api-name attribute of the webinos:shared-api element.
 		 * \throw DiscoveryExceptions 
 		 */
-		 DOMString getServiceId(in DOMString sharedFunctionId)
+		 DOMString getServiceId(in DOMString serviceType)
 		 raises(DiscoveryExceptions);
+		 
 		/**
 		 * \brief 	The createService method creates an instance of a Service object
-		 *			that can be used to bind to directly if the service identity is already known.
-		 *			This is applicable if the service identity stored persistently in a database or
+		 *			that can be used to establish a service binding directly if the service identity is already known.
+		 *			This is for example applicable if the service identity is stored persistently in a database or
 		 *			received via some kind of out of band channel.   
 		 * \throw DiscoveryExceptions 
 		 */                                                          
@@ -158,29 +160,34 @@ module discovery {
 		 * \param service An input argument representing the found service.
 		 */
 		 void onFound(in Service service);	  
+		 
 		/**
 		 * \brief Asynchronous callback used whenever the state of a service change from available to unavailable.       
 		 * \param service An input argument representing the lost service.
 		 */
-		 void onLost(in Service service);	  
+		 void onLost(in Service service);
+		 	  
 		/**
 		 * \brief Asynchronous error callback.   
 		 * \param error Error code. 
 		 */
-		 void onError(in DiscoveryError error); 		 
+		 void onError(in DiscoveryError error);
+		  		 
 	};
 	
 	/**
-	 * \brief Service interface provides an API to bind to a specific service and monitoring
+	 * \brief The Service interface provides an API to bind to a specific service and monitor
 	 * the availability of a bound service in an asynchronous manner. The process of binding
 	 * to a service involves:\n\n
 	 * 1. mutual authentication between the service and the personal zone\n
 	 * 2. in case of cross zone personal interworking, mutual authentication between the zones\n
 	 * 3. agreement on data handling obligations as set out in the service's privacy policy\n
 	 * 4. verifying access privileges and checks the need for elevated privileges\n
-	 * 5. instantiate an implementation of the api that can be used by applications to request services from the requested API.\n\n
-	 * Once the service object is instantiated, the object will act as a proxy invoking methods under the window object of the remote peer.
-	 * For example an application that successfully binds to a "http://webinos.org/api/tv" API will be able to invoke methods from the remote peer as described in the code example below. 
+	 * 5. instantiate an implementation of the API that can be used by applications to request services from the requested API.\n\n
+	 * Once the service object is instantiated, the service object will act as a proxy to the remote peer that will be able to invoke methods
+	 * associated with API type under the window object of the remote peer. For example an application that successfully binds 
+	 * to a "http://webinos.org/api/tv" API will be able to invoke methods from the remote peer as described in the code example below. 
+	 *
 	 * \code
 	succesBindCallBack(tvService) {
 		// Invoke a remote method.
@@ -197,22 +204,27 @@ module discovery {
 		 * \brief A constant describing the service is in the process of binding to the service. 
 		 */
 		const unsigned short SERVICE_INITATING = 0;		
+		
 		/**
 		 * \brief A constant describing the service is available and is ready to be used by the application.  
 		 */	 	 
 		const unsigned short SERVICE_AVAILABLE = 1;
+		
 		/**
 		 * \brief A constant describing the service is unavailable. 
 		 */
 		const unsigned short SERVICE_UNAVAILABLE = 2;
+		
 		/**
 		 * \brief Current service state. 
 		 */
 		readonly attribute unsigned short state;
+		
 		/**
 	 	 * \brief API is a global unique URI identifying the type of API provided by the service. 
 	 	 */
 		readonly attribute DOMString api;
+		
 		/**
 		 * \brief Id is a globally unique id representing the binding to the service. The id can be used
 		 * to resume the binding again to the service without invoking the findServices process again.
@@ -220,18 +232,22 @@ module discovery {
 		 * power cycles. 
 		 */
 		readonly attribute DOMString id;
+		
 		/**
 		 * \brief A human readable name of the service. 
 		 */
 		readonly attribute DOMString displayName;
+		
 		/**
 		 * \brief An URL referring to a detailed description of the service. 
 		 */ 
 		readonly attribute DOMString description;
+		
 		/**
 		 * \brief Icon is an URL referring to an icon that represents the service. 
 		 */
 		readonly attribute DOMString icon;
+		
 		/**
 		 * \brief bind Binds to the service uniquely identified by the service identity.  
 		 * \param bindCallBack Asynchrounous callback to report the states of the bind operation and the availability of the service.  
@@ -240,6 +256,7 @@ module discovery {
 		 */
 		PendingOperation bind(in BindCallBack bindCallBack, in optional DOMString serviceId)
 		raises(DiscoveryExceptions);
+		
 		/**
 		 * \brief unbind Releases all resources and connections allocated by the service object.  
 		 * \throw DiscoveryExceptions
@@ -258,21 +275,25 @@ module discovery {
 		 * \param service An input argument representing the service.
 		 */
 		 void onBind(in Service service);
+		 
 		/**
 		 * \brief Asynchronous callback used when a service is unbound.      
 		 * \param service An input argument representing the service.
 		 */
 		 void onUnbind(in Service service);
+		 
 		/**
 		 * \brief Asynchronous callback indicating that the service is available again.
 		 * \param service An input argument representing the service.      
 		 */		 
 		 void onServiceAvailable(in Service service);
+		 
 		/**
 		 * \brief Asynchronous callback indicating the service is temporarily unavailable.
 		 * \param service An input argument representing the service.
 		 */		 		 
-		 void onServiceUnavailable(in Service service);	  
+		 void onServiceUnavailable(in Service service);
+		 	  
 		/**
 		 * \brief Asynchronous error callback.   
 		 * \param error Error code. 
