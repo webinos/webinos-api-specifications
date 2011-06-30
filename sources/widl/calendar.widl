@@ -13,8 +13,9 @@
  * Note that while the W3C version, on which this specification is based on, provides only the ServiceCalendar
  * to retrieve calendars, in webinos calendars can also be retrieved using the findServices method of the
  * Service Discovery API.
- * 
- * \author W3C Working Draft 19 April 2011
+ *  
+ * \author W3C Working Draft 19 April 2011  
+ * \author Normative: <a href="http://www.w3.org/TR/2011/WD-calendar-api-20110419/">W3C Calendar API </a>
  * \author WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
  * \version 1.0
  */
