@@ -2,6 +2,9 @@
 /**
  * \brief W3C based Contacts interface. 
  *
+ * This specification provides a wrapper that mandates the use of the 
+ * <a href="http://www.w3.org/TR/2011/WD-contacts-api-20110616/">W3C Contacts API </a> (Editor's draft 16th June).
+ *
  * The Contacts API defines the high-level interfaces required to obtain read access to a user's unified address book.
  *
  * This API includes the following key interfaces:
