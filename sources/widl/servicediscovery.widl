@@ -102,7 +102,7 @@ module discovery {
 		 * <p><img src="http://dev.webinos.org/specifications/draft/infobar.png" alt="Illustration of possible Infobar" /><br /> Infobar offering to add new personal zones</p>
 		 * This infobar would lead to a personal zones management UI:
 		 * <p><img src="http://dev.webinos.org/specifications/draft/pz-add-ui.png" alt="Personal zone management UI" /><br />Personal zone management UI</p>
-		 * \param serviceType An input argument that defines which type of service API that is requested. The serviceType is an URI that uniquely identifies the API. The URI could either be a http://www.w3.org/TR/2010/WD-api-perms-20101005/ URI to request an W3C Device API (for example http://www.w3.org/ns/api-perms/geolocation), a Webinos/WAC Feature URI to request a Webinos/WAC API (for example http://webinos.org/api/sensors.temperature) or the URI exposed by a Widget in the api-name attribute of the webinos:shared-api element for applications exposing APIs.  
+		 * \param serviceType An input argument that defines which type of service API that is requested. The serviceType is an URI that uniquely identifies the API.   
 		 * \param findCallBack Callback interface used to report the outcome of the search process. 
 		 * \param options Defines search options. 
 		 * \param filter Defines a filter that be used to limit the service operation to certain constraints and context information. 
@@ -132,7 +132,12 @@ module discovery {
 	 */
 	[NoInterfaceObject] interface ServiceType {
 		/**
-	 	 * \brief URI used to identify the requested API's feature set. The URI shall be globally unique.  
+	 	 * \brief 	URI used to identify the requested API's feature set. The URI shall be globally unique. 
+	 	 * 			The URI could either be a 
+	 	 *			1. W3C DAP API URI as defined in http://www.w3.org/TR/2010/WD-api-perms-20101005/,for example http://www.w3.org/ns/api-perms/geolocation, 
+	 	 *			2. Webinos Feature URI that is defined for each API by Webinos, for example http://webinos.org/api/sensors.temperature,
+	 	 *			2. WAC Feature URI that is defined for each API by WAC, for example http://waclists.org/api/camera,
+	 	 *			3. A unique URI identifying API exposed by a web application. The URI will be exposed in the web application manifest using api-name attribute in the webinos:shared-api element.  
 		 */
 		attribute DOMString api;
 	};
