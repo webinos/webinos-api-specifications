@@ -108,7 +108,7 @@ DELIM
 
 for i in $WIDLFILES
 do
-    if [ "$i" != "foo.widl" ] ; 
+    if [ "$i" != "foo.widl" ] || [ "$i" != "contacts.widl" ] || [ "$i" != "calendar.widl" ]; 
     then
 	basename2=$(basename "$i" .widl)
 	htmlfile="$SPECHOME/apis/"$basename2".html"
@@ -123,6 +123,10 @@ echo '<div class=api> <h2 class=head>Referred APIs used by Webinos</h2> </div>' 
 
 echo '<div id="content"><table><thead><tr><th>Specification</th><th>Summary</th></thead><tbody>' >> "$SPECHOME/apis/index.html"
 
+echo '<tr><td><a href=calendar.html>The W3C calendar module</a></td><td><p>' >> "$SPECHOME/apis/index.html"
+echo 'This W3C API provides access to a user calendaring service.<br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
+echo '<tr><td><a href=contacts.html>The W3C contacts module</a></td><td><p>' >> "$SPECHOME/apis/index.html"
+echo 'This W3C API provides access to a user unified address book.<br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
 echo '<tr><td><a href=devicestatus.html>The WAC devicestatus module</a></td><td><p>' >> "$SPECHOME/apis/index.html"
 echo 'This WAC API provides access to the information about the device status. The status information is organised as a tree structure utilising a vocabulary. <br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
 echo '<tr><td><a href=vocabulary.html>The devicestatus vocabulary module</a></td><td><p>' >> "$SPECHOME/apis/index.html"
