@@ -1,13 +1,14 @@
 /**
  * \brief Webinos Discovery API 
  *
- * The Webinos Discovery API provide web applications with an API to discover services without any previous knowledge of the service.  
+ * The Webinos Discovery API provide web applications with an API to discover services without any previous knowledge of the service.
+ * The Discovery API is not limited to discovery of local services but also enables discovery of remote services.
+ *  
  * The API enables discovery of services that is exposed either:\n\n
  * 1. in the device\n
  * 2. by entities directly connected to the device,\n 
  * 3. by entities available on the same local IP network\n
  * 4. by trusted services registered in a personal zone. \n\n
- * The Discovery API is not limited to discovery of local services but also enables discovery of remote services. 
  * Once a service is found the API will provide a service object that is used to bind to a service and monitor the availability of the service. The binding to a service will
  * make sure that the user is authorized to use the service, create an implementation of the API and establish a communication path to the remote peer 
  * providing the service. The service object hides the complexity of communicating over different bearers, do cross network addressing, traversing NAT/Firewalls and connection management. 
