@@ -221,17 +221,17 @@ module nfc {
 	/**
 	 * \brief Array of NFCTagTechnology.
 	 */
-	typedef sequence<NFCTagTechnology>	NFCTagTechnologyArray;
+	typedef NFCTagTechnology[]	NFCTagTechnologyArray;
 
 	/**
 	 * \brief Array of NdefRecord.
 	 */
-	typedef sequence<NdefRecord>	NdefRecordArray;
+	typedef NdefRecord[]	NdefRecordArray;
 
 	/**
 	 * \brief Array of 8-bit unsigned integer values.
 	 */
-	typedef sequence<octet>	ByteArray;
+	typedef octet[]	ByteArray;
 
 	/**
 	 * \brief Definition of pending op.
@@ -250,7 +250,7 @@ module nfc {
 	 * \brief NFC tag event.
 	 *
 	 */
-	[NoInterfaceObject] interface NFCTag : Event {
+	interface NFCTag : Event {
 
 		/**
 		 * \brief The identifier of the tag.

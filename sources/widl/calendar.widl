@@ -21,7 +21,7 @@
  */
  
  
-module Calendar {
+module CalendarWrapper {
 
         /**
          * \brief The ServiceCalendar interface is exposed on the Navigator interface [NAVIGATOR]. 

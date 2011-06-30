@@ -72,7 +72,7 @@ interface TVDisplayManager {
 /**
  * \brief Callback function when current channel changed successfully.
 */
-[NoInterfaceObject]
+[Callback=FunctionOnly, NoInterfaceObject]
 interface TVDisplaySuccessCB {
   void onSuccess(Channel channel);
 };
@@ -138,7 +138,7 @@ interface TVTunerManager {
 /**
 * \brief Callback for found TV tuners.
 */
-[NoInterfaceObject] 
+[Callback=FunctionOnly, NoInterfaceObject] 
 interface TVSuccessCB {
   /**
    * \brief Callback that is called with the found TV sources.
@@ -151,7 +151,7 @@ interface TVSuccessCB {
 /**
 * \brief Error callback for errors when trying to get TV tuners.
 */
-[NoInterfaceObject] 
+[Callback=FunctionOnly, NoInterfaceObject] 
 interface TVErrorCB {
   /**
    * \brief Callback that is called when an error occures while getting TV sources

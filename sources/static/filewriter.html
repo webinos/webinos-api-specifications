@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="en">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -17,7 +17,7 @@
 <hr>
 <h2>Abstract</h2>
 <div class="brief"><p>
-This document describes the functionality that Webinos devices should implement for retrieving information. 
+This document describes the functionality that Webinos devices should implement for writing to files. 
 </p></div>
 
 <div class="toc">
@@ -87,8 +87,8 @@ This document describes the functionality that Webinos devices should implement 
 <div id="container" ><div ><span class="signatureBlockTitle"><b>BlobBuilder Interface</b></span><pre class="webidl prettyprint">
 [Constructor]
 interface BlobBuilder {
-    Blob getBlob (optional in DOMString contentType);
-    void append (in DOMString text, optional in DOMString endings) raises (FileException);
+    Blob getBlob (in optional DOMString contentType);
+    void append (in DOMString text, in optional DOMString endings) raises (FileException);
     void append (in Blob data);
     void append (in ArrayBuffer data);
 };
