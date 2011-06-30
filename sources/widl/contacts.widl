@@ -1,6 +1,6 @@
 
 /**
- * \brief W3C based Contacts interface.
+ * \brief W3C based Contacts interface. 
  *
  * The Contacts API defines the high-level interfaces required to obtain read access to a user's unified address book.
  *
