@@ -23,40 +23,12 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <!--<xsl:variable name="title" select="concat('The Webinos ',/Definitions/*[1]/@name,' module - ',/Definitions/Module/descriptive/version)"/>-->
 <xsl:variable name="title" select="concat('APIs: The ',/Definitions/*[1]/@name,' module')"/>
 
-<!-- section number of the features section. If there are typedefs, this is 4, otherwise 5 -->
-<xsl:variable name="base-section-number">
-  <xsl:choose>
-    <xsl:when test="/Definitions/Module/Typedef">
-      <xsl:choose>
-	<xsl:when test="/Definitions/Module/Exception">5</xsl:when>
-	<xsl:otherwise>4</xsl:otherwise>
-      </xsl:choose>
-    </xsl:when>
-    <xsl:when test="/Definitions/Module/Exception">4</xsl:when>
-    <xsl:otherwise>3</xsl:otherwise>
-  </xsl:choose>
-</xsl:variable>
+<xsl:variable name="exception-section-number" select="3 + (count(/Definitions/Module/Typedef) &gt; 0)"/>
 
-<xsl:variable name="api-features-section-number">
-  <xsl:choose>
-    <xsl:when test="/Definitions/Module/Typedef"><xsl:value-of select="$base-section-number + 1"/></xsl:when>
-    <xsl:otherwise><xsl:value-of select="$base-section-number"/></xsl:otherwise>
-  </xsl:choose>
-</xsl:variable>
+<xsl:variable name="api-features-section-number" select="$exception-section-number + (count(/Definitions/Module/Exception) &gt; 0)" />
 
-<xsl:variable name="method-summary-section-number">
-  <xsl:choose>
-    <xsl:when test="/Definitions/Module/Typedef"><xsl:value-of select="$base-section-number + 2"/></xsl:when>
-    <xsl:otherwise><xsl:value-of select="$base-section-number + 1"/></xsl:otherwise>
-  </xsl:choose>
-</xsl:variable>
+<xsl:variable name="full-webidl-section-number" select="$api-features-section-number + 1" />
 
-<xsl:variable name="full-webidl-section-number">
-  <xsl:choose>
-    <xsl:when test="/Definitions/Module/Typedef"><xsl:value-of select="$base-section-number + 2"/></xsl:when>
-    <xsl:otherwise><xsl:value-of select="$base-section-number + 1"/></xsl:otherwise>
-  </xsl:choose>
-</xsl:variable>
 
 <!--Root of document.-->
 <xsl:template match="/">
@@ -89,7 +61,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
           <xsl:apply-templates select="descriptive/author"/>
         </ul>
 
-        <div><p class="copyright"><small>© 2011 Webinos All rights reserved - TODO: Is this the right legal terms?.</small></p> </div>
+        <div><p class="copyright"><small>© 2011 webinos consortium, www.webinos.org.</small></p> </div>
 
         <hr/>
 
@@ -119,10 +91,10 @@ XSLT stylesheet to convert widlprocxml into html documentation.
             </li>
           </xsl:if>
           <xsl:if test="Exception">
-          <li><xsl:value-of select="$base-section-number - 1"/>. <a href="#exceptions">Exceptions</a>
+          <li><xsl:value-of select="$exception-section-number"/>. <a href="#exceptions">Exceptions</a>
             <ul class="toc">
               <xsl:for-each select="Exception">
-                <li><xsl:value-of select="$base-section-number - 1"/>.<xsl:number value="position()"/>. <a href="#{@id}"><xsl:value-of select="@name"/></a></li>
+                <li><xsl:value-of select="$exception-section-number"/>.<xsl:number value="position()"/>. <a href="#{@id}"><xsl:value-of select="@name"/></a></li>
               </xsl:for-each>
             </ul>
             </li>
@@ -154,7 +126,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 	<xsl:if test="Exception">
             <div class="exceptions" id="exceptions">
-                <h2><xsl:value-of select="$base-section-number - 1"/>. Exceptions</h2>
+                <h2><xsl:value-of select="$exception-section-number"/>. Exceptions</h2>
                 <xsl:apply-templates select="Exception"/>
             </div>
 
@@ -205,7 +177,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 <xsl:template match="Exception">
   <div class="exception" id="{@id}">
-        <h3>3.<xsl:number value="position()"/>. <xsl:value-of select="@name"/></h3>
+        <h3><xsl:value-of select="$exception-section-number" />.<xsl:number value="position()"/>. <xsl:value-of select="@name"/></h3>
         <xsl:apply-templates select="descriptive/brief"/>
         <xsl:apply-templates select="webidl"/>
         <xsl:apply-templates select="descriptive"/>

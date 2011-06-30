@@ -1,6 +1,6 @@
 
 /**
- * \brief W3C based Contacts interface.
+ * \brief W3C based Contacts interface. 
  *
  * The Contacts API defines the high-level interfaces required to obtain read access to a user's unified address book.
  *
@@ -17,7 +17,7 @@
  * \author WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
  * \version 1.0
  */
-module Contacts {
+module ContactsWrapper {
         /**
          * \brief Contacts specific errors.
          */

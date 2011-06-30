@@ -26,7 +26,7 @@ module attestation {
 	  * http://www.trustedcomputinggroup.org/files/resource_files/876A7F79-1D09-3519-AD321B21144AE93C/IWG_SKAE_Extension_1-00.pdf
 	  * however it is not defined here.
 	  */
-	interface X509 {		
+	interface X509Certificate {		
 		attribute TBSCertificate certificate;
 		attribute AlgorithmIdentifier signatureAlgorithm;
 		attribute byte[] signature;
@@ -34,13 +34,13 @@ module attestation {
 
 	interface TBSCertificate { 
 		attribute DOMString version;
-		attribute Integer serialNumber;
+		attribute unsigned long serialNumber;
 		attribute AlgorithmIdentifier signature;
 		attribute Name issuer;
 		attribute Validity validity;
 		attribute Name subject;
 		attribute SubjectPublicKeyInfo subjectPublicKeyInfo;
-		attribute Any? extensions;
+		attribute any extensions;
 	};
 	
 	interface Validity { 
@@ -170,7 +170,7 @@ module attestation {
      */
 
      attestationData attestPlatform (in byte[] nonce, in SubjectPublicKeyInfo key )
-			raises(AttestationAPIException);
+			raises(AttestationException);
 
 
     /**
@@ -186,7 +186,7 @@ module attestation {
      */
 
 
-     SubjectPublicKeyInfo getAttestationKey () raises(AttestationAPIException);
+     SubjectPublicKeyInfo getAttestationKey () raises(AttestationException);
 
 
     /**
@@ -201,7 +201,7 @@ module attestation {
 	 *
      */
     
-     X509Certificate getKeyCredential (in SubjectPublicKeyInfo key) raises(AttestationAPIException);
+     X509Certificate getKeyCredential (in SubjectPublicKeyInfo key) raises(AttestationException);
 
 
   };

@@ -100,6 +100,9 @@ cat > "$SPECHOME/apis/index.html" <<DELIM
 
      <h1 class="head">Webinos Device APIs</h1>
 </div>
+<div class="api">
+  <h2 class="head">APIs Specified by Webinos</h2>
+</div>
 <div id="content"><table><thead><tr><th>Specification</th><th>Summary</th></thead><tbody>
 DELIM
 
@@ -115,6 +118,32 @@ do
 	#echo '<li><a href="./'"$(basename "$i" .widl).html"'">'"$basename2"' API</a><br /></li>' >> "$SPECHOME/apis/index.html"
 done
 echo '</tbody></table></div>'  >> "$SPECHOME/apis/index.html"
+
+echo '<div class=api> <h2 class=head>Referred APIs used by Webinos</h2> </div>' >> "$SPECHOME/apis/index.html"
+
+echo '<div id="content"><table><thead><tr><th>Specification</th><th>Summary</th></thead><tbody>' >> "$SPECHOME/apis/index.html"
+
+echo '<tr><td><a href=devicestatus.html>The WAC devicestatus module</a></td><td><p>' >> "$SPECHOME/apis/index.html"
+echo 'This WAC API provides access to the information about the device status. The status information is organised as a tree structure utilising a vocabulary. <br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
+echo '<tr><td><a href=vocabulary.html>The devicestatus vocabulary module</a></td><td><p>' >> "$SPECHOME/apis/index.html"
+echo 'The vocabulary that defines the information available in the webinos device status API.<br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
+echo '<tr><td><a href=deviceinteraction.html>The WAC deviceinteraction module</a></td><td><p>' >> "$SPECHOME/apis/index.html"
+echo 'This WAC API allows applications the capability to access functions that allow them to interact with the end user.<br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
+echo '<tr><td><a href=deviceorientation.html>The W3C DeviceOrientation Event specification</a></td><td><p>' >> "$SPECHOME/apis/index.html"
+echo 'This specification defines several new DOM event types that provide information about the physical orientation and motion of a hosting device.<br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
+echo '<tr><td><a href=filereader.html>The W3C File API </a></td><td><p>' >> "$SPECHOME/apis/index.html"
+echo 'This specification provides an API for representing file objects in web applications, as well as programmatically selecting them and accessing their data.<br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
+echo '<tr><td><a href=filewriter.html>The W3C File API: Writer </a></td><td><p>' >> "$SPECHOME/apis/index.html"
+echo 'This specification defines an API for writing to files from web applications. This API is designed to be used in conjunction with, and depends on definitions in, other APIs and elements on the web platform such as the W3C File API.<br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
+echo '<tr><td><a href=filedirandsystem.html>The W3C File API: Directories and System</a></td><td><p>' >> "$SPECHOME/apis/index.html"
+echo 'This specification defines an API to navigate file system hierarchies, and defines a means by which a user agent may expose sandboxed sections of a user local filesystem to web applications. It builds on the File Writer API, which in turn built on the File API, each adding a different kind of functionality.<br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
+echo '<tr><td><a href=geolocation.html>The W3C Geolocation API</a></td><td><p>' >> "$SPECHOME/apis/index.html"
+echo 'This specification defines an API that provides scripted access to geographical location information associated with the hosting device.<br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
+echo '<tr><td><a href=mediacapture.html>The W3C Media Capture API</a></td><td><p>' >> "$SPECHOME/apis/index.html"
+echo 'This specification defines an API that provides access to the audio, image and video capture capabilities of the device.' >> "$SPECHOME/apis/index.html"
+echo '<br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
+echo '</tbody></table></div>' >> "$SPECHOME/apis/index.html"
+
 echo '<p>See also the <a href="patterns.html">Webinos design patterns and guidelines for APIs</a></p>'  >> "$SPECHOME/apis/index.html"
 echo '</body>' >> "$SPECHOME/apis/index.html"
 echo '</html>' >> "$SPECHOME/apis/index.html"
