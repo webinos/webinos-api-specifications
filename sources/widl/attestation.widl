@@ -48,7 +48,8 @@
 module attestation {
 
 	
-	/** \brief Definition of X509 certificate data structure taken from the ASN1 X509 Specifications and RFC 2459 http://www.ietf.org/rfc/rfc2459.txt
+	/** 
+	  * \brief Definition of X509 certificate data structure taken from the ASN1 X509 Specifications and RFC 2459 http://www.ietf.org/rfc/rfc2459.txt
 	  * We expect for TCG attestation that the SKAE extension to also be introduced, definition: 
 	  * http://www.trustedcomputinggroup.org/files/resource_files/876A7F79-1D09-3519-AD321B21144AE93C/IWG_SKAE_Extension_1-00.pdf
 	  * however it is not defined here.
@@ -59,7 +60,9 @@ module attestation {
 		readonly attribute byte[] signature;
 	};
 
-	/* \brief as defined in http://www.ietf.org/rfc/rfc2459.txt */
+	/**
+     * \brief as defined in http://www.ietf.org/rfc/rfc2459.txt 
+	 */
 	interface TBSCertificate { 
 		readonly attribute DOMString version;
 		readonly attribute Integer serialNumber;
@@ -71,34 +74,44 @@ module attestation {
 		readonly attribute Any? extensions;
 	};
 	
-	/* \brief as defined in http://www.ietf.org/rfc/rfc2459.txt */
+	/**
+     * \brief as defined in http://www.ietf.org/rfc/rfc2459.txt 
+	 */
 	interface Validity { 
 		readonly attribute Date notBefore; 
 		readonly attribute Date notAfter;
 	};
 	
-	/* \brief as defined in http://www.ietf.org/rfc/rfc2459.txt */
+	/**
+     * \brief as defined in http://www.ietf.org/rfc/rfc2459.txt 
+	 */
 	typedef sequence<namePair> namePairArray;
 	interface namePair {
 		readonly attribute DOMString key;
 		readonly attribute DOMString value;
 	};
 	
-	/* \brief as defined in http://www.ietf.org/rfc/rfc2459.txt */
+	/**
+     * \brief as defined in http://www.ietf.org/rfc/rfc2459.txt 
+	 */
 	interface AlgorithmIdentifier {
 	    readonly attribute DOMString identifier;
 		/* These are optional parameters */
 		readonly attribute DOMString? parameters;
 	};
 	
-	/* \brief as defined in http://www.ietf.org/rfc/rfc2459.txt */
+	/**
+     * \brief as defined in http://www.ietf.org/rfc/rfc2459.txt 
+	 */
 	interface SubjectPublicKeyInfo {
 		readonly attribute AlgorithmIdentifier algorithm;
 		readonly attribute byte[] publickKey;
 	};
 
 	
-	/* Exception handling for the attestation API */
+	/**
+	 * \brief Exception handling for the attestation API 
+	 */
 	exception AttestationException  {
      /**
 	   * \brief An unknown error occurred. 
