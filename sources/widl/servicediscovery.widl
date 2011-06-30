@@ -2,9 +2,14 @@
  * \brief The Discovery API 
  *
  * The Webinos Discovery API provide web applications with an API to discover services without any previous knowledge of the service.  
- * The API enables discovery of services that is in the device, directly connected to the device, available on the same local IP network or
- * trusted services registered in a personal zone. The API enables discovery of remote services located on the public Internet or behind 
- * a Firewall by using an overlaying networking model. The Discovery api hides the complexity of communicating with the remote peer in a trusted manner. 
+ * The API enables discovery of services that is exposed:
+ * 1. in the device
+ * 2. entities directly connected to the device, 
+ * 3. entities available on the same local IP network
+ * 4. trusted services registered in a personal zone. 
+ * The API enables discovery and invoking of remote services located outside the device. 
+ * The API utilizes an network overlaying  model that hides the complexity to communicating with a 
+ * remote peer in a trusted manner.  
  * 
  * Usage of the API assumes that the web application using the API is installed, trusted and that the user is
  * authenticated/authorized to use the API.
@@ -71,7 +76,7 @@ module discovery {
 		// If serviceId is known bind to the service directly. Assumes
 		// that serviceId is stored persistently or received via an out
 		// of band channel. 	 
-		serviceHandle = window.webinos.discovery.createServices().bind({onBind:bindCB}, serviceId);
+		serviceHandle = window.webinos.discovery.createService().bind({onBind:bindCB}, serviceId);
 	} 
 	else {
 		// Initiate a search query for a service of the type geolocation
@@ -97,7 +102,7 @@ module discovery {
 		 * <p><img src="http://dev.webinos.org/specifications/draft/infobar.png" alt="Illustration of possible Infobar" /><br /> Infobar offering to add new personal zones</p>
 		 * This infobar would lead to a personal zones management UI:
 		 * <p><img src="http://dev.webinos.org/specifications/draft/pz-add-ui.png" alt="Personal zone management UI" /><br />Personal zone management UI</p>
-		 * \param serviceType An input argument that defines which type of service that is requested.
+		 * \param serviceType An input argument that defines which type of service API that is requested. The serviceType is an URI that uniquely identifies the API. The URI could either be a http://www.w3.org/TR/2010/WD-api-perms-20101005/ URI to request an W3C Device API (for example http://www.w3.org/ns/api-perms/geolocation), a Webinos/WAC Feature URI to request a Webinos/WAC API (for example http://webinos.org/api/sensors.temperature) or the URI exposed by a Widget in the api-name attribute of the webinos:shared-api element for applications exposing APIs.  
 		 * \param findCallBack Callback interface used to report the outcome of the search process. 
 		 * \param options Defines search options. 
 		 * \param filter Defines a filter that be used to limit the service operation to certain constraints and context information. 
