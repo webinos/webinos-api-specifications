@@ -16,6 +16,9 @@
  * to retrieve contacts, in webinos contacts can also be retrieved using the findServices method of the
  * Service Discovery API.
  * 
+ * \def-api-feature http://www.w3.org/ns/api-perms/contacts.read 
+ * Read access to the address book.
+ *
  * \author W3C Editor's Draft 16 June 2011
  * \author Normative: <a href="http://www.w3.org/TR/2011/WD-contacts-api-20110616/">W3C Contacts API </a> 
  * \author WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
