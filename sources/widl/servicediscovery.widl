@@ -1,18 +1,19 @@
 /**
- * \brief The Discovery API 
+ * \brief Webinos Discovery API 
  *
  * The Webinos Discovery API provide web applications with an API to discover services without any previous knowledge of the service.  
- * The API enables discovery of services that is exposed:
- * 1. in the device
- * 2. entities directly connected to the device, 
- * 3. entities available on the same local IP network
- * 4. trusted services registered in a personal zone. 
- * The API enables discovery and invoking of remote services located outside the device. 
- * The API utilizes an network overlaying  model that hides the complexity to communicating with a 
- * remote peer in a trusted manner.  
+ * The API enables discovery of services that is exposed either:\n\n
+ * 1. in the device\n
+ * 2. by entities directly connected to the device,\n 
+ * 3. by entities available on the same local IP network\n
+ * 4. by trusted services registered in a personal zone. \n\n
+ * The Discovery API is not limited to discovery of local service but also enables discovery of remote services. 
+ * Once a service is found the API will provide service object that is used to bind to a service. The binding to a service will
+ * make sure that the user is authorized to use the service, create an implementation of the API and establish a communication path to the remote peer 
+ * providing the service. The service object utilizes the Webinos network overlaying model and hides the complexity of communicating over different bearers, addressing, traversing NAT/Firewalls and connection management. 
  * 
- * Usage of the API assumes that the web application using the API is installed, trusted and that the user is
- * authenticated/authorized to use the API.
+ * Prerequisites for the Discovery API is that the web application using the API is installed, trusted and that the user of
+ * of the device is authenticated and authorized to use the API.
  *
  * \def-api-feature http://webinos.org/api/discovery
  * \author Anders Isberg &lt;anders.isberg@sonyericsson.com&gt;
@@ -23,11 +24,12 @@ module discovery {
 	 * \brief The DiscoveryInterface interface provides functionality for discovery of services. 
 	 * The API supports the possibility to discover services based on a given service type either in 
 	 * a personal zone of trusted services or via other legacy discovery methods such as mDNS or UPnP. 
-	 * When searching for a service type the operation can be restricted by providing certain constraints and/or context information.  
+	 * When searching for a service type the operation can be restricted by providing certain constraints and/or context information
+	 * via a filter interface. 
 	 *
 	 * The code example below shows how an application initiates a search query
 	 * to find a geolocation service. Whenever a service is found, a new HTML selection item
-	 * is added to an HTML option list. Once the user selects a service, the usage of the service authorized and an implementation of
+	 * is added to an HTML option list. Once the user selects a service, the usage of the service is authorized and an implementation of
 	 * the API is instantiated by binding to the service.  
 	 * \code
 	var findHandle = 0;
@@ -48,7 +50,7 @@ module discovery {
 		selectlist.appendChild(option);
 	}
 	
-	// Callback that removes a service from the selection list of found services, when the service is not available any longer, e.g. out of coverage. 
+	// Callback that removes a service from the selection list of found services, when the service is not available any longer. 
 	function serviceLostCB(service) {	
 		var option = document.getElementById(service.id);
 	
@@ -62,7 +64,7 @@ module discovery {
 		myLocationService.navigator.geolocation.getCurrentPosition(showMap);
 	}
 	
-	// Select callback method that is invoked when user selects an option in the selection list 
+	// Event listner that is called when the 'change' event is dispatched on the HTML selection list.  
 	function serviceSelected(service) {	
 		// Stops the findServices operation
 		findHandle.cancel();
@@ -73,9 +75,9 @@ module discovery {
 	}
 	
 	if (serviceId) {
-		// If serviceId is known bind to the service directly. Assumes
+		// If serviceId is known, bind to the service directly. Assumes
 		// that serviceId is stored persistently or received via an out
-		// of band channel. 	 
+		// of band channel.  	 
 		serviceHandle = window.webinos.discovery.createService().bind({onBind:bindCB}, serviceId);
 	} 
 	else {
@@ -95,7 +97,8 @@ module discovery {
 	 */
 	[NoInterfaceObject] interface DiscoveryInterface  {
 		/**
-		 * \brief The findServices method initiates an asynchronous search query for services matching the requested serviceType and filter parameter. The method continues to run until the findServices method is canceled by the application or when maximum search timer expires.
+		 * \brief 	The findServices method initiates an asynchronous search query for services matching the requested serviceType and filter parameter. The method continues to run until 
+		 * the findServices method is canceled by the application or when the maximum search timer expires.
 		 * 
 		 * The zones in which services are to be searched are expected to be managed by the Webinos runtime engine (rather than the application developer).
 		 * As an example on how this zone management can be presented by a runtime engine:
@@ -111,7 +114,7 @@ module discovery {
 		 PendingOperation findServices(in ServiceType serviceType, in FindCallBack findCallBack, in optional Options options, in optional Filter filter)
 		 raises(DiscoveryExceptions);
 		/**
-		 * \brief The getServiceId method generates a service identity that can be shared to other peers to directly bind to a service without invoking a findServices operation.
+		 * \brief The getServiceId method generates a service identity that can be shared to other peers to directly bind to a service without invoking a findServices operation. 
 		 * \param sharedFunctionId Identity of the service exposed with the webinos:shared-function element in the manifest.
 		 * \throw DiscoveryExceptions 
 		 */
@@ -132,11 +135,11 @@ module discovery {
 	 */
 	[NoInterfaceObject] interface ServiceType {
 		/**
-	 	 * \brief 	URI used to identify which type of API that is requested. The URI shall be globally unique. The URI could either be:\n 
-	 	 *			1. W3C DAP API URI as defined in http://www.w3.org/TR/2010/WD-api-perms-20101005/,for example http://www.w3.org/ns/api-perms/geolocation,\n 
+	 	 * \brief 	URI used to identify which type of API that is requested. The URI could either be:\n\n 
+	 	 *			1. W3C DAP API URI as defined in http://www.w3.org/TR/2010/WD-api-perms-20101005/, for example http://www.w3.org/ns/api-perms/geolocation,\n 
 	 	 *			2. Webinos Feature URI that is defined for each API by Webinos, for example http://webinos.org/api/sensors.temperature,\n
 	 	 *			3. WAC Feature URI that is defined for each API by WAC, for example http://waclists.org/api/camera,\n
-	 	 *			4. an unique URI identifying an API exposed by a web application. The URI shall be the same URI exposed in the web application manifest in the api-name attribute of the webinos:shared-api element.  
+	 	 *			4. an unique URI identifying an API exposed by a web application. The URI shall be the same URI as exposed by the web application manifest in the api-name attribute of the webinos:shared-api element.\n  
 		 */
 		attribute DOMString api;
 	};
@@ -165,13 +168,23 @@ module discovery {
 	/**
 	 * \brief Service interface provides an API to bind to a specific service and monitoring
 	 * the current state of the service in an asynchronous manner. The process of binding
-	 * to a service involves:
-	 * 1. mutual authentication between the service and the personal zone
-	 * 2. in case of cross zone interworking, mutual authentication between the zones
-	 * 3. agreement on data handling obligations as set out in the service's privacy policy
-	 * 4. verifying access privileges and checks the need for elevated privileges
-	 * 5. instantiate an implementation of the api that can be used by applications to request services from the requested API.
-	 * Once the service object is instantiated, the object will act as an proxy communicating with the remote peer. 
+	 * to a service involves:\n\n
+	 * 1. mutual authentication between the service and the personal zone\n
+	 * 2. in case of cross zone interworking, mutual authentication between the zones\n
+	 * 3. agreement on data handling obligations as set out in the service's privacy policy\n
+	 * 4. verifying access privileges and checks the need for elevated privileges\n
+	 * 5. instantiate an implementation of the api that can be used by applications to request services from the requested API.\n\n
+	 * Once the service object is instantiated, the object will act as a proxy invoking methods under the window object of the remote peer.
+	 * For example an application that successfully binds to a "http://webinos.org/api/tv" API will be able to invoke method from the remote peer in the following manner:
+	 * \code
+	 succesBindCallBack(tvService) {
+	    // Invoke a remote method.
+		tvService.webinos.tv.display.setChannel(channel, success);
+		
+		// Register an event listner from event orginating from the remote peer.
+		tvService.addEventListener('channelchange', success);
+	 }  
+	 * \endcode
 	 */
 	
 	[NoInterfaceObject] interface Service {
@@ -188,17 +201,16 @@ module discovery {
 		 */
 		const unsigned short SERVICE_UNAVAILABLE = 2;
 		/**
-		 * \brief Current service state of the Service. 
+		 * \brief Current service state. 
 		 */
 		readonly attribute unsigned short state;
 		/**
-	 	 * \brief API is a global unique URI identifying the feature set provided when the bind has been successfully executed.
+	 	 * \brief API is a global unique URI identifying the type of API provided by the service. 
 	 	 */
 		readonly attribute DOMString api;
 		/**
 		 * \brief Id is a globally unique id representing the binding to the service. The id can be used
-		 * to resume the binding again to the service without invoking the 
-		 * findServices process again. 
+		 * to resume the binding again to the service without invoking the findServices process again. 
 		 */
 		readonly attribute DOMString id;
 		/**
@@ -215,7 +227,7 @@ module discovery {
 		readonly attribute DOMString icon;
 		/**
 		 * \brief bind Binds to the service uniquely identified by the service identity.  
-		 * \param bindCallBack Callback issued if a service is found.  The callback is called every time a new service is found matching the serviceType and filter. 
+		 * \param bindCallBack Asynchrounous callback to report the states of the bind operation and the availability of the service.  
 		 * \param serviceId Unique id of the binding to the particular service. If no serviceId is provided as an in parameter, the id attribute in the Service interface will be used to bind the service.
 		 * \throw DiscoveryExceptions
 		 */
@@ -235,7 +247,7 @@ module discovery {
 	 
 	 [Callback, NoInterfaceObject] interface BindCallBack {
 		/**
-		 * \brief Asynchronous success callback.      
+		 * \brief Asynchronous success callback.       
 		 * \param service An input argument representing the service.
 		 */
 		 void onBind(in Service service);
@@ -245,12 +257,12 @@ module discovery {
 		 */
 		 void onUnbind(in Service service);
 		/**
-		 * \brief Asynchronous callback indicating that the service is available again
+		 * \brief Asynchronous callback indicating that the service is available again.
 		 * \param service An input argument representing the service.      
 		 */		 
 		 void onServiceAvailable(in Service service);
 		/**
-		 * \brief Asynchronous indicating the service is temporarily unavailable.
+		 * \brief Asynchronous callback indicating the service is temporarily unavailable.
 		 * \param service An input argument representing the service.
 		 */		 		 
 		 void onServiceUnavailable(in Service service);	  
