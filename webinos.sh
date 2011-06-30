@@ -108,7 +108,7 @@ DELIM
 
 for i in $WIDLFILES
 do
-    if [ "$i" != "foo.widl" ] || [ "$i" != "contacts.widl" ] || [ "$i" != "calendar.widl" ]; 
+    if [ "$i" != "foo.widl" ] && [ "$i" != "contacts.widl" ] && [ "$i" != "calendar.widl" ]; 
     then
 	basename2=$(basename "$i" .widl)
 	htmlfile="$SPECHOME/apis/"$basename2".html"
