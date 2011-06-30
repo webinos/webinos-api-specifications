@@ -138,7 +138,7 @@ echo 'This specification defines an API to navigate file system hierarchies, and
 echo '<tr><td><a href=geolocation.html>The W3C Geolocation API</a></td><td><p>' >> "$SPECHOME/apis/index.html"
 echo 'This specification defines an API that provides scripted access to geographical location information associated with the hosting device.<br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
 echo '<tr><td><a href=mediacapture.html>The W3C Media Capture API</a></td><td><p>' >> "$SPECHOME/apis/index.html"
-echo 'This specification defines several new DOM event types that provide information about the physical orientation and motion of a hosting device.' >> "$SPECHOME/apis/index.html"
+echo 'This specification defines an API that provides access to the audio, image and video capture capabilities of the device.' >> "$SPECHOME/apis/index.html"
 echo '<br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
 echo '</tbody></table></div>' >> "$SPECHOME/apis/index.html"
 
