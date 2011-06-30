@@ -13,9 +13,9 @@
  */
 module authentication {
 
-  /*
-   * \brief The object returned when user authentication status is queried.  This contains information about when and how authentication occurred.
-   */
+  /**
+    * \brief The object returned when user authentication status is queried.  This contains information about when and how authentication occurred.
+    */
   [NoInterfaceObject]
   interface AuthStatus  {
   
@@ -48,9 +48,9 @@ module authentication {
 	 attribute DOMString? authMethodDetails;
   };
   
-  /*
-   * \brief Definition of error codes for authentication events
-   */
+  /**
+    * \brief Definition of error codes for authentication events
+    */
   [NoInterfaceObject]
   interface AuthError  {
      /**
@@ -82,25 +82,25 @@ module authentication {
 	
   };
   
-  /*
-   * \brief Success callback for authentication events.
-   */
+  /**
+    * \brief Success callback for authentication events.
+    */
   [Callback=FunctionOnly, NoInterfaceObject]
   interface AuthSuccessCB {
 	void onSuccess(AuthStatus status);
   };
 
-  /*
-   * \brief Error callback for authentication events.
-   */
+  /**
+    * \brief Error callback for authentication events.
+    */
   [Callback=FunctionOnly, NoInterfaceObject]
   interface AuthErrorCB {
 	void onError(AuthError error);
   };
   
- /*
-  * \brief Exception codes for authentication events
-  */
+ /**
+   * \brief Exception codes for authentication events
+   */
   exception AuthenticationException{ 
 	unsigned short code;
 	DOMString message;
@@ -112,9 +112,9 @@ module authentication {
   };
 
   
-  /*
-   * \brief The authentication interface provides three methods which allow applications to check the current user authentication status and prompt for re-authentication.
-   */
+  /**
+    * \brief The authentication interface provides three methods which allow applications to check the current user authentication status and prompt for re-authentication.
+    */
    
   [NoInterfaceObject]
   interface WebinosAuthenticationInterface {
