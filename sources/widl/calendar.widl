@@ -2,6 +2,9 @@
 /**
  * \brief W3C based Calendar interface.
  *
+ * This specification provides a wrapper that mandates the use of the  
+ * <a href="http://www.w3.org/TR/2011/WD-calendar-api-20110419/">W3C Calendar API </a> (W3C Working draft 14th April).
+ *
  * The Calendar API defines a high-level interface to access Calendar information such as events, reminders, alarms and other calendar information.
  *
  * The API itself is designed to be agnostic of any underlying calendaring service sources.
@@ -13,7 +16,10 @@
  * Note that while the W3C version, on which this specification is based on, provides only the ServiceCalendar
  * to retrieve calendars, in webinos calendars can also be retrieved using the findServices method of the
  * Service Discovery API.
- *  
+ *
+ * \def-api-feature http://www.w3.org/ns/api-perms/calendar.read
+ * Read access to the calendar book.
+ * 
  * \author W3C Working Draft 19 April 2011  
  * \author Normative: <a href="http://www.w3.org/TR/2011/WD-calendar-api-20110419/">W3C Calendar API </a>
  * \author WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
