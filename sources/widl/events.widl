@@ -63,7 +63,7 @@ function onMsgError(evt, recipient, error)
   // E.g.: Stefano did not receive your message saying: "How are you?"
   //       Event refused (4)
   alert(getName(recipient) + ' did not receive your message saying: "'
-        + evt.payload + '\\n' + error.message + '(' + error.code + ')');
+        + evt.payload + '"\\n' + error.message + '(' + error.code + ')');
 }
 
 // Listener to DOM "click" event for some "Send Message" button.
@@ -102,7 +102,7 @@ document.onLoad = function() {
  *
  * \def-api-feature http://webinos.org/api/events
  * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt;
- * \version 0.9.12
+ * \version 0.9.13
  */
 
 module events {
@@ -637,7 +637,7 @@ module events {
 				in optional boolean withTimeStamp,
 				in optional DOMTimeStamp? expiryTimeStamp,
 				in optional boolean addressingSensitive)
-		      raises(WebinosEventException);
+			     raises(WebinosEventException);
 		/**
 		 * \brief Registers an event listener.
 		 *
