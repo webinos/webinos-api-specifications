@@ -23,7 +23,7 @@
  * \def-api-feature http://webinos.org/api/vehicle.controls
  * Identifies control data (e.g. whipers and lights) of a vehicle
  * 
- * \author Simon Isenberg &lt;Simon.Isenberg@bmw.de&gt;
+ * \author Simon Isenberg, BMW Forschung & Technik &lt;Simon.Isenberg@bmw.de&gt;
  * \version 0.7
  */
 module vehicle{
