@@ -132,12 +132,11 @@ module discovery {
 	 */
 	[NoInterfaceObject] interface ServiceType {
 		/**
-	 	 * \brief 	URI used to identify the requested API's feature set. The URI shall be globally unique. 
-	 	 * 			The URI could either be a 
-	 	 *			1. W3C DAP API URI as defined in http://www.w3.org/TR/2010/WD-api-perms-20101005/,for example http://www.w3.org/ns/api-perms/geolocation, 
-	 	 *			2. Webinos Feature URI that is defined for each API by Webinos, for example http://webinos.org/api/sensors.temperature,
-	 	 *			2. WAC Feature URI that is defined for each API by WAC, for example http://waclists.org/api/camera,
-	 	 *			3. A unique URI identifying API exposed by a web application. The URI will be exposed in the web application manifest using api-name attribute in the webinos:shared-api element.  
+	 	 * \brief 	URI used to identify which type of API that is requested. The URI shall be globally unique. The URI could either be:\n 
+	 	 *			1. W3C DAP API URI as defined in http://www.w3.org/TR/2010/WD-api-perms-20101005/,for example http://www.w3.org/ns/api-perms/geolocation,\n 
+	 	 *			2. Webinos Feature URI that is defined for each API by Webinos, for example http://webinos.org/api/sensors.temperature,\n
+	 	 *			3. WAC Feature URI that is defined for each API by WAC, for example http://waclists.org/api/camera,\n
+	 	 *			4. an unique URI identifying an API exposed by a web application. The URI shall be the same URI exposed in the web application manifest in the api-name attribute of the webinos:shared-api element.  
 		 */
 		attribute DOMString api;
 	};
