@@ -7,8 +7,8 @@
  * 2. by entities directly connected to the device,\n 
  * 3. by entities available on the same local IP network\n
  * 4. by trusted services registered in a personal zone. \n\n
- * The Discovery API is not limited to discovery of local service but also enables discovery of remote services. 
- * Once a service is found the API will provide service object that is used to bind to a service and monitor the availability of the service. The binding to a service will
+ * The Discovery API is not limited to discovery of local services but also enables discovery of remote services. 
+ * Once a service is found the API will provide a service object that is used to bind to a service and monitor the availability of the service. The binding to a service will
  * make sure that the user is authorized to use the service, create an implementation of the API and establish a communication path to the remote peer 
  * providing the service. The service object hides the complexity of communicating over different bearers, do cross network addressing, traversing NAT/Firewalls and connection management. 
  * 
@@ -101,13 +101,12 @@ module discovery {
 	[NoInterfaceObject] interface DiscoveryInterface  {
 		/**
 		 * \brief 	The findServices method initiates an asynchronous search query for services matching the requested serviceType and filter parameter. The method continues to search for services until 
-		 * the findServices method is canceled by the application or when the maximum search timer expires.
-		 * 
-		 * The zones in which services are to be searched are expected to be managed by the Webinos runtime engine (rather than the application developer).
+		 * the findServices method is canceled by the application or when the maximum search timer expires. The zones in which services are to be searched are expected to be managed by the Webinos runtime engine (rather than the application developer).
 		 * As an example on how this zone management can be presented by a runtime engine:
 		 * <p><img src="http://dev.webinos.org/specifications/draft/infobar.png" alt="Illustration of possible Infobar" /><br /> Infobar offering to add new personal zones</p>
 		 * This infobar would lead to a personal zones management UI:
 		 * <p><img src="http://dev.webinos.org/specifications/draft/pz-add-ui.png" alt="Personal zone management UI" /><br />Personal zone management UI</p>
+		 *
 		 * \param serviceType An input argument that defines which type of API that is requested. The serviceType is an URI that uniquely identifies the API.   
 		 * \param findCallBack Callback interface used to report the outcome of the search process. 
 		 * \param options Defines search options. 
