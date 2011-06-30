@@ -113,10 +113,11 @@ module discovery {
 		 * \param filter Defines a filter that be used to limit the service operation to certain constraints and context information. 
 		 * \throw DiscoveryExceptions 
 		 */
-		 PendingOperation findServices(	in ServiceType serviceType, 
-		 								in FindCallBack findCallBack, 
-		 								in optional Options options, 
-		 								in optional Filter filter)
+		 PendingOperation findServices(	
+		 	in ServiceType serviceType, 
+		 	in FindCallBack findCallBack, 
+		 	in optional Options options, 
+		 	in optional Filter filter)
 		 raises(DiscoveryExceptions);
 		 
 		/**
