@@ -9,10 +9,6 @@
  *
  * The API itself is designed to be agnostic of any underlying calendaring service sources.
  *
- * A set of Security and Privacy Considerations are presented for the discretion of both implementors of the Calendar API and recipients of calendaring information (i.e. web pages). This specification provides a set of non-normative User Interaction Guidelines demonstrating an example user experience that is compliant with the Security and Privacy Considerations provided herein.
- *
- * This specification also provides informative examples illustrating how to add and update calendar events, utilising existing web platform APIs. 
- *
  * Note that while the W3C version, on which this specification is based on, provides only the ServiceCalendar
  * to retrieve calendars, in webinos calendars can also be retrieved using the findServices method of the
  * Service Discovery API.
