@@ -382,7 +382,6 @@ module vehicle{
 	*	}
 	* \endcode
 	*/
-	[NoInterfaceObject]
 	interface ControlEvent : VehicleEvent{
 		/**
 		* \brief Constant indicates a change for the fog light in the front. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of fogs light in the front.
@@ -465,7 +464,6 @@ module vehicle{
 	* \brief The interface defines the navigation event.
 	*  The identifiers for the different navigation events are defined in the constants DESTINATTION_*.
 	*/
-	[NoInterfaceObject]
 	interface NavigationEvent : VehicleEvent{
 		/**
 		* \brief Constant defines the event that the destination has been reached. This constant is used as an identifier for a NavigationEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for destination reached.
@@ -512,7 +510,6 @@ module vehicle{
 	*	}
 	* \endcode
 	*/
-	[NoInterfaceObject]
 	interface ParkSensorsEvent : VehicleEvent{
 		/**
 		* \brief Constant defines that the event was emitted by the park sensors in the front. This constant is used as an identifier for a ParkSensorEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the park sensors in the front.
@@ -566,7 +563,6 @@ module vehicle{
 	* }				
 	* \endcode
 	*/
-	[NoInterfaceObject]
 	interface ShiftEvent : VehicleEvent{
 		/**
 		* \brief Constant defines shift event. This constant is used as an identifier for a shift event and a non-recurring vehicle data request using the method webinos.vehicle.get() for the gear.
@@ -654,7 +650,6 @@ module vehicle{
 	*}
 	* \endcode
 	*/
-	[NoInterfaceObject]
 	interface TripComputerEvent : VehicleEvent{
 		/**
 		* \brief Constant defines a trip computer event. This constant is used as an identifier for a trip computer event and a non-recurring trip  data request using the method webinos.vehicle.get() for trip computer data.
