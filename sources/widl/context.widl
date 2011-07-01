@@ -1,23 +1,28 @@
 /**
  * \brief The Context API 
  *
- * The Context API defines the high-level interfaces required to obtain access to a user's context data.
+ * The Context API defines the high-level interfaces required to obtain access to a user's context data. The API supports two basic ways of accessing context data:
+ * 
+ * 1. executing a query against the context data storage and retrieving context data through the query results.
+ * 
+ * 2. subscribing to receive real time context data updates as soon as a context related event happens.
+ * 
  *
  * \def-api-feature http://webinos.org/api/context
  * Acccess to all the module. This feature provides access to the whole API.
- * Security enforcement may depend on the query requested by the developer.
+ * Security and Privacy enforcement may depend on the query or subscription requested by the developer.
  *
  * \author Heiko Desruelle &lt;heiko.desruelle@intec.ugent.be&gt;
  * \author Dieter Blomme &lt;dieter.blomme@intec.ugent.be&gt;
+ * \author George Gionis &lt;gionis@epu.ntua.gr&gt;
  * \version 0.1 
  */
 module context {
 
   /**
-   * \brief Defines what is instantiated in initialization 
+   * \brief Defines what is instantiated in initialization. 
    * 
-   * There will be a webinos.context object that allows accessing the
-   * functionality of this module
+   * There will be a webinos.context object that allows accessing the    * functionality of this module.
    * 
    * \def-instantiated 
    * \api-feature http://webinos.org/api/context
@@ -28,7 +33,7 @@ module context {
   webinos implements ContextManager;
 
   /**
-   * \brief Entry point for the context API  
+   * \brief This is the entry point for the context API. The interface provides the two basic methods to access the User's context data, i.e. query or subscribe to updates. 
    *
    * TODO: Long description
    *
@@ -39,27 +44,73 @@ module context {
   [NoInterfaceObject] interface ContextManager {
 
     /**
-     * \brief Performs a context query
+     * \brief Performs a context query against the context storage.
      *
-     * TODO: Process that is performed when the query executed. 
+     * When this method is invoked it executes the provided query against the context storage. The context storage is a collection context objects, each one with specific attributes, which hold context data that have been acquired over time by identifying a number of context related events. The Query parameter that this method uses specifies what context data (i.e. from which context objects) should be retrieved. 
+	 *
+	 * Mediation by policy and security: this method, as it provides application with data (context) about the user, is expected to have privacy considerations. Therefore the system is able to ignore the request of an app to receive context data if the User Privacy Policy dictates so (i.e. the user has not authorized the app to access the context data it ask for in the Query parameter).
      *
      * \code
-     * // This should include a more meaningful example
-     * var text = foo.getFoo("webinos");
-     * alert("Foo returned " + text);
+	 * TODO
      * \endcode
      *
-     * \param successCallback To be invoked if the query executes successfully
-     * \param errorCallback To be invoked in case an error occurs
-     * \param query 
-     * \return A string with a human readable string
+     * \param successCallback Function to be invoked if the asynchronous query operation completes successfully.
+     * \param errorCallback Function to be invoked if the asynchronous query operation results in errors.
+     * \param query The Query object describing the query to be executed against the context storage.
+     * \return void call
      * \throw ContextError with error code TYPE_MISMATCH_ERR if 
      * the input parameter is not compatible with the expected type for 
      * that parameter.
      */
     void executeQuery(in QuerySuccessCallback successCallback,
-                      in ErrorCallback? errorCallback,
+                      in QueryErrorCallback? errorCallback,
                       in Query query)
+         raises(ContextError);
+  
+  /**
+     * \brief Registers the function to be notifies when a context related event occurs.
+     *
+     * When this method is invoked, the implementation must register the (app) function that is passed in the eventHandler argument as the hander function that will be notified when the context related event, which in turn is identified in the eventIdentifier, happens. This function will be invoked every time the indicated event occurs until the unsubscribe method is invoked to cancel the subscription. 
+	 *
+	 * If the subscription is successfully created, an identifier for the handler is created and returned in subscriptionSuccessCallback so that it is possible to cancel the subscription. If the subscription cannot be created, the subscriptionErrorCallback contains an error code that describes the reason for the error. 
+	 *
+	 * Mediation by policy and security: this method, as it can provide an application with real-time data (context) about the user, is expected to have privacy considerations. Therefore the system is able to ignore the request of an app to receive context data if the User Privacy Policy dictates so (i.e. the user has not authorized the app to access the context data of the dictated event).
+     *
+     * \code
+	 * TODO
+     * \endcode
+     *
+     * \param subscribeSuccessCallback Function to be invoked if the asynchronous subscribe request completes successfully.
+     * \param subscribeErrorCallback Function to be invoked if the asynchronous subscribe request results in errors.
+     * \param eventHandler The function to be invoked when the dictated event occurs.
+	 * \param eventIdentifier The event identifier, for example "UserProfileUpdate", "ShoppingBasketCheckout".
+     * \return void call
+     * \throw ContextError with error code TYPE_MISMATCH_ERR if 
+     * the input parameter is not compatible with the expected type for 
+     * that parameter.
+     */
+    void subscribeContextEvent(in SubscribeSuccessCallback subscribeSuccessCallback,
+                      in SubscribeErrorCallback? subscribeErrorCallback,
+                      in OccuringEvent eventHandler,
+					  in DOMString eventIdentifier)
+         raises(ContextError);
+  
+  /**
+     * \brief Cancels a subscription to a context related event.
+     *
+     * If the subscriptionIdentifier argument is valid and corresponds to a subscription already in place the subscription process MUST be effectivelly stoped. If the subscriptionHandler argument does not correspond to a valid subscription, the method should return without any further action.
+     *
+     * \code
+	 * TODO
+     * \endcode
+     *
+     * \param subscriptionIdentifier The identifier of the subscription, returned by subscribeContextEvent().
+     * \return void call
+     * \throw ContextError with error code TYPE_MISMATCH_ERR if 
+     * the input parameter is not compatible with the expected type for 
+     * that parameter.
+     */
+    void unsubscribe(in unsigned long subscriptionIdentifier)
          raises(ContextError);
   };
 
@@ -99,12 +150,12 @@ module context {
    };
 
   /**
-   * \brief Interface for callbacks indicating success of performQuery() operation. 
+   * \brief Interface for callbacks indicating success of executeQuery() operation. 
    *
    */         
   [Callback=FunctionOnly, NoInterfaceObject] interface QuerySuccessCallback {        
     /**
-     * \brief Callback on success of a performQuery() operation
+     * \brief Callback on success of a executeQuery() operation
      * \param queryResult Result of the query operation serialized as a json string, see <a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL query language for RDF</a>. 
      * \return void                 
      */
@@ -112,16 +163,271 @@ module context {
   };
         
   /**
-   * \brief Interface for callbacks indicating error of performQuery() operation. 
+   * \brief Interface for callbacks indicating error of executeQuery() operation. 
    */         
-  [Callback=FunctionOnly, NoInterfaceObject] interface ErrorCallback  {        
+  [Callback=FunctionOnly, NoInterfaceObject] interface QueryErrorCallback  {        
     /**
-     * \brief Callback on failure of a performQuery() operation
+     * \brief Callback on failure of a executeQuery() operation
      * \param error The ContextError object capturing the type of the error.
      * \return void                 
      */
     void onerror (ContextError error);
   };
+  
+   /**
+   * \brief Interface for callbacks indicating success of subscribeContextEvent() operation. 
+   *
+   */         
+  [Callback=FunctionOnly, NoInterfaceObject] interface SubscribeSuccessCallback {        
+    /**
+     * \brief Callback on success of a subscribeContextEvent() operation
+     * \param subscriptionIdentifier A subscription handler that can be later used to cancel the subscription. 
+     * \return void                 
+     */
+    void onsuccess (unsigned long subscriptionIdentifier);
+  };
+  
+  /**
+   * \brief Interface for callbacks indicating error of subscribeContextEvent() operation. 
+   */         
+  [Callback=FunctionOnly, NoInterfaceObject] interface SubscribeErrorCallback  {        
+    /**
+     * \brief Callback on failure of a subscribeContextEvent() operation
+     * \param error The ContextError object capturing the type of the error.
+     * \return void                 
+     */
+    void onerror (ContextError error);
+  };
+  
+   /**
+   * \brief Interface for specifying the method called when a new context related event occurs. 
+   *
+   * This interface specifies a function that provides a serialized json string of the context data retrieved from the happening of a context related event.
+   */         
+  [Callback=FunctionOnly, NoInterfaceObject] interface OccuringEvent {        
+    /**
+     * \brief Method invoked when the context related event occurs.
+     * \param eventContextData The context data acquired by the event. 
+     * \return void                 
+     */
+    void onContextEvent (DOMString eventContextData);
+  };
         
 };
 
+/**
+ * \brief The Context API 
+ *
+ * The Context API defines the high-level interfaces required to obtain access to a user's context data. The API supports two basic ways of accessing context data:
+ * 
+ * 1. executing a query against the context data storage and retrieving context data through the query results.
+ * 
+ * 2. subscribing to receive real time context data updates as soon as a context related event happens.
+ * 
+ *
+ * \def-api-feature http://webinos.org/api/context
+ * Acccess to all the module. This feature provides access to the whole API.
+ * Security and Privacy enforcement may depend on the query or subscription requested by the developer.
+ *
+ * \author Heiko Desruelle &lt;heiko.desruelle@intec.ugent.be&gt;
+ * \author Dieter Blomme &lt;dieter.blomme@intec.ugent.be&gt;
+ * \author George Gionis &lt;gionis@epu.ntua.gr&gt;
+ * \version 0.1 
+ */
+module context {
+
+  /**
+   * \brief Defines what is instantiated in initialization. 
+   * 
+   * There will be a webinos.context object that allows accessing the    * functionality of this module.
+   * 
+   * \def-instantiated 
+   * \api-feature http://webinos.org/api/context
+   */
+  [NoInterfaceObject] interface ContextManagerHook {
+    readonly attribute ContextManager context; 
+  };
+  webinos implements ContextManager;
+
+  /**
+   * \brief This is the entry point for the context API. The interface provides the two basic methods to access the User's context data, i.e. query or subscribe to updates. 
+   *
+   * TODO: Long description
+   *
+   * \code
+   * TODO
+   * \endcode
+   */
+  [NoInterfaceObject] interface ContextManager {
+
+    /**
+     * \brief Performs a context query against the context storage.
+     *
+     * When this method is invoked it executes the provided query against the context storage. The context storage is a collection context objects, each one with specific attributes, which hold context data that have been acquired over time by identifying a number of context related events. The Query parameter that this method uses specifies what context data (i.e. from which context objects) should be retrieved. 
+	 *
+	 * Mediation by policy and security: this method, as it provides application with data (context) about the user, is expected to have privacy considerations. Therefore the system is able to ignore the request of an app to receive context data if the User Privacy Policy dictates so (i.e. the user has not authorized the app to access the context data it ask for in the Query parameter).
+     *
+     * \code
+	 * TODO
+     * \endcode
+     *
+     * \param successCallback Function to be invoked if the asynchronous query operation completes successfully.
+     * \param errorCallback Function to be invoked if the asynchronous query operation results in errors.
+     * \param query The Query object describing the query to be executed against the context storage.
+     * \return void call
+     * \throw ContextError with error code TYPE_MISMATCH_ERR if 
+     * the input parameter is not compatible with the expected type for 
+     * that parameter.
+     */
+    void executeQuery(in QuerySuccessCallback successCallback,
+                      in QueryErrorCallback? errorCallback,
+                      in Query query)
+         raises(ContextError);
+  
+  /**
+     * \brief Registers the function to be notifies when a context related event occurs.
+     *
+     * When this method is invoked, the implementation must register the (app) function that is passed in the eventHandler argument as the hander function that will be notified when the context related event, which in turn is identified in the eventIdentifier, happens. This function will be invoked every time the indicated event occurs until the unsubscribe method is invoked to cancel the subscription. 
+	 *
+	 * If the subscription is successfully created, an identifier for the handler is created and returned in subscriptionSuccessCallback so that it is possible to cancel the subscription. If the subscription cannot be created, the subscriptionErrorCallback contains an error code that describes the reason for the error. 
+	 *
+	 * Mediation by policy and security: this method, as it can provide an application with real-time data (context) about the user, is expected to have privacy considerations. Therefore the system is able to ignore the request of an app to receive context data if the User Privacy Policy dictates so (i.e. the user has not authorized the app to access the context data of the dictated event).
+     *
+     * \code
+	 * TODO
+     * \endcode
+     *
+     * \param subscribeSuccessCallback Function to be invoked if the asynchronous subscribe request completes successfully.
+     * \param subscribeErrorCallback Function to be invoked if the asynchronous subscribe request results in errors.
+     * \param eventHandler The function to be invoked when the dictated event occurs.
+	 * \param eventIdentifier The event identifier, for example "UserProfileUpdate", "ShoppingBasketCheckout".
+     * \return void call
+     * \throw ContextError with error code TYPE_MISMATCH_ERR if 
+     * the input parameter is not compatible with the expected type for 
+     * that parameter.
+     */
+    void subscribeContextEvent(in SubscribeSuccessCallback subscribeSuccessCallback,
+                      in SubscribeErrorCallback? subscribeErrorCallback,
+                      in OccuringEvent eventHandler,
+					  in DOMString eventIdentifier)
+         raises(ContextError);
+  
+  /**
+     * \brief Cancels a subscription to a context related event.
+     *
+     * If the subscriptionIdentifier argument is valid and corresponds to a subscription already in place the subscription process MUST be effectivelly stoped. If the subscriptionHandler argument does not correspond to a valid subscription, the method should return without any further action.
+     *
+     * \code
+	 * TODO
+     * \endcode
+     *
+     * \param subscriptionIdentifier The identifier of the subscription, returned by subscribeContextEvent().
+     * \return void call
+     * \throw ContextError with error code TYPE_MISMATCH_ERR if 
+     * the input parameter is not compatible with the expected type for 
+     * that parameter.
+     */
+    void unsubscribe(in unsigned long subscriptionIdentifier)
+         raises(ContextError);
+  };
+
+  /**
+   * \brief Query interface,
+   *
+   * TODO: Detail if this the right content for the query 
+   */
+   [Callback, NoInterfaceObject] interface Query {
+
+    /**
+     * \brief query content in xml format
+     *
+     * <a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL query language for RDF</a>
+     */
+    attribute SPARQLquery xmlQuery;
+  };
+  
+  /**
+   * \brief Defines the  error codes for this module
+   */
+  [NoInterfaceObject] interface ContextError {
+    /**
+     * \brief Security Error 
+     */
+     const unsigned short SECURITY_ERR = 1;
+
+    /**
+     * \brief invalid query 
+     */
+     const unsigned short INVALID_QUERY_ERR = 2;
+
+    /**
+     * \brief invalid query 
+     */
+     const unsigned short TYPE_MISMATCH_ERR = 3;
+   };
+
+  /**
+   * \brief Interface for callbacks indicating success of executeQuery() operation. 
+   *
+   */         
+  [Callback=FunctionOnly, NoInterfaceObject] interface QuerySuccessCallback {        
+    /**
+     * \brief Callback on success of a executeQuery() operation
+     * \param queryResult Result of the query operation serialized as a json string, see <a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL query language for RDF</a>. 
+     * \return void                 
+     */
+    void onsuccess (SPARQLquery queryResult);
+  };
+        
+  /**
+   * \brief Interface for callbacks indicating error of executeQuery() operation. 
+   */         
+  [Callback=FunctionOnly, NoInterfaceObject] interface QueryErrorCallback  {        
+    /**
+     * \brief Callback on failure of a executeQuery() operation
+     * \param error The ContextError object capturing the type of the error.
+     * \return void                 
+     */
+    void onerror (ContextError error);
+  };
+  
+   /**
+   * \brief Interface for callbacks indicating success of subscribeContextEvent() operation. 
+   *
+   */         
+  [Callback=FunctionOnly, NoInterfaceObject] interface SubscribeSuccessCallback {        
+    /**
+     * \brief Callback on success of a subscribeContextEvent() operation
+     * \param subscriptionIdentifier A subscription handler that can be later used to cancel the subscription. 
+     * \return void                 
+     */
+    void onsuccess (unsigned long subscriptionIdentifier);
+  };
+  
+  /**
+   * \brief Interface for callbacks indicating error of subscribeContextEvent() operation. 
+   */         
+  [Callback=FunctionOnly, NoInterfaceObject] interface SubscribeErrorCallback  {        
+    /**
+     * \brief Callback on failure of a subscribeContextEvent() operation
+     * \param error The ContextError object capturing the type of the error.
+     * \return void                 
+     */
+    void onerror (ContextError error);
+  };
+  
+   /**
+   * \brief Interface for specifying the method called when a new context related event occurs. 
+   *
+   * This interface specifies a function that provides a serialized json string of the context data retrieved from the happening of a context related event.
+   */         
+  [Callback=FunctionOnly, NoInterfaceObject] interface OccuringEvent {        
+    /**
+     * \brief Method invoked when the context related event occurs.
+     * \param eventContextData The context data acquired by the event. 
+     * \return void                 
+     */
+    void onContextEvent (DOMString eventContextData);
+  };
+        
+};
