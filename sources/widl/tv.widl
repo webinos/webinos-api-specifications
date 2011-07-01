@@ -270,7 +270,7 @@ interface Channel {
   \</script>
  \endcode
  */
-[NoInterfaceObject] interface ChannelChangeEvent : Event {
+interface ChannelChangeEvent : Event {
  /**
    * \brief The new channel.
    */
