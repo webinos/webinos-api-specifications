@@ -142,7 +142,7 @@ echo 'This specification defines an API for writing to files from web applicatio
 echo '<tr><td><a href=filedirandsystem.html>The W3C File API: Directories and System</a></td><td><p>' >> "$SPECHOME/apis/index.html"
 echo 'This specification defines an API to navigate file system hierarchies, and defines a means by which a user agent may expose sandboxed sections of a user local filesystem to web applications. It builds on the File Writer API, which in turn built on the File API, each adding a different kind of functionality.<br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
 echo '<tr><td><a href=gallery.html>The W3C Gallery API</a></td><td><p>' >> "$SPECHOME/apis/index.html"
-echo 'This specification defines an API that provides to the media items stored in the device gallery.<br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
+echo 'This specification defines an API that provides access to the media items stored in the device gallery.<br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
 echo '<tr><td><a href=geolocation.html>The W3C Geolocation API</a></td><td><p>' >> "$SPECHOME/apis/index.html"
 echo 'This specification defines an API that provides scripted access to geographical location information associated with the hosting device.<br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
 echo '<tr><td><a href=mediacapture.html>The W3C Media Capture API</a></td><td><p>' >> "$SPECHOME/apis/index.html"
