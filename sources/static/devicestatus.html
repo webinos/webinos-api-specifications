@@ -52,7 +52,7 @@ This document describes the functionality that Webinos devices should implement 
 </div>
 </div>
 <p> This section is NORMATIVE.<p> 
-<p> Webinos implementations MUST support WAC Device Status specification <a href="#ref-devicestatus" shape=rect>[DEVICESTATUS]</a>.<p> 
+<p> Webinos implementations MUST support WAC Device Status specification <a href="#ref-devicestatus" shape=rect>[DEVICESTATUS]</a>. The implementations MUST also support the vocabulary defined by Webinos <a href="#ref-wosvoc" shape=rect>[WEBINOSVOC]</a> for accessing the device status information.<p> 
 <p> In order to use this API, access to it must be declared in the widget configuration document (i.e. config.xml). This declaration is done through the features http://wacapps.net/api/devicestatus, http://wacapps.net/api/devicestatus.deviceinfo or http://wacapps.net/api/devicestatus.networkinfo. </p>
 </div>
 <div class="section" lang="en">
@@ -79,7 +79,7 @@ This document describes the functionality that Webinos devices should implement 
 </div>
 </div>
 <p> This section is INFORMATIVE.<p> 
-<p> For completeness, this specification includes a copy of the WebIDL declaration included in the WAC Device Status specification <a href="#ref-devicestatus" shape=rect>[DEVICESTATUS]</a>. The referred specification includes all the details needed to create a conformant implementationas well as a reference to the WAC Vocabulary <a href="#ref-vocabulary" shape=rect>[DEVICESTATUSVOC]</a>.</p>
+<p> For completeness, this specification includes a copy of the WebIDL declaration included in the WAC Device Status specification <a href="#ref-devicestatus" shape=rect>[DEVICESTATUS]</a>. The referred specification includes all the details needed to create a conformant implementation as well as a reference to the WAC Vocabulary <a href="#ref-vocabulary" shape=rect>[DEVICESTATUSVOC]</a>. Please note that Webinos does not use WAC Vocabulary but a Webinos specific one <a href="#ref-devicestatus" shape=rect>[WEBINOSVOC]</a>.</p>
 
 <div id="container" ><div ><span class="signatureBlockTitle"><b>DeviceapisDeviceStatusManager Interface</b></span><pre class="webidl prettyprint">
 [NoInterfaceObject] interface DeviceapisDeviceStatusManager {
@@ -237,8 +237,11 @@ webinos implements DeviceapisDeviceStatusManager;
       , see <a href="http://specs.wacapps.net/2.0/jun2011/deviceapis/devicestatus.html">http://specs.wacapps.net/2.0/jun2011/deviceapis/devicestatus.html</a>
     </dd>
   <dt><a id=ref-vocabulary>[DEVICESTATUSVOC]</a></dt>
-    <dd>NORMATIVE: WAC Device Status Vocabulary (Approved Release Version - June 2011)
+    <dd>INFORMATIVE: WAC Device Status Vocabulary (Approved Release Version - June 2011)
       , see <a href="http://specs.wacapps.net/2.0/jun2011/deviceapis/vocabulary.html">http://specs.wacapps.net/2.0/jun2011/deviceapis/vocabulary.html</a>
+    </dd>
+  <dt><a id=ref-wosvoc>[WEBINOSVOC]</a></dt>
+    <dd>NORMATIVE: Webinos Device Status <a href="vocabulary.html">Vocabulary</a>
     </dd>
 </dl>
 </div>

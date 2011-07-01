@@ -1,6 +1,9 @@
 
 /**
- * \brief W3C based Contacts interface.
+ * \brief W3C based Contacts interface. 
+ *
+ * This specification provides a wrapper that mandates the use of the 
+ * <a href="http://www.w3.org/TR/2011/WD-contacts-api-20110616/">W3C Contacts API </a> (Editor's draft 16th June).
  *
  * The Contacts API defines the high-level interfaces required to obtain read access to a user's unified address book.
  *
@@ -13,11 +16,15 @@
  * to retrieve contacts, in webinos contacts can also be retrieved using the findServices method of the
  * Service Discovery API.
  * 
- * \author W3C Editor's Draft 25 May 2011
+ * \def-api-feature http://www.w3.org/ns/api-perms/contacts.read 
+ * Read access to the address book.
+ *
+ * \author W3C Editor's Draft 16 June 2011
+ * \author Normative: <a href="http://www.w3.org/TR/2011/WD-contacts-api-20110616/">W3C Contacts API </a> 
  * \author WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
  * \version 1.0
  */
-module Contacts {
+module ContactsWrapper {
         /**
          * \brief Contacts specific errors.
          */

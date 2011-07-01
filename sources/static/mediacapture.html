@@ -17,7 +17,7 @@
 <hr>
 <h2>Abstract</h2>
 <div class="brief"><p>
-This document describes the functionality that Webinos devices should implement for retrieving information. 
+This document describes the functionality that Webinos devices should implement for capturing media. 
 </p></div>
 
 <div class="toc">
@@ -54,7 +54,7 @@ This document describes the functionality that Webinos devices should implement 
 </div>
 <p> This section is NORMATIVE.<p> 
 <p> Webinos implementations MUST support W3C Media Capture API specification <a href="#ref-medicapture" shape=rect>[MEDIACAPTURE]</a>.<p> 
-<p> In order to use this API, access to it must be declared in the widget configuration document (i.e. config.xml). This declaration is done through the feature http://www.w3.org/TR/media-capture-API/. </p>
+<p> In order to use this API, access to it must be declared in the widget configuration document (i.e. config.xml). This declaration is done through the feature http://www.w3.org/ns/api-perms/mediacapture. </p>
 </div>
 <div class="section" lang="en">
 <div class="titlepage">
@@ -85,76 +85,106 @@ This document describes the functionality that Webinos devices should implement 
 
 
 
-<div id="container" ><div ><span class="signatureBlockTitle"><b>HTMLInputElement Interface</b></span><pre class="webidl prettyprint">
-[Supplemental]
-interface HTMLInputElement {
-    attribute DOMString capture;
-};
-
-</div>
-</pre>
-</div>
-
-
-
-<div id="container" ><div ><span class="signatureBlockTitle"><b>MediaFileData Interface</b></span><pre class="webidl prettyprint">
+<div id="container" ><div ><span class="signatureBlockTitle"><b>DeviceCapture Interface</b></span><pre class="webidl prettyprint">
 [NoInterfaceObject]
-interface MediaFileData {
-    attribute DOMString     codecs;
-    attribute unsigned long bitrate;
-    attribute unsigned long height;
-    attribute unsigned long width;
-    attribute float         duration;
+interface DeviceCapture {
+    readonly attribute Capture capture;
 };
-
+Device implements DeviceCapture;
 </div>
 </pre>
 </div>
 
 
-<div id="container" ><div ><span class="signatureBlockTitle"><b>MediaFile Interface</b></span><pre class="webidl prettyprint">
-[NoInterfaceObject]
-interface MediaFile : File {
-    void getFormatData (in MediaFileDataSuccessCallback successCallback, in optional MediaFileDataErrorCallback errorCallback);
-};
 
+<div id="container" ><div ><span class="signatureBlockTitle"><b>Capture Interface</b></span><pre class="webidl prettyprint">
+[Supplemental, NoInterfaceObject]
+interface Capture {
+    readonly attribute MediaFileData[] supportedImageFormats;
+    readonly attribute MediaFileData[] supportedVideoFormats;
+    readonly attribute MediaFileData[] supportedAudioFormats;
+    PendingOperation captureImage (in CaptureCB successCB, in optional CaptureErrorCB errorCB, in optional CaptureImageOptions options);
+    PendingOperation captureVideo (in CaptureCB successCB, in optional CaptureErrorCB errorCB, in optional CaptureVideoOptions options);
+    PendingOperation captureAudio (in CaptureCB successCB, in optional CaptureErrorCB errorCB, in optional CaptureAudioOptions options);
+};
 </div>
 </pre>
 </div>
 
 
-<div id="container" ><div ><span class="signatureBlockTitle"><b>MediaFileDataSuccessCallback Interface</b></span><pre class="webidl prettyprint">
+<div id="container" ><div ><span class="signatureBlockTitle"><b>CaptureCB Interface</b></span><pre class="webidl prettyprint">
 [Callback=FunctionOnly, NoInterfaceObject]
-interface MediaFileDataSuccessCallback {
-    void onSuccess (in MediaFileData formatData);
+interface CaptureCB {
+    void onSuccess (in FileList capturedMedia);
 };
+
 </div>
 </pre>
 </div>
 
 
 
-<div id="container" ><div ><span class="signatureBlockTitle"><b>MediaFileDataErrorCallback Interface</b></span><pre class="webidl prettyprint">
+<div id="container" ><div ><span class="signatureBlockTitle"><b>CaptureErrorCB Interface</b></span><pre class="webidl prettyprint">
 [Callback=FunctionOnly, NoInterfaceObject]
-interface MediaFileDataErrorCallback {
-    void onError (in MediaFileDataError error);
+interface CaptureErrorCB {
+    void onError (in CaptureError error);
 };
-
 </div>
 </pre>
 </div>
 
-<div id="container" ><div ><span class="signatureBlockTitle"><b>MediaFileDataError Interface</b></span><pre class="webidl prettyprint">
+<div id="container" ><div ><span class="signatureBlockTitle"><b>CaptureError Interface</b></span><pre class="webidl prettyprint">
 [NoInterfaceObject]
-interface MediaFileDataError {
-    const unsigned short UNKNOWN_ERROR = 0;
-    const unsigned short TIMEOUT_ERROR = 1;
+interface CaptureError {
+    const unsigned short CAPTURE_INTERNAL_ERR = 0;
+    const unsigned short CAPTURE_APPLICATION_BUSY = 1;
+    const unsigned short CAPTURE_INVALID_ARGUMENT = 2;
+    const unsigned short CAPTURE_NO_MEDIA_FILES = 3;
     readonly attribute unsigned short code;
 };
+</div>
+</pre>
+</div>
+
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>CaptureImageOptions Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject]
+interface CaptureImageOptions {
+    attribute unsigned long limit;
+};
+</div>
+</pre>
+</div>
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>CaptureVideoOptions Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject]
+interface CaptureVideoOptions {
+    attribute unsigned long limit;
+    attribute float duration;
+};
+</div>
+</pre>
+</div>
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>CaptureAudioOptions Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject]
+interface CaptureAudioOptions {
+    attribute unsigned long limit;
+};
+</div>
+</pre>
+</div>
+
+<div id="container" ><div ><span class="signatureBlockTitle"><b>PendingOperation Interface</b></span><pre class="webidl prettyprint">
+[NoInterfaceObject]
+interface PendingOperation {
+    void cancel ();
+};
 
 </div>
 </pre>
 </div>
+
 
 <div class="bibliography">
 
@@ -169,8 +199,8 @@ interface MediaFileDataError {
 </div>
 <dl>
   <dt><a id=ref-mediacapture>[MEDIACAPTURE]</a></dt>
-    <dd>NORMATIVE: Media Capture API (W3C Working Draft 14 April 2011)
-      , see <a href="http://www.w3.org/TR/2011/WD-html-media-capture-20110414/">http://www.w3.org/TR/2011/WD-html-media-capture-20110414/</a>
+    <dd>NORMATIVE: Media Capture API (W3C Working Draft 28 September 2008)
+      , see <a href="http://www.w3.org/TR/2010/WD-media-capture-api-20100928/">http://www.w3.org/TR/2010/WD-media-capture-api-20100928/</a>
     </dd>
 </dl>
 </div>

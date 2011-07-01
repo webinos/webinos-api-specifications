@@ -63,7 +63,7 @@ function onMsgError(evt, recipient, error)
   // E.g.: Stefano did not receive your message saying: "How are you?"
   //       Event refused (4)
   alert(getName(recipient) + ' did not receive your message saying: "'
-        + evt.payload + '\\n' + error.message + '(' + error.code + ')');
+        + evt.payload + '"\\n' + error.message + '(' + error.code + ')');
 }
 
 // Listener to DOM "click" event for some "Send Message" button.
@@ -71,12 +71,13 @@ function onSendButtonClicked() {
   // Creates a new event of type "chatMessage" directed to all the chat
   // participants with payload containing the text in inputElem and with
   // timestamp.
-  var evt = webinos.events.createEvent("chatMessage", {to: participants},
-                                       inputElem.value, null, true, null, true);
+  var evt = webinos.events.createWebinosEvent("chatMessage", {to: participants},
+                                              inputElem.value, null, true, null,
+                                              true);
 
   // Sends the event and specifies the onMsgError callback for handling error
   // delivery notifications.
-  evt.dispatchEvent({onError: onMsgError});
+  evt.dispatchWebinosEvent({onError: onMsgError});
 
   // Appends the input message to logElem.
   // E.g.: [00:01:00] you said: "Let's try again... how are you?"
@@ -95,13 +96,13 @@ document.onLoad = function() {
   // Adds the onMsg() callback as an event listener for incoming events with
   // type "chatMessage", from any source and to any destination (within the
   // application).
-  webinos.events.addEventListener(onMsg, "chatMessage");
+  webinos.events.addWebinosEventListener(onMsg, "chatMessage");
 }
  * \endcode
  *
  * \def-api-feature http://webinos.org/api/events
  * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt;
- * \version 0.9.11
+ * \version 0.9.13
  */
 
 module events {
@@ -128,7 +129,7 @@ module events {
 	 * normalized equivalents of user-supplied objects implementing this
 	 * interface in non-normalized form, hence it creates those equivalents
 	 * by applying the normalization process described in the documentation
-	 * of the createEvent() function of the WebinosEventsInterface
+	 * of the createWebinosEvent() function of the WebinosEventsInterface
 	 * interface.
 	 *
 	 * Details on both forms are given in each attribute's description.
@@ -287,10 +288,10 @@ module events {
 		 * W.r.t. the "Delivery notification wanted" attribute described
 		 * in the Webinos system specification, its value in the
 		 * implementation is to be deferred from the callbacks parameter
-		 * and allowed to change between dispatchEvent() and
-		 * forwardEvent() calls. It SHALL be true when delivery and/or
-		 * error callbacks are passed via the callbacks argument, false
-		 * otherwise.
+		 * and allowed to change between dispatchWebinosEvent() and
+		 * forwardWebinosEvent() calls. It SHALL be true when delivery
+		 * and/or error callbacks are passed via the callbacks argument,
+		 * false otherwise.
 		 *
 	 	 * \b NOTE: Please, keep in mind that all recipients SHALL get
 		 * references to all entities specified in the "to" and "cc"
@@ -324,9 +325,10 @@ module events {
 		 *        PERMISSION_DENIED_ERROR if some local policy rule does
 		 *        not allow for the event to be sent.
 		 */
-		void dispatchEvent(in optional WebinosEventCallbacks? callbacks,
-				   in optional DOMTimeStamp? referenceTimeout,
-				   in optional boolean sync)
+		void dispatchWebinosEvent(
+				in optional WebinosEventCallbacks? callbacks,
+				in optional DOMTimeStamp? referenceTimeout,
+				in optional boolean sync)
 		     raises(WebinosEventException);
 		/**
 		 * \brief Forwards an event.
@@ -334,10 +336,10 @@ module events {
 		 * W.r.t. the "Delivery notification wanted" attribute described
 		 * in the Webinos system specification, its value in the
 		 * implementation is to be deferred from the callbacks parameter
-		 * and allowed to change between dispatchEvent() and
-		 * forwardEvent() calls. It SHALL be true when delivery and/or
-		 * error callbacks are passed via the callbacks argument, false
-		 * otherwise.
+		 * and allowed to change between dispatchWebinosEvent() and
+		 * forwardWebinosEvent() calls. It SHALL be true when delivery
+		 * and/or error callbacks are passed via the callbacks argument,
+		 * false otherwise.
 		 *
 		 * Conforming implementations SHALL NOT modify the "Forwarding"
 		 * attribute of the local WebinosEvent object when this function
@@ -354,8 +356,9 @@ module events {
 		 *        which the application wants to forward the event and
 		 *        to the recipients of such forwarding. This argument
 		 *        SHALL be processed in the same way as the
-		 *        webinos.events.createEvent() function processes its
-		 *        "addressing" argument (i.e., make a normalized copy).
+		 *        webinos.events.createWebinosEvent() function processes
+		 *        its "addressing" argument (i.e., make a normalized
+		 *        copy).
 		 * \param withTimeStamp Whether to set the forwarding timestamp
 		 *        (undefined is considered as equivalent to false).
 		 * \param callbacks Set of callbacks to monitor forwarding
@@ -386,11 +389,12 @@ module events {
 		 *        PERMISSION_DENIED_ERROR if some local policy rule does
 		 *        not allow for the event to be forwarded.
 		 */
-		void forwardEvent(in WebinosEventAddressing forwarding,
-				  in optional boolean withTimeStamp,
-				  in optional WebinosEventCallbacks? callbacks,
-				  in optional DOMTimeStamp? referenceTimeout,
-				  in optional boolean sync)
+		void forwardWebinosEvent(
+				in WebinosEventAddressing forwarding,
+				in optional boolean withTimeStamp,
+				in optional WebinosEventCallbacks? callbacks,
+				in optional DOMTimeStamp? referenceTimeout,
+				in optional boolean sync)
 		     raises(WebinosEventException);
 	};
 
@@ -398,6 +402,15 @@ module events {
 	 * \brief Error codes for the events module.
 	 */
 	exception WebinosEventException {
+		/**
+		 * \brief Error code.
+		 */
+		unsigned short code;
+		/**
+		 * \brief Error description.
+		 */
+		DOMString message;
+
 		/**
 		 * \brief An invalid parameter was provided when the requested
 		 *        method was invoked.
@@ -615,15 +628,16 @@ module events {
 		 * \throw WebinosEventException INVALID_ARGUMENT_ERROR if any of
 		 *        the supplied arguments is not valid.
 		 */
-		WebinosEvent createEvent(in DOMString type,
-					 in WebinosEventAddressing addressing,
-					 [TreatUndefinedAs=Null]
-					   in optional DOMString? payload,
-					 in optional WebinosEvent? inResponseTo,
-				  	 in optional boolean withTimeStamp,
-				  	 in optional DOMTimeStamp? expiryTimeStamp,
-				  	 in optional boolean addressingSensitive)
-		      raises(WebinosEventException);
+		WebinosEvent createWebinosEvent(
+				in DOMString type,
+				in WebinosEventAddressing addressing,
+				[TreatUndefinedAs=Null]
+				  in optional DOMString? payload,
+				in optional WebinosEvent? inResponseTo,
+				in optional boolean withTimeStamp,
+				in optional DOMTimeStamp? expiryTimeStamp,
+				in optional boolean addressingSensitive)
+			     raises(WebinosEventException);
 		/**
 		 * \brief Registers an event listener.
 		 *
@@ -655,11 +669,12 @@ module events {
 		 *
 		 * \return Listener identifier.
 		 */
-		DOMString addEventListener(in WebinosEventListener listener,
-					   [TreatUndefinedAs=Null]
-					     in optional DOMString? type,
-					   in optional WebinosEventEntity? source,
-					   in optional WebinosEventEntity? destination)
+		DOMString addWebinosEventListener(
+				in WebinosEventListener listener,
+				[TreatUndefinedAs=Null]
+				  in optional DOMString? type,
+				in optional WebinosEventEntity? source,
+				in optional WebinosEventEntity? destination)
 		          raises(WebinosEventException);
 		/**
 		 * \brief Unregisters an event listener.
@@ -668,12 +683,12 @@ module events {
 		 * listeners.
 		 *
 		 * \param listenerId Listener identifier as returned by
-		 *        addEventListener().
+		 *        addWebinosEventListener().
 		 *
 		 * \throw WebinosEventException INVALID_ARGUMENT_ERROR if any of
 		 *        the supplied arguments is not valid.
 		 */
-		void removeEventListener(in DOMString listenerId)
+		void removeWebinosEventListener(in DOMString listenerId)
 		     raises(WebinosEventException);
 	};
 

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="en">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -17,7 +17,7 @@
 <hr>
 <h2>Abstract</h2>
 <div class="brief"><p>
-This document describes the functionality that Webinos devices should implement for retrieving information. 
+This document describes the functionality that Webinos devices should implement for retrieving information about the device orientation and motion. 
 </p></div>
 
 <div class="toc">
@@ -54,7 +54,7 @@ This document describes the functionality that Webinos devices should implement 
 </div>
 <p> This section is NORMATIVE.<p> 
 <p> Webinos implementations MUST support W3C DeviceOrientation Event Specification <a href="#ref-deviceorientation" shape=rect>[DEVICEORIENTATION]</a>.<p> 
-<p> In order to use this API, access to it must be declared in the widget configuration document (i.e. config.xml). This declaration is done through the feature http://www.w3.org/TR/deviceorientation-API/. </p>
+<p> In order to use this API, access to it must be declared in the widget configuration document (i.e. config.xml). This declaration is done through the feature http://www.w3.org/ns/api-perms/deviceorientation. </p>
 <p>
 Access to this functionality is achieved (as specified by W3C) through two new event types available in the <code>Window</code> object: <code>deviceorientation</code> and <code>devicemotion</code>.
 </p>
@@ -101,7 +101,7 @@ interface DeviceOrientationEvent : Event {
                                     in double? beta,
                                     in double? gamma,
                                     in boolean absolute);
-    }
+    };
 
 
 </div>
@@ -116,7 +116,7 @@ interface DeviceOrientationEvent : Event {
     readonly attribute double? x;
     readonly attribute double? y;
     readonly attribute double? z;
-    }
+    };
 
 </div>
 </pre>
@@ -129,7 +129,7 @@ interface DeviceOrientationEvent : Event {
     readonly attribute double? alpha;
     readonly attribute double? beta;
     readonly attribute double? gamma;
-    }
+    };
 </div>
 </pre>
 </div>
@@ -148,7 +148,7 @@ interface DeviceMotionEvent : Event {
                                 in Acceleration? accelerationIncludingGravity,
                                 in RotationRate? rotationRate,
                                 in double? interval);
-    }
+    };
 </div>
 </pre>
 </div>
@@ -167,8 +167,8 @@ interface DeviceMotionEvent : Event {
 </div>
 <dl>
   <dt><a id=ref-deviceorientation>[DEVICEORIENTATION]</a></dt>
-    <dd>NORMATIVE: DeviceOrientation Event Specification (W3C Editor's Draft 6 June 2011)
-      , see <a href="http://dev.w3.org/geo/api/spec-source-orientation.html/">http://dev.w3.org/geo/api/spec-source-orientation.html</a>
+    <dd>NORMATIVE: DeviceOrientation Event Specification (W3C Working Draft 28 June 2011)
+      , see <a href="http://www.w3.org/TR/2011/WD-orientation-event-20110628/">http://www.w3.org/TR/2011/WD-orientation-event-20110628/</a>
     </dd>
 </dl>
 </div>

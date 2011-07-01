@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="en">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -17,7 +17,7 @@
 <hr>
 <h2>Abstract</h2>
 <div class="brief"><p>
-This document describes the functionality that Webinos devices should implement for retrieving information. 
+This document describes the functionality that Webinos devices should implement for retrieving geographical information. 
 </p></div>
 
 <div class="toc">
@@ -56,7 +56,7 @@ This document describes the functionality that Webinos devices should implement 
 </div>
 <p> This section is NORMATIVE.<p> 
 <p> Webinos implementations MUST support W3C Geolocation specification <a href="#ref-geolocation" shape=rect>[GEOLOCATION]</a>.<p> 
-<p> In order to use this API, access to it must be declared in the widget configuration document (i.e. config.xml). This declaration is done through the feature http://www.w3.org/TR/geolocation-API/. </p>
+<p> In order to use this API, access to it must be declared in the widget configuration document (i.e. config.xml). This declaration is done through the feature http://www.w3.org/ns/api-perms/geolocation. </p>
 </div>
 <div class="section" lang="en">
 <div class="titlepage">
@@ -85,7 +85,7 @@ This document describes the functionality that Webinos devices should implement 
  [NoInterfaceObject]
  interface NavigatorGeolocation {
    readonly attribute Geolocation geolocation;
- }e
+ };
 
  Navigator implements NavigatorGeolocation;
 </div>
