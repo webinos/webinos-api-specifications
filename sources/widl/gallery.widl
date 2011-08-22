@@ -2,7 +2,8 @@
 /**
  * \brief W3C based Gallery API interface.
  *
- * This specification defines an Application Programming Interface (API) that provides access to media gallery located on the device. 
+ * This specification provides a wrapper that mandates the use of the
+ * <a href="http://dev.w3.org/2009/dap/gallery/">W3C Gallery API </a> (Editor's draft 4 November 2010) that  provides access to media gallery located on the device. 
  *
  * The Gallery API defines a high-level interface for accessing media gallery located on the device. A media gallery is a collection of media objects such as video, audio and image. 
  * *
