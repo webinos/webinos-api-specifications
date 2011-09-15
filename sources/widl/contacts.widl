@@ -13,7 +13,7 @@
  *    A Contact interface, which captures the individual contact information that can be returned following a successful read operation.
  *
  * Note that while the W3C version, on which this specification is based on, provides only the ServiceContacts
- * to retrieve contacts, in webinos contacts can also be retrieved using the findServices method of the
+ * to retrieve contacts, webinos contacts can also be retrieved using the findServices method of the
  * Service Discovery API.
  * 
  * \def-api-feature http://www.w3.org/ns/api-perms/contacts.read 
@@ -266,7 +266,7 @@ module ContactsWrapper {
            *
            * It is recommended that names from the public-domain Olson database [TZDB] will be used as the value of this attribute, but this is not a restriction. For example, a value of America/New_York indicates the Contact is associated with the variable time zone of the New York region of the United States, including daylight saving time offsets experienced in that region.
            *
-           * It is also possible to use this attribute to express the timezone as a positive or negative difference from UTC, in the 24-hour clock, in units of hours and minutes (i.e. +hh:mm). For example, a value of +05:30 indicates the Contact is associated with a fixed time zone of GMT+05:30. 
+           * It is also possible to use this attribute to express the timezone as a positive or negative difference from UTC, the 24-hour clock, units of hours and minutes (i.e. +hh:mm). For example, a value of +05:30 indicates the Contact is associated with a fixed time zone of GMT+05:30. 
            *
            * No exceptions.
            */

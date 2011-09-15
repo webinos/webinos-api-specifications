@@ -197,7 +197,7 @@ module sensors {
         * \return A pending operation object making it possible to cancel the configureSensor operation     
         * \throw SensorException with appropriate error code.
         */
-        PendingOp configureSensor (in ConfigureSensorOptions options, in ConfigureSensorCB successCB, in optional SensorErrorCB errorCB)
+        PendingOp configureSensor (ConfigureSensorOptions options, ConfigureSensorCB successCB, optional SensorErrorCB errorCB)
             raises (SensorException);
 
 
@@ -231,7 +231,7 @@ module sensors {
        * \param error The error object of an unsuccessful configureSensor() asynchronous operation.
        *
        */
-       void onErrror(in SensorCBError error); 
+       void onErrror(SensorCBError error); 
     };
 
    /**
@@ -418,11 +418,11 @@ module sensors {
    * sensorValue[1] = A normalized value between 0 and 1.\n
    *\n
    * http://webinos.org/api/sensors.noise:\n
-   * sensorValue[0] = the measured ambient noise around the device, in DB(SPL).\n
+   * sensorValue[0] = the measured ambient noise around the device, DB(SPL).\n
    * sensorValue[1] = A normalized value between 0 and 1.\n
    *\n
    * http://webinos.org/api/sensors.temperature:\n
-   * sensorValue[0] = the measured ambient temperature around the device, in degrees Celsius.\n
+   * sensorValue[0] = the measured ambient temperature around the device, degrees Celsius.\n
    * sensorValue[1] = A normalized value between 0 and 1.\n
    *\n
    * http://webinos.org/api/sensors.pressure:\n
@@ -483,15 +483,15 @@ module sensors {
    * \param interrupt Interrupt mode
    * \param sensorValues Array of sensor values
    */
-    void initSensorEvent(in DOMString type,
-                         in boolean bubbles,
-                         in boolean cancelable,
-                         in DOMString sensorType,
-                         in DOMString sensorId,
-                         in unsigned short accuracy,
-                         in unsigned short rate,
-                         in boolean interrupt, 
-                         in float[] sensorValues); 
+    void initSensorEvent(DOMString type,
+                         boolean bubbles,
+                         boolean cancelable,
+                         DOMString sensorType,
+                         DOMString sensorId,
+                         unsigned short accuracy,
+                         unsigned short rate,
+                         boolean interrupt, 
+                         float[] sensorValues); 
     };
 
 };

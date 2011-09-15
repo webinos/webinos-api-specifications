@@ -24,7 +24,7 @@ module widget {
      * id is provided to link the success callback to a specific notification request.
      * \param id the optional id of the notification request or null if no id was provided.
     */
-    void onSuccess(in DOMString id);
+    void onSuccess(DOMString id);
   };
   
    /**
@@ -41,7 +41,7 @@ module widget {
      *
      * \param id the optional id of the notification request or null if no id was provided.
     */
-    void onError(in DOMString id);
+    void onError(DOMString id);
   };
   
    /**
@@ -59,7 +59,7 @@ module widget {
        * \param serviceID is the unique application instance id that can be used to explicitly address
        *                  the deployed service within webinos service discovery
       */
-     void onSuccess(in DOMString childID, in DOMString serviceID);
+     void onSuccess(DOMString childID, DOMString serviceID);
    };
    
    /**
@@ -75,7 +75,7 @@ module widget {
        * \param error The Widget API related error object of an unsuccessful application installation operation. 
        * \return void
       */
-      void onError (in DeploymentError error);
+      void onError (DeploymentError error);
     };
   
     /**
@@ -198,7 +198,7 @@ module widget {
     readonly attribute DOMString     id;
     
     /**
-     * \brief The name element represents the full human-readable name for a widget that is used, for example, in an application menu or in other contexts.
+     * \brief The name element represents the full human-readable name for a widget that is used, for example, an application menu or in other contexts.
     */
     readonly attribute DOMString     name;
     
@@ -320,7 +320,7 @@ module widget {
      * \param id An local identifier that represents the event and can be used to cancel the event or to
      *        take actions within the callbacks. 
     */
-    void notify(in NotifySuccessCallback onSuccess, in NotifyErrorCallback onError, in DOMString title, in optional DOMString shortDescription, in optional DOMString id, in optional DOMString icon);
+    void notify(NotifySuccessCallback onSuccess, NotifyErrorCallback onError, DOMString title, optional DOMString shortDescription, optional DOMString id, optional DOMString icon);
 
     /**
      * \brief Cancels an ongoing notification.
@@ -336,7 +336,7 @@ module widget {
      *
      * \param id The notification id to cancel.
     */
-    void cancelNotify(in DOMString id);
+    void cancelNotify(DOMString id);
 
     /**
      * \brief Asynchronous callback indicating that the application will be terminated. 
@@ -409,7 +409,7 @@ module widget {
      * \param childApplicationID the application ID of the child package to be installed.
      * \param local Indicates if application should be installed on the same device as the requesting application or not.
     */
-    void deployChild(in DeploymentSuccessCallback onSuccess, in DeploymentErrorCallback onError, in DOMString childApplicationID, in optional boolean local);
+    void deployChild(DeploymentSuccessCallback onSuccess, DeploymentErrorCallback onError, DOMString childApplicationID, optional boolean local);
   };
   
   /**

@@ -89,10 +89,10 @@ module AppLauncher {
        * \throw AppLauncherException Thrown when activation of the application was not successful.
        */
 
-    PendingOperation launchApplication(in SuccessCallback successCallback,
-                                       in ErrorCallback errorCallback,
-                                       in applicationID appID,
-                                       in optional ObjectArray params)
+    PendingOperation launchApplication(SuccessCallback successCallback,
+                                       ErrorCallback errorCallback,
+                                       applicationID appID,
+                                       optional ObjectArray params)
                        raises( AppLauncherException);
 
 
@@ -104,7 +104,7 @@ module AppLauncher {
        * \throw AppLauncherException Thrown when activation of the application was not successful.
        */
        
-    boolean AppInstalled(in applicationID appID)
+    boolean AppInstalled(applicationID appID)
             raises( AppLauncherException);
     };
     
@@ -134,7 +134,7 @@ module AppLauncher {
       * 
       * \param error contains information about the error 
       */		
-      void onError(in LaucherAPIError error);
+      void onError(LaucherAPIError error);
     };
 
     

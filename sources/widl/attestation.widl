@@ -173,7 +173,7 @@ module attestation {
       * software.  In the TCG scheme, this corresponds to the integrity \n
       * measurement log.\n
 	  *
-	  * For example, in a TCG scheme you would expect the following contents: \n
+	  * For example, a TCG scheme you would expect the following contents: \n
 	  * \n
 	  *  0x00 -> [ 0x45ac76fec..., 0x956836fbc42..., ] \n
 	  *  0x01 -> [ 0x23c3414f1..., 0xbb3f4d282cf..., ] \n
@@ -230,7 +230,7 @@ module attestation {
      * Error conditions due to policy enforcement, as well as potentially from hardware failure. 
      */
 
-     attestationData attestPlatform (in byte[] nonce, in SubjectPublicKeyInfo key )
+     attestationData attestPlatform (byte[] nonce, SubjectPublicKeyInfo key )
 			raises(AttestationException);
 
 
@@ -261,7 +261,7 @@ module attestation {
 	 *
      */
     
-     X509 getKeyCredential (in SubjectPublicKeyInfo key) raises(AttestationException);
+     X509 getKeyCredential (SubjectPublicKeyInfo key) raises(AttestationException);
 
 
   };

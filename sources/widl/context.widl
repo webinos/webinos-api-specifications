@@ -62,9 +62,9 @@ module context {
      * the input parameter is not compatible with the expected type for 
      * that parameter.
      */
-    void executeQuery(in QuerySuccessCallback successCallback,
-                      in QueryErrorCallback? errorCallback,
-                      in Query query)
+    void executeQuery(QuerySuccessCallback successCallback,
+                      QueryErrorCallback? errorCallback,
+                      Query query)
          raises(ContextError);
   
   /**
@@ -89,9 +89,9 @@ module context {
      * the input parameter is not compatible with the expected type for 
      * that parameter.
      */
-    void subscribeContextEvent(in SubscribeSuccessCallback subscribeSuccessCallback,
-                      in SubscribeErrorCallback? subscribeErrorCallback,
-                      in OccuringEvent eventHandler,
+    void subscribeContextEvent(SubscribeSuccessCallback subscribeSuccessCallback,
+                      SubscribeErrorCallback? subscribeErrorCallback,
+                      OccuringEvent eventHandler,
 					  in DOMString eventIdentifier)
          raises(ContextError);
   
@@ -110,7 +110,7 @@ module context {
      * the input parameter is not compatible with the expected type for 
      * that parameter.
      */
-    void unsubscribe(in unsigned long subscriptionIdentifier)
+    void unsubscribe(unsigned long subscriptionIdentifier)
          raises(ContextError);
   };
 
@@ -279,9 +279,9 @@ module context {
      * the input parameter is not compatible with the expected type for 
      * that parameter.
      */
-    void executeQuery(in QuerySuccessCallback successCallback,
-                      in QueryErrorCallback? errorCallback,
-                      in Query query)
+    void executeQuery(QuerySuccessCallback successCallback,
+                      QueryErrorCallback? errorCallback,
+                      Query query)
          raises(ContextError);
   
   /**
@@ -306,9 +306,9 @@ module context {
      * the input parameter is not compatible with the expected type for 
      * that parameter.
      */
-    void subscribeContextEvent(in SubscribeSuccessCallback subscribeSuccessCallback,
-                      in SubscribeErrorCallback? subscribeErrorCallback,
-                      in OccuringEvent eventHandler,
+    void subscribeContextEvent(SubscribeSuccessCallback subscribeSuccessCallback,
+                      SubscribeErrorCallback? subscribeErrorCallback,
+                      OccuringEvent eventHandler,
 					  in DOMString eventIdentifier)
          raises(ContextError);
   
@@ -327,7 +327,7 @@ module context {
      * the input parameter is not compatible with the expected type for 
      * that parameter.
      */
-    void unsubscribe(in unsigned long subscriptionIdentifier)
+    void unsubscribe(unsigned long subscriptionIdentifier)
          raises(ContextError);
   };
 

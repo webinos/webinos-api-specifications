@@ -210,7 +210,7 @@ module events {
 		 * It is calculated by hashing a partial serialization of the
 		 * WebinosEvent object that involves: \n
 		 *  - the event type; \n
-		 *  - the original event source and primary recipients, in case
+		 *  - the original event source and primary recipients, case
 		 *    the "addressingSensitive" attribute is true; \n
 		 *  - the identifier of the event that this event is a response
 		 *    to, if any; \n
@@ -326,9 +326,9 @@ module events {
 		 *        not allow for the event to be sent.
 		 */
 		void dispatchWebinosEvent(
-				in optional WebinosEventCallbacks? callbacks,
-				in optional DOMTimeStamp? referenceTimeout,
-				in optional boolean sync)
+				optional WebinosEventCallbacks? callbacks,
+				optional DOMTimeStamp? referenceTimeout,
+				optional boolean sync)
 		     raises(WebinosEventException);
 		/**
 		 * \brief Forwards an event.
@@ -390,11 +390,11 @@ module events {
 		 *        not allow for the event to be forwarded.
 		 */
 		void forwardWebinosEvent(
-				in WebinosEventAddressing forwarding,
-				in optional boolean withTimeStamp,
-				in optional WebinosEventCallbacks? callbacks,
-				in optional DOMTimeStamp? referenceTimeout,
-				in optional boolean sync)
+				WebinosEventAddressing forwarding,
+				optional boolean withTimeStamp,
+				optional WebinosEventCallbacks? callbacks,
+				optional DOMTimeStamp? referenceTimeout,
+				optional boolean sync)
 		     raises(WebinosEventException);
 	};
 
@@ -488,8 +488,8 @@ module events {
 		 * \param recipient The recipient to which the event is being
 		 *        transmitted.
 		 */
-		void onSending(in WebinosEvent event,
-			       in WebinosEventEntity recipient);
+		void onSending(WebinosEvent event,
+			       WebinosEventEntity recipient);
 		/**
 		 * \brief Called right after the event has been put into the
 		 *        Local Event Cache for later transmission (e.g., when
@@ -498,7 +498,7 @@ module events {
 		 *
 		 * \param event The event being cached.
 		 */
-		void onCaching(in WebinosEvent event);
+		void onCaching(WebinosEvent event);
 		/**
 		 * \brief Called as soon as successful event delivery has been
 		 *        reported by a given recipient or if the recipient
@@ -517,8 +517,8 @@ module events {
 		 * \param recipient The recipient that notified delivery
 		 *                  success.
 		 */
-		void onDelivery(in WebinosEvent event,
-				in WebinosEventEntity recipient);
+		void onDelivery(WebinosEvent event,
+				WebinosEventEntity recipient);
 		/**
 		 * \brief Called right after the moment in time specified by the
 		 *        "referenceTimeout" attribute is reached and the given
@@ -535,8 +535,8 @@ module events {
 		 *        back at least one event in response to the given
 		 *        event.
 		 */
-		void onTimeout(in WebinosEvent event,
-			       in WebinosEventEntity recipient);
+		void onTimeout(WebinosEvent event,
+			       WebinosEventEntity recipient);
 		/**
 		 * \brief Called as soon as unsuccessful event delivery has been
 		 *        reported w.r.t. a given recipient.
@@ -557,9 +557,9 @@ module events {
 		 * \param recipient The recipient that notified delivery error.
 		 * \param error The reported error.
 		 */
-		void onError(in WebinosEvent event,
-			     in WebinosEventEntity recipient,
-			     in WebinosEventDeliveryError error);
+		void onError(WebinosEvent event,
+			     WebinosEventEntity recipient,
+			     WebinosEventDeliveryError error);
 	};
 
 	/**
@@ -572,7 +572,7 @@ module events {
 		 *
 		 * \param event The event.
 		 */
-		void handleEvent(in WebinosEvent event);
+		void handleEvent(WebinosEvent event);
 	};
 
 	/**
@@ -585,7 +585,7 @@ module events {
 		 * \brief Creates a new event.
 		 *
 		 * The function SHALL accept the "addressing" argument both in
-		 * normalized and non-normalized form and, in either case, the
+		 * normalized and non-normalized form and, either case, the
 		 * resulting "addressing" attribute in the newly created
 		 * WebinosEvent object SHALL reference a newly created and
 		 * normalized equivalent of such argument where: \n
@@ -629,19 +629,19 @@ module events {
 		 *        the supplied arguments is not valid.
 		 */
 		WebinosEvent createWebinosEvent(
-				in DOMString type,
-				in WebinosEventAddressing addressing,
+				DOMString type,
+				WebinosEventAddressing addressing,
 				[TreatUndefinedAs=Null]
 				  in optional DOMString? payload,
-				in optional WebinosEvent? inResponseTo,
-				in optional boolean withTimeStamp,
-				in optional DOMTimeStamp? expiryTimeStamp,
-				in optional boolean addressingSensitive)
+				optional WebinosEvent? inResponseTo,
+				optional boolean withTimeStamp,
+				optional DOMTimeStamp? expiryTimeStamp,
+				optional boolean addressingSensitive)
 			     raises(WebinosEventException);
 		/**
 		 * \brief Registers an event listener.
 		 *
-		 * The arguments to this function act as filters, in the sense
+		 * The arguments to this function act as filters, the sense
 		 * that when a new event is received, the listener is called if
 		 * the event's attributes match with all arguments passed to
 		 * this function.
@@ -670,11 +670,11 @@ module events {
 		 * \return Listener identifier.
 		 */
 		DOMString addWebinosEventListener(
-				in WebinosEventListener listener,
+				WebinosEventListener listener,
 				[TreatUndefinedAs=Null]
 				  in optional DOMString? type,
-				in optional WebinosEventEntity? source,
-				in optional WebinosEventEntity? destination)
+				optional WebinosEventEntity? source,
+				optional WebinosEventEntity? destination)
 		          raises(WebinosEventException);
 		/**
 		 * \brief Unregisters an event listener.
@@ -688,7 +688,7 @@ module events {
 		 * \throw WebinosEventException INVALID_ARGUMENT_ERROR if any of
 		 *        the supplied arguments is not valid.
 		 */
-		void removeWebinosEventListener(in DOMString listenerId)
+		void removeWebinosEventListener(DOMString listenerId)
 		     raises(WebinosEventException);
 	};
 

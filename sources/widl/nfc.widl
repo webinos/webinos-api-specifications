@@ -281,15 +281,15 @@ module nfc {
 		 * \param ndefRecordTextPayload textual payload of the ndef record
 		 * \param ndefRecordBinaryPayload binary payload of the ndef record
 		 */
-		void initNFCTagEvent(in DOMString type,
-		                     in boolean bubbles,
-		                     in boolean cancelable,
-		                     in ByteArray tagId,
-		                     in unsigned short technologyType,
-		                     in unsigned short ndefType,
-		                     in unsigned short ndefRecType,
-		                     in DOMString? ndefRecordTextPayload,
-		                     in optional ByteArray ndefRecordBinaryPayload
+		void initNFCTagEvent(DOMString type,
+		                     boolean bubbles,
+		                     boolean cancelable,
+		                     ByteArray tagId,
+		                     unsigned short technologyType,
+		                     unsigned short ndefType,
+		                     unsigned short ndefRecType,
+		                     DOMString? ndefRecordTextPayload,
+		                     optional ByteArray ndefRecordBinaryPayload
 		                     );
 								 
 	};
@@ -485,7 +485,7 @@ module nfc {
 		 * \return PendingOperation to cancel the asynchronous call 
 		 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
 		 */
-		PendingOperation makeReadOnly(in SuccessCallback successCallback, in optional ErrorCallback? errorCallback)
+		PendingOperation makeReadOnly(SuccessCallback successCallback, optional ErrorCallback? errorCallback)
 			raises(NfcException);
 		
 		/**
@@ -510,7 +510,7 @@ module nfc {
 		 * \return PendingOperation to cancel the asynchronous call 
 		 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
 		 */
-		PendingOperation readNdefMessage(in NdefSuccessCallback successCallback, in optional ErrorCallback? errorCallback)
+		PendingOperation readNdefMessage(NdefSuccessCallback successCallback, optional ErrorCallback? errorCallback)
 			raises(NfcException);
 		
 		/**
@@ -529,7 +529,7 @@ module nfc {
 		 * \return PendingOperation to cancel the asynchronous call 
 		 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
 		 */
-		PendingOperation writeNdefMessage(in SuccessCallback successCallback, in ErrorCallback? errorCallback, NdefMessage message)
+		PendingOperation writeNdefMessage(SuccessCallback successCallback, ErrorCallback? errorCallback, NdefMessage message)
 			raises(NfcException);
 		
 		/**
@@ -599,7 +599,7 @@ module nfc {
 		 * \param payload The text payload of the record
 		 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
 		 */
-		void addTextNdefRecord(in unsigned short type, in optional DOMString payload)
+		void addTextNdefRecord(unsigned short type, optional DOMString payload)
 			raises(NfcException);
 		
 		/**
@@ -611,7 +611,7 @@ module nfc {
 		 * \param payload The binary payload of the record
 		 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
 		 */
-		void addBinaryNdefRecord(in unsigned short type, in ByteArray payload)
+		void addBinaryNdefRecord(unsigned short type, ByteArray payload)
 			raises(NfcException);
 		
 	};
@@ -726,7 +726,7 @@ module nfc {
 	 *
 	 */
 	[Callback=FunctionOnly, NoInterfaceObject] interface ErrorCallback {
-		void onError(in NfcError error);
+		void onError(NfcError error);
 	};
 
 	/**
@@ -734,7 +734,7 @@ module nfc {
 	 *
 	 */
 	[Callback=FunctionOnly, NoInterfaceObject] interface NdefSuccessCallback {
-		void onSuccess(in NdefMessage obj);
+		void onSuccess(NdefMessage obj);
 	};
 	
 };

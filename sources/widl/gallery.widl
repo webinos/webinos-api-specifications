@@ -140,7 +140,7 @@ module gallery {
    *
    * No exceptions.
    */    
-    caller PendingOp find (in DOMString[] fields, in GalleryFindCB successCB, in optional GalleryErrorCB errorCB, in optional GalleryFindOptions options);
+    caller PendingOp find (DOMString[] fields, GalleryFindCB successCB, optional GalleryErrorCB errorCB, optional GalleryFindOptions options);
    /**
    * \brief Retrieve all galleries from available sources(e.g. device local memory, external memory and even Fliker, Facebook, etc.) according to the retrieve process detailed below.
    * 
@@ -158,7 +158,7 @@ module gallery {
    *
    * No exceptions.
    */     
-   caller PendingOp getGalleries (in GalleryInfoCB successCB, in optional GalleryErrorCB errorCB);
+   caller PendingOp getGalleries (GalleryInfoCB successCB, optional GalleryErrorCB errorCB);
 };
 
  /**
@@ -447,7 +447,7 @@ module gallery {
    *
    * No exceptions.
    */   
-       void onSuccess (in MediaObject[] mediaObjectObjs);
+       void onSuccess (MediaObject[] mediaObjectObjs);
 };
 
  /**                       
@@ -463,7 +463,7 @@ module gallery {
    *
    * No exceptions.
    */   
-    void onSuccess (in GalleryInfo[] galleryInfoObjs);
+    void onSuccess (GalleryInfo[] galleryInfoObjs);
 };
  /**                       
   * \brief  Gallery API specific error callback.
@@ -478,7 +478,7 @@ module gallery {
    *
    * No exceptions.
    */   
-    void onError (in GalleryError error);
+    void onError (GalleryError error);
 };
 
  /**                       

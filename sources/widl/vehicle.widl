@@ -160,7 +160,7 @@ module vehicle{
 		* 
 		* \param error contains information about the error.
 		*/		
-		void onError(in VehicleError error);
+		void onError(VehicleError error);
 	};
 	
 	/**
@@ -168,7 +168,7 @@ module vehicle{
 	*
 	*/ 	
 	interface VehicleDataHandler{
-		void handleVehicleData(in VehicleEvent data);
+		void handleVehicleData(VehicleEvent data);
 	
 	};
 	
@@ -236,7 +236,7 @@ module vehicle{
 		* \param handler Parameter specifies the function to handle the result.
 		* \param errorCB Parameter specifies the callback function in case of an error.
 		*/
-		void get(DOMString vehicleDataId, VehicleDataHandler handler, in ErrorCallback errorCB);
+		void get(DOMString vehicleDataId, VehicleDataHandler handler, ErrorCallback errorCB);
 		/**
 		* \brief Parameter sets the given POIs as the next destinations for the build-in navigation system. The method handles intermediate stops. The last POI in the array is the final destination.
 		* \code
@@ -259,7 +259,7 @@ module vehicle{
 		* \param errorCallback callback, if the address could not be transferred. 
 		* \param destinations in form of an POI array. The last POI in the array is the destination point. The other POIs are intermediate stops along the route.
 		*/
-		void requestGuidance(in SuccessCallback successCallback, in ErrorCallback errorCallback, POI[] destinations);
+		void requestGuidance(SuccessCallback successCallback, ErrorCallback errorCallback, POI[] destinations);
 		/**
 		* \brief Queries the navigation system to retrieve POIs for a given search string.
 		*
@@ -280,7 +280,7 @@ module vehicle{
 		* \param errorCallback callback to handle errors.
 		* \param search search string for resolving a address.
 		*/
-		void findDestination(DestinationCallback destinationCallback, in ErrorCallback errorCallback, DOMString search);
+		void findDestination(DestinationCallback destinationCallback, ErrorCallback errorCallback, DOMString search);
 	};
 	
 	/**
@@ -302,7 +302,7 @@ module vehicle{
 		*
 		* \param pois Parameter provides an array of POIs.
 		*/
-   		 void handleResults(in POI[] pois);
+   		 void handleResults(POI[] pois);
   	};
 	/**
 	* \brief The interface defines a climate control event. 

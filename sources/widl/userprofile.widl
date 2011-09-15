@@ -71,7 +71,7 @@ module userprofile {
 		 *
 		 * \endcode
 		 */
-		void createUserProfile(in UserProfile userProfile, optional SuccessCB successCallBack, in UserProfileErrorCB errorCallback);
+		void createUserProfile(UserProfile userProfile, optional SuccessCB successCallBack, UserProfileErrorCB errorCallback);
 		
 		/**
 		 * \brief The replaceUserProfile() method - Replaces a userprofile. This method should be used to update a userprofile. 
@@ -103,7 +103,7 @@ module userprofile {
 		 * \endcode
 		 *
 		 */
-		void replaceUserProfile(in DOMString id, in UserProfile userProfile, optional SuccessCB successCallBack, in UserProfileErrorCB errorCallback);
+		void replaceUserProfile(DOMString id, UserProfile userProfile, optional SuccessCB successCallBack, UserProfileErrorCB errorCallback);
 		
 		/**
 		 * \brief The deleteUserProfile() method - Deletes an existing userprofile from the user in the webinos system.
@@ -117,7 +117,7 @@ module userprofile {
 		 * webinos.userprofile.deleteUserProfile('xxx', successCB, errorCB);
 		 * \endcode
 		 */
-		void deleteUserProfile(in DOMString id, optional SuccessCB successCallBack, in UserProfileErrorCB errorCallback);
+		void deleteUserProfile(DOMString id, optional SuccessCB successCallBack, UserProfileErrorCB errorCallback);
 	};
 	
 	/**

@@ -118,8 +118,8 @@ module payment {
        * \return PendingOperation enabling the requester to cancel this request.
        * \throw PaymentException INVALID_ARGUMENT_ERROR if an invalid argument is passed
        */
-        PendingOperation createShoppingBasket(in SuccessShoppingBasketCallback successCallback, in PaymentErrorCB errorCallback,
-        in DOMString serviceProviderID, in DOMString customerID, in DOMString shopID)
+        PendingOperation createShoppingBasket(SuccessShoppingBasketCallback successCallback, PaymentErrorCB errorCallback,
+        DOMString serviceProviderID, DOMString customerID, DOMString shopID)
         raises(PaymentException);
   };
   
@@ -172,7 +172,7 @@ module payment {
        * \return PendingOperation enabling the requester to cancel this request.
        * \throw PaymentException INVALID_ARGUMENT_ERROR if an invalid argument is passed
        */
-        PendingOperation addItem(in PaymentSuccessCB successCallback, in PaymentErrorCB errorCallback, in ShoppingItem item)
+        PendingOperation addItem(PaymentSuccessCB successCallback, PaymentErrorCB errorCallback, ShoppingItem item)
         raises(PaymentException);
 
         /**
@@ -196,7 +196,7 @@ module payment {
        * \return PendingOperation enabling the requester to cancel this request.
        * \throw PaymentException INVALID_ARGUMENT_ERROR if an invalid argument is passed
        */
-        PendingOperation update(in PaymentSuccessCB successCallback, in PaymentErrorCB errorCallback)
+        PendingOperation update(PaymentSuccessCB successCallback, PaymentErrorCB errorCallback)
         raises(PaymentException);
 
         /**
@@ -212,7 +212,7 @@ module payment {
        * \return PendingOperation enabling the requester to cancel this request.
        * \throw PaymentException INVALID_ARGUMENT_ERROR if an invalid argument is passed
        */
-        PendingOperation checkout(in PaymentSuccessCB successCallback, in PaymentErrorCB errorCallback)
+        PendingOperation checkout(PaymentSuccessCB successCallback, PaymentErrorCB errorCallback)
         raises(PaymentException);
 
         /**
@@ -313,7 +313,7 @@ module payment {
          * \param error The Payment API related error object of an unsuccessful asynchronous operation. 
          * \return void
          */
-            void onError (in PaymentError error);
+            void onError (PaymentError error);
         };
 
     /**

@@ -10,7 +10,7 @@
  * The API itself is designed to be agnostic of any underlying calendaring service sources.
  *
  * Note that while the W3C version, on which this specification is based on, provides only the ServiceCalendar
- * to retrieve calendars, in webinos calendars can also be retrieved using the findServices method of the
+ * to retrieve calendars, webinos calendars can also be retrieved using the findServices method of the
  * Service Discovery API.
  *
  * \def-api-feature http://www.w3.org/ns/api-perms/calendar.read
@@ -59,7 +59,7 @@ module CalendarWrapper {
                  * \param options The options to apply to the output of this method.                                 
                  * \return caller void                 
                  */ 
-            caller void findEvents (in CalendarEventSuccessCB successCB, in optional CalendarErrorCB errorCB, in optional CalendarFindOptions options);
+            caller void findEvents (CalendarEventSuccessCB successCB, optional CalendarErrorCB errorCB, optional CalendarFindOptions options);
         };
 
         /**
@@ -454,7 +454,7 @@ module CalendarWrapper {
                  * \param eventObjs The resulting sequence of CalendarEvent objects resulting from a successful search operation. 
                  * \return void                 
                  */
-            void onSuccess (in sequence<CalendarEvent> eventObjs);
+            void onSuccess (sequence<CalendarEvent> eventObjs);
         };
         
         [Callback=FunctionOnly, NoInterfaceObject]
@@ -464,7 +464,7 @@ module CalendarWrapper {
                  * \param error The Calendar API related error object of an unsuccessful asynchronous operation. 
                  * \return void                 
                  */
-            void onError (in CalendarError error);
+            void onError (CalendarError error);
         };
         
           /**

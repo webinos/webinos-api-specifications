@@ -115,10 +115,10 @@ module discovery {
 		 * \throw DiscoveryExceptions 
 		 */
 		 PendingOperation findServices(	
-		 	in ServiceType serviceType, 
-		 	in FindCallBack findCallBack, 
-		 	in optional Options options, 
-		 	in optional Filter filter)
+		 	ServiceType serviceType, 
+		 	FindCallBack findCallBack, 
+		 	optional Options options, 
+		 	optional Filter filter)
 		 raises(DiscoveryExceptions);
 		 
 		/**
@@ -126,7 +126,7 @@ module discovery {
 		 * \param serviceType URI identifying which type of API that shall be exposed. The URI shall be must be declared in the manifest in the api-name attribute of the webinos:shared-api element.
 		 * \throw DiscoveryExceptions 
 		 */
-		 DOMString getServiceId(in DOMString serviceType)
+		 DOMString getServiceId(DOMString serviceType)
 		 raises(DiscoveryExceptions);
 		 
 		/**
@@ -161,19 +161,19 @@ module discovery {
 		 * \brief Asynchronous callback used whenever a new service is found.      
 		 * \param service An input argument representing the found service.
 		 */
-		 void onFound(in Service service);	  
+		 void onFound(Service service);	  
 		 
 		/**
 		 * \brief Asynchronous callback used whenever the state of a service change from available to unavailable.       
 		 * \param service An input argument representing the lost service.
 		 */
-		 void onLost(in Service service);
+		 void onLost(Service service);
 		 	  
 		/**
 		 * \brief Asynchronous error callback.   
 		 * \param error Error code. 
 		 */
-		 void onError(in DiscoveryError error);
+		 void onError(DiscoveryError error);
 		  		 
 	};
 	
@@ -256,7 +256,7 @@ module discovery {
 		 * \param serviceId Unique id of the binding to the particular service. If no serviceId is provided as an in parameter, the id attribute in the Service interface will be used to bind the service.
 		 * \throw DiscoveryExceptions
 		 */
-		PendingOperation bind(in BindCallBack bindCallBack, in optional DOMString serviceId)
+		PendingOperation bind(BindCallBack bindCallBack, optional DOMString serviceId)
 		raises(DiscoveryExceptions);
 		
 		/**
@@ -276,31 +276,31 @@ module discovery {
 		 * \brief Asynchronous success callback.       
 		 * \param service An input argument representing the service.
 		 */
-		 void onBind(in Service service);
+		 void onBind(Service service);
 		 
 		/**
 		 * \brief Asynchronous callback used when a service is unbound.      
 		 * \param service An input argument representing the service.
 		 */
-		 void onUnbind(in Service service);
+		 void onUnbind(Service service);
 		 
 		/**
 		 * \brief Asynchronous callback indicating that the service is available again.
 		 * \param service An input argument representing the service.      
 		 */		 
-		 void onServiceAvailable(in Service service);
+		 void onServiceAvailable(Service service);
 		 
 		/**
 		 * \brief Asynchronous callback indicating the service is temporarily unavailable.
 		 * \param service An input argument representing the service.
 		 */		 		 
-		 void onServiceUnavailable(in Service service);
+		 void onServiceUnavailable(Service service);
 		 	  
 		/**
 		 * \brief Asynchronous error callback.   
 		 * \param error Error code. 
 		 */
-		 void onError(in DiscoveryError error); 
+		 void onError(DiscoveryError error); 
 	};
 	
 	/**

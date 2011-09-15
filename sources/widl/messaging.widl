@@ -131,7 +131,7 @@ module messaging {
    * \throw DeviceAPIError INVALID_VALUES_ERR if the input parameter contains an invalid value. 
    * \throw DeviceAPIError TYPE_MISMATCH_ERR if the input parameter is not compatible with the expected type for that parameter. 
    */
-    Message createMessage(in short type)
+    Message createMessage(short type)
                           raises(DeviceAPIError);
 
    /**
@@ -168,7 +168,7 @@ module messaging {
    *
    * UNKNOWN_ERR: In any other error case.
    *
-   * If the errorCallback does not contain a valid function (e.g. null), in case of any error that should be returned in the errorCallback (see above), the implementation MUST silently fail and no further action is required (i.e. the error is not notified to the developer).
+   * If the errorCallback does not contain a valid function (e.g. null), case of any error that should be returned in the errorCallback (see above), the implementation MUST silently fail and no further action is required (i.e. the error is not notified to the developer).
    *
    * \code
    * // Define the success callback
@@ -196,9 +196,9 @@ module messaging {
    * \return PendingOperation to cancel the asynchronous call 
    * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */                          
-    PendingOperation sendMessage(in SuccessCallback successCallback, 
-                                 in ErrorCallback errorCallback, 
-                                 in Message message)
+    PendingOperation sendMessage(SuccessCallback successCallback, 
+                                 ErrorCallback errorCallback, 
+                                 Message message)
                                  raises(DeviceAPIError);
  
    /**
@@ -243,7 +243,7 @@ module messaging {
    *
    * UNKNOWN_ERR: In any other error case.
    *
-   * If the errorCallback does not contain a valid function (e.g. null), in case of any error that should be returned in the errorCallback (see above), the implementation MUST silently fail and no further action is required (i.e. the error is not notified to the developer).
+   * If the errorCallback does not contain a valid function (e.g. null), case of any error that should be returned in the errorCallback (see above), the implementation MUST silently fail and no further action is required (i.e. the error is not notified to the developer).
    *
    * \code
    *  // Define the send callback
@@ -278,9 +278,9 @@ module messaging {
    * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */                          
 
-    PendingOperation sendMessage(in MessageSendCallback successCallback, 
-                                 in ErrorCallback errorCallback, 
-                                 in Message message)
+    PendingOperation sendMessage(MessageSendCallback successCallback, 
+                                 ErrorCallback errorCallback, 
+                                 Message message)
                                  raises(DeviceAPIError);
                                  
    /**
@@ -319,9 +319,9 @@ module messaging {
    * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */                          
 
-    PendingOperation findMessages(in FindMessagesSuccessCallback successCallback, 
-                                  in optional ErrorCallback errorCallback,
-                                  in optional MessageFilter filter)
+    PendingOperation findMessages(FindMessagesSuccessCallback successCallback, 
+                                  optional ErrorCallback errorCallback,
+                                  optional MessageFilter filter)
                                   raises(DeviceAPIError);                          
   
    /**
@@ -350,7 +350,7 @@ module messaging {
    * \throw DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
    * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */                          
-    unsigned long onSMS(in OnIncomingMessage messageHandler)
+    unsigned long onSMS(OnIncomingMessage messageHandler)
                         raises(DeviceAPIError);
 
    /**
@@ -379,7 +379,7 @@ module messaging {
    * \throw DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
    * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */                          
-    unsigned long onMMS(in OnIncomingMessage messageHandler) 
+    unsigned long onMMS(OnIncomingMessage messageHandler) 
                         raises(DeviceAPIError);
 
    /**
@@ -412,7 +412,7 @@ module messaging {
    * \throw DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
    * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */                          
-    unsigned long onEmail(in OnIncomingMessage messageHandler) 
+    unsigned long onEmail(OnIncomingMessage messageHandler) 
                           raises(DeviceAPIError);
    
    /**                       
@@ -445,7 +445,7 @@ module messaging {
    * \throw DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
    * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */         
-    unsigned long onIM(in OnIncomingMessage messageHandler) 
+    unsigned long onIM(OnIncomingMessage messageHandler) 
                           raises(DeviceAPIError);
 
    /**                       
@@ -457,7 +457,7 @@ module messaging {
    * \return void
    * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */         
-    void unsubscribe(in unsigned long subscriptionHandler)
+    void unsubscribe(unsigned long subscriptionHandler)
                      raises(DeviceAPIError);
 
   };
@@ -584,7 +584,7 @@ module messaging {
    * 
    * If any other error occurs, while trying to update the messages, the errorCallback function that was passed in the invocation MUST be called including a DeviceAPIError object with code UNKNOWN_ERR.
    * 
-   * If the errorCallback does not contain a valid function (e.g. null), in case of any error that should be returned in the errorCallback (see above), the implementation MUST silently fail and no further action is required (i.e. the error is not notified to the developer).
+   * If the errorCallback does not contain a valid function (e.g. null), case of any error that should be returned in the errorCallback (see above), the implementation MUST silently fail and no further action is required (i.e. the error is not notified to the developer).
    *
    *
    * \param successCallback Function to call on successful update
@@ -593,8 +593,8 @@ module messaging {
    * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */         
     
-    PendingOperation update(in UpdateMessageSuccessCallback successCallback, 
-                            in optional ErrorCallback errorCallback)
+    PendingOperation update(UpdateMessageSuccessCallback successCallback, 
+                            optional ErrorCallback errorCallback)
                             raises(DeviceAPIError);
   };
   Message implements Synchronisable;
@@ -617,7 +617,7 @@ module messaging {
    * 
    *  For filter attributes of any WebIDL boolean type (isRead, messagePriority) an entry matches it only if the corresponding entry attribute has exactly the same state (i.e. true or false).
    * 
-   *  For message attributes of type Date (i.e. timestamp), a couple of filter attributes are included (initial and end), in order to allow looking for messages between two dates. If both initial and end dates are different to null, a message matches the filter if its corresponding attribute is between initial and end dates (including them). If only the initial date contains a value different to null, a message matches the filter if its corresponding attribute is later 
+   *  For message attributes of type Date (i.e. timestamp), a couple of filter attributes are included (initial and end), order to allow looking for messages between two dates. If both initial and end dates are different to null, a message matches the filter if its corresponding attribute is between initial and end dates (including them). If only the initial date contains a value different to null, a message matches the filter if its corresponding attribute is later 
    *  than or equal to the initial one. If only the end date contains a value different to null, a message matches the filter if its corresponding attribute is earlier than or equal to the end date.
    *
    */           
@@ -743,7 +743,7 @@ module messaging {
    * \param messages The list of messages that correspond to the find criteria 
    * \return void
    */         
-    void onsuccess(in MessageArray messages);
+    void onsuccess(MessageArray messages);
   };
   
    /**                       
@@ -759,7 +759,7 @@ module messaging {
    * \param message The new message representing the actual updated status 
    * \return void
    */         
-    void onsuccess(in Message message);
+    void onsuccess(Message message);
   };
 
    /**                       
@@ -775,7 +775,7 @@ module messaging {
    * \param message The message received 
    * \return void
    */         
-     void onevent (in Message message);
+     void onevent (Message message);
   };
 
    /**                       
@@ -798,7 +798,7 @@ module messaging {
    * \param recipient The recipient which the message has been sent to 
    * \return void
    */         
-     void onmessagesendsuccess(in DOMString recipient);
+     void onmessagesendsuccess(DOMString recipient);
 
    /**                       
    * \brief Method invoked when the message is unsuccessfully sent to a recipient 
@@ -807,7 +807,7 @@ module messaging {
    * \param recipient The recipient which the message has been sent to 
    * \return void
    */         
-     void onmessagesenderror(in DeviceAPIError error, in DOMString recipient);
+     void onmessagesenderror(DeviceAPIError error, DOMString recipient);
   };
   
       /**

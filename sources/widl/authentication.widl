@@ -131,11 +131,11 @@ module authentication {
 	 * \param errorCB is a callback for when errors occur 
      * \return 
 	 *
-	 * This is an asynchronous method, although it may well be used (in practice) synchronously.
+	 * This is an asynchronous method, although it may well be used (practice) synchronously.
 	 *
      */
 
-     void authenticate ( in AuthSuccessCB successCB, in optional AuthErrorCB errorCB );
+     void authenticate (in AuthSuccessCB successCB, optional AuthErrorCB errorCB );
 
 
     /**

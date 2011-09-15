@@ -61,7 +61,7 @@ module foo {
      * the input parameter is not compatible with the expected type for 
      * that parameter.
      */
-    DOMString getFoo(in DOMString text)
+    DOMString getFoo(DOMString text)
         raises(Error);
 
     /**
