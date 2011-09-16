@@ -21,7 +21,7 @@
  * Identifies the trip computer information of a vehicle.
  *
  * \def-api-feature http://webinos.org/api/vehicle.controls
- * Identifies control data (e.g. whipers and lights) of a vehicle
+ * Identifies control data (e.g. wipers and lights) of a vehicle
  *
  * \def-api-feature http://webinos.org/api/vehicle.shift
  * Identifies gear data
@@ -232,7 +232,7 @@ module vehicle{
 		* }
 		* \endcode
 
-		* \param vehicleDataId Parameter specifies the type of data, which shall be retrieved. The identifiers for the different data types are defined in the different vehicle event interfaces (ClimateControlEvent, ControlEvent, NavigationEvent, ParkSensorsEvent, ShiftEvent). The identifiers for climate control data  are defined in constants CLIMATE_*, for control data in  constants LIGHTS_* and WHIPER_*,  for navigation data in  constants DESTINATION_*, for park sensors data in  constants PARKSENSORS_*, for shift data in constant SHIFT and for trip computer data in constant TRIPCOMPUTER.
+		* \param vehicleDataId Parameter specifies the type of data, which shall be retrieved. The identifiers for the different data types are defined in the different vehicle event interfaces (ClimateControlEvent, ControlEvent, NavigationEvent, ParkSensorsEvent, ShiftEvent). The identifiers for climate control data  are defined in constants CLIMATE_*, for control data in  constants LIGHTS_* and WIPER_*,  for navigation data in  constants DESTINATION_*, for park sensors data in  constants PARKSENSORS_*, for shift data in constant SHIFT and for trip computer data in constant TRIPCOMPUTER.
 		* \param handler Parameter specifies the function to handle the result.
 		* \param errorCB Parameter specifies the callback function in case of an error.
 		*/
@@ -371,7 +371,7 @@ module vehicle{
 	};
 	/**
 	* \brief The interface defines a control event. 
-	* The event signals a change for a control unit inside the vehicle (e.g. lights, wiper, etc.). The identifiers for the different control events are defined in the constants LIGHTS_* and WHIPER_*
+	* The event signals a change for a control unit inside the vehicle (e.g. lights, wiper, etc.). The identifiers for the different control events are defined in the constants LIGHTS_* and WIPER_*
 	* \code
 	*	webinos.vehicle.addEventListener("lights-hibeam", lightHandler, false);
 	*      function lightHandler(cEvent){
@@ -419,35 +419,35 @@ module vehicle{
 		*/	
 		const DOMString LIGHTS_HEAD = "lights-head";
 		/**
-		* \brief Constant indicates front window is beeing washed. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the whiper front wash.
+		* \brief Constant indicates front window is beeing washed. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the wiper front wash.
 		*/	
-		const DOMString WHIPER_FRONT_WASH = "whiper-front-wash";
+		const DOMString WIPER_FRONT_WASH = "wiper-front-wash";
 		/**
-		* \brief Constant indicates rear window is beeing washed. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the  whiper rear wash.
+		* \brief Constant indicates rear window is beeing washed. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the  wiper rear wash.
 		*/	
-		const DOMString WHIPER_REAR_WASH = "whiper-rear-wash";
+		const DOMString WIPER_REAR_WASH = "wiper-rear-wash";
 		/**
-		* \brief Constant indicates whiper is in automatic mode.  This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the  automatic whiper mode.
+		* \brief Constant indicates wiper is in automatic mode.  This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the  automatic wiper mode.
 		*/	
-		const DOMString WHIPER_AUTOMATIC = "whiper-automatic";
+		const DOMString WIPER_AUTOMATIC = "wiper-automatic";
 		/**
-		* \brief Constant indicates front whiper is beeing used once. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the whiper single mode in the front.
+		* \brief Constant indicates front wiper is beeing used once. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the wiper single mode in the front.
 		*/	
-		const DOMString WHIPER_FRONT_ONCE = "whiper-front-once";
+		const DOMString WIPER_FRONT_ONCE = "wiper-front-once";
 		/**
-		* \brief Constant indicates rear whiper is beeing used once. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the whiper single mode in the rear.
+		* \brief Constant indicates rear wiper is beeing used once. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the wiper single mode in the rear.
 		*/	
-		const DOMString WHIPER_REAR_ONCE = "whiper-front-once";
+		const DOMString WIPER_REAR_ONCE = "wiper-front-once";
 		/**
-		* \brief constant indicates front whiper is on level 1. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the whiper on level 1 in the front.
+		* \brief constant indicates front wiper is on level 1. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the wiper on level 1 in the front.
 		*/	
-		const DOMString WHIPER_FRONT_LEVEL1 = "whiper-front-level1";
+		const DOMString WIPER_FRONT_LEVEL1 = "wiper-front-level1";
 		/**
-		* \brief constant indicates front whiper is on level 2. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the whiper on level 2 in the front.
+		* \brief constant indicates front wiper is on level 2. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the wiper on level 2 in the front.
 		*/	
-		const DOMString WHIPER_FRONT_LEVEL2 = "whiper-front-level2";
+		const DOMString WIPER_FRONT_LEVEL2 = "wiper-front-level2";
 		/**
-		* \brief Attribute describes the source of the event. The value of the attribute is defined in the constants LIGHTS_* and WHIPER_*.
+		* \brief Attribute describes the source of the event. The value of the attribute is defined in the constants LIGHTS_* and WIPER_*.
 		*/	
 		readonly attribute DOMString conrolId;
 		/**
