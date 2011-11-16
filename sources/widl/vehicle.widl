@@ -241,8 +241,8 @@ module vehicle{
 		* \brief Parameter sets the given POIs as the next destinations for the build-in navigation system. The method handles intermediate stops. The last POI in the array is the final destination.
 		* \code
 		*	var destinations =new Array();
-		*	destination.push({name:"BMW AG", address : {street:"Petuelring", streetNumber: "130", postalCode: "80788", city: "MÜNCHEN", country: "DE"}});
-		*      destination.push({name:"BMW Forschung und Technik", address:{street: "Hanauer Strasse", streetNumber: "46", postalCode: "80992", city: "MÜNCHEN", country: "DE"}});
+		*	destinations.push({name:"BMW AG", address : {street:"Petuelring", streetNumber: "130", postalCode: "80788", city: "MÜNCHEN", country: "DE"}});
+		*      destinations.push({name:"BMW Forschung und Technik", address:{street: "Hanauer Strasse", streetNumber: "46", postalCode: "80992", city: "MÜNCHEN", country: "DE"}});
 		*      webinos.vehicle.requestGuidance(succesCB, null, destinations);
 		*  	webinos.vehicle.addEventListener(webinos.vehicle.NavigationEvent.DESTINATION_REACHED, handleDestinations, false);
 		*      
