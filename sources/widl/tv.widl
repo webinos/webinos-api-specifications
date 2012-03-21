@@ -16,22 +16,17 @@
 * \author Fraunhofer FOKUS, Alexander Fut&aacute;sz &lt;alexander.futasz@fokus.fraunhofer.de&gt;
 * \author Dominique Hazael-Massieux
 */
-module tv {
 
 /**
 * \brief Creates tv object.
 */
-[NoInterfaceObject] 
-interface WebinosTV {
+partial interface webinoscore:Webinos {
   readonly attribute TVManager tv;
 };
-
-webinoscore::Webinos implements WebinosTV;
 
 /**
 * \brief Access to tuner and display managers.
 */
-[NoInterfaceObject] 
 interface TVManager {
   readonly attribute TVDisplayManager display;
   readonly attribute TVTunerManager tuner;
@@ -57,8 +52,12 @@ interface TVManager {
   \</script>
  * \endcode
 */
-[NoInterfaceObject]
-interface TVDisplayManager {
+interface TVDisplayManager : EventTarget {
+  /**
+   * \brief The channel currently displayed; null if no channel is on
+  */
+   attribute Channel? currentChannel;
+ 
   /**
    * \brief Switches the channel natively on the TV (same as when a hardware remote control would be used).
    *
@@ -67,15 +66,34 @@ interface TVDisplayManager {
    * \param errorCallback The callback called in case the channel could not be switched and an error occured.
    */
   void setChannel(Channel channel, TVDisplaySuccessCB successCallback, optional TVErrorCB errorCallback);
+
+/**
+ * \brief Event that fires when the channel is changed.
+ *
+ * Changing channels could also be invoked by other parties, e.g. a hardware
+ * remote control. A ChannelChange event will be fired any time the channel
+ * being displayed is changed
+ * \code
+  \<p>Currently shown on TV: \<span id='tv'>Undetermined\</span>\</p>
+  \<script>
+  webinos.tv.display.addEventListener('channelchange', channelchanged);
+  var ontv = document.getElementById('tv');
+  function channelchanged() {
+    ontv.normalize();
+    ontv.removeChild(ontv.childNodes[0]);
+    ontv.appendChild(document.createTextNode(channel.name + ' (source: ' + channel.tvsource.name + ')'));
+  }
+  \</script>
+ \endcode
+ */
+  [TreatNonCallableAsNull]
+             attribute Function? onchannelchange;
 };
 
 /**
  * \brief Callback function when current channel changed successfully.
 */
-[Callback=FunctionOnly, NoInterfaceObject]
-interface TVDisplaySuccessCB {
-  void onSuccess(Channel channel);
-};
+callback TVDisplaySuccessCB = void (Channel channel);
 
 /**
 * \brief Get a list of all available TV tuners.
@@ -124,7 +142,6 @@ interface TVDisplaySuccessCB {
   \</script>
 * \endcode
 */
-[NoInterfaceObject] 
 interface TVTunerManager {
   /**
    * \brief Get a list of all available TV tuners.
@@ -137,55 +154,24 @@ interface TVTunerManager {
 
 /**
 * \brief Callback for found TV tuners.
+* \param sources An array of TVSource objects representing available tuners.
 */
-[Callback=FunctionOnly, NoInterfaceObject] 
-interface TVSuccessCB {
-  /**
-   * \brief Callback that is called with the found TV sources.
-   *
-   * \param sources An array of TVSource objects representing available tuners.
-   */
-  void onSuccess(TVSource[] sources);
-};
+callback TVSuccessCB = void (TVSource[] sources);
 
 /**
 * \brief Error callback for errors when trying to get TV tuners.
+* \param error Error object detailing what went wrong.
 */
-[Callback=FunctionOnly, NoInterfaceObject] 
-interface TVErrorCB {
-  /**
-   * \brief Callback that is called when an error occures while getting TV sources
-   *
-   * \param error Error object detailing what went wrong.
-   */
-  void onError(TVError error);
-};
+callback TVErrorCB = void (TVError error);
 
 /**
 * \brief Error codes.
 */
-[NoInterfaceObject] 
-interface TVError {
-  /**
-   * \brief An unknown error.
-   */
-  const unsigned short UNKNOWN_ERROR = 0;
-  
-  /**
-   * \brief Invalid input channel.
-   */
-  const unsigned short ILLEGAL_CHANNEL_ERROR = 1;
-  
-  /**
-   * \brief Code.
-   */
-  readonly attribute unsigned short code;
-};
+enum TVError { "unknown", "illegal_channel"};
 
 /**
 * \brief TV source: a list of channels with a name.
 */
-[NoInterfaceObject] 
 interface TVSource {
   /**
    * \brief The name of the source.
@@ -201,28 +187,22 @@ interface TVSource {
 };
 
 /**
+ * \brief Type of channels
+*/
+enum ChannelType { "tv", "radio"};
+
+/**
  * \brief The Channel Interface
  *
  * Channel objects provide access to the video stream.
  */
-[NoInterfaceObject]
 interface Channel {
- /**
-   * \brief Indicates a TV channel.
-   */
-  const unsigned short TYPE_TV = 0;
-  
-  /**
-   * \brief Indicates a radio channel.
-   */
-  const unsigned short TYPE_RADIO = 1;
-  
   /**
    * \brief The type of channel.
    *
-   * Type of channel is defined by one of the TYPE_* constants defined above.
+   * Type of channel
    */
-  readonly attribute unsigned short channelType;
+  readonly attribute ChannelType channelType;
   
  /**
    * \brief The name of the channel.
@@ -249,43 +229,4 @@ interface Channel {
    * \brief The source this channels belongs too.
    */
   readonly attribute TVSource tvsource;
-};
-
-/**
- * \brief Event that fires when the channel is changed.
- *
- * Changing channels could also be invoked by other parties, e.g. a hardware
- * remote control. A ChannelChange event will be fire in these cases which
- * provides the channel that was switched to.
- * \code
-  \<p>Currently shown on TV: \<span id='tv'>Undetermined\</span>\</p>
-  \<script>
-  window.addEventListener('channelchange', success);
-  var ontv = document.getElementById('tv');
-  function success(channel) {
-    ontv.normalize();
-    ontv.removeChild(ontv.childNodes[0]);
-    ontv.appendChild(document.createTextNode(channel.name + ' (source: ' + channel.tvsource.name + ')'));
-  }
-  \</script>
- \endcode
- */
-interface ChannelChangeEvent : Event {
- /**
-   * \brief The new channel.
-   */
-  readonly attribute Channel channel;
-
-  /**
-   * \brief Initializes a new channel change event.
-   *
-   * \param type The type of event. Pass 'channelchange'.
-   * \param bubbles Indicates whether the event bubbles.
-   * \param cancelable Indicates whether the event is cancelable.
-   * \param channel The channel that was changed to.
-   */
-  void initChannelChangeEvent(DOMString type, boolean bubbles, boolean cancelable, Channel channel);
-  
-};
-
 };
