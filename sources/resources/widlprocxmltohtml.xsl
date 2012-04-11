@@ -599,24 +599,32 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 <!--Type.-->
 <xsl:template match="Type">
-    <xsl:choose>
-        <xsl:when test="@type='sequence'">
-            <xsl:text>sequence &lt;</xsl:text>
-            <xsl:apply-templates/>
-            <xsl:text>></xsl:text>
-        </xsl:when>
-        <xsl:when test="@type='array'">
-            <xsl:apply-templates/>
-            <xsl:text>[]</xsl:text>
-        </xsl:when>
-        <xsl:otherwise>
-            <xsl:value-of select="@name"/>
-            <xsl:value-of select="@type"/>
-            <xsl:if test="@nullable">
-                <xsl:text>?</xsl:text>
-            </xsl:if>
-        </xsl:otherwise>
-    </xsl:choose>
+  <xsl:choose>
+    <xsl:when test="@type='sequence'">
+      <xsl:text>sequence &lt;</xsl:text>
+      <xsl:apply-templates/>
+      <xsl:text>></xsl:text>
+    </xsl:when>
+    <xsl:when test="@type='array'">
+      <xsl:apply-templates/>
+      <xsl:text>[]</xsl:text>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:choose>
+	<xsl:when test="@name">
+	  <xsl:call-template name="refToLink">
+	    <xsl:with-param name="reference-name" select="@name"/>
+	  </xsl:call-template>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:value-of select="@type"/>
+	</xsl:otherwise>
+      </xsl:choose>
+      <xsl:if test="@nullable">
+	<xsl:text>?</xsl:text>
+      </xsl:if>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <!--Enum.-->
