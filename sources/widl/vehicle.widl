@@ -39,44 +39,43 @@
 	* \brief This interface defines the address properties, which can be passed to the navigation system using the requestGuidance() function.   The <a href="http://dev.w3.org/geo/api/spec-source-v2.html#address_interface" target="_blank">Address interface</a> defined in the v2 of the W3C Geolocation API is used for this purpose.
 	*
 	*/ 
-	[NoInterfaceObject]
-	interface Address{
+	dictionary Address{
 		/**
 		* \brief Attribute is specified by using the two-letter [ISO 3166-1] code.
 		*/
-		attribute DOMString country;
+		DOMString country;
 		/**
 		* \brief Attribute denotes the name of a country subdivision (e.g. the state name in the US).
 		*/		
-		attribute DOMString? region;
+		DOMString? region;
 		/**
 		* \brief Attribute denotes the name of a land area within a larger region.
 		*/		
-		attribute DOMString? county;
+		DOMString? county;
 		/**
 		* \brief Attribute reflects the name of the city.
 		*/		
-		attribute DOMString city;
+		DOMString city;
 		/**
 		* \brief Attribute reflects the name of the street.
 		*/		
-		attribute DOMString street;
+		DOMString street;
 		/**
 		* \brief Attribute describes the location's street number.
 		*/		
-		attribute DOMString streetNumber;
+		 DOMString streetNumber;
 		/**
 		* \brief Attribute denotes the details of the premises, such as a building name, block of flats, etc.
 		*/		
-		attribute DOMString? premises;
+		DOMString? premises;
 		/**
 		* \brief Attribute contains other address details that are not captured by the rest of the attributes in this interface. Examples include a floor number in a building, an apartment number, the name of an office occupant, etc..
 		*/		
-		attribute DOMString additionalInformation;
+		DOMString additionalInformation;
 		/**
 		* \brief Attribute reflects the postal code of the location (e.g. the zip code in the US).
 		*/		
-		attribute DOMString postalCode;
+		DOMString postalCode;
 	};
 	
 	/**
@@ -88,40 +87,38 @@
 	
 	};
 	/**
-	* \brief This interface defines the LatLng properties, which can be passed to the navigation system using the requestGuidance() function. The format is WGS84. 
+	* \brief This dictionary defines the LatLng properties, which can be passed to the navigation system using the requestGuidance() function. The format is WGS84. 
 	* <em>Note: The <a href="http://dev.w3.org/geo/api/spec-source-v2.html#coordinates">coordinate</a> interface from the Geolocation API v2 includes attributes, which are not feasible for beeing handled by the navigation system (accurancy, alitude accurency, heading, speed). In some special cases (destination is on a bridge, which crosses another street) it might make sense to add the altitude to LatLng interface at a later stage.</em> 
 	* 
 	*
 	*/ 
-	[NoInterfaceObject]
-	interface LatLng{
+	dictionary LatLng{
 		/**
 		* \brief Attribute reflect the latitude of a geolocation in WGS84.
 		*/
-		attribute double latitude;
+		double latitude;
 		/**
 		* \brief Attribute reflect the Longitude of a geolocation in WGS84.
 		*/			
-		attribute double longitude;
+		double longitude;
 	};
 	/**
-	* \brief This interface defines a Point of Interest (POI). 
-	*  The interface contains the name of a POI and its address and/or geolocation as a LatLng object. <em> Note: The <a href="http://www.w3.org/2010/POI/" target="_blank">W3C POI WG</a> has published a <a href="http://www.w3.org/TR/2011/WD-poi-core-20110512/" target="_blank">first working draft</a> for the POI handling. The draft focuses on a XML representation of a POI and does not seem handy for beeing handled by a navigation system.</em>
+	* \brief This dictionary defines a Point of Interest (POI). 
+	*  The dictionary contains the name of a POI and its address and/or geolocation as a LatLng object. <em> Note: The <a href="http://www.w3.org/2010/POI/" target="_blank">W3C POI WG</a> has published a <a href="http://www.w3.org/TR/2011/WD-poi-core-20110512/" target="_blank">first working draft</a> for the POI handling. The draft focuses on a XML representation of a POI and does not seem handy for beeing handled by a navigation system.</em>
 	*/ 
-	[NoInterfaceObject]
-	interface POI{
+	dictionary POI{
 		/**
 		* \brief Attribute denotes the name of the POI.
 		*/		
-		attribute DOMString? name;
+		DOMString? name;
 		/**
 		* \brief Attribute reflects the geolocation of the POI as LatLng object.
 		*/		
-		attribute LatLng? position;
+		LatLng? position;
 		/**
 		* \brief Attribute denotes the address of the POI.
 		*/		
-		attribute Address address;
+		Address address;
 	};
 
 	/**
@@ -138,13 +135,9 @@
 	callback VehicleErrorCallback = void (VehicleError error);
 	
 	/**
-	* \brief The interface defines the callback method to receive vehicle data in a non-recurring and asynchronous way.
-	*
+	* \brief callback method to receive vehicle data in a non-recurring and asynchronous way.
 	*/ 	
-	interface VehicleDataHandler{
-		void handleVehicleData(VehicleEvent data);
-	
-	};
+	callback VehicleDataHandler = void (VehicleEvent data);
 
 	/**
 	* \brief Possible values for vehicle fuel 
@@ -153,6 +146,7 @@
 
 	/**
 	* \brief Possible values for transmission type 
+	*/
 	enum VehicleTransmission { "automatic", "manual" };
 	
 	/**
