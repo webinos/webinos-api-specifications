@@ -178,7 +178,7 @@
 		/**
 		* \brief Method allows to request vehicle data in a non-recurring way and is independant from value changes (cf. events). The same identifiers  are used for vehicle data as well as for the different vehicle events (ClimateControlEvent, ControlEvent, NavigationEvent, ParkSensorsEvent, ShiftEvent). 
 		* \code
-		* webinos.vehicle.get(webinos.vehicle.ClimateControlEvent.CLIMATE_ALL, dataHandler);
+		* webinos.vehicle.get("climate-all", dataHandler);
 		* function dataHandler(data){
 		*	if(data.acStatus){
 		* 		console.log("Airconditioning is on");
@@ -189,7 +189,7 @@
 		* }
 		* \endcode
 
-		* \param vehicleDataId Parameter specifies the type of data, which shall be retrieved. The identifiers for the different data types are defined in the different vehicle event interfaces (ClimateControlEvent, ControlEvent, NavigationEvent, ParkSensorsEvent, ShiftEvent). The identifiers for climate control data  are defined in constants CLIMATE_*, for control data in  constants LIGHTS_* and WIPER_*,  for navigation data in  constants DESTINATION_*, for park sensors data in  constants PARKSENSORS_*, for shift data in constant SHIFT and for trip computer data in constant TRIPCOMPUTER.
+		* \param vehicleDataId Parameter specifies the type of data, which shall be retrieved. The identifiers for the different data types are defined in the different vehicle event interfaces (ClimateControlEvent, ControlEvent, NavigationEvent, ParkSensorsEvent, ShiftEvent). The identifiers for climate control data  are defined as values of the various enums: ClimateZone, VehicleLight, VehicleWiperMode, DestinationEventType, ParkSensorPosition. 
 		* \param handler Parameter specifies the function to handle the result.
 		* \param errorCB Parameter specifies the callback function in case of an error.
 		*/
@@ -201,7 +201,7 @@
 		*	destinations.push({name:"BMW AG", address : {street:"Petuelring", streetNumber: "130", postalCode: "80788", city: "MÜNCHEN", country: "DE"}});
 		*   destinations.push({name:"BMW Forschung und Technik", address:{street: "Hanauer Strasse", streetNumber: "46", postalCode: "80992", city: "MÜNCHEN", country: "DE"}});
 		*      webinos.vehicle.requestGuidance(succesCB, null, destinations);
-		*  	webinos.vehicle.addEventListener(webinos.vehicle.NavigationEvent.DESTINATION_REACHED, handleDestinations, false);
+		*  	webinos.vehicle.addEventListener("destination-reached", handleDestinations, false);
 		*      
 		*	function handleDestinations(event){
 		*          if (event.address.street == destination[0].address.street) {
@@ -308,7 +308,7 @@
 	/**
 	* \brief Type of vehicle light
 	*/
-	enum VehicleLight { "fog-front", "fog-rear", "signal-left", "signal-right", "signal-warn", "parking", "hibeam", "head" };
+	enum VehicleLight { "fog-front", "fog-rear", "signal-left", "signal-right", "signal-warn", "light-parking", "hibeam", "light-head" };
 
 	/**
 	* \brief Type of wiper mode
@@ -317,11 +317,11 @@
 
 	/**
 	* \brief The interface defines a control event. 
-	* The event signals a change for a control unit inside the vehicle (e.g. lights, wiper, etc.). The identifiers for the different control events are defined in the constants LIGHTS_* and WIPER_*
+	* The event signals a change for a control unit inside the vehicle (e.g. lights, wiper, etc.). The identifiers for the different control events are defined in the enums VehicleLight and VehicleWiperMode
 	* \code
-	*	webinos.vehicle.addEventListener("lights-hibeam", lightHandler, false);
+	*	webinos.vehicle.addEventListener("hibeam", lightHandler, false);
 	*      function lightHandler(cEvent){
-	*		if(cEvent.controlId == "lights-hibeam"){
+	*		if(cEvent.controlId == "hibeam"){
 	*			if(cEvent.active == true){
 	*				console.log("Hibeam turned on");
 	*			}else{
@@ -398,7 +398,7 @@
 	*/
 	interface ParkSensorsEvent : VehicleEvent{
 		/**
-		* \brief Attribute defines the position of the sensor. The value of the attribute is either PARKSENSENSORS_FRONT or PARKSENSENSORS_REAR.
+		* \brief Attribute defines the position of the sensor.
 		*/
 		readonly attribute ParkSensorPosition position;
 		/**
