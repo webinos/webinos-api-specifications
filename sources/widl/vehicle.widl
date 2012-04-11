@@ -31,23 +31,10 @@
  */
 
 	/**
-	* \brief The interface defines the vehicle specific error
-	*
+	* \brief possible values for errors
 	*/
-	interface VehicleError : Error{
-		/**
-		* \brief Constant describes that the access to the requested vehicle feature has been denied.
-		*/
-		const short ACCESS_DENIED = 1;
-		/**
-		* \brief Constant describes that the requested vehicle feature is not available.
-		*/	
-		const short NOT_AVAILABLE = 2;
-		/**
-		* \brief Constant describes that an unkown error occured while requestung a vehicle feature.
-		*/	
-		const short UNKNOWN = 0;
-	};
+        enum VehicleError {"denied", "na", "unknown"};
+
 	/**
 	* \brief This interface defines the address properties, which can be passed to the navigation system using the requestGuidance() function.   The <a href="http://dev.w3.org/geo/api/spec-source-v2.html#address_interface" target="_blank">Address interface</a> defined in the v2 of the W3C Geolocation API is used for this purpose.
 	*
