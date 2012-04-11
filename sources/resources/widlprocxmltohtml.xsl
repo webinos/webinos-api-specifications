@@ -69,7 +69,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
          <!--<li> <a href="#method-summary">Method Summary</a></li>-->
 
           <li><a href="#intro">Introduction</a></li>
-          <li><a href="#interfaces">Interfaces</a>
+          <li><a href="#interfaces">Interfaces and Dictionaries</a>
           <ol class="toc">
           <xsl:for-each select="Interface[descriptive]">
             <li><a href="#{@id}"><xsl:value-of select="@name"/></a></li>
@@ -136,7 +136,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <xsl:apply-templates select="descriptive/description"/>
         <xsl:apply-templates select="descriptive/Code"/>
 
-        <h2 class="section" id="interfaces">Interfaces</h2>
+        <h2 class="section" id="interfaces">Interfaces and Dictionaries</h2>
         <xsl:apply-templates select="Interface|Dictionary"/>
 
         <xsl:if test="Typedef">
