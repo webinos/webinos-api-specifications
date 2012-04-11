@@ -147,7 +147,7 @@
 	/**
 	* \brief Possible values for transmission type 
 	*/
-	enum VehicleTransmission { "automatic", "manual" };
+	enum VehicleTransmission { "transmission-automatic", "transmission-manual" };
 	
 	/**
 	* \brief The interface defines general information about the vehicle and is the object, where the event listener for vehicle related data can be registered. The interface is accessible through the webinos.vehicle object. 
@@ -257,7 +257,7 @@
 	/**
 	* \brief Climate zone names
 	*/
-	enum VehicleClimateZone { "all", "driver", "passenger-front", "passenger-rear-left", "passenger-rear-right"};
+	enum VehicleClimateZone { "climate-all", "climate-driver", "climate-passenger-front", "climate-passenger-rear-left", "climate-passenger-rear-right"};
 	
 	/**
 	* \brief The interface defines a climate control event. 
@@ -313,7 +313,7 @@
 	/**
 	* \brief Type of wiper mode
 	*/
-	enum VehicleWiperMode { "front-wash", "rear-wash", "automatic", "front-once", "rear-once", "front-level1", "front-level2" };
+	enum VehicleWiperMode { "wiper-front-wash", "wiper-rear-wash", "wiper-automatic", "wiper-front-once", "wiper-rear-once", "wiper-front-level1", "wiper-front-level2" };
 
 	/**
 	* \brief The interface defines a control event. 
@@ -352,7 +352,7 @@
 	/**
 	* \brief Type of destination event
 	*/
-	enum DestinationEventType { "reached", "changed", "cancelled"};
+	enum DestinationEventType { "destination-reached", "destination-changed", "destination-cancelled"};
 
 		/**
 	* \brief The interface defines the navigation event.
@@ -361,7 +361,7 @@
 		/**
 		
 		/**
-		* \brief Attribute defines the type of the navigation event. The type can either be  "reached", "changed" or "cancelled".
+		* \brief Attribute defines the type of the navigation event. The type can either be  "destination-reached", "destination-changed" or "destination-cancelled".
 		*/			
 		readonly attribute DestinationEventType type;
 		/**
@@ -381,7 +381,7 @@
 	/**
 	*  \brief Position of parksensor event
 	*/
-	enum ParkSensorPosition { "front", "rear"};
+	enum ParkSensorPosition { "parksensor-front", "parksensor-rear"};
 
 	/**
 	* \brief This interface defines an event related to the built-in park sensors. 
