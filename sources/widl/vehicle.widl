@@ -1,7 +1,7 @@
-/**
- * \brief webinos Vehicle interface.
+/**<p>The webinos vehicle API provides access to specific vehicle data. It is derived from W3C's DOM Level 3 Events model and defines event types for retrieving information about the vehicle including trip computer data, gears or park sensors. Furthermore it offers methods for interacting with the on-board navigation system. The geolocation, speed and acceleration can be retrieved using the <a href="geolocation.html">geolocation</a> and <a href="deviceorientation.html">device orientation</a> API.</p>
+ * \name webinos Vehicle interface.
  *
- * The webinos vehicle API provides access to specific vehicle data. It is derived from W3C's DOM Level 3 Events model and defines event types for retrieving information about the vehicle including trip computer data, gears or park sensors. Furthermore it offers methods for interacting with the on-board navigation system. The geolocation, speed and acceleration can be retrieved using the <a href="geolocation.html">geolocation</a> and <a href="deviceorientation.html">device orientation</a> API. 
+ * 
  *
  * The API gives access to vehicle data, which is available on the infotainment vehicle bus (e.g. <a href="http://en.wikipedia.org/wiki/MOST_Bus">MOST</a>). The infotainment bus is the only access point for the headunit to receveive vehicle data (<a href="http://dev.webinos.org/redmine/attachments/download/666/vehicle_bus_infrastructure.pdf" target="_blank">diagram on vehicle bus architecture</a>). Some data from other busses (high/low speed <a href="http://en.wikipedia.org/wiki/Controller_area_network" target="_blank">CAN</a>) are routed into the bus over the central gateway such as speed or gear (RPM is currently not provided on the MOST). 
  *
@@ -29,7 +29,7 @@
  * \author Simon Isenberg (BMW Forschung \& Technik) &lt;Simon.Isenberg@bmw.de&gt;
  * \version 0.7
  */
-module vehicle{
+
 	/**
 	* \brief The interface defines the vehicle specific error
 	*
@@ -171,6 +171,15 @@ module vehicle{
 		void handleVehicleData(VehicleEvent data);
 	
 	};
+
+	/**
+	* \brief Possible values for vehicle fuel 
+	*/
+	enum Fuel { "unleaded", "premium", "diesel" };
+
+	/**
+	* \brief Possible values for transmission type 
+	enum VehicleTransmission { "automatic", "manual" };
 	
 	/**
 	* \brief The interface defines general information about the vehicle and is the object, where the event listener for vehicle related data can be registered. The interface is accessible through the webinos.vehicle object. 
@@ -178,26 +187,6 @@ module vehicle{
 	*/
 	[NoInterfaceObject]
 	interface VehicleInterface : EventTarget {
-		/**
-		* \brief Constant defines the fuel type unleaded.
-		*/		
-		const DOMString FUEL_UNLEADED = "unleaded";
-		/**
-		* \brief Constant defines the fuel type premium.
-		*/		
-		const DOMString FUEL_PREMIUM = "premium";
-		/**
-		* \brief Constant defines the fuel type diesel.
-		*/		
-		const DOMString FUEL_DIESEL = "diesel";
-		/**
-		* \brief Constant defines the transmission type automatic.
-		*/		
-		const DOMString TRANSMISSION_AUTOMATIC = "automatic";
-		/**
-		* \brief Constant defines the transmission type manual.
-		*/		
-		const DOMString TRANSMISSION_MANUAL = "manual";		
 		/**
 		* \brief Attribute denotes brand name of the vehicle.
 		*/					
@@ -213,11 +202,11 @@ module vehicle{
 		/**
 		* \brief Attribute reflects fuel type of the vehicle.
 		*/		
-		readonly attribute DOMString fuel;
+		readonly attribute Fuel fuel;
 		/**
 		* \brief Attribute denotes transmission type of the vehicle.
 		*/		
-		readonly attribute DOMString transmission;
+		readonly attribute VehicleTransmission transmission;
 		/**
 		* \brief Method allows to request vehicle data in a non-recurring way and is independant from value changes (cf. events). The same identifiers  are used for vehicle data as well as for the different vehicle events (ClimateControlEvent, ControlEvent, NavigationEvent, ParkSensorsEvent, ShiftEvent). 
 		* \code
@@ -305,6 +294,11 @@ module vehicle{
    		 void handleResults(POI[] pois);
   	};
 	/**
+	* \brief Climate zone names
+	*/
+	enum VehicleClimateZone { "all", "driver", "passenger-front", "passenger-rear-left", "passenger-rear-right"};
+	
+	/**
 	* \brief The interface defines a climate control event. 
 	* The event provides information about changes to the climate control system inside the vehicle.
 	* \code
@@ -318,29 +312,9 @@ module vehicle{
 	[NoInterfaceObject]
 	interface ClimateControlEvent : VehicleEvent{
 		/**
-		* \brief Constant defines the single climate zone. This constant is used as an identifier for a ClimateControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the overall zone.	
- 		*/	
-		const DOMString CLIMATE_ALL = "climate-all";
-		/**
-		* \brief Constant describes the climate zone of the driver. This constant is used as an identifier for a ClimateControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the driver zone.	
+		* \brief Attribute defines the zone of the climate control event.
 		*/	
-		const DOMString CLIMATE_DRIVER = "climate-driver";
-		/**
-		* \brief Constant defines the climate zone of the passenger seat in the front. This constant is used as an identifier for a ClimateControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the passenger zone in the front.	
-		*/	
-		const DOMString CLIMATE_PASSENGER_FRONT = "climate-passenger-front";
-		/**
-		* \brief Constant defines the climate zone of the rear set passenger seat on the left. This constant is used as an identifier for a ClimateControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the passenger zone in the rear on the left side.	
-		*/	
-		const DOMString CLIMATE_PASSENGER_REAR_LEFT = "climate-passenger-rear-left";
-		/**
-		* \brief Constant defines the climate zone of the rear set passenger seat on the right. This constant is used as an identifier for a ClimateControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the passenger zone in the rear on the right side.	
-		*/	
-		const DOMString CLIMATE_PASSENGER_REAR_RIGHT = "climate-passenger-rear-right";
-		/**
-		* \brief Attribute defines the zone of the climate control event. The value of this attribute is defined in the constants CLIMATE_*.
-		*/	
-		readonly attribute DOMString zone;
+		readonly attribute VehicleClimateZone zone;
 		/**
 		* \brief Attribute defines the desired temperature in degree celsius.
 		*/	
@@ -369,6 +343,17 @@ module vehicle{
 		*/
 		void initClimateControlEvent(boolean bubbles, boolean cancelable, DOMString zone, short desiredTemperature, boolean acStatus, short ventLevel, short ventMode);
 	};
+
+	/**
+	* \brief Type of vehicle light
+	*/
+	enum VehicleLight { "fog-front", "fog-rear", "signal-left", "signal-right", "signal-warn", "parking", "hibeam", "head" };
+
+	/**
+	* \brief Type of wiper mode
+	*/
+	enum VehicleWiperMode { "front-wash", "rear-wash", "automatic", "front-once", "rear-once", "front-level1", "front-level2" };
+
 	/**
 	* \brief The interface defines a control event. 
 	* The event signals a change for a control unit inside the vehicle (e.g. lights, wiper, etc.). The identifiers for the different control events are defined in the constants LIGHTS_* and WIPER_*
@@ -387,69 +372,9 @@ module vehicle{
 	*/
 	interface ControlEvent : VehicleEvent{
 		/**
-		* \brief Constant indicates a change for the fog light in the front. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of fogs light in the front.
+		* \brief Attribute describes the source of the event.
 		*/	
-		const DOMString LIGHTS_FOG_FRONT = "lights-fog-front";
-		/**
-		* \brief Constant indicates a change for the fog light in the rear. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of fogs light in the rear.
-		*/	
-		const DOMString LIGHTS_FOG_REAR = "lights-fog-rear";
-		/**
-		* \brief Constant indicates a change for left turn signal. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the left signal.
-		*/	
-		const DOMString LIGHTS_SIGNAL_LEFT = "lights-signal-left";
-		/**
-		* \brief Constant indicates a change for right turn signal. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the right signal.
-		*/	
-		const DOMString LIGHTS_SIGNAL_RIGHT = "lights-signal-right";
-		/**
-		* \brief Constant indicates a change for warn signal. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the warn signal.
-		*/	
-		const DOMString LIGHTS_SIGNAL_WARN = "lights-signal-warn";	
-		/**
-		* \brief Constant indicates a change for the parking lights. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the parking light.
-		*/	
-		const DOMString LIGHTS_PARKING = "lights-parking";
-		/**
-		* \brief Constant indicates a change for the hibeam. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the lights hibeam.
-		*/	
-		const DOMString LIGHTS_HIBEAM = "lights-hibeam";
-		/**
-		* \brief Constant indicates a change for the headlight. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the head light.
-		*/	
-		const DOMString LIGHTS_HEAD = "lights-head";
-		/**
-		* \brief Constant indicates front window is beeing washed. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the wiper front wash.
-		*/	
-		const DOMString WIPER_FRONT_WASH = "wiper-front-wash";
-		/**
-		* \brief Constant indicates rear window is beeing washed. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the  wiper rear wash.
-		*/	
-		const DOMString WIPER_REAR_WASH = "wiper-rear-wash";
-		/**
-		* \brief Constant indicates wiper is in automatic mode.  This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the  automatic wiper mode.
-		*/	
-		const DOMString WIPER_AUTOMATIC = "wiper-automatic";
-		/**
-		* \brief Constant indicates front wiper is beeing used once. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the wiper single mode in the front.
-		*/	
-		const DOMString WIPER_FRONT_ONCE = "wiper-front-once";
-		/**
-		* \brief Constant indicates rear wiper is beeing used once. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the wiper single mode in the rear.
-		*/	
-		const DOMString WIPER_REAR_ONCE = "wiper-front-once";
-		/**
-		* \brief constant indicates front wiper is on level 1. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the wiper on level 1 in the front.
-		*/	
-		const DOMString WIPER_FRONT_LEVEL1 = "wiper-front-level1";
-		/**
-		* \brief constant indicates front wiper is on level 2. This constant is used as an identifier for a ControlEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the wiper on level 2 in the front.
-		*/	
-		const DOMString WIPER_FRONT_LEVEL2 = "wiper-front-level2";
-		/**
-		* \brief Attribute describes the source of the event. The value of the attribute is defined in the constants LIGHTS_* and WIPER_*.
-		*/	
-		readonly attribute DOMString conrolId;
+		readonly attribute (VehicleLight or VehicleWiperMode) controlId;
 		/**
 		* \brief Attribute describes the status of the control unit.	
 		*/	
@@ -463,28 +388,21 @@ module vehicle{
 		*/
 		void initControlEvent(boolean bubbles, boolean cancelable, DOMString controlId, boolean active);
 	};
+	/**
+	* \brief Type of destination event
+	*/
+	enum DestinationEventType { "reached", "changed", "cancelled"};
+
 		/**
 	* \brief The interface defines the navigation event.
-	*  The identifiers for the different navigation events are defined in the constants DESTINATTION_*.
 	*/
 	interface NavigationEvent : VehicleEvent{
 		/**
-		* \brief Constant defines the event that the destination has been reached. This constant is used as an identifier for a NavigationEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for destination reached.
-		*/		
-		const DOMString DESTINATION_REACHED = "destination-reached";
-		/**
-		* \brief Constant defines the event that a new destination has been set. This constant is used as an identifier for a NavigationEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for destination changed.
-		*/		
-		const DOMString DESTINATION_CHANGED = "destination-changed";
-		/**
-		* \brief Constant defines the event that the navigation to a destination has been cancelled. This constant is used as an identifier for a NavigationEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for a cancelation of guidance to a destination.
-		*/			
-		const DOMString DESTINATION_CANCELLED = "destination-cancelled";	
 		
 		/**
-		* \brief Attribute defines the type of the navigation event. The type can either be  "destination-reached", "destination-changed" or "destination-cancelled".
+		* \brief Attribute defines the type of the navigation event. The type can either be  "reached", "changed" or "cancelled".
 		*/			
-		readonly attribute DOMString type;
+		readonly attribute DestinationEventType type;
 		/**
 		* \brief Attribute defines for which address the event occured.	
 		*/
@@ -500,8 +418,12 @@ module vehicle{
 		void initNavigationEvent(boolean bubbles, boolean cancelable, DOMString navigationEventId, Address destination);	
 	};
 	/**
+	*  \brief Position of parksensor event
+	*/
+	enum ParkSensorPosition { "front", "rear"};
+
+	/**
 	* \brief This interface defines an event related to the built-in park sensors. 
-	* The identifiers for the different events are defined in the constants PARKSENSENSORS_FRONT and PARKSENSENSORS_REAR.
 	* A listener can be registered by vehicle.addEventLister("parksensor-front",listener,false).
 	* \code
 	*	webinos.vehicle.addEventListener("parksensor-front", psHandler, false);
@@ -515,17 +437,9 @@ module vehicle{
 	*/
 	interface ParkSensorsEvent : VehicleEvent{
 		/**
-		* \brief Constant defines that the event was emitted by the park sensors in the front. This constant is used as an identifier for a ParkSensorEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the park sensors in the front.
-		*/
-		const DOMString PARKSENSENSORS_FRONT = "parksensors-front";
-		/**
-		* \brief Constant defines that the event was emitted by the park sensors in the rear. This constant is used as an identifier for a ParkSensorEvent and a non-recurring vehicle data request using the method webinos.vehicle.get() for the status of the park sensors in the rear.
-		*/
-		const DOMString PARKSENSENSORS_REAR = "parksensors-rear";
-		/**
 		* \brief Attribute defines the position of the sensor. The value of the attribute is either PARKSENSENSORS_FRONT or PARKSENSENSORS_REAR.
 		*/
-		readonly attribute DOMString position;
+		readonly attribute ParkSensorPosition position;
 		/**
 		* \brief Attribute reflects the destination to an object sensed by the sensor on the left side in centimeters. Minimum distance is 20 centimeters. Maximum distance is 250 centimeters. A value of -1 indiactes that no object has been sensed.
 		*/    		
@@ -554,6 +468,7 @@ module vehicle{
 		*/
 		void initParkSensorsEvent(boolean bubbles, boolean cancelable, DOMString position, short left, short midLeft, short midRight, short right);
 	};
+
 	/**
 	* \brief This interface defines a shift event. 
 	* A listener can be registered by vehicle.addEventLister("shift",listener,false).
@@ -567,10 +482,6 @@ module vehicle{
 	* \endcode
 	*/
 	interface ShiftEvent : VehicleEvent{
-		/**
-		* \brief Constant defines shift event. This constant is used as an identifier for a shift event and a non-recurring vehicle data request using the method webinos.vehicle.get() for the gear.
-		*/
-		const DOMString SHIFT = "shift";
 		/**
 		* \brief Constant defines the first gear.	
 		*/	
@@ -655,10 +566,6 @@ module vehicle{
 	*/
 	interface TripComputerEvent : VehicleEvent{
 		/**
-		* \brief Constant defines a trip computer event. This constant is used as an identifier for a trip computer event and a non-recurring trip  data request using the method webinos.vehicle.get() for trip computer data.
-		*/
-		const DOMString TRIPCOMPUTER = "tripcomputer";
-		/**
 		* \brief Attrubute reflects the average consumption 1 of the vehicle in l/100kilometers (resets automatically after a trip).
 		*/		
 		readonly attribute float averageConsumption1;
@@ -701,6 +608,6 @@ module vehicle{
 		*/
 		void initTripComputerEvent(boolean bubbles, boolean cancelable, float averageConsumption1, float averageConsumption2, float averageSpeed1, float averageSpeed2, float tripDistance, float mileage, float range);
 	};
-};
+
 
 
