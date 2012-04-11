@@ -1,4 +1,5 @@
-/**
+/**<p>
+* \name TV Control API
 * \brief Interface for TV control and managment.
 *
 * The interface provides means to acquire a list of tv sources, channels and
@@ -20,7 +21,7 @@
 /**
 * \brief Creates tv object.
 */
-partial interface webinoscore:Webinos {
+partial interface Webinos {
   readonly attribute TVManager tv;
 };
 
