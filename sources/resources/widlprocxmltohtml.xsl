@@ -217,7 +217,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 <xsl:template match="Exception">
   <div class="exception" id="{@id}">
-        <h3><xsl:value-of select="@name"/></h3>
+        <h3 class="section"><xsl:value-of select="@name"/></h3>
         <xsl:apply-templates select="descriptive/brief"/>
         <xsl:apply-templates select="webidl"/>
         <xsl:apply-templates select="descriptive"/>
@@ -256,7 +256,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <!--Typedef.-->
 <xsl:template match="Typedef[descriptive]">
     <div class="typedef" id="{@id}">
-        <h3><xsl:value-of select="@name"/></h3>
+        <h3 class="section"><xsl:value-of select="@name"/></h3>
         <xsl:apply-templates select="descriptive/brief"/>
         <xsl:apply-templates select="webidl"/>
         <xsl:apply-templates select="descriptive"/>
@@ -268,7 +268,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <xsl:template match="Interface[descriptive]|Dictionary[descriptive]">
     <xsl:variable name="name" select="@name"/>
     <div class="interface" id="{@id}">
-        <h3><xsl:value-of select="local-name()"/><xsl:text>&#xA0;</xsl:text><xsl:value-of select="@name"/><xsl:if test="@partial"> (partial interface)</xsl:if></h3>
+        <h3 class="section"><xsl:value-of select="local-name()"/><xsl:text>&#xA0;</xsl:text><xsl:value-of select="@name"/><xsl:if test="@partial"> (partial interface)</xsl:if></h3>
         <xsl:apply-templates select="descriptive/brief"/>
         <xsl:apply-templates select="webidl"/>
         <xsl:apply-templates select="../Implements[@name2=$name]/webidl"/>
@@ -476,7 +476,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <xsl:template match="Callback">
     <xsl:variable name="name" select="@name"/>
     <div class="callback" id="{@id}">
-        <h3><code><xsl:value-of select="@name"/></code></h3>
+        <h3 class="section"><code><xsl:value-of select="@name"/></code></h3>
 	        <xsl:apply-templates select="descriptive/brief"/>
 	        <xsl:apply-templates select="webidl"/>
 	        <xsl:apply-templates select="descriptive"/>
@@ -631,7 +631,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <xsl:template match="Enum[descriptive]">
     <xsl:variable name="name" select="@name"/>
     <div class="enum" id="{@id}">
-        <h3><code><xsl:value-of select="@name"/></code></h3>
+        <h3 class="section"><code><xsl:value-of select="@name"/></code></h3>
         <xsl:apply-templates select="descriptive/brief"/>
         <xsl:apply-templates select="webidl"/>
         <xsl:apply-templates select="descriptive"/>

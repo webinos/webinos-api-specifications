@@ -634,7 +634,7 @@ h2.section {
    counter-reset: subsection;
 }
 
-h3:before {
+h3.section:before {
     content: counter(section) '.' counter(subsection) ' ';
     counter-increment: subsection;
 }
