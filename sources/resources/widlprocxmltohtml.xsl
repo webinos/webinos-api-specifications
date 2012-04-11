@@ -19,15 +19,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 <xsl:param name="date" select="'error: missing date'"/>
 
-<!--<xsl:variable name="title" select="concat('The Webinos ',/Definitions/*[1]/@name,' Module - Version ',/Definitions/Module/descriptive/version)"/>-->
-<!--<xsl:variable name="title" select="concat('The Webinos ',/Definitions/*[1]/@name,' module - ',/Definitions/Module/descriptive/version)"/>-->
-<xsl:variable name="title" select="concat('APIs: The ',/Definitions/*[1]/@name,' module')"/>
-
-<xsl:variable name="exception-section-number" select="3 + (count(/Definitions/Module/Typedef) &gt; 0)"/>
-
-<xsl:variable name="api-features-section-number" select="$exception-section-number + (count(/Definitions/Module/Exception) &gt; 0)" />
-
-<xsl:variable name="full-webidl-section-number" select="$api-features-section-number + 1" />
+<xsl:variable name="title" select="/Definitions/descriptive/name"/>
 
 
 <!--Root of document.-->
@@ -46,8 +38,8 @@ XSLT stylesheet to convert widlprocxml into html documentation.
     </html>
 </xsl:template>
 
-<!--Module: a whole API.-->
-<xsl:template match="Module">
+<!--Root of Definitions.-->
+<xsl:template match="Definitions">
     <div class="api" id="{@id}">
       <div>
         <a href="http://webinos.org"><img src="http://webinos.org/wp-content/uploads/2011/press_releases/webinos_thumb_150x48.png" alt="Webinos Logo"/></a>
@@ -61,48 +53,78 @@ XSLT stylesheet to convert widlprocxml into html documentation.
           <xsl:apply-templates select="descriptive/author"/>
         </ul>
 
-        <div><p class="copyright"><small>© 2011 webinos consortium, www.webinos.org.</small></p> </div>
+        <div><p class="copyright"><small>© 2011-2012 <a href="http://www.webinos.org/">webinos consortium</a>.</small></p> </div>
 
         <hr/>
 
         <h2>Abstract</h2>
 
         <xsl:apply-templates select="descriptive/brief"/>
+        <xsl:apply-templates select="descriptive/description"/>
+        <xsl:apply-templates select="descriptive/Code"/>
+
 
         <h2>Table of Contents</h2>
-        <ul class="toc">
+        <ol class="toc">
          <!--<li> <a href="#method-summary">Method Summary</a></li>-->
 
-          <li>1. <a href="#intro">Introduction</a></li>
-          <li>2. <a href="#interfaces">Interfaces</a>
-          <ul class="toc">
+          <li><a href="#intro">Introduction</a></li>
+          <li><a href="#interfaces">Interfaces</a>
+          <ol class="toc">
           <xsl:for-each select="Interface[descriptive]">
-            <li>2.<xsl:number value="position()"/>. <a href="#{@id}"><xsl:value-of select="@name"/></a></li>
+            <li><a href="#{@id}"><xsl:value-of select="@name"/></a></li>
           </xsl:for-each>
-          </ul>
+          </ol>
           </li>
           <xsl:if test="Typedef">
-          <li>3. <a href="#typedefs">Type Definitions</a>
-            <ul class="toc">
+          <li><a href="#typedefs">Type Definitions</a>
+            <ol class="toc">
               <xsl:for-each select="Typedef[descriptive]">
-                <li>3.<xsl:number value="position()"/>. <a href="#{@id}"><xsl:value-of select="@name"/></a></li>
+                <li><a href="#{@id}"><xsl:value-of select="@name"/></a></li>
               </xsl:for-each>
-            </ul>
+            </ol>
             </li>
           </xsl:if>
+          <xsl:if test="Dictionary">
+	          <li><a href="#dictionaries">Dictionary types</a>
+	          <ol class="toc">
+	          <xsl:for-each select="Dictionary[descriptive]">
+	            <li><a href="#{@id}"><code><xsl:value-of select="@name"/></code></a></li>
+	          </xsl:for-each>
+	          </ol>
+	          </li>
+          </xsl:if>
+          <xsl:if test="Callback">
+	          <li><a href="#callbacks">Callbacks</a>
+	          <ol class="toc">
+	          <xsl:for-each select="Callback[descriptive]">
+	            <li><a href="#{@id}"><code><xsl:value-of select="@name"/></code></a></li>
+	          </xsl:for-each>
+	          </ol>
+	          </li>
+          </xsl:if>
+          <xsl:if test="Enum">
+	          <li><a href="#enums">Enums</a>
+	          <ol class="toc">
+	          <xsl:for-each select="Enum[descriptive]">
+	            <li><a href="#{@id}"><code><xsl:value-of select="@name"/></code></a></li>
+	          </xsl:for-each>
+	          </ol>
+	          </li>
+          </xsl:if>
           <xsl:if test="Exception">
-          <li><xsl:value-of select="$exception-section-number"/>. <a href="#exceptions">Exceptions</a>
-            <ul class="toc">
+          <li><a href="#exceptions">Exceptions</a>
+            <ol class="toc">
               <xsl:for-each select="Exception">
-                <li><xsl:value-of select="$exception-section-number"/>.<xsl:number value="position()"/>. <a href="#{@id}"><xsl:value-of select="@name"/></a></li>
+                <li><a href="#{@id}"><xsl:value-of select="@name"/></a></li>
               </xsl:for-each>
-            </ul>
+            </ol>
             </li>
           </xsl:if>
 
-          <li><xsl:number value="$api-features-section-number"/>. <a href="#api-features">Features</a></li>
-          <li><xsl:number value="$full-webidl-section-number"/>. <a href="#full-webidl">Full WebIDL</a></li>
-        </ul>
+          <li><a href="#api-features">Features</a></li>
+          <li><a href="#full-webidl">Full WebIDL</a></li>
+        </ol>
 
         <hr/>
 
@@ -110,29 +132,47 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <h2 id="method-summary">Summary of Methods</h2>
         <xsl:call-template name="summary"/>
 
-       <h2 id="intro">1. Introduction</h2>
+       <h2 class="section" id="intro">Introduction</h2>
         <xsl:apply-templates select="descriptive/description"/>
         <xsl:apply-templates select="descriptive/Code"/>
 
-        <h2 id="interfaces">2. Interfacesx</h2>
+        <h2 class="section" id="interfaces">Interfaces</h2>
         <xsl:apply-templates select="Interface|Dictionary"/>
 
         <xsl:if test="Typedef">
             <div class="typedefs" id="typedefs">
-                <h2>3. Type Definitions</h2>
+                <h2 class="section">Type Definitions</h2>
                 <xsl:apply-templates select="Typedef[descriptive]"/>
             </div>
         </xsl:if>
+        <xsl:if test="Dictionary">
+            <div class="dictionaries" id="dictionaries">
+        		<h2 class="section">Dictionary types</h2>
+        		<xsl:apply-templates select="Dictionary"/>
+            </div>
+        </xsl:if>
+        <xsl:if test="Callback">
+            <div class="callbacks" id="callbacks">
+        		<h2 class="section">Callbacks</h2>
+        		<xsl:apply-templates select="Callback"/>
+            </div>
+        </xsl:if>
+        <xsl:if test="Enum">
+            <div class="enums" id="enums">
+        		<h2 class="section">Enums</h2>
+        		<xsl:apply-templates select="Enum"/>
+             </div>
+         </xsl:if>
 
 	<xsl:if test="Exception">
             <div class="exceptions" id="exceptions">
-                <h2><xsl:value-of select="$exception-section-number"/>. Exceptions</h2>
+                <h2 class="section">Exceptions</h2>
                 <xsl:apply-templates select="Exception"/>
             </div>
 
 	</xsl:if>
 
-        <h2 id="api-features"><xsl:value-of select="$api-features-section-number"/>. Features</h2>
+        <h2 class="section" id="api-features">Features</h2>
 
         <xsl:if test="descriptive/def-api-feature">
             <div id="def-api-features" class="def-api-features">
@@ -144,7 +184,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 
 
-        <h2 id="full-webidl"><xsl:value-of select="$full-webidl-section-number"/>. Full WebIDL</h2>
+        <h2 class="section" id="full-webidl">Full WebIDL</h2>
         <xsl:apply-templates select="/Definitions/Module/webidl"/>
 
 
@@ -177,7 +217,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 <xsl:template match="Exception">
   <div class="exception" id="{@id}">
-        <h3><xsl:value-of select="$exception-section-number" />.<xsl:number value="position()"/>. <xsl:value-of select="@name"/></h3>
+        <h3><xsl:value-of select="@name"/></h3>
         <xsl:apply-templates select="descriptive/brief"/>
         <xsl:apply-templates select="webidl"/>
         <xsl:apply-templates select="descriptive"/>
@@ -216,7 +256,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <!--Typedef.-->
 <xsl:template match="Typedef[descriptive]">
     <div class="typedef" id="{@id}">
-        <h3>3.<xsl:number value="position()"/>. <xsl:value-of select="@name"/></h3>
+        <h3><xsl:value-of select="@name"/></h3>
         <xsl:apply-templates select="descriptive/brief"/>
         <xsl:apply-templates select="webidl"/>
         <xsl:apply-templates select="descriptive"/>
@@ -228,7 +268,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <xsl:template match="Interface[descriptive]|Dictionary[descriptive]">
     <xsl:variable name="name" select="@name"/>
     <div class="interface" id="{@id}">
-        <h3><xsl:value-of select="concat('2.',1+count(preceding::Interface) + count(preceding::Dictionary))"/>. <xsl:value-of select="local-name()"/> <xsl:value-of select="@name"/><xsl:if test="@partial"> (partial interface)</xsl:if></h3>
+        <h3><xsl:value-of select="local-name()"/><xsl:text>&#xA0;</xsl:text><xsl:value-of select="@name"/><xsl:if test="@partial"> (partial interface)</xsl:if></h3>
         <xsl:apply-templates select="descriptive/brief"/>
         <xsl:apply-templates select="webidl"/>
         <xsl:apply-templates select="../Implements[@name2=$name]/webidl"/>
@@ -240,6 +280,15 @@ XSLT stylesheet to convert widlprocxml into html documentation.
                 <h4>Constants</h4>
                 <dl>
                   <xsl:apply-templates select="Const"/>
+                </dl>
+            </div>
+        </xsl:if>
+	<!-- @@@ TODO: Fix list of extended attributes (not all of them are constructors) -->
+        <xsl:if test="ExtendedAttributeList/ExtendedAttribute/descriptive">
+            <div class="constructors">
+                <h4>Constructors</h4>
+                <dl>
+                  <xsl:apply-templates select="ExtendedAttributeList/ExtendedAttribute"/>
                 </dl>
             </div>
         </xsl:if>
@@ -310,6 +359,37 @@ XSLT stylesheet to convert widlprocxml into html documentation.
           <xsl:apply-templates select="descriptive/Code"/>
         </dd>
 </xsl:template>
+
+<!--ExtendedAttribute name==Constructor || name==NamedConstructor-->
+<xsl:template match="ExtendedAttributeList/ExtendedAttribute">
+    <dt class="constructor" id="{concat(@name,generate-id(.))}">
+        <code>
+            <xsl:value-of select="../../@name"/>
+             <xsl:text>(</xsl:text>
+            <xsl:apply-templates select="ArgumentList">
+                <xsl:with-param name="nodesc" select="1"/>
+            </xsl:apply-templates>
+            <xsl:text>);</xsl:text>
+        </code>
+    </dt>
+    <dd>
+        <xsl:apply-templates select="descriptive/brief"/>
+        <xsl:apply-templates select="descriptive"/>
+        <xsl:apply-templates select="ArgumentList"/>
+        <xsl:apply-templates select="Raises"/>
+        <xsl:if test="descriptive/api-feature">
+            <div class="api-features">
+                <h6>API features</h6>
+                <dl>
+                    <xsl:apply-templates select="descriptive/api-feature"/>
+                </dl>
+            </div>
+        </xsl:if>
+        <xsl:apply-templates select="webidl"/>
+        <xsl:apply-templates select="descriptive/Code"/>
+    </dd>
+</xsl:template>
+
 
 <!--Const-->
 <xsl:template match="Const">
@@ -390,6 +470,39 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         </xsl:if>
         <xsl:apply-templates select="descriptive/Code"/>
     </dd>
+</xsl:template>
+
+<!--Callback-->
+<xsl:template match="Callback">
+    <xsl:variable name="name" select="@name"/>
+    <div class="callback" id="{@id}">
+        <h3><code><xsl:value-of select="@name"/></code></h3>
+	        <xsl:apply-templates select="descriptive/brief"/>
+	        <xsl:apply-templates select="webidl"/>
+	        <xsl:apply-templates select="descriptive"/>
+	        <div class="synopsis">
+	            <h6>Signature</h6>
+	            <pre>
+	                <xsl:apply-templates select="Type"/>
+	                <xsl:text> </xsl:text>
+	                <xsl:value-of select="@name"/>
+	                <xsl:text>(</xsl:text>
+	                <xsl:apply-templates select="ArgumentList">
+	                    <xsl:with-param name="nodesc" select="1"/>
+	                </xsl:apply-templates>
+	                <xsl:text>);
+</xsl:text></pre>
+	        </div>
+	        <xsl:apply-templates select="descriptive"/>
+	        <xsl:apply-templates select="ArgumentList"/>
+	        <xsl:if test="Type/descriptive">
+	          <div class="returntype">
+	            <h5>Return value</h5>
+	            <xsl:apply-templates select="Type/descriptive"/>
+	          </div>
+	        </xsl:if>
+	        <xsl:apply-templates select="descriptive/Code"/>
+	</div>
 </xsl:template>
 
 <!--ArgumentList. This is passed $nodesc=true to output just the argument
@@ -506,6 +619,40 @@ XSLT stylesheet to convert widlprocxml into html documentation.
     </xsl:choose>
 </xsl:template>
 
+<!--Enum.-->
+<xsl:template match="Enum[descriptive]">
+    <xsl:variable name="name" select="@name"/>
+    <div class="enum" id="{@id}">
+        <h3><code><xsl:value-of select="@name"/></code></h3>
+        <xsl:apply-templates select="descriptive/brief"/>
+        <xsl:apply-templates select="webidl"/>
+        <xsl:apply-templates select="descriptive"/>
+        <xsl:apply-templates select="descriptive/Code"/>
+        <div class="enumvalues">
+            <h4>Values</h4>
+            <dl>
+              <xsl:apply-templates select="EnumValue"/>
+            </dl>
+        </div>
+    </div>
+</xsl:template>
+<xsl:template match="Enum[not(descriptive)]">
+</xsl:template>
+
+<!--EnumValue-->
+<xsl:template match="EnumValue">
+  <dt class="enumvalue" id="{@id}">
+    <code>
+      <xsl:value-of select="@stringvalue"/>
+    </code>
+  </dt>
+  <dd>
+    <xsl:apply-templates select="descriptive/brief"/>
+    <xsl:apply-templates select="descriptive"/>
+    <xsl:apply-templates select="descriptive/Code"/>
+  </dd>
+</xsl:template>
+
 <xsl:template match="descriptive[not(author)]">
   <xsl:apply-templates select="version"/>
   <xsl:if test="author">
@@ -548,13 +695,21 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <!--Code-->
 <xsl:template match="Code">
     <div class="example">
-        <h5>Code example</h5>
+    	<xsl:choose>
+        	<xsl:when test="@lang">
+	       		<h5><xsl:value-of select="@lang"/></h5>
+        	</xsl:when>
+        	<xsl:otherwise>
+	       		<h5>Code example</h5>
+        	</xsl:otherwise>
+    	</xsl:choose>
         <pre name='code' class="examplecode prettyprint"><xsl:apply-templates/></pre>
     </div>
 </xsl:template>
 
 <!--webidl : literal Web IDL from input-->
 <xsl:template match="webidl">
+    <h5>WebIDL</h5>
     <pre class="webidl prettyprint"><xsl:apply-templates/></pre>
 </xsl:template>
 
@@ -590,7 +745,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
     </li>
 </xsl:template>
 
-<!--def-instantiated (called from Module).
+<!--def-instantiated.
     This assumes that only one interface in the module has a def-instantiated,
     and that interface contains just one attribute.-->
 <xsl:template match="def-instantiated">
@@ -625,7 +780,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 
 <!--html elements-->
-<xsl:template match="a|b|br|dd|dl|dt|em|li|p|table|td|th|tr|ul|img">
+<xsl:template match="a|b|br|dd|dl|dt|em|li|p|table|td|th|tr|ul">
     <xsl:element name="{name()}"><xsl:for-each select="@*"><xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute></xsl:for-each><xsl:apply-templates/></xsl:element>
 </xsl:template>
 

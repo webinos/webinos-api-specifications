@@ -603,3 +603,38 @@
   #content .atn { color: #404; }
   #content .atv { color: #060; }
 /*}*/
+
+ol.toc {
+    list-style: none; 
+    font: 11px arial; 
+    margin: 0px 0px 0px 10px; 
+    padding: 0;
+    counter-reset: num;
+}
+
+ol.toc li:before {
+    content: counter(num) '. ';
+    counter-increment: num;
+}
+
+ol.toc ol li:before {
+    content: counters(num, '.') ' ';
+}
+
+#method-summary {
+    counter-reset: section;
+}
+
+h2.section:before {
+    content: counter(section) '. ';
+    counter-increment: section;
+}
+
+h2.section {
+   counter-reset: subsection;
+}
+
+h3:before {
+    content: counter(section) '.' counter(subsection) ' ';
+    counter-increment: subsection;
+}
