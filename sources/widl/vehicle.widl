@@ -138,30 +138,17 @@
 	};
 
 	/**
-	* \brief The interface defines the callback for a asynchronous function call insided the vehicle module.
+	* \brief callback for a success from requestGuidance.
 	*
 	*/
-	[Callback=FunctionOnly, NoInterfaceObject]
-	interface SuccessCallback{
-		/**
-		* \brief Method is triggered, if function has been succesfully called.
-		*
-		*/
-		void onSuccess();
-	};
+	callback VehicleSuccessCallback = void ();
+
 	/**
-	* \brief The interface defines the callback for a failed asynchronous function call inside the vehilce module.
+	* \brief callback for a failure from requestGuidance, get, or findDestination
+	* \param error contains information about the error.
 	*
 	*/
-	[Callback=FunctionOnly, NoInterfaceObject]
-	interface ErrorCallback{
-		/**
-		* \brief Method is triggered, if asychronous function call fails.
-		* 
-		* \param error contains information about the error.
-		*/		
-		void onError(VehicleError error);
-	};
+	callback VehicleErrorCallback = void (VehicleError error);
 	
 	/**
 	* \brief The interface defines the callback method to receive vehicle data in a non-recurring and asynchronous way.
@@ -225,7 +212,7 @@
 		* \param handler Parameter specifies the function to handle the result.
 		* \param errorCB Parameter specifies the callback function in case of an error.
 		*/
-		void get(DOMString vehicleDataId, VehicleDataHandler handler, ErrorCallback errorCB);
+		void get(DOMString vehicleDataId, VehicleDataHandler handler, VehicleErrorCallback errorCB);
 		/**
 		* \brief Parameter sets the given POIs as the next destinations for the build-in navigation system. The method handles intermediate stops. The last POI in the array is the final destination.
 		* \code
@@ -248,7 +235,7 @@
 		* \param errorCallback callback, if the address could not be transferred. 
 		* \param destinations in form of an POI array. The last POI in the array is the destination point. The other POIs are intermediate stops along the route.
 		*/
-		void requestGuidance(SuccessCallback successCallback, ErrorCallback errorCallback, POI[] destinations);
+		void requestGuidance(VehicleSuccessCallback successCallback, VehicleErrorCallback errorCallback, POI[] destinations);
 		/**
 		* \brief Queries the navigation system to retrieve POIs for a given search string.
 		*
@@ -269,7 +256,7 @@
 		* \param errorCallback callback to handle errors.
 		* \param search search string for resolving a address.
 		*/
-		void findDestination(DestinationCallback destinationCallback, ErrorCallback errorCallback, DOMString search);
+		void findDestination(DestinationCallback destinationCallback, VehicleErrorCallback errorCallback, DOMString search);
 	};
 	
 	/**
@@ -279,20 +266,13 @@
 	[NoInterfaceObject] interface Vehicle {
                 readonly attribute VehicleInterface vehicle;
         };
-	webinoscore::Webinos implements Vehicle;
+	Webinos implements Vehicle;
 	/**
-	* \brief The interface defines the result callback for the asynchronous findDestination method.
-	*
+	* \brief callback for the asynchronous findDestination method.
+	* \param pois Parameter provides an array of POIs.
 	*/
-	[Callback=FunctionOnly, NoInterfaceObject]
- 	interface DestinationCallback {
-		/**
-		* \brief Function is called, when the results for a POI search are retrieved.
-		*
-		* \param pois Parameter provides an array of POIs.
-		*/
-   		 void handleResults(POI[] pois);
-  	};
+ 	callback DestinationCallback = void (POI[] pois);
+
 	/**
 	* \brief Climate zone names
 	*/
