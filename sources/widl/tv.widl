@@ -173,18 +173,18 @@ enum TVError { "unknown", "illegal_channel"};
 /**
 * \brief TV source: a list of channels with a name.
 */
-interface TVSource {
+dictionary TVSource {
   /**
    * \brief The name of the source.
    *
    * The name should describe the kind of tuner this source represents, e.g. DVB-T, DVB-C.
    */
-  readonly attribute DOMString name;
+  DOMString name;
   
   /**
    * \brief List of channels for this source.
    */
-  readonly attribute Channel[] channelList;
+  Channel[] channelList;
 };
 
 /**
@@ -197,37 +197,37 @@ enum ChannelType { "tv", "radio"};
  *
  * Channel objects provide access to the video stream.
  */
-interface Channel {
+dictionary Channel {
   /**
    * \brief The type of channel.
    *
    * Type of channel
    */
-  readonly attribute ChannelType channelType;
+  ChannelType channelType;
   
  /**
    * \brief The name of the channel.
    *
    * The name of the channel will typically be the call sign of the station.
    */
-  readonly attribute DOMString name;
+   DOMString name;
   
   /**
    * \brief The long name of the channel.
    *
    * The long name of the channel if transmitted. Can be undefined if not available.
    */
-  readonly attribute DOMString longName;
+   DOMString longName;
   
   /**
    * \brief The video stream.
    *
    * This stream is a represents a valid source for a HTMLVideoElement.
    */
-  readonly attribute Stream stream;
+   Stream stream;
   
   /**
    * \brief The source this channels belongs too.
    */
-  readonly attribute TVSource tvsource;
+   TVSource tvsource;
 };
