@@ -1,7 +1,7 @@
-/**
+/**<p>The application execution API allows activation of webinos applications installed locally on the device. The API is modelled after BONDI v1.1 AppLauncher API.</p>
+ * \name AppLauncher API
  * \brief The application execution API (AppLauncher) allows activation of webinos applications installed locally on the device. Functionality defined in this version of the specification refers to webinos Phase 1 scope. 
  *
- * The application execution API allows activation of webinos applications installed locally on the device. The API is modelled after BONDI v1.1 AppLauncher API.
  *
  * Operation of the API is guided by application execution policies, which can be modified by user. 
  * The policies control the following aspects of API operation: \n
@@ -22,27 +22,12 @@
  * \author Michael Vakulenko &lt;michael@visionmobile.com&gt;
  * \version 0.1 
  */
-module AppLauncher {
-
-  /**
-   * \brief Array of DOMStrings.
-   */
-  typedef sequence<object> ObjectArray;
 
   /**
    * \brief Application ID for identifying installed webinos applications. 
    *  NOTE: This definition could be moved to webinos core module in the future.
    */
   typedef DOMString applicationID;
-
-  /**
-   * \brief Exception definition for AppLauncher module. Error codes are defined in LauncherAPIError interface.
-   */
-  exception AppLauncherException {
-
-    unsigned short code;        
-    DOMString message;
-  };
   
   
   /**
@@ -78,88 +63,53 @@ module AppLauncher {
   [NoInterfaceObject] interface AppLauncherManager {
 
       /**
-       * \brief Starts a webinos applicaiton identified by appID. The method is asynchronous. If the app was started successfuly, successCallback is invoked. In case of error, errorCallback is called.
-       *
+       * \brief Starts a webinos applicaiton identified by appID. The method is asynchronous. If the app was started successfuly, successCallback is invoked. In case of error, errorCallback is called. Throws DOMException of type AppLauncherError when activation of the application was not successful.
        *
        * \param successCallback Callback invoked when a requested webinos app was activated successfully. 
        * \param errorCallback Callback invoked if activation of webinos app was not successful.
        * \param appID Identifies webinos application that needs to be activated.
        * \param params Optional set of parameters for starting the application.
        * \return A pending operation object
-       * \throw AppLauncherException Thrown when activation of the application was not successful.
        */
 
-    PendingOperation launchApplication(SuccessCallback successCallback,
+    PendingOperation launchApplication(VoidFunction successCallback,
                                        ErrorCallback errorCallback,
                                        applicationID appID,
-                                       optional ObjectArray params)
-                       raises( AppLauncherException);
+                                       optional sequence<object> params);
 
 
       /**
-       * \brief Reports if a specific webinos application is installed in the device. The method is synchronous.
+       * \brief Reports if a specific webinos application is installed in the device. The method is synchronous. Throws DOMException of type AppLauncherError when detection of the application failed.
        *
        * \param appID Identifies webinos application presence of which needs to be tested.
        * \return True if the application is installed, false if the application is not installed.
-       * \throw AppLauncherException Thrown when activation of the application was not successful.
        */
        
-    boolean AppInstalled(applicationID appID)
-            raises( AppLauncherException);
+    boolean AppInstalled(applicationID appID);
     };
     
-
+        
     /**
-    * \brief This interface defines the callback for a asynchronous launchApplication method.
-    *
+    * \brief callback for a failed activation of asynchronous launchApplication method.
+    * \param error contains information about the error 
     */
-    [Callback=FunctionOnly, NoInterfaceObject]
-    interface SuccessCallback{
-      /**
-      * \brief This method is called if function app was launched successfully.
-      *
-      */
-      void onSuccess();
-    };
-    
-    
-    /**
-    * \brief This interface defines the callback for a failed activation of asynchronous launchApplication method.
-    *
-    */
-    [Callback=FunctionOnly, NoInterfaceObject]
-    interface ErrorCallback{
-      /**
-      * \brief This method is called if asychronous launchApplication method fails.
-      * 
-      * \param error contains information about the error 
-      */		
-      void onError(LaucherAPIError error);
-    };
+    callback ErrorCallback = void (LauncherAPIError error);
 
-    
+    /** 
+    * \brief Possible errors for launcher API
+    */
+    enum LauncherAPIErrorCode {"unknown", "notsupported", "typemismatch", "securityerror", "networkerror", "invalid_id", "app_not_found", "no_resources", "already_started", "policy_not_allowed"};
+
+
     /**
      * \brief API-specific error handling  interface
      *
-     * The LaucnherAPIError interface describes error interface for the Launcher API.
+     * The LauncherAPIError dictionary describes errors for the Launcher API.
      *
      */
-    [NoInterfaceObject] interface LauncherAPIError {
-    
-        readonly attribute unsigned short code;
-        
-        readonly attribute DOMString message;
-        
-        const unsigned short      UNKNOWN_ERR                    = 0;
-        const unsigned short      NOT_SUPPORTED_ERR              = 9;
-        const unsigned short      TYPE_MISMATCH_ERR              = 17;
-        const unsigned short      SECURITY_ERR                   = 18;
-        const unsigned short      NETWORK_ERR                    = 19;
-        const unsigned short      INVALID_APP_ID                 = 100; 
-        const unsigned short      APP_NOT_FOUND                  = 101; 
-        const unsigned short      NO_RESOURCES                   = 102; 
-        const unsigned short      ALREADY_STARTED                = 103; 
-        const unsigned short      POLICY_NOT_ALLOWED             = 104; 
+    dictionary LauncherAPIError {    
+        LauncherAPIErrorCode code;        
+        DOMString message;
     };
     
     /**
@@ -193,6 +143,5 @@ module AppLauncher {
 	};
 
 
-	webinoscore::Webinos implements WebinosLauncher;
+	Webinos implements WebinosLauncher;
 
-};
