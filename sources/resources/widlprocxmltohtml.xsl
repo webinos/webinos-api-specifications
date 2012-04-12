@@ -71,7 +71,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
           <li><a href="#intro">Introduction</a></li>
           <li><a href="#interfaces">Interfaces and Dictionaries</a>
           <ol class="toc">
-          <xsl:for-each select="Interface[descriptive]">
+          <xsl:for-each select="Interface[descriptive]|Dictionary[descriptive]">
             <li><a href="#{@id}"><xsl:value-of select="@name"/></a></li>
           </xsl:for-each>
           </ol>
@@ -84,15 +84,6 @@ XSLT stylesheet to convert widlprocxml into html documentation.
               </xsl:for-each>
             </ol>
             </li>
-          </xsl:if>
-          <xsl:if test="Dictionary">
-	          <li><a href="#dictionaries">Dictionary types</a>
-	          <ol class="toc">
-	          <xsl:for-each select="Dictionary[descriptive]">
-	            <li><a href="#{@id}"><code><xsl:value-of select="@name"/></code></a></li>
-	          </xsl:for-each>
-	          </ol>
-	          </li>
           </xsl:if>
           <xsl:if test="Callback">
 	          <li><a href="#callbacks">Callbacks</a>
@@ -143,12 +134,6 @@ XSLT stylesheet to convert widlprocxml into html documentation.
             <div class="typedefs" id="typedefs">
                 <h2 class="section">Type Definitions</h2>
                 <xsl:apply-templates select="Typedef[descriptive]"/>
-            </div>
-        </xsl:if>
-        <xsl:if test="Dictionary">
-            <div class="dictionaries" id="dictionaries">
-        		<h2 class="section">Dictionary types</h2>
-        		<xsl:apply-templates select="Dictionary"/>
             </div>
         </xsl:if>
         <xsl:if test="Callback">
