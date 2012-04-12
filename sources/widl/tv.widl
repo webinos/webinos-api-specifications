@@ -5,8 +5,8 @@
 * The interface provides means to acquire a list of tv sources, channels and
 * their streams.
 * 
-* The TV channel streams can be displayed in HTMLVideoElement object
-* (http://dev.w3.org/html5/spec/video.html). Alternatively the API provides
+* The TV channel streams can be displayed in <a href="http://dev.w3.org/html5/spec/video.html">HTMLVideoElement object</a>.
+* Alternatively the API provides
 * means to control channel management of the native hardware TV, by allowing
 * to set a channel or watch for channel changes that are invoked otherwise.
 *
