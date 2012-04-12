@@ -137,9 +137,10 @@ window['_pr_isIE6'] = function () {
       "retry self super then true undef unless until when yield BEGIN END ";
   var SH_KEYWORDS = FLOW_CONTROL_KEYWORDS + "case done elif esac eval fi " +
       "function in local set then until ";
+   var WEBIDL_KEYWORDS = COMMON_KEYWORDS + "callback dictionary attribute sequence optional";
   var ALL_KEYWORDS = (
       CPP_KEYWORDS + CSHARP_KEYWORDS + JSCRIPT_KEYWORDS + PERL_KEYWORDS +
-      PYTHON_KEYWORDS + RUBY_KEYWORDS + SH_KEYWORDS);
+      PYTHON_KEYWORDS + RUBY_KEYWORDS + SH_KEYWORDS + WEBIDL_KEYWORDS);
 
   // token style names.  correspond to css classes
   /** token style for a string literal */
