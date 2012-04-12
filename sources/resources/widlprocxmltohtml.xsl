@@ -185,7 +185,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 
         <h2 class="section" id="full-webidl">Full WebIDL</h2>
-        <xsl:apply-templates select="/Definitions/Module/webidl"/>
+        <xsl:apply-templates select="/Definitions/webidl"/>
 
 
     </div>
