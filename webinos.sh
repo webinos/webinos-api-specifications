@@ -92,7 +92,7 @@ cat > "$SPECHOME/apis/index.html" <<DELIM
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link media="screen" href="webinos-apis.css" type="text/css" rel="stylesheet">
-<title>Webinos Device APIs</title>
+<title>Webinos Phase 2 Device APIs</title>
 </head>
 <body id="content">
 <div class="api">
