@@ -610,7 +610,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <!--Enum.-->
 <xsl:template match="Enum[descriptive]">
     <xsl:variable name="name" select="@name"/>
-    <div class="enum" id="{@id}">
+    <div class="enum" id="{$name}_enum">
         <h3 class="section"><code><xsl:value-of select="@name"/></code></h3>
         <xsl:apply-templates select="descriptive/brief"/>
         <xsl:apply-templates select="webidl"/>
@@ -629,7 +629,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 <!--EnumValue-->
 <xsl:template match="EnumValue">
-  <dt class="enumvalue" id="{@id}">
+  <dt class="enumvalue">
     <code>
       <xsl:value-of select="@stringvalue"/>
     </code>
