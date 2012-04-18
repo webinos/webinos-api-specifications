@@ -1,4 +1,5 @@
-/**
+/**<p> Interface for Payment functions
+ * \name Payment API
  * \brief Interface for Payment functions.
  *
  * This API provides generic shopping basket functionality to provide in-app payment.
@@ -9,20 +10,14 @@
  *
  * \def-api-feature http://webinos.org/api/payment
  * Identifies all payment interactions. 
- *
  * 
  * \author Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
  */
  
-module payment {      
-
-
   /**
    * \brief The WebinosPayment interface describes the part of the payment API accessible through the webinos object.
    */
-
    [NoInterfaceObject] interface WebinosPayment {
-
      /**
       * \brief webinos.payment object.
       */
@@ -116,11 +111,9 @@ module payment {
        * \param customerID is identification of the person making the payment as known to the payment provider
        * \param shopID is the identification of the shop the payment is made to
        * \return PendingOperation enabling the requester to cancel this request.
-       * \throw PaymentException INVALID_ARGUMENT_ERROR if an invalid argument is passed
        */
         PendingOperation createShoppingBasket(SuccessShoppingBasketCallback successCallback, PaymentErrorCB errorCallback,
-        DOMString serviceProviderID, DOMString customerID, DOMString shopID)
-        raises(PaymentException);
+        DOMString serviceProviderID, DOMString customerID, DOMString shopID);
   };
   
     /**
@@ -170,10 +163,8 @@ module payment {
        * \param errorCallback Callback issued if an error occurs during adding the amount       
        * \param item the item to purchase
        * \return PendingOperation enabling the requester to cancel this request.
-       * \throw PaymentException INVALID_ARGUMENT_ERROR if an invalid argument is passed
        */
-        PendingOperation addItem(PaymentSuccessCB successCallback, PaymentErrorCB errorCallback, ShoppingItem item)
-        raises(PaymentException);
+        PendingOperation addItem(PaymentSuccessCB successCallback, PaymentErrorCB errorCallback, ShoppingItem item);
 
         /**
        * \brief Updates the shopping basket
@@ -194,10 +185,8 @@ module payment {
        * \param successCallback Callback issued when the update is performed
        * \param errorCallback Callback issued if an error occurs during update 
        * \return PendingOperation enabling the requester to cancel this request.
-       * \throw PaymentException INVALID_ARGUMENT_ERROR if an invalid argument is passed
        */
-        PendingOperation update(PaymentSuccessCB successCallback, PaymentErrorCB errorCallback)
-        raises(PaymentException);
+        PendingOperation update(PaymentSuccessCB successCallback, PaymentErrorCB errorCallback);
 
         /**
        * \brief Performs the checkout of the shopping basket.
@@ -210,10 +199,8 @@ module payment {
        * \param successCallback Callback issued when the checkout is performed and payment is made
        * \param errorCallback Callback issued if an error occurs during adding the amount       
        * \return PendingOperation enabling the requester to cancel this request.
-       * \throw PaymentException INVALID_ARGUMENT_ERROR if an invalid argument is passed
        */
-        PendingOperation checkout(PaymentSuccessCB successCallback, PaymentErrorCB errorCallback)
-        raises(PaymentException);
+        PendingOperation checkout(PaymentSuccessCB successCallback, PaymentErrorCB errorCallback);
 
         /**
        * \brief Releases a shopping basket.
@@ -393,37 +380,5 @@ module payment {
   };  
 
 
-        /**
-         * \brief Payment API specific errors.
-         *
-         * The PaymentException interface encapsulates all errors in calling of the Payment API. 
-         */
+     Webinos implements WebinosPayment;
 
-         exception PaymentException {
-
-                /**
-                 * \brief Invalid argument
-                 */
-                const unsigned short INVALID_ARGUMENT_ERROR = 1;
-
-        /**
-       * \brief An error code assigned by an implementation when an error has occurred in Payment API processing.
-       *
-       * 
-       */
-        unsigned short code;
-
-        /**
-       * \brief A text describing an error occuring in the Payment API in human readable form.
-       *
-       * 
-       */    
-        DOMString message;
-
-    
-  };  
-
-
-     webinoscore::Webinos implements WebinosPayment;
-
-};
