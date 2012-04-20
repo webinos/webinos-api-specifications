@@ -533,6 +533,13 @@ XSLT stylesheet to convert widlprocxml into html documentation.
             <xsl:if test="@ellipsis"><xsl:text>...</xsl:text></xsl:if>
             <xsl:text> </xsl:text>
             <xsl:value-of select="@name"/>
+	    <xsl:if test="@value">
+	      <xsl:text> = </xsl:text><xsl:value-of select="@value"/>
+	    </xsl:if>
+	    <xsl:if test="@stringvalue">
+	      <xsl:text> = "</xsl:text><xsl:value-of select="@stringvalue"/><xsl:text>"</xsl:text>
+	    </xsl:if>
+
         </xsl:when>
         <xsl:otherwise>
             <!--$nodesc is false: output the documentation-->
@@ -541,7 +548,16 @@ XSLT stylesheet to convert widlprocxml into html documentation.
                 <ul>
                 <li><b>Optional: </b>
                 <xsl:choose>
-                <xsl:when test="@optional">Yes.</xsl:when>
+                <xsl:when test="@optional">
+		  <xsl:text>Yes.</xsl:text>
+		  <xsl:if test="@value">
+		    <xsl:text>Default value: </xsl:text><xsl:value-of select="@value"/>
+		  </xsl:if>
+		  <xsl:if test="@stringvalue">
+		    <xsl:text>Default value: "</xsl:text><xsl:value-of select="@stringvalue"/><xsl:text>"</xsl:text>
+		  </xsl:if>
+
+		</xsl:when>
                 <xsl:otherwise>No.</xsl:otherwise>
                 </xsl:choose>
                 </li>
