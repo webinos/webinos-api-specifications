@@ -160,14 +160,10 @@ callback TVSuccessCB = void (TVSource[] sources);
 
 /**
 * \brief Error callback for errors when trying to get TV tuners.
-* \param error Error object detailing what went wrong.
+* \param error DOMError object detailing what went wrong; e.g. NotFoundError if channel is invalid.
 */
-callback TVErrorCB = void (TVError error);
+callback TVErrorCB = void (DOMError error);
 
-/**
-* \brief Error codes.
-*/
-enum TVError { "unknown", "illegal_channel"};
 
 /**
 * \brief TV source: a list of channels with a name.
