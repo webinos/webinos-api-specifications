@@ -49,7 +49,7 @@
 
   /**
     * \brief Error callback for authentication events.
-   * \param error DOMError object detailing what went wrong; e.g. SecurityError if permission denied, TimeoutError if operation timed out
+   * \param error <a href="<a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">">DOMError</a> object detailing what went wrong; e.g. SecurityError if permission denied, TimeoutError if operation timed out
     */
   callback AuthErrorCB = void (DOMError error);
   
