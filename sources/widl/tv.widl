@@ -160,7 +160,7 @@ callback TVSuccessCB = void (TVSource[] sources);
 
 /**
 * \brief Error callback for errors when trying to get TV tuners.
-* \param error DOMError object detailing what went wrong; e.g. NotFoundError if channel is invalid.
+* \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> object detailing what went wrong; e.g. NotFoundError if channel is invalid.
 */
 callback TVErrorCB = void (DOMError error);
 
