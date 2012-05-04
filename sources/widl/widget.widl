@@ -1,133 +1,40 @@
-/**
- * \brief Webinos widget interfaces 
+/**<p>Webinos specific extensions to <a href="http://www.w3.org/TR/widgets-apis/">W3C Widget Interface</a></p>
+ * \name Widget API
  *
  * This specification defines the common widget interface. The webinos application packaging
  * is based on W3C Widget Specifications, thus, the interface definition is also based on
- * W3C. Namely W3C Widget Interface (http://www.w3.org/TR/2011/WD-widgets-apis-20110607/).
- * This specification recaptures the W3C specification while adding webinos specific extensions.
+ * W3C. Namely W3C Widget Interface (http://www.w3.org/TR/widgets-apis/).
  *
  * \author Andre Paul andre.paul@fokus.fraunhofer.de;
  * \version 0.1 
  */
-module widget {
-
    /**
     * \brief Callback for successfull notifications
-    * 
+    * \param id the id of the notification request or null if no id was provided.
    */
-   [NoInterfaceObject] interface NotifySuccessCallback {
- 
-    /**
-     * \brief Accepted Notification.
-     *
-     * Called if an event was accepted by the user. If provided, the notification
-     * id is provided to link the success callback to a specific notification request.
-     * \param id the optional id of the notification request or null if no id was provided.
-    */
-    void onSuccess(DOMString id);
-  };
+   callback NotifySuccessCallback = void (DOMString? id);
   
    /**
     * \brief Callback for failed notifications
-    * 
+     * \param id the id of the notification request or null if no id was provided.    * 
    */
-   [NoInterfaceObject] interface NotifyErrorCallback {
- 
-    /**
-     * \brief Discarded Notification.
-     *
-     * Called if an event was not accepted by the user. If provided, the notification
-     * id is passed in to link the error to a specific notification request.
-     *
-     * \param id the optional id of the notification request or null if no id was provided.
-    */
-    void onError(DOMString id);
-  };
+   callback NotifyErrorCallback = void (DOMString? id);
   
    /**
     * \brief Callback for successfull installations
+    * \param childID is the application id which was used during deployChild and declared in the manifest
+    * \param serviceID is the unique application instance id that can be used to explicitly address
+    *                  the deployed service within webinos service discovery
     * 
    */
-   [NoInterfaceObject] interface DeploymentSuccessCallback {
-
-      /**
-       * \brief Called when an application was successfully deployed.
-       *
-       * Called when an application was successfully deployed on another device
-       * using deployChild.
-       * \param childID is the application id which was used during deployChild and declared in the manifest
-       * \param serviceID is the unique application instance id that can be used to explicitly address
-       *                  the deployed service within webinos service discovery
-      */
-     void onSuccess(DOMString childID, DOMString serviceID);
-   };
+   callback DeploymentSuccessCallback = void (DOMString childID, DOMString serviceID);
    
    /**
     * \brief Callback for failed installations
-    * 
+    * \param applicationID The application ID the error relates to.
+    * \param error A <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> explaining what failed: SecurityError if permission has been denied, NetworkError if the device is not reachable, NotFoundError if the application id is unknown, InvalidStateError if the application is already installed
    */
-   [Callback=FunctionOnly, NoInterfaceObject] interface DeploymentErrorCallback {
- 
-      /**
-       * \brief Failled installions.
-       *
-       * Called if an installation was not accepted by the user or any other error occurred.
-       * \param error The Widget API related error object of an unsuccessful application installation operation. 
-       * \return void
-      */
-      void onError (DeploymentError error);
-    };
-  
-    /**
-     * \brief Application installation specific errors.
-     *
-     * The DeploymentError interface encapsulates all errors related to installation of applications.
-     * on the same or on other devices using the deploy function. 
-    */
-    interface DeploymentError {
-      /**
-       * \brief Installation was cancelled by the user. 
-      */
-      const unsigned short INSTALLATION_CANCELED_BY_USER = 101;
-      
-      /**
-       * \brief Not Authorized to use the service. 
-      */
-      const unsigned short PERMISSION_DENIED_ERROR  = 102;
-                       
-      /**
-       * \brief Device where the application should be installed on is not reachable. Consider retrying later. 
-      */
-      const unsigned short NOT_REACHABLE  = 103;
-      
-      /**
-       * \brief Device where the application should be installed on is not reachable. Consider retrying later. 
-      */
-      const unsigned short UNKNOWN_APPLICATION_ID  = 104;
-         
-      /**
-       * \brief Already Installed. 
-      */
-      const unsigned short ALREADY_INSTALLED = 105;
-                       
-      /**
-       * \brief Any other error. 
-      */
-      const unsigned short INSTALLATION_ERROR_OTHER = 106;
-
-      /**
-       * \brief An error code assigned by an implementation when an error has occurred.
-      */
-      readonly attribute unsigned short code;
-      
-      /**
-       * \brief The application ID the error relates to.
-      */
-      readonly attribute DOMString applicationID;
-  };  
-  
-
-
+   callback DeploymentErrorCallback = void (DOMString applicationID, DOMError error);
 
   /**
    * \brief Widget Interface
@@ -135,7 +42,7 @@ module widget {
    * Defines that the webinos interface is part of the window global object.
    *
   */
-  interface Widget {
+  partial interface Widget {
     
     /**
      * \brief An distributor attribute that represents people or an organization that distributed the widget.
@@ -158,78 +65,17 @@ module widget {
     readonly attribute DOMString     versionName;
     
     /**
-     * \brief The validfor attributed defines a time interval until when the application is valid and can be used.
+     * \brief The validFor attributed defines a time interval until when the application is valid and can be used.
      *
      * The time frame is specified in elapsed milliseconds after the first application execution.
     */
-    readonly attribute unsigned long long validfor;
+    readonly attribute unsigned long long validFor;
     
     /**
-     * \brief The validuntil attributed defines a date and time until the application is valid and can be used.
-     *
-     * The time frame is specified as in milliseconds whereas the date and time is encoded as milliseconds since midnight of January 1, 1970, according to universal time. 
+     * \brief The validUntil attributed defines a date and time until the application is valid and can be used.
     */
-    readonly attribute unsigned long long validuntil;
+    readonly attribute Date validUntil;
 
-   
-    /**
-     * \brief An author attribute that represents people or an organization attributed with the creation of the widget.
-    */
-    readonly attribute DOMString     author;
-    
-    /**
-     * \brief A string attribute that represents an email address associated with the author.
-    */
-    readonly attribute DOMString     authorEmail;
-    
-    /**
-     * \brief An IRI attribute whose value represents an IRI that the author associates with himself or herself (e.g., a homepage, a profile on a social network, etc.).
-    */
-    readonly attribute DOMString     authorHref;
-    
-    /**
-     * \brief The description element represents a human-readable description of the widget.
-    */
-    readonly attribute DOMString     description;
-    
-    /**
-     * \brief An IRI attribute that denotes an identifier for the widget.
-    */
-    readonly attribute DOMString     id;
-    
-    /**
-     * \brief The name element represents the full human-readable name for a widget that is used, for example, an application menu or in other contexts.
-    */
-    readonly attribute DOMString     name;
-    
-    /**
-     * \brief A displayable-string attribute intended to represent a condensed name for a widget (e.g., a name that could be used in context were only limited space is available, such as underneath an icon).
-    */
-    readonly attribute DOMString     shortName;
-    
-    /**
-     * \brief The preference element allows authors to access preferences declared in the manifest file. 
-     *
-     * For a complete definition of the Storage attribute please read the W3C specification of
-     * the storage attribute in the Widget specification (http://www.w3.org/TR/2011/WD-widgets-apis-20110607/). 
-    */
- 	readonly attribute Storage       preferences;
- 	
-    /**
-     * \brief A version attribute that specifies the version of the widget.
-    */
-    readonly attribute DOMString     version;
-    
-    /**
-     * \brief A numeric attribute greater than 0 that indicates the preferred viewport height of the instantiated custom start file in CSS pixels.
-    */
-    readonly attribute unsigned long height;
-    
-    /**
-     * \brief A numeric attribute greater than 0 that indicates the preferred viewport width of the instantiated custom start file in CSS pixels.
-    */
-    readonly attribute unsigned long width;
-    
     /**
      * \brief Close the running application.
      *
@@ -412,13 +258,3 @@ module widget {
     void deployChild(DeploymentSuccessCallback onSuccess, DeploymentErrorCallback onError, DOMString childApplicationID, optional boolean local);
   };
   
-  /**
-   * \brief The WindowWidget interface describes the part of the Widget API accessible through the window object.
-   */
-  [Supplemental, NoInterfaceObject]interface WindowWidget {
-     readonly attribute Widget widget;
-   };
-   
-  Window implements WindowWidget;
-
-};
