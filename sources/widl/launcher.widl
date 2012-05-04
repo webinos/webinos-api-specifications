@@ -1,4 +1,4 @@
-/**<p>The application execution API allows activation of webinos applications installed locally on the device.</p>
+/**<p>Allows activation of webinos applications installed locally on the device.</p>
  * \name AppLauncher API
  * \brief The application execution API (AppLauncher) allows activation of webinos applications installed locally on the device. The API is modelled after BONDI v1.1 AppLauncher API.
  *
