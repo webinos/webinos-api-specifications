@@ -32,11 +32,6 @@
  */
 
 	/**
-	* \brief possible values for errors
-	*/
-        enum VehicleError {"denied", "na", "unknown"};
-
-	/**
 	* \brief This interface defines the address properties, which can be passed to the navigation system using the requestGuidance() function.   The <a href="http://dev.w3.org/geo/api/spec-source-v2.html#address_interface" target="_blank">Address interface</a> defined in the v2 of the W3C Geolocation API is used for this purpose.
 	*
 	*/ 
@@ -130,10 +125,10 @@
 
 	/**
 	* \brief callback for a failure from requestGuidance, get, or findDestination
-	* \param error contains information about the error.
+	* \param error a <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> containing information about the error (e.g. SecurityError if permission is denied).
 	*
 	*/
-	callback VehicleErrorCallback = void (VehicleError error);
+	callback VehicleErrorCallback = void (DOMError error);
 	
 	/**
 	* \brief callback method to receive vehicle data in a non-recurring and asynchronous way.
