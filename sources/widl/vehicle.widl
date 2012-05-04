@@ -1,5 +1,6 @@
-/**<p>The webinos vehicle API provides access to specific vehicle data. It is derived from W3C's DOM Level 3 Events model and defines event types for retrieving information about the vehicle including trip computer data, gears or park sensors. Furthermore it offers methods for interacting with the on-board navigation system. The geolocation, speed and acceleration can be retrieved using the <a href="geolocation.html">geolocation</a> and <a href="deviceorientation.html">device orientation</a> API.</p>
- * \name webinos Vehicle interface.
+/**<p>The webinos vehicle API provides access to specific vehicle data.</p>
+ * It is derived from W3C's DOM Level 3 Events model and defines event types for retrieving information about the vehicle including trip computer data, gears or park sensors. Furthermore it offers methods for interacting with the on-board navigation system. The geolocation, speed and acceleration can be retrieved using the <a href="geolocation.html">geolocation</a> and <a href="deviceorientation.html">device orientation</a> API.</p>
+ * \name Vehicle API.
  *
  * 
  *
