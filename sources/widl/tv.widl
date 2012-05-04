@@ -1,7 +1,5 @@
-/**<p>
+/**<p>Interface for TV control and managment.</p>
 * \name TV Control API
-* \brief Interface for TV control and managment.
-*
 *
 * The interface provides means to acquire a list of tv sources, channels and
 * their streams.
