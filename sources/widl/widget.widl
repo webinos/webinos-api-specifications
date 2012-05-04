@@ -2,8 +2,7 @@
  * \name Widget API
  *
  * This specification defines the common widget interface. The webinos application packaging
- * is based on W3C Widget Specifications, thus, the interface definition is also based on
- * W3C. Namely W3C Widget Interface (http://www.w3.org/TR/widgets-apis/).
+ * is based on <a href="http://www.w3.org/TR/widgets/">W3C Widget Specifications</a>, and this API completes the <a href="http://www.w3.org/TR/widgets-apis/">W3C Widget Interface</a>.
  *
  * \author Andre Paul andre.paul@fokus.fraunhofer.de;
  * \version 0.1 
