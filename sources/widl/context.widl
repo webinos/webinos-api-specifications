@@ -126,7 +126,7 @@
    * \brief Callback indicating error of executeQuery() operation. 
    * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> matching the type of error:  SecurityError if forbidden, SyntaxError if the query is invalid
    */         
-  callback QueryErrorCallback onerror (DOMError error);
+  callback QueryErrorCallback = void (DOMError error);
   };
   
    /**
