@@ -138,7 +138,7 @@
    * \brief Callback indicating error of subscribeContextEvent() operation. 
    * \param error A <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> object capturing the type of the error. (e.g. SecurityError for permission denied)
    */         
-  callback SubscribeErrorCallback = void onerror (DOMError error);
+  callback SubscribeErrorCallback = void (DOMError error);
   
    /**
    * \brief callback called when a new context related event occurs. 
