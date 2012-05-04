@@ -1,10 +1,11 @@
-/**
- * \brief Webinos core interfaces 
+/**<p>
+ * \name Webinos core interface
+ * \brief
  *
  * This specification defines the common interface from which all Webinos APIs are can be accessed as well as several interfaces that are commonly reused. \n
  *
  * This version of the specification defines: \n
- * - The core Webinos interface. In this version this interface is part of the window global object but this has to be discussed. W3C DAP hangs the APIs on Device on Navigator. \n
+ * - The core Webinos interface,  part of the window global object.\n
  * 
  * It is to be considered if more common interfaces should be included in this specification, for example: \n
  * - A common PendingOperation interface \n
@@ -17,15 +18,6 @@
  * \author Claes Nilsson &lt;claes1.nilsson@sonyericsson.com&gt;
  * \version 0.1 
  */
-module webinoscore {
-
-  /**
-   * \brief Webinos object
-   * 
-   * Defines that the webinos interface is part of the window global object.
-   *
-   */
-
   interface WebinosObject {
     readonly attribute Webinos webinos;
   };
@@ -35,10 +27,9 @@ module webinoscore {
   /**
    * \brief Webinos interface 
    *
-   * The is the Webinos root interface and is initially defined as an empty interface on which the various Webinos APIs that are defined elsewhere
-   * graft themselves.
-   * A user agent supporting the Webinos interface must do so according to the following WebIDL [WEBIDL] definition.
+   * The is the Webinos root interface and is initially defined as an empty interface on which the various Webinos APIs that are defined elsewhere graft themselves.
+   * A user agent supporting the Webinos interface must do so according to the following <a href="http://www.w3.org/TR/2012/CR-WebIDL-20120419/">WebIDL</a> definition.
    */
   interface Webinos { 
   };   
-};
+
