@@ -1,12 +1,11 @@
-/**
- * \brief The Context API 
+/**<p>Allows to obtain access to a user’s context data</p>
+ * \name Context API 
  *
  * The Context API defines the high-level interfaces required to obtain access to a user's context data. The API supports two basic ways of accessing context data:
- * 
- * 1. executing a query against the context data storage and retrieving context data through the query results.
- * 
- * 2. subscribing to receive real time context data updates as soon as a context related event happens.
- * 
+ * <ul>
+ * <li>1. executing a query against the context data storage and retrieving context data through the query results.</li>
+ * <li>2. subscribing to receive real time context data updates as soon as a context related event happens.</li>
+ * </ul>
  *
  * \def-api-feature http://webinos.org/api/context
  * Acccess to all the module. This feature provides access to the whole API.
@@ -17,8 +16,6 @@
  * \author George Gionis &lt;gionis@epu.ntua.gr&gt;
  * \version 0.1 
  */
-module context {
-
   /**
    * \brief Defines what is instantiated in initialization. 
    * 
@@ -58,14 +55,10 @@ module context {
      * \param errorCallback Function to be invoked if the asynchronous query operation results in errors.
      * \param query The Query object describing the query to be executed against the context storage.
      * \return void call
-     * \throw ContextError with error code TYPE_MISMATCH_ERR if 
-     * the input parameter is not compatible with the expected type for 
-     * that parameter.
      */
     void executeQuery(QuerySuccessCallback successCallback,
                       QueryErrorCallback? errorCallback,
-                      Query query)
-         raises(ContextError);
+                      Query query);
   
   /**
      * \brief Registers the function to be notifies when a context related event occurs.
@@ -84,16 +77,12 @@ module context {
      * \param subscribeErrorCallback Function to be invoked if the asynchronous subscribe request results in errors.
      * \param eventHandler The function to be invoked when the dictated event occurs.
 	 * \param eventIdentifier The event identifier, for example "UserProfileUpdate", "ShoppingBasketCheckout".
-     * \return void call
-     * \throw ContextError with error code TYPE_MISMATCH_ERR if 
-     * the input parameter is not compatible with the expected type for 
-     * that parameter.
+     * \return void
      */
     void subscribeContextEvent(SubscribeSuccessCallback subscribeSuccessCallback,
                       SubscribeErrorCallback? subscribeErrorCallback,
                       OccuringEvent eventHandler,
-					  in DOMString eventIdentifier)
-         raises(ContextError);
+					  DOMString eventIdentifier);
   
   /**
      * \brief Cancels a subscription to a context related event.
@@ -104,14 +93,10 @@ module context {
 	 * TODO
      * \endcode
      *
-     * \param subscriptionIdentifier The identifier of the subscription, returned by subscribeContextEvent().
-     * \return void call
-     * \throw ContextError with error code TYPE_MISMATCH_ERR if 
-     * the input parameter is not compatible with the expected type for 
-     * that parameter.
+     * \param subscriptionIdentifier The identifier of the subscription, obtained via the success callback of subscribeContextEvent().
+     * \return void
      */
-    void unsubscribe(unsigned long subscriptionIdentifier)
-         raises(ContextError);
+    void unsubscribe(unsigned long subscriptionIdentifier);
   };
 
   /**
@@ -119,99 +104,48 @@ module context {
    *
    * TODO: Detail if this the right content for the query 
    */
-   [Callback, NoInterfaceObject] interface Query {
+   dictionary Query {
 
     /**
      * \brief query content in xml format
      *
      * <a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL query language for RDF</a>
      */
-    attribute SPARQLquery xmlQuery;
+    SPARQLquery xmlQuery;
   };
   
-  /**
-   * \brief Defines the  error codes for this module
-   */
-  [NoInterfaceObject] interface ContextError {
-    /**
-     * \brief Security Error 
-     */
-     const unsigned short SECURITY_ERR = 1;
-
-    /**
-     * \brief invalid query 
-     */
-     const unsigned short INVALID_QUERY_ERR = 2;
-
-    /**
-     * \brief invalid query 
-     */
-     const unsigned short TYPE_MISMATCH_ERR = 3;
-   };
 
   /**
-   * \brief Interface for callbacks indicating success of executeQuery() operation. 
+   * \brief Callback indicating success of executeQuery() operation. 
+   * \param queryResult Result of the query operation serialized as a json string, see <a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL query language for RDF</a>. 
    *
    */         
-  [Callback=FunctionOnly, NoInterfaceObject] interface QuerySuccessCallback {        
-    /**
-     * \brief Callback on success of a executeQuery() operation
-     * \param queryResult Result of the query operation serialized as a json string, see <a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL query language for RDF</a>. 
-     * \return void                 
-     */
-    void onsuccess (SPARQLquery queryResult);
-  };
+  callback QuerySuccessCallback = void (SPARQLquery queryResult);
         
   /**
-   * \brief Interface for callbacks indicating error of executeQuery() operation. 
+   * \brief Callback indicating error of executeQuery() operation. 
+   * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> matching the type of error:  SecurityError if forbidden, SyntaxError if the query is invalid
    */         
-  [Callback=FunctionOnly, NoInterfaceObject] interface QueryErrorCallback  {        
-    /**
-     * \brief Callback on failure of a executeQuery() operation
-     * \param error The ContextError object capturing the type of the error.
-     * \return void                 
-     */
-    void onerror (ContextError error);
+  callback QueryErrorCallback onerror (DOMError error);
   };
   
    /**
-   * \brief Interface for callbacks indicating success of subscribeContextEvent() operation. 
-   *
+   * \brief Callback indicating success of subscribeContextEvent() operation. 
+   * \param subscriptionIdentifier A subscription handler that can be later used to cancel the subscription. 
    */         
-  [Callback=FunctionOnly, NoInterfaceObject] interface SubscribeSuccessCallback {        
-    /**
-     * \brief Callback on success of a subscribeContextEvent() operation
-     * \param subscriptionIdentifier A subscription handler that can be later used to cancel the subscription. 
-     * \return void                 
-     */
-    void onsuccess (unsigned long subscriptionIdentifier);
-  };
+  callback SubscribeSuccessCallback = void (unsigned long subscriptionIdentifier);
   
   /**
-   * \brief Interface for callbacks indicating error of subscribeContextEvent() operation. 
+   * \brief Callback indicating error of subscribeContextEvent() operation. 
+   * \param error A <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> object capturing the type of the error. (e.g. SecurityError for permission denied)
    */         
-  [Callback=FunctionOnly, NoInterfaceObject] interface SubscribeErrorCallback  {        
-    /**
-     * \brief Callback on failure of a subscribeContextEvent() operation
-     * \param error The ContextError object capturing the type of the error.
-     * \return void                 
-     */
-    void onerror (ContextError error);
-  };
+  callback SubscribeErrorCallback = void onerror (DOMError error);
   
    /**
-   * \brief Interface for specifying the method called when a new context related event occurs. 
+   * \brief callback called when a new context related event occurs. 
    *
    * This interface specifies a function that provides a serialized json string of the context data retrieved from the happening of a context related event.
-   */         
-  [Callback=FunctionOnly, NoInterfaceObject] interface OccuringEvent {        
-    /**
-     * \brief Method invoked when the context related event occurs.
      * \param eventContextData The context data acquired by the event. 
-     * \return void                 
-     */
-    void onContextEvent (DOMString eventContextData);
-  };
-        
-};
+   */         
+  callback OccuringEvent = void (DOMString eventContextData);
 
