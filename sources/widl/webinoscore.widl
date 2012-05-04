@@ -1,8 +1,8 @@
-/**<p>
+/**<p>Common interface from which all Webinos APIs are can be accessed</p>
  * \name Webinos core interface
  * \brief
  *
- * This specification defines the common interface from which all Webinos APIs are can be accessed as well as several interfaces that are commonly reused. \n
+ * This specification defines the common interface from which all Webinos APIs are can be accessed\n
  *
  * This version of the specification defines: \n
  * - The core Webinos interface,  part of the window global object.\n
