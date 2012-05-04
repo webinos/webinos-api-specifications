@@ -43,19 +43,15 @@
   };
   
   /**
-    * \brief Definition of error codes for authentication events
-    */
-   enum AuthError {"unknown", "permission_denied", "timeout"};
-  
-  /**
     * \brief Success callback for authentication events.
     */
   callback AuthSuccessCB = void (AuthStatus status);
 
   /**
     * \brief Error callback for authentication events.
+   * \param error DOMError object detailing what went wrong; e.g. SecurityError if permission denied, TimeoutError if operation timed out
     */
-  callback AuthErrorCB = void (AuthError error);
+  callback AuthErrorCB = void (DOMError error);
   
   /**
     * \brief The authentication interface provides three methods which allow applications to check the current user authentication status and prompt for re-authentication.
