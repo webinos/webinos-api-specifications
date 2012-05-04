@@ -78,7 +78,7 @@
 	 * This is an asynchronous method, although it may well be used (practice) synchronously.
 	 *
      */
-     void authenticate (in AuthSuccessCB successCB, optional AuthErrorCB errorCB );
+     void authenticate (AuthSuccessCB successCB, optional AuthErrorCB errorCB );
 
 
     /**
