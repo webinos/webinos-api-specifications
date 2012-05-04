@@ -261,9 +261,9 @@
                         
         /**
          * \brief Callback for errors during payment related functions
-         * \param error The Payment API related error object of an unsuccessful asynchronous operation. 
+         * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> containing information about the error ; in particular, InvalidStateError if the basket is not in the expected state, NotSupportedError if refund is asked but not supported; new type of errors defined by this specifications are PaymentChargeError, PaymentRefundError and PaymentChargeableExcessError};
          */
-        callback PaymentErrorCB = void (PaymentError error);
+        callback PaymentErrorCB = void (DOMError error);
 
     /**
      * \brief The PendingOperation interface
@@ -280,30 +280,6 @@
      */
         void cancel ();
      };
-
-     enum PaymentErrors {"basket_already_open", "basket_not_open", "payment_charge_failed", "payment_refund_not_supported", "payment_refund_failed", "payment_chargeable_exceeded", "payment_authentication_failed"};
-
-        /**
-         * \brief Payment specific errors.
-         *
-         * The PaymentError dictionary encapsulates all errors in the manipulation of payments objects in the Payment API. 
-         */
-        dictionary PaymentError {
-
-        /**
-       * \brief An error code assigned by an implementation when an error has occurred in Payment processing.
-       *
-       * No exceptions.
-       */
-        PaymentErrors code;
-        /**
-       * \brief A text describing an error occuring in the Payment in human readable form.
-       *
-       * No exceptions.
-       */    
-        DOMString message;
-  };  
-
 
      Webinos implements WebinosPayment;
 
