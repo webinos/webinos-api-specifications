@@ -6,7 +6,7 @@
  *
  * It is not linked to a specific payment service provider and is designed to be 
  * sufficiently generic to be mapable to various payment services like GSMA OneAPI,
- * Andoid Payment API or PayPal. 
+ * BlueVia, VAndroid Payment API or PayPal. 
  *
  * \def-api-feature http://webinos.org/api/payment
  * Identifies all payment interactions. 
