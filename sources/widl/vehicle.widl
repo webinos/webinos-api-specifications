@@ -1,5 +1,6 @@
-/**<p>The webinos vehicle API provides access to specific vehicle data. It is derived from W3C's DOM Level 3 Events model and defines event types for retrieving information about the vehicle including trip computer data, gears or park sensors. Furthermore it offers methods for interacting with the on-board navigation system. The geolocation, speed and acceleration can be retrieved using the <a href="geolocation.html">geolocation</a> and <a href="deviceorientation.html">device orientation</a> API.</p>
- * \name webinos Vehicle interface.
+/**<p>The webinos vehicle API provides access to specific vehicle data.</p>
+ * It is derived from W3C's DOM Level 3 Events model and defines event types for retrieving information about the vehicle including trip computer data, gears or park sensors. Furthermore it offers methods for interacting with the on-board navigation system. The geolocation, speed and acceleration can be retrieved using the <a href="geolocation.html">geolocation</a> and <a href="deviceorientation.html">device orientation</a> API.
+ * \name Vehicle API.
  *
  * 
  *
@@ -29,11 +30,6 @@
  * \author Simon Isenberg (BMW Forschung \& Technik) &lt;Simon.Isenberg@bmw.de&gt;
  * \version 0.7
  */
-
-	/**
-	* \brief possible values for errors
-	*/
-        enum VehicleError {"denied", "na", "unknown"};
 
 	/**
 	* \brief This interface defines the address properties, which can be passed to the navigation system using the requestGuidance() function.   The <a href="http://dev.w3.org/geo/api/spec-source-v2.html#address_interface" target="_blank">Address interface</a> defined in the v2 of the W3C Geolocation API is used for this purpose.
@@ -129,10 +125,10 @@
 
 	/**
 	* \brief callback for a failure from requestGuidance, get, or findDestination
-	* \param error contains information about the error.
+	* \param error a <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> containing information about the error (e.g. SecurityError if permission is denied).
 	*
 	*/
-	callback VehicleErrorCallback = void (VehicleError error);
+	callback VehicleErrorCallback = void (DOMError error);
 	
 	/**
 	* \brief callback method to receive vehicle data in a non-recurring and asynchronous way.

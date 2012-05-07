@@ -1,6 +1,6 @@
-/**<p>The application execution API allows activation of webinos applications installed locally on the device. The API is modelled after BONDI v1.1 AppLauncher API.</p>
+/**<p>Allows activation of webinos applications installed locally on the device.</p>
  * \name AppLauncher API
- * \brief The application execution API (AppLauncher) allows activation of webinos applications installed locally on the device. Functionality defined in this version of the specification refers to webinos Phase 1 scope. 
+ * \brief The application execution API (AppLauncher) allows activation of webinos applications installed locally on the device. The API is modelled after BONDI v1.1 AppLauncher API.
  *
  *
  * Operation of the API is guided by application execution policies, which can be modified by user. 
@@ -79,7 +79,7 @@
 
 
       /**
-       * \brief Reports if a specific webinos application is installed in the device. The method is synchronous. Throws DOMException of type AppLauncherError when detection of the application failed.
+       * \brief Reports if a specific webinos application is installed in the device. The method is synchronous. Throws DOMException when detection of the application failed, with type as defined in ErrorCallback
        *
        * \param appID Identifies webinos application presence of which needs to be tested.
        * \return True if the application is installed, false if the application is not installed.
@@ -91,26 +91,10 @@
         
     /**
     * \brief callback for a failed activation of asynchronous launchApplication method.
-    * \param error contains information about the error 
+    * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> containing information about the error ; in particular, NotFoundError if application does not exist, InvalidStateError if application already started, QuotaExceededError if no resources are available
     */
-    callback ErrorCallback = void (LauncherAPIError error);
+    callback ErrorCallback = void (DOMError error);
 
-    /** 
-    * \brief Possible errors for launcher API
-    */
-    enum LauncherAPIErrorCode {"unknown", "notsupported", "typemismatch", "securityerror", "networkerror", "invalid_id", "app_not_found", "no_resources", "already_started", "policy_not_allowed"};
-
-
-    /**
-     * \brief API-specific error handling  interface
-     *
-     * The LauncherAPIError dictionary describes errors for the Launcher API.
-     *
-     */
-    dictionary LauncherAPIError {    
-        LauncherAPIErrorCode code;        
-        DOMString message;
-    };
     
     /**
      * \brief The PendingOperation interface
