@@ -100,7 +100,7 @@ module messaging {
    /**
     * \brief Identifier for messages of type IM. 
     */      
-    const short TYPE_IM = 3;
+    const short TYPE_IM = 4;
    /**
     * \brief Identifier for the message inbox.
     */  
@@ -201,87 +201,6 @@ module messaging {
                                  Message message)
                                  raises(DeviceAPIError);
  
-   /**
-   * \brief Attempt to send the specified message with per-recipient notification 
-   *
-   * If the message type is set to email and the user has multiple email accounts set up, the runtime SHOULD use the default e-mail account. If no account has been set up, the runtime MAY either provide respective mechanisms to create a new one or throw the given ErrorCallback back to the requesting widget.
-   *
-   * Only the parameters supported by a specific technology and that can be set up by the developer (see Message interface attribute definition) are sent as specified in the following table (the rest are ignored):
-   *
-   * <table>
-   * <tr><td>Attribute</td><td>SMS</td><td>MMS</td><td>Email</td><td>IM</td></tr>
-   *    <tr><td>to              </td><td>Yes     </td><td>Yes     </td><td>Yes     </td><td>Yes</td></tr>
-   *    <tr><td>body            </td><td>Yes     </td><td>Yes     </td><td>Yes     </td><td>Yes</td></tr>
-   *    <tr><td>subject        </td><td>No      </td><td>Yes     </td><td>Yes     </td><td>No</td></tr>
-   *    <tr><td>attachments     </td><td>No      </td><td>Yes     </td><td>Yes     </td><td>No</td></tr>
-   *    <tr><td>cc              </td><td>No      </td><td>No      </td><td>Yes     </td><td>Yes</td></tr>
-   *    <tr><td>bcc             </td><td>No      </td><td>No      </td><td>Yes     </td><td>Yes</td></tr>
-   *    <tr><td>priority        </td><td>No      </td><td>No      </td><td>Yes     </td><td>No</td></tr>
-   * </table>
-   *
-   * When a message has been successfully or unsuccessfully sent, it will be stored in the relevant folder (e.g. sent folder if successfully sent). Please not that some platforms may store multiple copies of the message if multiple recipients were included.
-   * 
-   * For every individual recipient in the destination list, when the message is successfully sent to it the method onmessagesendsuccess of the successCallback argument MUST be invoked. If the message cannot be sent to that recipient, the onmessagesenderror of the successCallback argument MUST be invoked with the recipient and the error code as input parameters. The following error codes may be passed depending on the the error conditions: 
-   *
-   * INVALID_VALUES_ERR: If any of the input paramters contains an invalid value. E.g. successCallback or message is null, message contains invalid values in any of its attributes... Please note that in order to allow developer ignore errors errorCallback accepts null as a valid value.
-   *
-   * NOT_SUPPORTED_ERR: If the specified messaging technology is not supported.
-   *
-   * SECURITY_ERR: If the operation is not allowed.
-   *
-   * UNKNOWN_ERR: In any other error case.
-   *  
-   * When the operation is fully completed (i.e. the implementation knows the result of the send operation to all the recipients), the onsuccess method of the successCallback will be invoked if the message is successfully sent to all the recipients.  
-   * 
-   * In case of any error different to a TYPE_MISMATCH_ERR, the errorCallback will be invoked with an appropriate error code amongst the following: 
-   *
-   * INVALID_VALUES_ERR: If any of the input paramters contains an invalid value. E.g. successCallback or message is null, message contains invalid values in any of its attributes... Please note that in order to allow developer ignore errors errorCallback accepts null as a valid value.
-   *
-   * NOT_SUPPORTED_ERR: If the specified messaging technology is not supported.
-   *
-   * SECURITY_ERR: If the operation is not allowed.
-   *
-   * UNKNOWN_ERR: In any other error case.
-   *
-   * If the errorCallback does not contain a valid function (e.g. null), case of any error that should be returned in the errorCallback (see above), the implementation MUST silently fail and no further action is required (i.e. the error is not notified to the developer).
-   *
-   * \code
-   *  // Define the send callback
-   *  var messageSendCallback = {
-   *        onsuccess: function() {
-   *          alert("The SMS has been sent to all the recipients");},
-   *        onmessagesendsuccess: function(recipient) {
-   *          alert("The SMS has been sent to " + recipient);},
-   *        onmessagesenderror: function(error, recipient) {
-   *          alert("The SMS has not been sent to " + recipient + 
-   *                " error " + error);}
-   *  };
-   *  
-   *  // Define the error callback
-   *  function messageFailed(error) {
-   *  alert("The SMS could not be sent " + error.message);
-   *  }
-   *  
-   *  // SMS sending example
-   *  var msg = deviceapis.messaging.createMessage(deviceapis.messaging.TYPE_SMS);
-   *  msg.body = "I will arrive in 10 minutes";
-   *  msg.to = ["+34666666666", "+34888888888"];
-   *  
-   *  // Send request
-   *  deviceapis.messaging.sendMessage(messageSendCallback, messageFailed, msg);
-   * \endcode
-   *
-   * \param successCallback Contains the methods for individual notifications. 
-   * \param errorCallback To be invoked in case the sending request fails. 
-   * \param message The message to be sent. 
-   * \return PendingOperation to cancel the asynchronous call 
-   * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
-   */                          
-
-    PendingOperation sendMessage(MessageSendCallback successCallback, 
-                                 ErrorCallback errorCallback, 
-                                 Message message)
-                                 raises(DeviceAPIError);
                                  
    /**
    * \brief Gets an array of messages from the message folders matching the selected filter. 
