@@ -315,7 +315,7 @@ document.onLoad = function() {
 		 *	     completely determined for all recipients and all
 		 *	     callbacks that were to be called have run.
 		 *
-		 * \throw DOMException of type SecurityError if some local policy rule does not allow for the event to be sent.
+		 * throws DOMException of type SecurityError if some local policy rule does not allow for the event to be sent.
 		 */
 		void dispatchWebinosEvent(
 				optional WebinosEventCallbacks? callbacks,
@@ -375,7 +375,7 @@ document.onLoad = function() {
 		 *	     completely determined for all recipients and all
 		 *	     callbacks that were to be called have run.
 		 *
-		 * \throw DOMError of type SecurityError  if some local policy rule does
+		 * throws DOMException of type SecurityError  if some local policy rule does
 		 *        not allow for the event to be forwarded.
 		 */
 		void forwardWebinosEvent(
