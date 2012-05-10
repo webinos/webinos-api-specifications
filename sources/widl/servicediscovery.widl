@@ -143,7 +143,7 @@
 	 	 *			3. WAC Feature URI that is defined for each API by WAC, for example http://waclists.org/api/camera,\n
 	 	 *			4. an unique URI identifying an API exposed by a web application. The URI shall be the same URI as exposed by the web application manifest in the api-name attribute of the webinos:shared-api element.\n  
 		 */
-		attribute DOMString api;
+		DOMString api;
 	};
 		
 	/**
