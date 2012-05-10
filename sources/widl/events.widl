@@ -541,7 +541,7 @@ document.onLoad = function() {
 				DOMString type,
 				WebinosEventAddressing addressing,
 				[TreatUndefinedAs=Null]
-				  in optional DOMString? payload,
+				  optional DOMString? payload,
 				optional WebinosEvent? inResponseTo,
 				optional boolean withTimeStamp,
 				optional DOMTimeStamp? expiryTimeStamp,
@@ -577,7 +577,7 @@ document.onLoad = function() {
 		DOMString addWebinosEventListener(
 				WebinosEventListener listener,
 				[TreatUndefinedAs=Null]
-				  in optional DOMString? type,
+				optional DOMString? type,
 				optional WebinosEventEntity? source,
 				optional WebinosEventEntity? destination);
 		/**
