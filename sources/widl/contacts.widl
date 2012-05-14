@@ -575,13 +575,13 @@
             void onsuccess (Contact[] contactObjs);
         };
          /**
-         * \brief This is the wrapper interface for callbacks indicating success of the find() operation. 
+         * \brief This is the wrapper interface for callbacks indicating success of the addContact() operation. 
          *
          */         
         [Callback=FunctionOnly, NoInterfaceObject]
         interface ContactSuccessCB {        
                  /**
-                 * \brief Callback on success of a contactAdd() operation
+                 * \brief Callback on success of a addContact() operation
                  * \return void                 
                  */
             void onsuccess ();
