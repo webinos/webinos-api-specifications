@@ -139,7 +139,7 @@
                  *         MUST assign the default values to all contact attributes and 
                  *         attempt to create the instance of the Contact Interface. If 
                  *         the contactProps attribute passed as the input parameter contains 
-                 *         only a subset of the contactProps attributes with valid values, 
+                 *         only a subset of the ContactProps attributes with valid values, 
                  *         the implementation MUST assign the default values to the other 
                  *         attributes and attempt to create an instance of the Contact 
                  *         Interface. If the contact passed as input parameter contains 
@@ -152,18 +152,45 @@
                  *
                  *
 
-                 * \param contactProps The property to initially apply to the created contact
+                 * \param ContactProps The property to initially apply to the created contact
                  * \return  Contact The contact that was created
                  */
              
              Contact createContact(optional ContactProps? contactProps);
+
+                /**
+                * \brief The addContact() method asynchronously adds a contact to the contacts.
+                *         
+                *         If any of the input parameters contain an invalid value, such as a null or undefined 
+                *         successCallback, the contact has any invalid value or the address book has some restrictions 
+                *         that cause the attempted insertion of the contact item to fail (e.g. limitations in the size 
+                *         of text attributes), the implementation MUST reject the request and invoke the errorCallback 
+                *         with a DOMException and code INVALID_VALUES_ERR. Please note that in order to allow developer 
+                *         ignore errors errorCallback accepts null as a valid value.
+                *         
+                *         If the contact is successfully added to the Address Book, the successCallback
+                *         MUST be invoked. The successCallback includes a Contact element that describes
+                *         the Contact that has been added and includes the assigned id attribute.
+                *         
+                *         In any of the above cases where the errorCallback should be invoked as specified 
+                *         above, if the developer has not passed a valid ErrorCallback (e.g. it is null 
+                *         or undefined), no action is required (i.e. the error is not notified to the developer). 
+                *
+                * \param successCB Function to call when the asynchronous operation completes successfully.
+                * \param errorCB Function to call when the asynchronous operation fails.
+                * \param contact The contact to add to the adoptions to apply to the output of this method.                                 
+                * \return  void                 
+                */
+                void addContact(ContactSuccessCB successCB, optional ContactErrorCB? errorCB, Contact contact);
+                
+
         };
   
   
 
   
           /**
-         * \brief contactProps dictionary
+         * \brief ContactProps dictionary
          *  
          *        This interface is intended to be used to input parameters when contacts are 
          *        created using the createContact method.
@@ -171,12 +198,30 @@
          *        All the attributes are optional and by default are undefined unless
          *        otherwise stated in the parameter description. 
          */
-        dictionary contactProps {
+        dictionary ContactProps {
+           /**
+           * \brief This attribute represents the full name of this Contact indicated by the name components associated with the ContactName object.
+           */        
                 DOMString? name         = "";
+           /**
+           * \brief This attribute contains the nickname (or a casual name) for this Contact. 
+           */
                 DOMString? nickname     = "";
+           /**
+           * \brief This attribute represents one or more physical addresses associated with this Contact. 
+           */
                 ContactAddress[]? addresses;
+           /**
+           * \brief This attribute represents one or more photos associated with this Contact.
+           */
                 ContactField[]? photos; 
+           /**
+           * \brief This attribute captures one or more phone numbers associated with this Contact. 
+           */
                 ContactField[]? phoneNumbers;
+           /**
+           * \brief This attribute represents one or more email addresses associated with this Contact. 
+           */
                 ContactField[]? emails;
         };
 
@@ -528,6 +573,18 @@
                  * \return void                 
                  */
             void onsuccess (Contact[] contactObjs);
+        };
+         /**
+         * \brief This is the wrapper interface for callbacks indicating success of the find() operation. 
+         *
+         */         
+        [Callback=FunctionOnly, NoInterfaceObject]
+        interface ContactSuccessCB {        
+                 /**
+                 * \brief Callback on success of a contactAdd() operation
+                 * \return void                 
+                 */
+            void onsuccess ();
         };
         
          /**
