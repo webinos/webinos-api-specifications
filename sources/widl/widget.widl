@@ -83,6 +83,24 @@
     readonly attribute Date validUntil;
 
     /**
+     * \brief Gives information about the visibility status of the Widget.
+     *
+     * Asks the WRT wheather the application is currently hidden (not visible to the user) or not
+     * if the application is hidden and want to come to foreground it may notify an event to
+     * the user.
+     *
+     * \code
+     * 
+     * if (window.widget.isHidden){
+     *    //do things, e.g., create a notification
+     * };
+     *
+     * \endcode
+    */
+    readonly attribute boolean isHidden;
+
+
+    /**
      * \brief Close the running application.
      *
      * Allows an application to trigger calling destroy from the runtime which results in stopping the
@@ -111,23 +129,6 @@
      * \endcode
     */
     void hide();
-
-    /**
-     * \brief Checks visibility status.
-     *
-     * Asks the WRT wheather the application is currently hidden (not visible to the user) or not
-     * if the application is hidden and want to come to foreground it may notify an event to
-     * the user.
-     *
-     * \code
-     * 
-     * if (window.widget.isHidden()){
-     *    //do things, e.g., create a notification
-     * };
-     *
-     * \endcode
-    */
-    boolean isHidden();
 
     /**
      * \brief Issues a notification to the user.
