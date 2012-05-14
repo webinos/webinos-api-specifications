@@ -158,6 +158,31 @@
              
              Contact createContact(optional ContactProps? contactProps);
 
+                /**
+                * \brief The addContact() method asynchronously adds a contact to the contacts.
+                *         
+                *         If any of the input parameters contain an invalid value, such as a null or undefined 
+                *         successCallback, the contact has any invalid value or the address book has some restrictions 
+                *         that cause the attempted insertion of the contact item to fail (e.g. limitations in the size 
+                *         of text attributes), the implementation MUST reject the request and invoke the errorCallback 
+                *         with a DOMException and code INVALID_VALUES_ERR. Please note that in order to allow developer 
+                *         ignore errors errorCallback accepts null as a valid value.
+                *         
+                *         If the contact is successfully added to the Address Book, the successCallback
+                *         MUST be invoked. The successCallback includes a Contact element that describes
+                *         the Contact that has been added and includes the assigned id attribute.
+                *         
+                *         In any of the above cases where the errorCallback should be invoked as specified 
+                *         above, if the developer has not passed a valid ErrorCallback (e.g. it is null 
+                *         or undefined), no action is required (i.e. the error is not notified to the developer). 
+                *
+                * \param successCB Function to call when the asynchronous operation completes successfully.
+                * \param errorCB Function to call when the asynchronous operation fails.
+                * \param contact The contact to add to the contacts list.                                 
+                * \return  void                 
+                */
+                
+                void addContact(ContactSuccessCB successCB, ContactErrorCB errorCB, Contact contact);                
 
         };
   
@@ -549,7 +574,20 @@
                  */
             void onsuccess (Contact[] contactObjs);
         };
-   
+        
+         /**
+         * \brief This is the wrapper interface for callbacks indicating success of the addContact() operation. 
+         * 
+         */         
+        [Callback=FunctionOnly, NoInterfaceObject]
+        interface ContactSuccessCB {        
+                 /**
+                 * \brief Callback on success of a addContact() operation
+                 * \param void                 
+                 * \return void                 
+                 */
+            void onsuccess (void);
+        };
         
          /**
          * \brief This is the wrapper interface for callbacks indicating failure  of the find(), addContact()  operation. 
