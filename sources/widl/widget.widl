@@ -15,9 +15,19 @@
   
    /**
     * \brief Callback for failed notifications
-     * \param id the id of the notification request or null if no id was provided.    * 
+    * \param id the id of the notification request or null if no id was provided.
    */
    callback NotifyErrorCallback = void (DOMString? id);
+   
+   /**
+    * \brief Callback for successfully send the Widget to background
+   */
+   callback HideSuccessCallback = void ();
+   
+   /**
+    * \brief Callback called in case sending the Widget to background was not possible
+   */
+   callback HideErrorCallback = void ();
   
    /**
     * \brief Callback for successfull installations
@@ -124,11 +134,14 @@
      * \code
      * 
      * //the widget is not visible anymore if possible
-     * window.widget.hide();
+     * window.widget.hide(
+     *            function () { // i am not visible anymore },
+     *            function () { // i am still visible }
+     *        );
      *
      * \endcode
     */
-    void hide();
+    void hide(HideSuccessCallback onSuccess, HideErrorCallback onError);
 
     /**
      * \brief Issues a notification to the user.
