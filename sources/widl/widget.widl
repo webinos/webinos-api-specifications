@@ -35,6 +35,12 @@
    */
    callback DeploymentErrorCallback = void (DOMString applicationID, DOMError error);
 
+    /**
+     * \brief Callback definition for changed life cycle states. 
+     * 
+    */
+	callback LifecycleChangeHandler = void ();
+
   /**
    * \brief Widget Interface
    * 
@@ -182,12 +188,6 @@
      * \param id The notification id to cancel.
     */
     void cancelNotify(DOMString id);
-
-    /**
-     * \brief Callback definition for changed life cycle states. 
-     * 
-    */
-	callback LifecycleChangeHandler = void ();
 
     /**
      * \brief Asynchronous callback indicating that the application will be terminated. 
