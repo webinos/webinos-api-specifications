@@ -40,7 +40,7 @@
      * 
      * All life-cylce handlers don't have any input params. They are just notifications.
     */
-	callback LifecycleChangeHandler = void ();
+    callback LifecycleChangeHandler = void ();
 
   /**
    * \brief Widget Interface
