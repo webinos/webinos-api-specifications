@@ -151,15 +151,35 @@
                  *         The addContact method performs these tasks when invoked by the developer.                                    
                  *
                  *
-                 * \param successCB Function to call when the asynchronous operation completes successfully.
-                 * \param errorCB Function to call when the asynchronous operation fails.
-                 * \param options The options to apply to the output of this method.                                 
-                 * \return  void                 
+
+                 * \param contactProps The property to initially apply to the created contact
+                 * \return  Contact The contact that was created
                  */
              
              Contact createContact(optional ContactProps? contactProps);
         };
   
+  
+
+  
+          /**
+         * \brief contactProps dictionary
+         *  
+         *        This interface is intended to be used to input parameters when contacts are 
+         *        created using the createContact method.
+         *
+         *        All the attributes are optional and by default are undefined unless
+         *        otherwise stated in the parameter description. 
+         */
+        dictionary contactProps {
+                DOMString? name         = "";
+                DOMString? nickname     = "";
+                ContactAddress[]? addresses;
+                ContactField[]? photos; 
+                ContactField[]? phoneNumbers;
+                ContactField[]? emails;
+        };
+
 
       /**
          * \brief The Contact interface captures the properties of a contact object. 
