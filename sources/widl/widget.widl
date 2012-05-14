@@ -38,6 +38,7 @@
     /**
      * \brief Callback definition for changed life cycle states. 
      * 
+     * All life-cylce handlers don't have any input params. They are just notifications.
     */
 	callback LifecycleChangeHandler = void ();
 
