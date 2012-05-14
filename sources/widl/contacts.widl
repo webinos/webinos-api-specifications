@@ -178,10 +178,11 @@
                 *
                 * \param successCB Function to call when the asynchronous operation completes successfully.
                 * \param errorCB Function to call when the asynchronous operation fails.
-                * \param contact The contact to add to the adoptions to apply to the output of this method.                                 
+                * \param contact The contact to add to the contacts list.                                 
                 * \return  void                 
                 */
-                void addContact(ContactSuccessCB successCB, optional ContactErrorCB? errorCB, Contact contact);
+                
+                void addContact(ContactSuccessCB successCB, ContactErrorCB errorCB, Contact contact);
                 
 
         };
@@ -574,9 +575,10 @@
                  */
             void onsuccess (Contact[] contactObjs);
         };
+        
          /**
          * \brief This is the wrapper interface for callbacks indicating success of the addContact() operation. 
-         *
+         * 
          */         
         [Callback=FunctionOnly, NoInterfaceObject]
         interface ContactSuccessCB {        
@@ -588,7 +590,7 @@
         };
         
          /**
-         * \brief This is the wrapper interface for callbacks indicating failure  of the find() operation. 
+         * \brief This is the wrapper interface for callbacks indicating failure  of the find(), addContact()  operation. 
          *
          */         
         [Callback=FunctionOnly, NoInterfaceObject]
