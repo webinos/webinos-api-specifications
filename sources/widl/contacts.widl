@@ -1,12 +1,10 @@
 
 /**<p>This API provides access to a user unified address book.</p> 
  * \name Contacts API
- * \brief This extended W3C API provides access to a user unified address book.
+ * \brief This  API provides access to a user unified address book.
  *
- * This specification provides a wrapper that mandates the use of the 
- * <a href="http://www.w3.org/TR/2011/WD-contacts-api-20110616/">W3C Contacts API </a> (Editor's draft 16th June).
  *
- * The Contacts API defines the high-level interfaces required to obtain read access to a user's unified address book.
+ * The Contacts API defines the high-level interfaces required to obtain access to a user's unified address book.
  *
  * This API includes the following key interfaces:
  *
@@ -19,6 +17,8 @@
  * 
  * \def-api-feature http://www.w3.org/ns/api-perms/contacts.read 
  * Read access to the address book.
+ * \def-api-feature http://www.w3.org/ns/api-perms/contacts.write
+ * Write access to the address book.
  *
  * \author Based on W3C Editor's Draft 16 June 2011 with added contacts write functionality patterned after WAC
  * \author WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
@@ -74,7 +74,7 @@
            * \brief The object through which the contacts functionality can be accessed.
            * No exceptions.
            */
-                    readonly attribute Contacts contacts;
+                     attribute Contacts contacts;
         };  
         
         /**
@@ -128,6 +128,36 @@
                  */
 
              void find (DOMString[] fields, ContactFindCB successCB, optional ContactErrorCB errorCB, optional ContactFindOptions options);
+
+                 /**
+                 * \brief The createContact() method creates an object that implements the Contact interface. 
+                 *
+                 *         When the optional contactProps are passed as an argument, the newly created contact 
+                 *         is prepopulated with the supplied values.
+                 *
+                 *         If the contactProps attribute is omitted, the implementation 
+                 *         MUST assign the default values to all contact attributes and 
+                 *         attempt to create the instance of the Contact Interface. If 
+                 *         the contactProps attribute passed as the input parameter contains 
+                 *         only a subset of the contactProps attributes with valid values, 
+                 *         the implementation MUST assign the default values to the other 
+                 *         attributes and attempt to create an instance of the Contact 
+                 *         Interface. If the contact passed as input parameter contains 
+                 *         valid values for all the contactProps attributes, the 
+                 *         implementation MUST try to create the instance of Contact Interface.
+                 *         
+                 *         This operation does not add the created contact to the Address Book, 
+                 *         and an identifier (id attribute) is not assigned to the contact. 
+                 *         The addContact method performs these tasks when invoked by the developer.                                    
+                 *
+                 *
+                 * \param successCB Function to call when the asynchronous operation completes successfully.
+                 * \param errorCB Function to call when the asynchronous operation fails.
+                 * \param options The options to apply to the output of this method.                                 
+                 * \return  void                 
+                 */
+             
+             Contact createContact(optional ContactProps? contactProps);
         };
   
 
