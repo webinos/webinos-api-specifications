@@ -35,6 +35,13 @@
    */
    callback DeploymentErrorCallback = void (DOMString applicationID, DOMError error);
 
+    /**
+     * \brief Callback definition for changed life cycle states. 
+     * 
+     * All life-cylce handlers don't have any input params. They are just notifications.
+    */
+    callback LifecycleChangeHandler = void ();
+
   /**
    * \brief Widget Interface
    * 
@@ -191,7 +198,7 @@
      * out of this function.
      * 
     */
-    void onDestroy();
+    attribute LifecycleChangeHandler onDestroy;
 
     /**
      * \brief Asynchronous callback indicating that the application is gone to background. 
@@ -201,28 +208,28 @@
      * is still running but not visible anymore.
      * 
     */
-    void onBackground();
+    attribute LifecycleChangeHandler onBackground;
 
     /**
      * \brief Asynchronous callback indicating that the application is gone to foreground. 
      *
      * Application goes to foreground after previously going to background.
     */
-    void onForeground();
+    attribute LifecycleChangeHandler onForeground;
 
     /**
      * \brief Asynchronous callback indicating that application execution is going to be stopped. 
      *
      * Application execution is stopped aftern returning out of this function.
     */
-    void onStop();
+    attribute LifecycleChangeHandler onStop;
 
     /**
      * \brief Asynchronous callback indicating that application execution is continued. 
      *
      * Application execution is continued after previously stopped.
      */
-    void onStart();
+    attribute LifecycleChangeHandler onStart;
     
     /**
      * \brief Requests to install an application on another device.
