@@ -1,6 +1,5 @@
-/**<p> 
+/**<p> Interface for Payment functions.</p>
  * \name Payment API
- * \brief Interface for Payment functions.
  *
  * This API provides generic shopping basket functionality to provide in-app payment.
  *

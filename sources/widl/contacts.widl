@@ -1,6 +1,7 @@
 
-/**
- * \brief W3C based Contacts interface. 
+/**<p>This API provides access to a user unified address book.</p> 
+ * \name Contacts API
+ * \brief This extended W3C API provides access to a user unified address book.
  *
  * This specification provides a wrapper that mandates the use of the 
  * <a href="http://www.w3.org/TR/2011/WD-contacts-api-20110616/">W3C Contacts API </a> (Editor's draft 16th June).
@@ -24,7 +25,6 @@
  * \author WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
  * \version 1.0
  */
-module ContactsWrapper {
         /**
          * \brief Contacts specific errors.
          */
@@ -495,4 +495,4 @@ module ContactsWrapper {
               void onerror (ContactError error);
         };
         
-};
+
