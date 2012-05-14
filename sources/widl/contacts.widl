@@ -182,7 +182,7 @@
                 * \return  void                 
                 */
                 
-                void addContact(ContactSuccessCB successCB, ContactErrorCB errorCB, Contact contact);                
+                void addContact(ContactAddSuccessCB successCB, ContactErrorCB errorCB, Contact contact);                
 
         };
   
@@ -580,13 +580,13 @@
          * 
          */         
         [Callback=FunctionOnly, NoInterfaceObject]
-        interface ContactSuccessCB {        
+        interface ContactAddSuccessCB {        
                  /**
                  * \brief Callback on success of a addContact() operation
-                 * \param void                 
+                 * \param contact The contact that just has been added, including the contact id                 
                  * \return void                 
                  */
-            void onsuccess (void);
+            void onsuccess (Contact contact);
         };
         
          /**
