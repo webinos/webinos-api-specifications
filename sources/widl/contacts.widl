@@ -363,7 +363,7 @@
          *            of any length - including zero length). In order to specify that 
          *            a 'PERCENT SIGN' character is to be considered literally instead 
          *            of interpreting it as a wildcard, developers may escape it with 
-         *            the backslash character (\). The matching is not case sensitive, 
+         *            the backslash character. The matching is not case sensitive, 
          *            e.g. "FOO" matches a "foo" or an "f%" filter.
          */
         dictionary ContactFilter {
