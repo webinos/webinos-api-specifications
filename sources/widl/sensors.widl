@@ -1,6 +1,5 @@
-/**
- * \brief The Generic Sensor API 
- *
+/**<p> The Webinos Generic Sensor API provides web applications with an API to access data from sensors.</p> 
+ * \name The Generic Sensor API 
  *
  *
  * The Webinos Generic Sensor API provides web applications with an API to access data from sensors in the device, connected to the device or in another device.
@@ -35,10 +34,9 @@
  * Identifies the pressure sensor type. 
  *
  * \author Claes Nilsson &lt;claes1.nilsson@sonyericsson.com&gt;
- * \version 0.9 
+ * \author Updated to new WIDL by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
+ * \version 0.95 
  */
-
-module sensors {
 
 
   /**
@@ -86,7 +84,7 @@ module sensors {
                 var option = document.createElement('option');
                 option.value = sensor.id;
                 option.appendChild(document.createTextNode(sensor.displayName));
-	        availableTempSensors [sensor.id] = sensor;
+                availableTempSensors [sensor.id] = sensor;
                 selectlist.appendChild(option);
 
         }
@@ -137,10 +135,10 @@ module sensors {
        // Handle user selection of sensor
         var sensorlist = document.getElementById('sensorlist');
         sensorlist.addEventListener("change", function (e) {
-				var sensor = availableTempSensors[e.target.value];
-				if (sensor) {
-				    sensorSelected(sensor);
-				}
+                                var sensor = availableTempSensors[e.target.value];
+                                if (sensor) {
+                                    sensorSelected(sensor);
+                                }
         }, false);
 
 
@@ -156,34 +154,34 @@ module sensors {
     [NoInterfaceObject] interface Sensor : Service {
  
        /**
-	* \brief Max range of sensor in the sensors unit.
-	*/
-    	readonly attribute float?          maximumRange;
+        * \brief Max range of sensor in the sensors unit.
+        */
+        readonly attribute float?          maximumRange;
 
        /**
-	* \brief Min delay of sensor allowed between two events in microsecond or zero if this sensor only returns a value when the data it's measuring changes.
-	*/
-   	readonly attribute unsigned long?   minDelay;
+        * \brief Min delay of sensor allowed between two events in microsecond or zero if this sensor only returns a value when the data it's measuring changes.
+        */
+        readonly attribute unsigned long?   minDelay;
 
        /**
-	* \brief Power consumption of sensor in mA used by this sensor while in use. 
-	*/
-   	readonly attribute float?	  power;
+        * \brief Power consumption of sensor in mA used by this sensor while in use. 
+        */
+        readonly attribute float?         power;
 
        /**
-	* \brief Resolution of the sensor in the sensors unit.
-	*/
-	readonly attribute float?	  resolution;
+        * \brief Resolution of the sensor in the sensors unit.
+        */
+        readonly attribute float?         resolution;
 
        /**
-	* \brief Vendor string of this sensor.
-	*/
-	readonly attribute DOMString?      vendor;  
+        * \brief Vendor string of this sensor.
+        */
+        readonly attribute DOMString?      vendor;  
 
        /**
-	* \brief Version of the sensors module.
-	*/ 
-   	readonly attribute unsigned long?  version; 
+        * \brief Version of the sensors module.
+        */ 
+        readonly attribute unsigned long?  version; 
 
 
        /**
@@ -191,14 +189,14 @@ module sensors {
         *
         * Question: Do we need the ability to specify high and low thresholds? This is for example not supported by Android sensor API.
         *
+        * Throws SensorException with appropriate error code.
+        *
         * \param options Sensor configuration options. 
         * \param successCB Callback issued when sensor configuration succeeded.
         * \param errorCB Callback issued if sensor configuration fails.  
         * \return A pending operation object making it possible to cancel the configureSensor operation     
-        * \throw SensorException with appropriate error code.
         */
-        PendingOp configureSensor (ConfigureSensorOptions options, ConfigureSensorCB successCB, optional SensorErrorCB errorCB)
-            raises (SensorException);
+        PendingOp configureSensor (ConfigureSensorOptions options, ConfigureSensorCB successCB, optional SensorErrorCB errorCB);
 
 
      };
@@ -214,7 +212,7 @@ module sensors {
        * \brief onSuccess The onSuccess method is called when configuration of a sensor succeeded.  
        *
        */
-       void onSuccess();	  
+       void onSuccess();          
     };
 
 
@@ -494,4 +492,4 @@ module sensors {
                          float[] sensorValues); 
     };
 
-};
+
