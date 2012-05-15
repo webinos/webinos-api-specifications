@@ -125,13 +125,14 @@
    * msg.body = "WAC first SMS message.";
    * \endcode
    *
+   * Throws DeviceAPIError INVALID_VALUES_ERR if the input parameter contains an invalid value. 
+   * Throws DeviceAPIError TYPE_MISMATCH_ERR if the input parameter is not compatible with the expected type for that parameter. 
+   *
    * \param type The type of message that is created. The possible values are: TYPE_SMS, TYPE_MMS, TYPE_EMAIL and TYPE_IM. 
    * \return A Message object of the given type or null if there is any problem during the message creation. 
-   * \throw DeviceAPIError INVALID_VALUES_ERR if the input parameter contains an invalid value. 
-   * \throw DeviceAPIError TYPE_MISMATCH_ERR if the input parameter is not compatible with the expected type for that parameter. 
    */
     Message createMessage(short type);
-                          // raises(DeviceAPIError);
+                         
 
    /**
    * \brief Attempt to send the specified message. 
@@ -515,6 +516,7 @@
                             optional ErrorCallback errorCallback)
                             raises(DeviceAPIError);
   };
+  
   Message implements Synchronisable;
 
    /**                       
@@ -747,14 +749,3 @@
         void cancel ();
      };
 
- exception DeviceAPIError {
-  
-  const unsigned short NOT_FOUND_ERR = 1;
-  const unsigned short SECURITY_ERR = 2;
-  const unsigned short ABORT_ERR = 3;
-  
-  const unsigned short NOT_READABLE_ERR = 4;
-  const unsigned short ENCODING_ERR = 5;
- 
-  unsigned short code;
-};
