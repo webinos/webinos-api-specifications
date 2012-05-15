@@ -304,7 +304,7 @@
            /**
            * \brief This attribute represents the time zone of this Contact.
           */
-             attribute DOMString?             timezone;
+              DOMString?             timezone;
         };
 
 
