@@ -95,6 +95,37 @@
         
         [NoInterfaceObject]
         interface Contacts {
+        
+                 /**
+                 * \brief The findContacts() method returns an array of all Contacts that match the optionally supplied filter.
+                 *    
+                 *    If the filter is passed and contains valid values, only those values  
+                 *    that match the filter criteria as specified in the ContactFilter 
+                 *    interface will be returned in the successCallback. If no filter is 
+                 *    passed, the filter contains any invalid values, the filter is null 
+                 *    or undefined, then the implementation MUST return the full list of 
+                 *    contact items in the successCallback. 
+                 *    
+                 *    If no contacts are available or no contact matches the filter criteria, 
+                 *    the successCallback will be invoked with an empty array.
+                 *    
+                 *    If any other error occurs while trying to retrieve the contacts, 
+                 *    the errorCallback function that was passed in the invocation MUST 
+                 *    be called, passing a DOMException object with code UNKNOWN_ERROR.
+                 *    
+                 *    In any of the above cases where the errorCallback should be invoked, 
+                 *    as specified above, if the developer has not passed a valid
+                 *    ErrorCallback (e.g. it is null or undefined), no action is 
+                 *    required and the developer is not notified of the error.    
+                 *
+                 * \param successCB Function to call when the asynchronous operation completes successfully.
+                 * \param errorCB Function to call when the asynchronous operation fails.
+                 * \param filter The search qualifier.                         
+                 * \return  void                 
+                 */
+                 
+                void findContacts(ContactFindCB successCB, optional ContactErrorCB errorCB, optional ContactFilter? filter);
+        
                  /**
                  * \brief Find contacts in the address book according to the find contacts process detailed below. 
                  *
@@ -293,6 +324,95 @@
               DOMString?             gender;
            /**
            * \brief This attribute contains the personal notes (free-text) for this Contact that is managed by the user of the address book. 
+           */
+              DOMString?             note;
+           /**
+           * \brief This attribute contains one or more user-defined categories/tags/labels associated with this Contact. e.g. "family", "favourite", "cryptozoologists". 
+          */
+              DOMString[]?           categories;
+           /**
+           * \brief This attribute represents one or more URLs associated with this Contact e.g. personal web page, blog.
+           */
+              ContactField[]?        urls;
+           /**
+           * \brief This attribute represents the time zone of this Contact.
+          */
+              DOMString?             timezone;
+        };
+
+          /**
+         * \brief ContactFilter dictionary
+         *  
+         *        When this filter is supplied to the findContacts method, the 
+         *        result-set of that method MUST only contain the contact entries 
+         *        in the address book that match the filter values.
+         *        
+         *        A contact matches the filter, if the attributes of the contact 
+         *        match all the attributes of the filter. If the filter contains 
+         *        values that are undefined or null, these MUST be ignored. 
+         *        I.e. the search is performed in a similar manner to a SQL "AND" operation.
+         *        
+         *        An attribute of the contact matches the filter value according to
+         *        to the following rule:
+         *        
+         *            For filter attributes of type DOMString, an entry matches 
+         *            this value if its corresponding attribute is exactly the 
+         *            same as the filter attribute. However, if the filter contains 
+         *            U+0025 'PERCENT SIGN' wildcard character(s), the filter behavior 
+         *            is similar to the LIKE condition in SQL ('%' matches any string 
+         *            of any length - including zero length). In order to specify that 
+         *            a 'PERCENT SIGN' character is to be considered literally instead 
+         *            of interpreting it as a wildcard, developers may escape it with 
+         *            the backslash character (\). The matching is not case sensitive, 
+         *            e.g. "FOO" matches a "foo" or an "f%" filter.
+         */
+        dictionary ContactFilter {
+           /**
+           * \brief This attribute represents the full name of this Contact indicated by the name components associated with the ContactName object.
+           */        
+                DOMString? name         = "";
+           /**
+           * \brief This attribute contains the nickname (or a casual name) for this Contact. 
+           */
+                DOMString? nickname     = "";
+           /**
+           * \brief This attribute contains the name of this Contact in a form that is suitable for display to the user.
+           */
+                DOMString?  displayName = "";
+           /**
+           * \brief This attribute represents one or more physical addresses associated with this Contact. 
+           */
+                ContactAddress[]? addresses;
+           /**
+           * \brief This attribute represents one or more photos associated with this Contact.
+           */
+                ContactField[]? photos; 
+           /**
+           * \brief This attribute captures one or more phone numbers associated with this Contact. 
+           */
+                ContactField[]? phoneNumbers;
+           /**
+           * \brief This attribute represents one or more email addresses associated with this Contact. 
+           */
+                ContactField[]? emails;
+           /**
+           * \brief This attribute represents one or more instant messaging identifiers associated with this Contact. 
+           */
+              ContactField[]?        ims;
+           /**
+           * \brief This attribute represents one or more organizations associated with this Contact. 
+           */
+              ContactOrganization[]? organizations;
+           /**
+           * \brief     This attribute contains birthday of this Contact.
+           */
+              Date?                  birthday;
+           /**
+           * \brief This attribute contains the gender of this Contact. This attribute should have one of the following values:
+           */
+              DOMString?             gender;
+           /**
+           * \brief This attribute contains the personal notes (free-text) for this Contact that is managed by the user of the address book. 
            *
            * No exceptions.
            */
@@ -310,7 +430,6 @@
           */
               DOMString?             timezone;
         };
-
 
       /**
          * \brief The Contact interface captures the properties of a contact object. 
