@@ -151,8 +151,7 @@
                  *         The addContact method performs these tasks when invoked by the developer.                                    
                  *
                  *
-
-                 * \param ContactProps The property to initially apply to the created contact
+                 * \param contactProps The property to initially apply to the created contact
                  * \return  Contact The contact that was created
                  */
              
