@@ -54,14 +54,14 @@
      * alert("Foo returned " + text);
      * \endcode
      *
+     * Throws Error with error code TYPE_MISMATCH_ERR if 
+     *
      * \param text An input argument description
      * \return A string with a human readable string
-     * \throw Error with error code TYPE_MISMATCH_ERR if 
      * the input parameter is not compatible with the expected type for 
      * that parameter.
      */
-    DOMString getFoo(DOMString text)
-        raises(Error);
+    DOMString getFoo(DOMString text);
 
     /**
      * \brief instance of the FooInterface member of the FooManager
