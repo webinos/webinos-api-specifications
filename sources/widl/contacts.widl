@@ -145,6 +145,23 @@
                 *         In any of the above cases where the errorCallback should be invoked as specified 
                 *         above, if the developer has not passed a valid ErrorCallback (e.g. it is null 
                 *         or undefined), no action is required (i.e. the error is not notified to the developer). 
+                * \code
+                * var contact = contacts.createContact({
+                *         firstName: "John",
+                *         lastName: "Doe"
+                * });
+                * 
+                * book.addContact(successwrite, error, contact);
+                * 
+                * 
+                * var successwrite = function(contact) {
+                *         alert("Wrote " + contact.id);
+                * };
+                * 
+                * var error = function(e) {
+                *         alert("Error: " + e);
+                * };                
+                * \endcode
                 *
                 * \param successCB Function to call when the asynchronous operation completes successfully.
                 * \param errorCB Function to call when the asynchronous operation fails.
@@ -227,7 +244,7 @@
                  * \return  void                 
                  */
                  
-                void findContacts(ContactFindCB successCB, optional ContactErrorCB errorCB, optional ContactFilter? filter);
+                void findContacts(ContactFindSuccessCB successCB, optional ContactErrorCB errorCB, optional ContactFilter? filter);
 
         
         };
@@ -790,7 +807,7 @@
          *
          */         
         [Callback=FunctionOnly, NoInterfaceObject]
-        interface ContactFindCB {        
+        interface ContactFindSuccessCB {        
                  /**
                  * \brief Callback on success of a find() operation
                  * \param contactObjs An array of Contact objects resulting from the given Contacts find() operation. 
