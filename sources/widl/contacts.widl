@@ -252,6 +252,10 @@
            */
                 DOMString? nickname     = "";
            /**
+           * \brief This attribute contains the name of this Contact in a form that is suitable for display to the user.
+           */
+                DOMString?  displayName = "";
+           /**
            * \brief This attribute represents one or more physical addresses associated with this Contact. 
            */
                 ContactAddress[]? addresses;
@@ -267,6 +271,40 @@
            * \brief This attribute represents one or more email addresses associated with this Contact. 
            */
                 ContactField[]? emails;
+           /**
+           * \brief This attribute represents one or more instant messaging identifiers associated with this Contact. 
+           */
+              ContactField[]?        ims;
+           /**
+           * \brief This attribute represents one or more organizations associated with this Contact. 
+           */
+              ContactOrganization[]? organizations;
+           /**
+           * \brief     This attribute contains birthday of this Contact.
+           */
+              Date?                  birthday;
+           /**
+           * \brief This attribute contains the gender of this Contact. This attribute should have one of the following values:
+           */
+              DOMString?             gender;
+           /**
+           * \brief This attribute contains the personal notes (free-text) for this Contact that is managed by the user of the address book. 
+           *
+           * No exceptions.
+           */
+              DOMString?             note;
+           /**
+           * \brief This attribute contains one or more user-defined categories/tags/labels associated with this Contact. e.g. "family", "favourite", "cryptozoologists". 
+          */
+              DOMString[]?           categories;
+           /**
+           * \brief This attribute represents one or more URLs associated with this Contact e.g. personal web page, blog.
+           */
+              ContactField[]?        urls;
+           /**
+           * \brief This attribute represents the time zone of this Contact.
+          */
+             attribute DOMString?             timezone;
         };
 
 
