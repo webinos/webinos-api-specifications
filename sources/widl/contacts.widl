@@ -129,6 +129,35 @@
 
              void find (DOMString[] fields, ContactFindCB successCB, optional ContactErrorCB errorCB, optional ContactFindOptions options);
 
+                 /**
+                 * \brief The createContact() method creates an object that implements the Contact interface. 
+                 *
+                 *         When the optional contactProps are passed as an argument, the newly created contact 
+                 *         is prepopulated with the supplied values.
+                 *
+                 *         If the contactProps attribute is omitted, the implementation 
+                 *         MUST assign the default values to all contact attributes and 
+                 *         attempt to create the instance of the Contact Interface. If 
+                 *         the contactProps attribute passed as the input parameter contains 
+                 *         only a subset of the ContactProps attributes with valid values, 
+                 *         the implementation MUST assign the default values to the other 
+                 *         attributes and attempt to create an instance of the Contact 
+                 *         Interface. If the contact passed as input parameter contains 
+                 *         valid values for all the contactProps attributes, the 
+                 *         implementation MUST try to create the instance of Contact Interface.
+                 *         
+                 *         This operation does not add the created contact to the Address Book, 
+                 *         and an identifier (id attribute) is not assigned to the contact. 
+                 *         The addContact method performs these tasks when invoked by the developer.                                    
+                 *
+                 *
+
+                 * \param ContactProps The property to initially apply to the created contact
+                 * \return  Contact The contact that was created
+                 */
+             
+             Contact createContact(optional ContactProps? contactProps);
+
         };
   
  
