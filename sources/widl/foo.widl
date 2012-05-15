@@ -1,4 +1,4 @@
-/**
+/**<p> This is an empty test API - should not be actually implemented...</p> 
  * \brief The foo API 
  *
  * This should include a detailed description of the functionality this API offers
@@ -10,7 +10,6 @@
  * \author No Name &lt;noname@nodomain.org&gt;
  * \version 0.1 
  */
-module foo {
 
   /**
    * \brief Defines what is instantiated in initialization 
@@ -96,4 +95,4 @@ module foo {
      */
      const unsigned short NOT_AVAILABLE_ERR = 101;
    };
-};
+
