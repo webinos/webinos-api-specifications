@@ -125,44 +125,6 @@
                  */
                  
                 void findContacts(ContactFindCB successCB, optional ContactErrorCB errorCB, optional ContactFilter? filter);
-        
-                 /**
-                 * \brief Find contacts in the address book according to the find contacts process detailed below. 
-                 *
-                 *                 This method takes two, three or four arguments. When called, it starts the following find contacts process:
-                 *
-                 *    Let successCallback be the callback indicated by the method's second argument.
-                 *
-                 *    Let errorCallback be the callback indicated by the method's third argument, if any, or null otherwise.
-                 *
-                 *    If successCallback is null, then throw a TypeError (as defined in [WEBIDL]).
-                 *
-                 *    If there is a task from the device task source in one of the task queues (e.g. an existing find() operation is still pending a response), run these substeps:
-                 *
-                 *        If errorCallback is not null, let error be a ContactError object whose code attribute has the value PENDING_OPERATION_ERROR and queue a task to invoke errorCallback with error as its argument.
-                 *
-                 *        Abort this operation.
-                 *
-                 *    Return, and run the remaining steps asynchronously.
-                 *
-                 *    Let results be the array of Contact objects obtained by searching contacts in the address book according to the rules defined in Contact Search Processing, or null if the search has failed.
-                 *
-                 *    If results is null, run these substeps:
-                 *
-                 *        If errorCallback is not null, let error be a ContactError object whose code attribute has its value set according to the type of failure that occurred and queue a task to invoke errorCallback with error as its argument.
-                 *
-                 *        Abort this operation.
-                 *
-                 *    Queue a task to invoke successCallback with results as its argument.
-                 *
-                 * \param fields The search qualifier.
-                 * \param successCB Function to call when the asynchronous operation completes successfully.
-                 * \param errorCB Function to call when the asynchronous operation fails.
-                 * \param options The options to apply to the output of this method.                                 
-                 * \return  void                 
-                 */
-
-             void find (DOMString[] fields, ContactFindCB successCB, optional ContactErrorCB errorCB, optional ContactFindOptions options);
 
                  /**
                  * \brief The createContact() method creates an object that implements the Contact interface. 
@@ -368,66 +330,119 @@
          */
         dictionary ContactFilter {
            /**
-           * \brief This attribute represents the full name of this Contact indicated by the name components associated with the ContactName object.
+           * \brief Used for filtering the Contact id attribute.
+           *
+           * Contacts with id attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
            */        
-                DOMString? name         = "";
+                DOMString? id  ;
            /**
-           * \brief This attribute contains the nickname (or a casual name) for this Contact. 
-           */
-                DOMString? nickname     = "";
+           * \brief Used for filtering the Contact name attribute.
+           *
+           * Contacts with name attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+                DOMString? name  ;
            /**
-           * \brief This attribute contains the name of this Contact in a form that is suitable for display to the user.
-           */
-                DOMString?  displayName = "";
+           * \brief Used for filtering the Contact nickname attribute.
+           *
+           * Contacts with nickname attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+                DOMString? nickname ;
            /**
-           * \brief This attribute represents one or more physical addresses associated with this Contact. 
-           */
+           * \brief Used for filtering the Contact displayName attribute.
+           *
+           * Contacts with displayName attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+                DOMString?  displayName;
+           /**
+           * \brief Used for filtering the Contact addresses attribute.
+           *
+           * Contacts with at least one address in the addresses array matching 
+           * all the specified address attributes in the supplied address object 
+           * (either exactly or with the specified wildcards) match the filtering 
+           * criteria. If the supplied address object includes null or undefined values 
+           * for some attributes, these can be ignored.
+           */        
                 ContactAddress[]? addresses;
            /**
-           * \brief This attribute represents one or more photos associated with this Contact.
-           */
-                ContactField[]? photos; 
+           * \brief Used for filtering the Contact photos attribute.
+           *
+           * Contacts with photos attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+               DOMString?   photos; 
            /**
-           * \brief This attribute captures one or more phone numbers associated with this Contact. 
-           */
-                ContactField[]? phoneNumbers;
+           * \brief Used for filtering the Contact phoneNumbers attribute.
+           *
+           * Contacts with phoneNumbers attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+               DOMString?   phoneNumbers;
            /**
-           * \brief This attribute represents one or more email addresses associated with this Contact. 
-           */
-                ContactField[]? emails;
+           * \brief Used for filtering the Contact emails attribute.
+           *
+           * Contacts with emails attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+                DOMString? emails;
            /**
-           * \brief This attribute represents one or more instant messaging identifiers associated with this Contact. 
-           */
-              ContactField[]?        ims;
+           * \brief Used for filtering the Contact ims attribute.
+           *
+           * Contacts with ims attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+             DOMString?        ims;
            /**
-           * \brief This attribute represents one or more organizations associated with this Contact. 
-           */
-              ContactOrganization[]? organizations;
+           * \brief Used for filtering the Contact organizations attribute.
+           *
+           * Contacts with organizations attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+              DOMString?  organizations;
            /**
-           * \brief     This attribute contains birthday of this Contact.
-           */
+           * \brief Used for filtering the Contact birthday attribute.
+           *
+           * Contacts with birthday attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
               Date?                  birthday;
            /**
-           * \brief This attribute contains the gender of this Contact. This attribute should have one of the following values:
-           */
+           * \brief Used for filtering the Contact gender attribute.
+           *
+           * Contacts with gender attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
               DOMString?             gender;
            /**
-           * \brief This attribute contains the personal notes (free-text) for this Contact that is managed by the user of the address book. 
+           * \brief Used for filtering the Contact note attribute.
            *
-           * No exceptions.
-           */
+           * Contacts with note attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
               DOMString?             note;
            /**
-           * \brief This attribute contains one or more user-defined categories/tags/labels associated with this Contact. e.g. "family", "favourite", "cryptozoologists". 
-          */
-              DOMString[]?           categories;
+           * \brief Used for filtering the Contact categories attribute.
+           *
+           * Contacts with categories attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+               DOMString?           categories;
            /**
-           * \brief This attribute represents one or more URLs associated with this Contact e.g. personal web page, blog.
-           */
-              ContactField[]?        urls;
+           * \brief Used for filtering the Contact urls attribute.
+           *
+           * Contacts with urls attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+               DOMString?          urls;
            /**
-           * \brief This attribute represents the time zone of this Contact.
-          */
+           * \brief Used for filtering the Contact timezone attribute.
+           *
+           * Contacts with timezone attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
               DOMString?             timezone;
         };
 
