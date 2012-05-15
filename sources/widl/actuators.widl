@@ -49,7 +49,7 @@
  * The min und max values of each input pin define the lower and upper bound for valid values of each coordinate
  *
  * \def-api-feature http://webinos.org/api/actuators.thermostat
- * Identifies the thermostat actuator type. A thermostat has only one input pin which represents the desired temperature in °C.
+ * Identifies the thermostat actuator type. A thermostat has only one input pin which represents the desired temperature in &deg;C.
  * The min und max values define the lower and upper bound for valid temperature values
  *
  * \author Louay Bassbouss &lt;louay.bassbouss@fokus.fraunhofer.de&gt;
