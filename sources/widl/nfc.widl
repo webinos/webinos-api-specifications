@@ -1,6 +1,7 @@
-/**
+/**<p> Near Field Communication (NFC) support.</p> 
+ * \name NFC API
  *
- * \brief Near Field Communication (NFC) is an international standard (ISO/IEC 
+ * Near Field Communication (NFC) is an international standard (ISO/IEC 
  * 18092) that specifies an interface and protocol for simple wireless 
  * interconnection of closely coupled devices operating at 13.56 MHz. 
  * (http://www.nfc-forum.org/specs/spec_list/).
@@ -198,7 +199,7 @@
  *     var ndefMessage = techSelected.readCachedNdefMessage();
  *     for (var index=0; index &lt; ndefMessage.ndefRecords.length) {
  *       if(ndefMessage.ndefRecords[index].type = ndefMessage.NDEFRECTYPE_URI)
- *			alert("uri found: "+ndefMessage.ndefRecords[index].textPayload);
+ *                      alert("uri found: "+ndefMessage.ndefRecords[index].textPayload);
  *     }
  *   }
  * }
@@ -212,530 +213,531 @@
  *
  * \author Hans Myrhaug (AmbieSense Ltd.) &lt;hans@ambiesense.com&gt;
  * \author Stefano Vercelli (Telecom Italia) &lt;stefano.vercelli@telecomitalia.it&gt;
+ * \author Updated to new WIDL format by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
  *
- * \version 0.4
+ * \version 0.5
  */
 
-module nfc {
 
-	/**
-	 * \brief Array of NFCTagTechnology.
-	 */
-	typedef NFCTagTechnology[]	NFCTagTechnologyArray;
+        /**
+         * \brief Array of NFCTagTechnology.
+         */
+        typedef NFCTagTechnology[]      NFCTagTechnologyArray;
 
-	/**
-	 * \brief Array of NdefRecord.
-	 */
-	typedef NdefRecord[]	NdefRecordArray;
+        /**
+         * \brief Array of NdefRecord.
+         */
+        typedef NdefRecord[]    NdefRecordArray;
 
-	/**
-	 * \brief Array of 8-bit unsigned integer values.
-	 */
-	typedef octet[]	ByteArray;
+        /**
+         * \brief Array of 8-bit unsigned integer values.
+         */
+        typedef octet[] ByteArray;
 
-	/**
-	 * \brief Definition of pending op.
-	 * 
-	 */
-	[NoInterfaceObject] interface PendingOperation {
-		/**
-		 * \brief Cancel the async op.
-		 *
-		 */
-		boolean cancel();
-	};
+        /**
+         * \brief Definition of pending op.
+         * 
+         */
+        [NoInterfaceObject] interface PendingOperation {
+                /**
+                 * \brief Cancel the async op.
+                 *
+                 */
+                boolean cancel();
+        };
 
-	
-	/**
-	 * \brief NFC tag event.
-	 *
-	 */
-	interface NFCTag : Event {
+        
+        /**
+         * \brief NFC tag event.
+         *
+         */
+        interface NFCTag : Event {
 
-		/**
-		 * \brief The identifier of the tag.
-		 *
-		 */
-		readonly attribute ByteArray tagId;
-		
-		/**
-		 * \brief The list of technologies supported by the tag.
-		 *
-		 */
-		readonly attribute NFCTagTechnologyArray techList;
-		
-		/**
-		 * \brief Method to set initial values of NFCTag event.  
-		 *
-		 * The initNFCTagEvent() method must initialize the event in a manner analogous to the initEvent() method in http://www.w3.org/TR/2010/WD-DOM-Level-3-Events-20100907/.
-		 * The method can for example be used with document.createEvent() and EventTarget.dispatchEvent() to simulate a specific event.
-		 * At the moment it should simulate a read only ndef Tag containing a ndefMessage that includes a single ndefRecord.
-		 *   
-		 * \param type Event type i.e. 'sensor'
-		 * \param bubbles True if event bubbles
-		 * \param cancelable True if event cancelable
-		 * \param tagId id of the tag
-		 * \param technologyType type of technology supported by the tag; at the moment it must be ndef.
-		 * \param ndefType type of ndef supported (see constants defined in NFCTagTechnologyNdef)
-		 * \param ndefRecType type of ndef record (see constants defined in NdefMessage)
-		 * \param ndefRecordTextPayload textual payload of the ndef record
-		 * \param ndefRecordBinaryPayload binary payload of the ndef record
-		 */
-		void initNFCTagEvent(DOMString type,
-		                     boolean bubbles,
-		                     boolean cancelable,
-		                     ByteArray tagId,
-		                     unsigned short technologyType,
-		                     unsigned short ndefType,
-		                     unsigned short ndefRecType,
-		                     DOMString? ndefRecordTextPayload,
-		                     optional ByteArray ndefRecordBinaryPayload
-		                     );
-								 
-	};
-
-
-	/**
-	 * \brief NFC technology.
-	 *
-	 */
-	[NoInterfaceObject] interface NFCTagTechnology {
-
-		/**
-		 * \brief Constant identifying a non supported technology.
-		 *
-		 */
-		const unsigned short TECH_OTHERS = 0;
-		
-		/**
-		 * \brief Constant identifying a NfcA technology.
-		 *
-		 */
-		const unsigned short TECH_NFCA = 1;
-		
-		/**
-		 * \brief Constant identifying a NfcB technology.
-		 *
-		 */
-		const unsigned short TECH_NFCB = 2;
-		
-		/**
-		 * \brief Constant identifying a NfcF technology.
-		 *
-		 */
-		const unsigned short TECH_NFCF = 3;
-		
-		/**
-		 * \brief Constant identifying a NfcV technology.
-		 *
-		 */
-		const unsigned short TECH_NFCV = 4;
-		
-		/**
-		 * \brief Constant identifying a IsoDep technology.
-		 *
-		 */
-		const unsigned short TECH_ISODEP = 5;
-		
-		/**
-		 * \brief Constant identifying a Ndef technology.
-		 *
-		 */
-		const unsigned short TECH_NDEF = 6;
-		
-		/**
-		 * \brief Type of technology.
-		 *
-		 */
-		readonly attribute unsigned short type;
-		
-		/**
-		 * \brief Attribute indicating if the tag is connected or not.
-		 *
-		 * TODO: check if it is needed.
-		 *
-		 */
-		readonly attribute boolean isConnected;
-		
-		/**
-		 * \brief Connects to the tag.
-		 *
-		 * TODO: check if it is needed.
-		 *
-		 */
-		void connect();
-
-		/**
-		 * \brief Closes connection to the tag.
-		 *
-		 * TODO: check if it is needed.
-		 *
-		 */
-		void close();
-		
-	};
-
-	
-	/**
-	 * \brief Ndef technology.
-	 *
-	 * \code
-	 * window.addEventListener("nfctag", nfcListener, true);
-	 *
-	 * function nfcListener(event)
-	 * {
-	 *   var techSelected = null;
-	 *   var techSupported = event.tag.techList;
-	 *   if(techSupported.length > 0) {
-	 *     for (var index=0; index &lt; techSupported.length; index++) {
-	 *       if(techSupported[index].type == techSupported[index].TECH_NDEF) {
-	 *         techSelected = techSupported[index];
-	 *       }
-	 *     }
-	 *   }
-	 *   // write to the tag
-	 *   if(techSelected) {
-	 *     var newMsg = techSelected.createNdefMessage();
-	 *     newMsg.addTextNdefRecord(newMsg.NDEFRECTYPE_URI, "http://webinos.org");
-	 *     techSelected.writeNdefMessage(wSuccess, wError, newMsg);
-	 *   }
-	 * }
-	 *
-	 * function wSuccess()
-	 * {
-	 *   alert("write successfull");
-	 * }
-	 *
-	 * function wError()
-	 * {
-	 *   alert("write error");
-	 * }
-	 *
-	 * \endcode
-	 *
-	 */
-	[NoInterfaceObject] interface NFCTagTechnologyNdef : NFCTagTechnology {
-	
-		/**
-		 * \brief Constant identifying a non supported Ndef format.
-		 *
-		 */
-		const unsigned short NDEFTYPE_OTHERS = 0;
-		
-		/**
-		 * \brief Constant identifying a Nfc forum type 1 Ndef tag.
-		 *
-		 */
-		const unsigned short NDEFTYPE_NFCFORUMTYPE1 = 1;
-		
-		/**
-		 * \brief Constant identifying a Nfc forum type 2 Ndef tag.
-		 *
-		 */
-		const unsigned short NDEFTYPE_NFCFORUMTYPE2 = 2;
-		
-		/**
-		 * \brief Constant identifying a Nfc forum type 3 Ndef tag.
-		 *
-		 */
-		const unsigned short NDEFTYPE_NFCFORUMTYPE3 = 3;
-		
-		/**
-		 * \brief Constant identifying a Nfc forum type 4 Ndef tag.
-		 *
-		 */
-		const unsigned short NDEFTYPE_NFCFORUMTYPE4 = 4;
-		
-		/**
-		 * \brief Constant identifying a Mifare classic Ndef formatted tag.
-		 *
-		 */
-		const unsigned short NDEFTYPE_MIFARECLASSIC = 5;
-		
-		/**
-		 * \brief Attribute indicating the type of Ndef tag.
-		 *
-		 */
-		readonly attribute unsigned short ndefType;
-		
-		/**
-		 * \brief Attribute indicating if the tag is writable or not.
-		 *
-		 */
-		readonly attribute boolean isWritable;
-		
-		/**
-		 * \brief Attribute indicating the maximum size of Ndef messages.
-		 *
-		 */
-		readonly attribute unsigned long maxNdefMessageSize;
-		
-		/**
-		 * \brief This method makes a tag read-only.
-		 *
-		 * When the operation is fully completed the onsuccess method of the successCallback is called.
-		 * Otherwise, the errorCallback will be invoked with an appropriate error code amongst the following:
-		 * <ul>
-		 * <li>
-		 *  IO_ERR: if the write operation fails.
-		 * <ul>
-		 *
-	     * \param successCallback function to be invoked in case of success.
-	     * \param errorCallback function to be invoked in case of failure.
-		 * \return PendingOperation to cancel the asynchronous call 
-		 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
-		 */
-		PendingOperation makeReadOnly(SuccessCallback successCallback, optional ErrorCallback? errorCallback)
-			raises(NfcException);
-		
-		/**
-		 * \brief Retrieves the Ndef message received at discovery time.
-		 *
-		 * \return The Ndef message received at discovery time.
-		 */
-		NdefMessage readCachedNdefMessage();
-		
-		/**
-		 * \brief This method reads a Ndef message.
-		 *
-		 * When the operation is fully completed the onsuccess method of the successCallback is called.
-		 * Otherwise, the errorCallback will be invoked with an appropriate error code amongst the following:
-		 * <ul>
-		 * <li>
-		 *  IO_ERR: if the read operation fails.
-		 * <ul>
-		 *
-	     * \param successCallback function to be invoked in case of success.
-	     * \param errorCallback function to be invoked in case of failure.
-		 * \return PendingOperation to cancel the asynchronous call 
-		 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
-		 */
-		PendingOperation readNdefMessage(NdefSuccessCallback successCallback, optional ErrorCallback? errorCallback)
-			raises(NfcException);
-		
-		/**
-		 * \brief Writes a Ndef message to the tag.
-		 *
-		 * When the operation is fully completed the onsuccess method of the successCallback is called.
-		 * Otherwise, the errorCallback will be invoked with an appropriate error code amongst the following:
-		 * <ul>
-		 * <li>
-		 *  IO_ERR: if the write operation fails.
-		 * <ul>
-		 *
-	     * \param successCallback function to be invoked in case of success.
-	     * \param errorCallback function to be invoked in case of failure.
-	     * \param message The message to be written.
-		 * \return PendingOperation to cancel the asynchronous call 
-		 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
-		 */
-		PendingOperation writeNdefMessage(SuccessCallback successCallback, ErrorCallback? errorCallback, NdefMessage message)
-			raises(NfcException);
-		
-		/**
-		 * \brief Create a new Ndef message.
-		 *
-		 * \return The new Ndef message; it is empty, that is does not contain ndef records.
-		 */
-		NdefMessage createNdefMessage();
-
-	};
-	
-
-	/**
-	 * \brief Ndef message.
-	 *
-	 */
-	[NoInterfaceObject] interface NdefMessage {
-	
-		/**
-		 * \brief Constant identifying an unknown Ndef record type.
-		 *
-		 */
-		const unsigned short NDEFRECTYPE_UNKNOWN = 0;
-
-		/**
-		 * \brief Constant identifying a uri Ndef record type.
-		 *
-		 */
-		const unsigned short NDEFRECTYPE_URI = 1;
-
-		/**
-		 * \brief Constant identifying a media Ndef record type.
-		 *
-		 */
-		const unsigned short NDEFRECTYPE_MEDIA = 2;
-
-		/**
-		 * \brief Constant identifying an empty Ndef record type.
-		 *
-		 */
-		const unsigned short NDEFRECTYPE_EMPTY = 3;
-
-		/**
-		 * \brief Constant identifying a RTD Ndef record type.
-		 *
-		 */
-		const unsigned short NDEFRECTYPE_RTD = 4;
-
-		/**
-		 * \brief Constant identifying an external RTD Ndef record type.
-		 *
-		 */
-		const unsigned short NDEFRECTYPE_EXTERNALRTD = 5;
-
-		/**
-		 * \brief List of Ndef records.
-		 *
-		 */
-		readonly attribute NdefRecordArray ndefRecords;
-		
-		/**
-		 * \brief Adds a text record to the Ndef message.
-		 *
-		 * TODO add exceptions
-		 *
-		 * \param type The type of the ndef record
-		 * \param payload The text payload of the record
-		 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
-		 */
-		void addTextNdefRecord(unsigned short type, optional DOMString payload)
-			raises(NfcException);
-		
-		/**
-		 * \brief Adds a binary record to the Ndef message.
-		 *
-		 * TODO add exceptions
-		 *
-		 * \param type The type of the ndef record
-		 * \param payload The binary payload of the record
-		 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
-		 */
-		void addBinaryNdefRecord(unsigned short type, ByteArray payload)
-			raises(NfcException);
-		
-	};
-	
-	
-	/**
-	 * \brief Ndef record.
-	 *
-	 * Chunk of records are assembled by the underlying implementation and returned as
-	 * a single Ndef record.
-	 *
-	 */
-	[NoInterfaceObject] interface NdefRecord {
-	
-		/**
-		 * \brief The type of the record.
-		 *
-		 */
-		readonly attribute unsigned short type;
-		
-		/**
-		 * \brief The textual payload of the record.
-		 *
-		 */
-		readonly attribute DOMString textPayload;
-		
-		/**
-		 * \brief The binary payload of the record.
-		 *
-		 */
-		readonly attribute ByteArray binaryPayload;
-		
-	};
-	
-	
-	/**
-	 * \brief Interface for reporting Nfc specific errors.
-	 *
-	 */
-	[NoInterfaceObject] interface NfcError {
-	    
-		/**
-		 * \brief Code assigned when an error has occurred in Nfc API processing.
-		 *
-		 */
-		readonly attribute unsigned short code;
-
-		/**
-		 * \brief Human readable message assigned when an error has occurred in Nfc API processing.
-		 *
-		 */
-		readonly attribute DOMString message;
-
-		/**
-		 * \brief Unknown error.
-		 *
-		 */
-		const unsigned short UNKNOWN_ERR = 0;
-
-		/**
-		 * \brief I/O error.
-		 *
-		 */
-		const unsigned short IO_ERR = 1;
-		
-	};
+                /**
+                 * \brief The identifier of the tag.
+                 *
+                 */
+                readonly attribute ByteArray tagId;
+                
+                /**
+                 * \brief The list of technologies supported by the tag.
+                 *
+                 */
+                readonly attribute NFCTagTechnologyArray techList;
+                
+                /**
+                 * \brief Method to set initial values of NFCTag event.  
+                 *
+                 * The initNFCTagEvent() method must initialize the event in a manner analogous to the initEvent() method in http://www.w3.org/TR/2010/WD-DOM-Level-3-Events-20100907/.
+                 * The method can for example be used with document.createEvent() and EventTarget.dispatchEvent() to simulate a specific event.
+                 * At the moment it should simulate a read only ndef Tag containing a ndefMessage that includes a single ndefRecord.
+                 *   
+                 * \param type Event type i.e. 'sensor'
+                 * \param bubbles True if event bubbles
+                 * \param cancelable True if event cancelable
+                 * \param tagId id of the tag
+                 * \param technologyType type of technology supported by the tag; at the moment it must be ndef.
+                 * \param ndefType type of ndef supported (see constants defined in NFCTagTechnologyNdef)
+                 * \param ndefRecType type of ndef record (see constants defined in NdefMessage)
+                 * \param ndefRecordTextPayload textual payload of the ndef record
+                 * \param ndefRecordBinaryPayload binary payload of the ndef record
+                 */
+                void initNFCTagEvent(DOMString type,
+                                     boolean bubbles,
+                                     boolean cancelable,
+                                     ByteArray tagId,
+                                     unsigned short technologyType,
+                                     unsigned short ndefType,
+                                     unsigned short ndefRecType,
+                                     DOMString? ndefRecordTextPayload,
+                                     optional ByteArray ndefRecordBinaryPayload
+                                     );
+                                                                 
+        };
 
 
-	/*
-	 * \brief The NfcException
-	 *
-	 */
-	exception NfcException {
+        /**
+         * \brief NFC technology.
+         *
+         */
+        [NoInterfaceObject] interface NFCTagTechnology {
 
-		/**
-		 * \brief Unknown error.
-		 *
-		 */
-		const unsigned short UNKNOWN_ERR = 0;
+                /**
+                 * \brief Constant identifying a non supported technology.
+                 *
+                 */
+                const unsigned short TECH_OTHERS = 0;
+                
+                /**
+                 * \brief Constant identifying a NfcA technology.
+                 *
+                 */
+                const unsigned short TECH_NFCA = 1;
+                
+                /**
+                 * \brief Constant identifying a NfcB technology.
+                 *
+                 */
+                const unsigned short TECH_NFCB = 2;
+                
+                /**
+                 * \brief Constant identifying a NfcF technology.
+                 *
+                 */
+                const unsigned short TECH_NFCF = 3;
+                
+                /**
+                 * \brief Constant identifying a NfcV technology.
+                 *
+                 */
+                const unsigned short TECH_NFCV = 4;
+                
+                /**
+                 * \brief Constant identifying a IsoDep technology.
+                 *
+                 */
+                const unsigned short TECH_ISODEP = 5;
+                
+                /**
+                 * \brief Constant identifying a Ndef technology.
+                 *
+                 */
+                const unsigned short TECH_NDEF = 6;
+                
+                /**
+                 * \brief Type of technology.
+                 *
+                 */
+                readonly attribute unsigned short type;
+                
+                /**
+                 * \brief Attribute indicating if the tag is connected or not.
+                 *
+                 * TODO: check if it is needed.
+                 *
+                 */
+                readonly attribute boolean isConnected;
+                
+                /**
+                 * \brief Connects to the tag.
+                 *
+                 * TODO: check if it is needed.
+                 *
+                 */
+                void connect();
 
-		/**
-		 * \brief An invalid parameter was provided when the requested method was invoked.
-		 *
-		 */
-		const unsigned short INVALID_ARGUMENT_ERR	= 1;
+                /**
+                 * \brief Closes connection to the tag.
+                 *
+                 * TODO: check if it is needed.
+                 *
+                 */
+                void close();
+                
+        };
 
-		/**
-	     * \brief Error code.
-		 * 
-		 */	
-		unsigned short code;
+        
+        /**
+         * \brief Ndef technology.
+         *
+         * \code
+         * window.addEventListener("nfctag", nfcListener, true);
+         *
+         * function nfcListener(event)
+         * {
+         *   var techSelected = null;
+         *   var techSupported = event.tag.techList;
+         *   if(techSupported.length > 0) {
+         *     for (var index=0; index &lt; techSupported.length; index++) {
+         *       if(techSupported[index].type == techSupported[index].TECH_NDEF) {
+         *         techSelected = techSupported[index];
+         *       }
+         *     }
+         *   }
+         *   // write to the tag
+         *   if(techSelected) {
+         *     var newMsg = techSelected.createNdefMessage();
+         *     newMsg.addTextNdefRecord(newMsg.NDEFRECTYPE_URI, "http://webinos.org");
+         *     techSelected.writeNdefMessage(wSuccess, wError, newMsg);
+         *   }
+         * }
+         *
+         * function wSuccess()
+         * {
+         *   alert("write successfull");
+         * }
+         *
+         * function wError()
+         * {
+         *   alert("write error");
+         * }
+         *
+         * \endcode
+         *
+         */
+        [NoInterfaceObject] interface NFCTagTechnologyNdef : NFCTagTechnology {
+        
+                /**
+                 * \brief Constant identifying a non supported Ndef format.
+                 *
+                 */
+                const unsigned short NDEFTYPE_OTHERS = 0;
+                
+                /**
+                 * \brief Constant identifying a Nfc forum type 1 Ndef tag.
+                 *
+                 */
+                const unsigned short NDEFTYPE_NFCFORUMTYPE1 = 1;
+                
+                /**
+                 * \brief Constant identifying a Nfc forum type 2 Ndef tag.
+                 *
+                 */
+                const unsigned short NDEFTYPE_NFCFORUMTYPE2 = 2;
+                
+                /**
+                 * \brief Constant identifying a Nfc forum type 3 Ndef tag.
+                 *
+                 */
+                const unsigned short NDEFTYPE_NFCFORUMTYPE3 = 3;
+                
+                /**
+                 * \brief Constant identifying a Nfc forum type 4 Ndef tag.
+                 *
+                 */
+                const unsigned short NDEFTYPE_NFCFORUMTYPE4 = 4;
+                
+                /**
+                 * \brief Constant identifying a Mifare classic Ndef formatted tag.
+                 *
+                 */
+                const unsigned short NDEFTYPE_MIFARECLASSIC = 5;
+                
+                /**
+                 * \brief Attribute indicating the type of Ndef tag.
+                 *
+                 */
+                readonly attribute unsigned short ndefType;
+                
+                /**
+                 * \brief Attribute indicating if the tag is writable or not.
+                 *
+                 */
+                readonly attribute boolean isWritable;
+                
+                /**
+                 * \brief Attribute indicating the maximum size of Ndef messages.
+                 *
+                 */
+                readonly attribute unsigned long maxNdefMessageSize;
+                
+                /**
+                 * \brief This method makes a tag read-only.
+                 *
+                 * When the operation is fully completed the onsuccess method of the successCallback is called.
+                 * Otherwise, the errorCallback will be invoked with an appropriate error code amongst the following:
+                 * <ul>
+                 * <li>
+                 *  IO_ERR: if the write operation fails.
+                 * <ul>
+                 *
+                 * Throws NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
+                 *
+             * \param successCallback function to be invoked in case of success.
+             * \param errorCallback function to be invoked in case of failure.
+                 * \return PendingOperation to cancel the asynchronous call 
+                 */
+                PendingOperation makeReadOnly(SuccessCallback successCallback, optional ErrorCallback? errorCallback);
+                
+                /**
+                 * \brief Retrieves the Ndef message received at discovery time.
+                 *
+                 * \return The Ndef message received at discovery time.
+                 */
+                NdefMessage readCachedNdefMessage();
+                
+                /**
+                 * \brief This method reads a Ndef message.
+                 *
+                 * When the operation is fully completed the onsuccess method of the successCallback is called.
+                 * Otherwise, the errorCallback will be invoked with an appropriate error code amongst the following:
+                 * <ul>
+                 * <li>
+                 *  IO_ERR: if the read operation fails.
+                 * <ul>
+                 *
+                 * Throws NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
+                 *
+             * \param successCallback function to be invoked in case of success.
+             * \param errorCallback function to be invoked in case of failure.
+                 * \return PendingOperation to cancel the asynchronous call 
+                 */
+                PendingOperation readNdefMessage(NdefSuccessCallback successCallback, optional ErrorCallback? errorCallback);
+                
+                /**
+                 * \brief Writes a Ndef message to the tag.
+                 *
+                 * When the operation is fully completed the onsuccess method of the successCallback is called.
+                 * Otherwise, the errorCallback will be invoked with an appropriate error code amongst the following:
+                 * <ul>
+                 * <li>
+                 *  IO_ERR: if the write operation fails.
+                 * <ul>
+                 *
+                 * Throws NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
+                 *
+             * \param successCallback function to be invoked in case of success.
+             * \param errorCallback function to be invoked in case of failure.
+             * \param message The message to be written.
+                 * \return PendingOperation to cancel the asynchronous call 
+                 */
+                PendingOperation writeNdefMessage(SuccessCallback successCallback, ErrorCallback? errorCallback, NdefMessage message);                        
+                
+                /**
+                 * \brief Create a new Ndef message.
+                 *
+                 * \return The new Ndef message; it is empty, that is does not contain ndef records.
+                 */
+                NdefMessage createNdefMessage();
 
-		/**
-	     * \brief Error message.
-		 * 
-		 */	
-		DOMString message;
+        };
+        
 
-	};
-	
-	
-	/**
-	 * \brief Callback to be invoked in case of success.
-	 *
-	 */
-	[Callback=FunctionOnly, NoInterfaceObject] interface SuccessCallback {
-		void onsuccess();
-	};
+        /**
+         * \brief Ndef message.
+         *
+         */
+        [NoInterfaceObject] interface NdefMessage {
+        
+                /**
+                 * \brief Constant identifying an unknown Ndef record type.
+                 *
+                 */
+                const unsigned short NDEFRECTYPE_UNKNOWN = 0;
 
-	/**
-	 * \brief Callback to be invoked when an error occurs.
-	 *
-	 */
-	[Callback=FunctionOnly, NoInterfaceObject] interface ErrorCallback {
-		void onError(NfcError error);
-	};
+                /**
+                 * \brief Constant identifying a uri Ndef record type.
+                 *
+                 */
+                const unsigned short NDEFRECTYPE_URI = 1;
 
-	/**
-	 * \brief Callback to be invoked when reading a Ndef message.
-	 *
-	 */
-	[Callback=FunctionOnly, NoInterfaceObject] interface NdefSuccessCallback {
-		void onSuccess(NdefMessage obj);
-	};
-	
-};
+                /**
+                 * \brief Constant identifying a media Ndef record type.
+                 *
+                 */
+                const unsigned short NDEFRECTYPE_MEDIA = 2;
+
+                /**
+                 * \brief Constant identifying an empty Ndef record type.
+                 *
+                 */
+                const unsigned short NDEFRECTYPE_EMPTY = 3;
+
+                /**
+                 * \brief Constant identifying a RTD Ndef record type.
+                 *
+                 */
+                const unsigned short NDEFRECTYPE_RTD = 4;
+
+                /**
+                 * \brief Constant identifying an external RTD Ndef record type.
+                 *
+                 */
+                const unsigned short NDEFRECTYPE_EXTERNALRTD = 5;
+
+                /**
+                 * \brief List of Ndef records.
+                 *
+                 */
+                readonly attribute NdefRecordArray ndefRecords;
+                
+                /**
+                 * \brief Adds a text record to the Ndef message.
+                 *
+                 * TODO add exceptions
+                 *
+                 * Throws NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
+                 *
+                 * \param type The type of the ndef record
+                 * \param payload The text payload of the record
+                 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
+                 */
+                void addTextNdefRecord(unsigned short type, optional DOMString payload);
+                
+                /**
+                 * \brief Adds a binary record to the Ndef message.
+                 *
+                 * TODO add exceptions
+                 *
+                 * Throws NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
+                 *
+                 * \param type The type of the ndef record
+                 * \param payload The binary payload of the record
+                 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
+                 */
+                void addBinaryNdefRecord(unsigned short type, ByteArray payload);
+                
+        };
+        
+        
+        /**
+         * \brief Ndef record.
+         *
+         * Chunk of records are assembled by the underlying implementation and returned as
+         * a single Ndef record.
+         *
+         */
+        [NoInterfaceObject] interface NdefRecord {
+        
+                /**
+                 * \brief The type of the record.
+                 *
+                 */
+                readonly attribute unsigned short type;
+                
+                /**
+                 * \brief The textual payload of the record.
+                 *
+                 */
+                readonly attribute DOMString textPayload;
+                
+                /**
+                 * \brief The binary payload of the record.
+                 *
+                 */
+                readonly attribute ByteArray binaryPayload;
+                
+        };
+        
+        
+        /**
+         * \brief Interface for reporting Nfc specific errors.
+         *
+         */
+        [NoInterfaceObject] interface NfcError {
+            
+                /**
+                 * \brief Code assigned when an error has occurred in Nfc API processing.
+                 *
+                 */
+                readonly attribute unsigned short code;
+
+                /**
+                 * \brief Human readable message assigned when an error has occurred in Nfc API processing.
+                 *
+                 */
+                readonly attribute DOMString message;
+
+                /**
+                 * \brief Unknown error.
+                 *
+                 */
+                const unsigned short UNKNOWN_ERR = 0;
+
+                /**
+                 * \brief I/O error.
+                 *
+                 */
+                const unsigned short IO_ERR = 1;
+                
+        };
+
+
+        /*
+         * \brief The NfcException
+         *
+         */
+        exception NfcException {
+
+                /**
+                 * \brief Unknown error.
+                 *
+                 */
+                const unsigned short UNKNOWN_ERR = 0;
+
+                /**
+                 * \brief An invalid parameter was provided when the requested method was invoked.
+                 *
+                 */
+                const unsigned short INVALID_ARGUMENT_ERR       = 1;
+
+                /**
+             * \brief Error code.
+                 * 
+                 */     
+                unsigned short code;
+
+                /**
+             * \brief Error message.
+                 * 
+                 */     
+                DOMString message;
+
+        };
+        
+        
+        /**
+         * \brief Callback to be invoked in case of success.
+         *
+         */
+        [Callback=FunctionOnly, NoInterfaceObject] interface SuccessCallback {
+                void onsuccess();
+        };
+
+        /**
+         * \brief Callback to be invoked when an error occurs.
+         *
+         */
+        [Callback=FunctionOnly, NoInterfaceObject] interface ErrorCallback {
+                void onError(NfcError error);
+        };
+
+        /**
+         * \brief Callback to be invoked when reading a Ndef message.
+         *
+         */
+        [Callback=FunctionOnly, NoInterfaceObject] interface NdefSuccessCallback {
+                void onSuccess(NdefMessage obj);
+        };
+        
 
