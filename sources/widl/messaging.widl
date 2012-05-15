@@ -190,16 +190,16 @@
    * deviceapis.messaging.sendMessage(messageSent, messageFailed, msg);
    * \endcode
    *
+   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
+   *
    * \param successCallback To be invoked if the message is successfully sent. 
    * \param errorCallback To be invoked in case the sending request fails. 
    * \param message The message to be sent. 
    * \return PendingOperation to cancel the asynchronous call 
-   * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */                          
     PendingOperation sendMessage(SuccessCallback successCallback, 
                                  ErrorCallback errorCallback, 
                                  Message message);
-                                 // raises(DeviceAPIError);
  
                                  
    /**
@@ -231,17 +231,17 @@
    *   msg);
    * \endcode
    *
+   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
+   * 
    * \param successCallback function called when the invocation ends successfully. 
    * \param errorCallback function called when an error occurs 
    * \param filter message data to be used when filtering 
    * \return PendingOperation to cancel the asynchronous call 
-   * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */                          
 
     PendingOperation findMessages(FindMessagesSuccessCallback successCallback, 
                                   optional ErrorCallback errorCallback,
                                   optional MessageFilter filter);
-                                  //raises(DeviceAPIError);                          
   
    /**
    * \brief Registers the function to be notified on incoming new SMSs 
@@ -291,15 +291,15 @@
    * }
    * \endcode
    *
+   * Throws DeviceAPIError SECURITY_ERR if this operation is not allowed. 
+   * Throws DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
+   * Throws DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
+   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
+   *
    * \param messageHandler The function to be invoked on incoming MMSs 
    * \return Subscription identifier 
-   * \throw DeviceAPIError SECURITY_ERR if this operation is not allowed. 
-   * \throw DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
-   * \throw DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
-   * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */                          
     unsigned long onMMS(OnIncomingMessage messageHandler) ;
-                       // raises(DeviceAPIError);
 
    /**
    * \brief Registers the function to be notified on incoming new Email
