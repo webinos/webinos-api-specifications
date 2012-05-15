@@ -512,8 +512,8 @@
    */         
     
     PendingOperation update(UpdateMessageSuccessCallback successCallback, 
-                            optional ErrorCallback errorCallback);
-                           // raises(DeviceAPIError);
+                            optional ErrorCallback errorCallback)
+                            raises(DeviceAPIError);
   };
   Message implements Synchronisable;
 
