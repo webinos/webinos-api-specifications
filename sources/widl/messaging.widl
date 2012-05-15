@@ -1,4 +1,4 @@
-/** <p>This API provides SMS, MMS, Email and InstantMessaging sending, receiving and searching functionality.</p> 
+/**<p> This API provides SMS, MMS, Email and InstantMessaging sending, receiving and searching functionality.</p> 
  * \name Messaging API
  *
  * The messaging API provides access to the following capabilities:
