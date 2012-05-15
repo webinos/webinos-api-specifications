@@ -262,15 +262,16 @@
    *  }
    * \endcode
    *
+   * Throws DeviceAPIError SECURITY_ERR if this operation is not allowed. 
+   * Throws DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
+   * Throws DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
+   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
+   *
    * \param messageHandler The function to be invoked on incoming SMSs 
    * \return Subscription identifier 
-   * \throw DeviceAPIError SECURITY_ERR if this operation is not allowed. 
-   * \throw DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
-   * \throw DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
-   * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */                          
     unsigned long onSMS(OnIncomingMessage messageHandler);
-                        //raises(DeviceAPIError);
+                     
 
    /**
    * \brief Registers the function to be notified on incoming new MMSs 
