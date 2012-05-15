@@ -8,6 +8,7 @@
  * *
  * \author W3C Editor's Draft 04 November 2010
  * \author WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
+ * \author Update to new WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
  * \version 1.0
  * 
  */
@@ -137,7 +138,7 @@
    *
    * No exceptions.
    */    
-    caller PendingOp find (DOMString[] fields, GalleryFindCB successCB, optional GalleryErrorCB errorCB, optional GalleryFindOptions options);
+     PendingOp find (DOMString[] fields, GalleryFindCB successCB, optional GalleryErrorCB errorCB, optional GalleryFindOptions options);
    /**
    * \brief Retrieve all galleries from available sources(e.g. device local memory, external memory and even Fliker, Facebook, etc.) according to the retrieve process detailed below.
    * 
@@ -155,7 +156,7 @@
    *
    * No exceptions.
    */     
-   caller PendingOp getGalleries (GalleryInfoCB successCB, optional GalleryErrorCB errorCB);
+    PendingOp getGalleries (GalleryInfoCB successCB, optional GalleryErrorCB errorCB);
 };
 
  /**
