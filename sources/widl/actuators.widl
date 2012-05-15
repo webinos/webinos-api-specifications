@@ -138,7 +138,7 @@
         
         /**
         * \brief This interface defines an abstract class representing the range of the actuator values. 
-        * The actuator range can be an interval (e.g. temperature is in interval [0°C,27°C]) or a set of 
+        * The actuator range can be an interval (e.g. temperature is in interval [0&deg;C,27&deg;C]) or a set of 
         * valid values (e.g. a switch accepts only the values {0,1} representing the ON and OFF state). 
         */ 
         interface ActuatorRange {
