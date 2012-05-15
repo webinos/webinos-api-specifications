@@ -121,6 +121,12 @@
                  *         and an identifier (id attribute) is not assigned to the contact. 
                  *         The addContact method performs these tasks when invoked by the developer.                                    
                  *
+                 * \code
+                 * var contact = contacts.createContact({
+                 *         firstName: "John",
+                 *         lastName: "Doe"
+                 * });                        
+                 * \endcode
                  *
                  * \param contactProps The property to initially apply to the created contact
                  * \return  Contact The contact that was created
@@ -151,7 +157,7 @@
                 *         lastName: "Doe"
                 * });
                 * 
-                * book.addContact(successwrite, error, contact);
+                * contacts.addContact(successwrite, error, contact);
                 * 
                 * 
                 * var successwrite = function(contact) {
@@ -196,7 +202,33 @@
                 *         if the developer has not passed a valid ErrorCallback (e.g. it is null 
                 *         or undefined), no action is required (i.e. he error is not notified 
                 *         to the developer). 
-                *
+                * \code
+                *  contacts.findContacts(toUpdate, errorCallback, {
+                *                          firstName: '%John%',
+                *                          lastName: '%Doe%'
+                *                  });
+                *  
+                *  function toUpdate(contactlist) {
+                *          if (contactlist.length > 0) {
+                *                  for (i = 0; i < contactlist.length; i++) {
+                *                          contactlist[i].nicknames = ["Jonny"];
+                *                          contacts.updateContact(contactUpdatedCB, errorCallback, contactlist[i]);
+                *                  }
+                *          } else {
+                *                  alert("No contact with the name 'John Doe' could be found");
+                *          }
+                *  }
+                *  
+                *  function contactUpdatedCB() {
+                *          // The contact has been successfully updated
+                *          alert("Contact 'John Doe' Successfully updated");
+                *  }
+                *  
+                *  function errorCallback(response) {
+                *          alert("The following error occurred: " + response.code);
+                *  }
+                * \endcode
+                *   
                 * \param successCB Function to call when the asynchronous operation completes successfully.
                 * \param errorCB Function to call when the asynchronous operation fails.
                 * \param contact The contact to update in the contacts list.                                 
