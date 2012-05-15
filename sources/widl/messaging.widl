@@ -130,8 +130,8 @@
    * \throw DeviceAPIError INVALID_VALUES_ERR if the input parameter contains an invalid value. 
    * \throw DeviceAPIError TYPE_MISMATCH_ERR if the input parameter is not compatible with the expected type for that parameter. 
    */
-    Message createMessage(short type)
-                          raises(DeviceAPIError);
+    Message createMessage(short type);
+                          // raises(DeviceAPIError);
 
    /**
    * \brief Attempt to send the specified message. 
@@ -197,8 +197,8 @@
    */                          
     PendingOperation sendMessage(SuccessCallback successCallback, 
                                  ErrorCallback errorCallback, 
-                                 Message message)
-                                 raises(DeviceAPIError);
+                                 Message message);
+                                 // raises(DeviceAPIError);
  
                                  
    /**
@@ -239,8 +239,8 @@
 
     PendingOperation findMessages(FindMessagesSuccessCallback successCallback, 
                                   optional ErrorCallback errorCallback,
-                                  optional MessageFilter filter)
-                                  raises(DeviceAPIError);                          
+                                  optional MessageFilter filter);
+                                  //raises(DeviceAPIError);                          
   
    /**
    * \brief Registers the function to be notified on incoming new SMSs 
@@ -268,8 +268,8 @@
    * \throw DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
    * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */                          
-    unsigned long onSMS(OnIncomingMessage messageHandler)
-                        raises(DeviceAPIError);
+    unsigned long onSMS(OnIncomingMessage messageHandler);
+                        //raises(DeviceAPIError);
 
    /**
    * \brief Registers the function to be notified on incoming new MMSs 
@@ -297,8 +297,8 @@
    * \throw DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
    * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */                          
-    unsigned long onMMS(OnIncomingMessage messageHandler) 
-                        raises(DeviceAPIError);
+    unsigned long onMMS(OnIncomingMessage messageHandler) ;
+                       // raises(DeviceAPIError);
 
    /**
    * \brief Registers the function to be notified on incoming new Email
@@ -330,8 +330,8 @@
    * \throw DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
    * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */                          
-    unsigned long onEmail(OnIncomingMessage messageHandler) 
-                          raises(DeviceAPIError);
+    unsigned long onEmail(OnIncomingMessage messageHandler) ;
+                         // raises(DeviceAPIError);
    
    /**                       
    * \brief Registers the function to be notified on incoming new Instant Message
@@ -363,8 +363,8 @@
    * \throw DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
    * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */         
-    unsigned long onIM(OnIncomingMessage messageHandler) 
-                          raises(DeviceAPIError);
+    unsigned long onIM(OnIncomingMessage messageHandler) ;
+                         // raises(DeviceAPIError);
 
    /**                       
    * \brief Cancels a messaging subscription 
@@ -375,8 +375,8 @@
    * \return void
    * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */         
-    void unsubscribe(unsigned long subscriptionHandler)
-                     raises(DeviceAPIError);
+    void unsubscribe(unsigned long subscriptionHandler);
+                     // raises(DeviceAPIError);
 
   };
 
@@ -512,8 +512,8 @@
    */         
     
     PendingOperation update(UpdateMessageSuccessCallback successCallback, 
-                            optional ErrorCallback errorCallback)
-                            raises(DeviceAPIError);
+                            optional ErrorCallback errorCallback);
+                           // raises(DeviceAPIError);
   };
   Message implements Synchronisable;
 
