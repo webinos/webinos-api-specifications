@@ -152,7 +152,8 @@
         * is not limited
         */
         //[Constructor(float minValue), Constructor(float minValue,float maxValue)]
-        interface Interval: ActuatorRange {
+        //interface Interval: ActuatorRange {
+        interface  ActuatorRange {
                 /**
                 * \brief Min range of actuator in the actuator unit.
                 * undefined min value means that the lower bound is not limited
