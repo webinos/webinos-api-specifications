@@ -54,6 +54,10 @@
            */
             const unsigned short NOT_SUPPORTED_ERROR = 5;
            /**
+           * \brief An invalid value was provided when the requested method was invoked.
+           */
+            const unsigned short INVALID_VALUES_ERROR = 6;
+           /**
            * \brief Access to the requested information was denied by the implementation or by the user.
            */
             const unsigned short PERMISSION_DENIED_ERROR = 20;
@@ -164,7 +168,7 @@
                 *         successCallback, the contact has any invalid value or the address book has some restrictions 
                 *         that cause the attempted insertion of the contact item to fail (e.g. limitations in the size 
                 *         of text attributes), the implementation MUST reject the request and invoke the errorCallback 
-                *         with a DOMException and code INVALID_VALUES_ERR. Please note that in order to allow developer 
+                *         with a DOMException and code INVALID_VALUES_ERROR. Please note that in order to allow developer 
                 *         ignore errors errorCallback accepts null as a valid value.
                 *         
                 *         If the contact is successfully added to the Address Book, the successCallback
@@ -190,7 +194,7 @@
                 *         successCallback, the contact has any invalid value or the address book has some restrictions 
                 *         that cause the attempted insertion of the contact item to fail (e.g. limitations in the size 
                 *         of text attributes), the implementation MUST reject the request and invoke the errorCallback 
-                *         with a DOMException and code INVALID_VALUES_ERR. Please note that in order to allow developer 
+                *         with a DOMException and code INVALID_VALUES_ERROR. Please note that in order to allow developer 
                 *         ignore errors errorCallback accepts null as a valid value.
                 *         
                 *         If the id attribute does not correspond to the id attribute of any contact in the address book, 
