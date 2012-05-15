@@ -1,7 +1,6 @@
 
 /**<p>This API provides access to a user unified address book.</p> 
  * \name Contacts API
- * \brief This  API provides access to a user unified address book.
  *
  *
  * The Contacts API defines the high-level interfaces required to obtain access to a user's unified address book.
