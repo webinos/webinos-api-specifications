@@ -324,15 +324,16 @@
    *  myEmailListener = deviceapis.messaging.onEmail(incomingEmail);    
    * \endcode
    *
+   * Throws DeviceAPIError SECURITY_ERR if this operation is not allowed. 
+   * Throws DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
+   * Throws DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
+   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
+   *
    * \param messageHandler he function to be invoked on incoming emails 
    * \return Subscription identifier 
-   * \throw DeviceAPIError SECURITY_ERR if this operation is not allowed. 
-   * \throw DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
-   * \throw DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
-   * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */                          
     unsigned long onEmail(OnIncomingMessage messageHandler) ;
-                         // raises(DeviceAPIError);
+                        
    
    /**                       
    * \brief Registers the function to be notified on incoming new Instant Message
@@ -357,28 +358,27 @@
    *  myIMistener = deviceapis.messaging.onIM(incomingIM);    
    * \endcode
    *
+   * Throws DeviceAPIError SECURITY_ERR if this operation is not allowed. 
+   * Throws DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
+   * Throws DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
+   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
+   *
    * \param messageHandler he function to be invoked on incoming instant message 
    * \return Subscription identifier 
-   * \throw DeviceAPIError SECURITY_ERR if this operation is not allowed. 
-   * \throw DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
-   * \throw DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
-   * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */         
     unsigned long onIM(OnIncomingMessage messageHandler) ;
-                         // raises(DeviceAPIError);
 
    /**                       
    * \brief Cancels a messaging subscription 
    *
    * If the subscriptionHandler argument is valid and corresponds to a subscription already in place the subscription process MUST immediately stop and no further message notifications MUST be invoked. If the subscriptionHandler argument does not correspond to a valid subscription, the method should return without any further action. 
    *
+   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
+   *
    * \param subscriptionHandler identifier of the subscription returned by the onSMS(), onMMS(), onEmail() or onIM() methods. 
    * \return void
-   * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */         
-    void unsubscribe(unsigned long subscriptionHandler);
-                     // raises(DeviceAPIError);
-
+    void unsubscribe(unsigned long subscriptionHandler);                   
   };
 
    /**                       
