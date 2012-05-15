@@ -249,7 +249,7 @@
                 *                          lastName: '%Doe%'
                 *                  });
                 *  
-                *  function toUpdate(contactlist) {
+                *  function toDelete(contactlist) {
                 *          if (contactlist.length > 0) {
                 *                  for (i = 0; i < contactlist.length; i++) {
                 *                          contactlist[i].nicknames = ["Jonny"];
@@ -299,6 +299,26 @@
                  *    as specified above, if the developer has not passed a valid
                  *    ErrorCallback (e.g. it is null or undefined), no action is 
                  *    required and the developer is not notified of the error.    
+                 *
+                 * \code
+                 *  contacts.findContacts(findSuccess, errorCallback, {
+                 *                          firstName: '%John%',
+                 *                          lastName: '%Doe%'
+                 *                  });
+                 *  
+                 *  function findSuccess(contactlist) {
+                 *          if (contactlist.length > 0) {
+                 *                     alert(contactlist.length+" contacts with the name 'John Doe' found");
+                 *                  }
+                 *          } else {
+                 *                  alert("No contact with the name 'John Doe' could be found");
+                 *          }
+                 *  }
+                 *  
+                 *  function errorCallback(response) {
+                 *          alert("The following error occurred: " + response.code);
+                 *  }
+                 * \endcode
                  *
                  * \param successCB Function to call when the asynchronous operation completes successfully.
                  * \param errorCB Function to call when the asynchronous operation fails.
