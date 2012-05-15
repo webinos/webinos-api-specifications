@@ -11,9 +11,13 @@
  *    A Contacts interface, which provides the method needed to access a user's unified address book.
  *    A Contact interface, which captures the individual contact information that can be returned following a successful read operation.
  *
- * Note that while the W3C version, on which this specification is based on, provides only the ServiceContacts
- * to retrieve contacts, webinos contacts can also be retrieved using the findServices method of the
- * Service Discovery API.
+ * The webinos Contacts API combines features from the WAC and the W3C contact APIs.
+ * 
+ * The format of an individual contact is mostly taken from W3C, since it contains more information
+ * than the WAC version.
+ *
+ * The available functtions on the Contacts are mostly taken from the WAC specification, since they
+ * provide write functionality for contacts.
  * 
  * \def-api-feature http://www.w3.org/ns/api-perms/contacts.read 
  * Read access to the address book.
@@ -96,36 +100,6 @@
         [NoInterfaceObject]
         interface Contacts {
         
-                 /**
-                 * \brief The findContacts() method returns an array of all Contacts that match the optionally supplied filter.
-                 *    
-                 *    If the filter is passed and contains valid values, only those values  
-                 *    that match the filter criteria as specified in the ContactFilter 
-                 *    interface will be returned in the successCallback. If no filter is 
-                 *    passed, the filter contains any invalid values, the filter is null 
-                 *    or undefined, then the implementation MUST return the full list of 
-                 *    contact items in the successCallback. 
-                 *    
-                 *    If no contacts are available or no contact matches the filter criteria, 
-                 *    the successCallback will be invoked with an empty array.
-                 *    
-                 *    If any other error occurs while trying to retrieve the contacts, 
-                 *    the errorCallback function that was passed in the invocation MUST 
-                 *    be called, passing a DOMException object with code UNKNOWN_ERROR.
-                 *    
-                 *    In any of the above cases where the errorCallback should be invoked, 
-                 *    as specified above, if the developer has not passed a valid
-                 *    ErrorCallback (e.g. it is null or undefined), no action is 
-                 *    required and the developer is not notified of the error.    
-                 *
-                 * \param successCB Function to call when the asynchronous operation completes successfully.
-                 * \param errorCB Function to call when the asynchronous operation fails.
-                 * \param filter The search qualifier.                         
-                 * \return  void                 
-                 */
-                 
-                void findContacts(ContactFindCB successCB, optional ContactErrorCB errorCB, optional ContactFilter? filter);
-
                  /**
                  * \brief The createContact() method creates an object that implements the Contact interface. 
                  *
@@ -225,6 +199,36 @@
                 * \return  void                 
                 */
                 void deleteContact(ContactDeleteSuccessCB successCB, ContactErrorCB errorCB, DOMString id);          
+                 /**
+                 * \brief The findContacts() method returns an array of all Contacts that match the optionally supplied filter.
+                 *    
+                 *    If the filter is passed and contains valid values, only those values  
+                 *    that match the filter criteria as specified in the ContactFilter 
+                 *    interface will be returned in the successCallback. If no filter is 
+                 *    passed, the filter contains any invalid values, the filter is null 
+                 *    or undefined, then the implementation MUST return the full list of 
+                 *    contact items in the successCallback. 
+                 *    
+                 *    If no contacts are available or no contact matches the filter criteria, 
+                 *    the successCallback will be invoked with an empty array.
+                 *    
+                 *    If any other error occurs while trying to retrieve the contacts, 
+                 *    the errorCallback function that was passed in the invocation MUST 
+                 *    be called, passing a DOMException object with code UNKNOWN_ERROR.
+                 *    
+                 *    In any of the above cases where the errorCallback should be invoked, 
+                 *    as specified above, if the developer has not passed a valid
+                 *    ErrorCallback (e.g. it is null or undefined), no action is 
+                 *    required and the developer is not notified of the error.    
+                 *
+                 * \param successCB Function to call when the asynchronous operation completes successfully.
+                 * \param errorCB Function to call when the asynchronous operation fails.
+                 * \param filter The search qualifier.                         
+                 * \return  void                 
+                 */
+                 
+                void findContacts(ContactFindCB successCB, optional ContactErrorCB errorCB, optional ContactFilter? filter);
+
         
         };
   
