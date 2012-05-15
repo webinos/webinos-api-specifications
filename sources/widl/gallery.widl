@@ -1,6 +1,5 @@
-
-/**
- * \brief W3C based Gallery API interface.
+/**<p> This specification defines an API that provides access to the media items stored in the device gallery.</p> 
+ * \name W3C based Gallery API interface.
  *
  * This specification provides a wrapper that mandates the use of the
  * <a href="http://dev.w3.org/2009/dap/gallery/">W3C Gallery API </a> (Editor's draft 4 November 2010) that  provides access to media gallery located on the device. 
@@ -12,8 +11,6 @@
  * \version 1.0
  * 
  */
- 
-module gallery {
 
 /**
  * \code
@@ -522,4 +519,3 @@ module gallery {
     readonly attribute unsigned short code;
 };
 
-};
