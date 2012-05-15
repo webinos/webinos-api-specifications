@@ -151,7 +151,7 @@
         * if the min/max value is undefined means that the lower/upper bound of actuator values 
         * is not limited
         */
-        interface  ActuatorRange {
+        interface ActuatorRange1 {
                 /**
                 * \brief Min range of actuator in the actuator unit.
                 * undefined min value means that the lower bound is not limited
