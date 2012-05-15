@@ -1,178 +1,179 @@
-/**
- * \brief The webinos userprofile API to access user information.
+/**<p> This API offers access to information of the user.</p> 
+ * \name The webinos userprofile API to access user information.
  *
- * This API offers access to information of the user. UserProfile API is an extension of webinos Contact API to gather basic information about the user (e.g. name, nickname, gender, birthday, etc.) and extends it with social network attributes from Portablecontacts from August 5, 2008 (http://portablecontacts.net/draft-spec.html). These social network attributes are a simple pointer where the webinos user has non-webinos profiles. These information could be used by an application to query an external API for an additional information (e.g. query the Facebook Graph API for the buddylist).
+ * This API offers access to information of the user. UserProfile API is an extension of webinos Contact API to gather basic information about the user (e.g. name, nickname, gender, birthday, etc.) and extends it with social network attributes from Portablecontacts from August 5, 2008 (http://portablecontacts.net/draft-spec.html). These social network attributes are a simple pointer where the webinos user has non-webinos profiles. These information could be used by an application to query an external API f
+or an additional information (e.g. query the Facebook Graph API for the buddylist).
  *
  * \def-api-feature http://webinos.org/api/userprofile
  * \author WIDL version for webinos created by Ronny Gr&auml;fe &lt;ronny.graefe@t-systems.com&gt;
- * \version 0.3 
+ * \author Version for new WIDL by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
+ * \version 0.4
  */
-module userprofile {
-	
-	/**
-	 * \brief The UserProfileInterface interface provides methods to find, create, replace and delete a userprofile. There could be several userprofiles assigned to one sepcific webinos user.
-	 *
-	 */
-	interface UserProfileInterface {
-	
-		/**
-		 * \brief find() method
-		 *
-		 * Find a userprofile in the webinos system according to the find user process detailed below. 
-		 *
-		 * This method takes two, three or four arguments. When called, it starts the following find userprofile process: 
-		 *
-		 * 1. Let successCallback be the callback indicated by the method's second argument. 
-		 *
-		 * 2. Let errorCallback be the callback indicated by the method's third argument, if any, or null otherwise. 
-		 *
-		 * 3. If successCallback is null, then throw a TypeError (as defined in the WEBIDL Sepcification - http://dev.w3.org/2006/webapi/WebIDL/).
-		 *
-		 * 4. If there is a task from the device task source in one of the task queues (e.g. an existing find() operation is still pending a response), run these substeps: 
-		 *
-		 * 4.1 If errorCallback is not null, let error be a UserProfileError object whose code attribute has the value PENDING_OPERATION_ERROR and queue a task to invoke errorCallback with error as its argument. 
-		 *
-		 * 4.2 Abort this operation.
-		 *
-		 * 5. Return, and run the remaining steps asynchronously. 
-		 *
-		 * 6. Let results be the array of UserPofile objects obtained by searching userprofiles in the webinos system according to the rules defined in UserProfile Search Processing, or null if the search has failed.
-		 *
-		 * 7. If results is null, run these substeps: 
-		 *
-		 * 7.1 If errorCallback is not null, let error be a UserProfileError object whose code attribute has its value set according to the type of failure that occurred and queue a task to invoke errorCallback with error as its argument. 
-		 *
-		 * 7.2 Abort this operation.
-		 *
-		 * 8. Queue a task to invoke successCallback with results as its argument.
-		 */
-		caller void find(DOMString[] fields, UserProfileFindCB successCB, optional UserProfileErrorCB errorCB, optional UserProfileFindOptions options);
-			
-		/**
-		 * \brief createuserProfile() method - Creates a new user profile in the webinos system.
-		 *
-		 * 
-		 * \param userProfile A new UserProfile object.
-		 * \param successCallBack Callback issued when the creating of the user is correctly finished.
-		 * \param errorCallback Callback issued if an error occurs during the processing time.
-		 *
-		 * \code
-		 * //create a new userProfile
-		 * var userProfile = new Object();
-		 *
-		 * //add attributes
-		 * userProfile.displayName = 'John Smith';
-		 * userProfile.nickname = 'johnny2011';
-		 * ...
-		 * userProfile.timezone = 'CET';
-		 * 
-		 * //creates a new userprofile in the webinos system
-		 * webinos.userprofile.createuserProfile(userProfile, successCB, errorCB);
-		 *
-		 * \endcode
-		 */
-		void createUserProfile(UserProfile userProfile, optional SuccessCB successCallBack, UserProfileErrorCB errorCallback);
-		
-		/**
-		 * \brief The replaceUserProfile() method - Replaces a userprofile. This method should be used to update a userprofile. 
-		 *
-		 * Three steps are necessary to use this method.
-		 *
-		 * 1. Get the existing user profile object
-		 *
-		 * 2. Update attributes
-		 *
-		 * 3. Use replaceUserProfile() method to update the existing user profile with new attributes by providing the entire user profile object to the method.
-		 *
-		 * \param userProfile The UserProfile object which should be replaced in the webinos system.
-		 * \param successCallBack Callback issued when the creating of the user is correctly finished.
-		 * \param errorCallback Callback issued if an error occurs during the opening. E.g. the userprofile id does not exist.
-		 *
-		 * \code
-		 * // Obtain a single existing UserProfile object resulting from webinos.userprofile.find()
-		 * var existingUserProfileObj = ...;
-		 *
-		 * // Modify some parameters as required. e.g. add a new phone number
-		 * existingUserProfileObj.phoneNumbers.push({
-		 * type: 'home', 
-		 * value: '654321'
-		 * });
-		 *
-		 * //update the userprofile
-		 * webinos.userprofile.replaceUserProfile(existingUserProfileObj, successCB, errorCB);
-		 * \endcode
-		 *
-		 */
-		void replaceUserProfile(DOMString id, UserProfile userProfile, optional SuccessCB successCallBack, UserProfileErrorCB errorCallback);
-		
-		/**
-		 * \brief The deleteUserProfile() method - Deletes an existing userprofile from the user in the webinos system.
-		 *
-		 * \param id The id of the existing object
-		 * \param successCallBack Callback issued when the creating of the user is correctly finished.
-		 * \param errorCallback Callback issued if an error occurs during the opening. E.g. the userprofile id does not exist.
-		 *
-		 * \code
-		 * //delete the userprofile
-		 * webinos.userprofile.deleteUserProfile('xxx', successCB, errorCB);
-		 * \endcode
-		 */
-		void deleteUserProfile(DOMString id, optional SuccessCB successCallBack, UserProfileErrorCB errorCallback);
-	};
-	
-	/**
-	 * \brief The UserProfile interface. It is a userprofile specific extension to the interface Contact in the Contacts module.
-	 *
-	 * 
-	 */
-	interface UserProfile : Contact {
-	
-		/**
-		 * \brief preferredUsername of type DOMString
-		 *
-		 * The preferred username of this user on sites that ask for a username (e.g. jsmarr or daveman692). This field may be useful for describing the owner (i.e. the value when /@me/@self is requested), e.g. Consumers MAY wish to use this value to pre-populate a username for this user when signing up for a new service. See [[PORT] section 7.2.1].
-		 */
-		attribute DOMString? preferredUsername;
-		
-		/**
-		 * \brief socialProfiles of type array of SocialNetworkProfile
-		 *
-		 * The User profile on a social network provider.
-		 */
-		attribute SocialNetworkProfile[]? socialProfiles;
-	};
-	
-	/**
-	 * \brief The SocialNetworkProfile interface
-	 *
-	 * 
-	 */
-	[NoInterfaceObject]
-	interface SocialNetworkProfile {
-	
-		/**
-		 * \brief pref of type boolean
-		 *
-		 * This attribute indicates whether this instance of the SocialNetworkProfile is the preferred, or primary, value for the user. By default, the value is false. 
-		 */
-		attribute boolean pref;
-		
-		/**
-		 * \brief socialNetworkProvider of type DOMString
-		 *
-		 * The identifier of the social network provider, for the purposes of sorting and filtering.
-		 */
-		attribute DOMString? socialNetworkProvider;
-		
-		/**
-		 * \brief userId of type DOMString
-		 *
-		 * 	The user's IDs in the social network, that is one or more elements that can be used to uniquely identify the user (i.e. userName, social network ID number, email). Usually chosen automatically, and usually numeric but sometimes alphanumeric, e.g. "12345" or "1Z425A". 
-		 */
-		attribute DOMString? userId;
-	};
-	
-	/**
+        
+        /**
+         * \brief The UserProfileInterface interface provides methods to find, create, replace and delete a userprofile. There could be several userprofiles assigned to one sepcific webinos user.
+         *
+         */
+        interface UserProfileInterface {
+        
+                /**
+                 * \brief find() method
+                 *
+                 * Find a userprofile in the webinos system according to the find user process detailed below. 
+                 *
+                 * This method takes two, three or four arguments. When called, it starts the following find userprofile process: 
+                 *
+                 * 1. Let successCallback be the callback indicated by the method's second argument. 
+                 *
+                 * 2. Let errorCallback be the callback indicated by the method's third argument, if any, or null otherwise. 
+                 *
+                 * 3. If successCallback is null, then throw a TypeError (as defined in the WEBIDL Sepcification - http://dev.w3.org/2006/webapi/WebIDL/).
+                 *
+                 * 4. If there is a task from the device task source in one of the task queues (e.g. an existing find() operation is still pending a response), run these substeps: 
+                 *
+                 * 4.1 If errorCallback is not null, let error be a UserProfileError object whose code attribute has the value PENDING_OPERATION_ERROR and queue a task to invoke errorCallback with error as its argument. 
+                 *
+                 * 4.2 Abort this operation.
+                 *
+                 * 5. Return, and run the remaining steps asynchronously. 
+                 *
+                 * 6. Let results be the array of UserPofile objects obtained by searching userprofiles in the webinos system according to the rules defined in UserProfile Search Processing, or null if the search has failed.
+                 *
+                 * 7. If results is null, run these substeps: 
+                 *
+                 * 7.1 If errorCallback is not null, let error be a UserProfileError object whose code attribute has its value set according to the type of failure that occurred and queue a task to invoke errorCallback with error as its argument. 
+                 *
+                 * 7.2 Abort this operation.
+                 *
+                 * 8. Queue a task to invoke successCallback with results as its argument.
+                 */
+                 void find(DOMString[] fields, UserProfileFindCB successCB, optional UserProfileErrorCB errorCB, optional UserProfileFindOptions options);
+                        
+                /**
+                 * \brief createuserProfile() method - Creates a new user profile in the webinos system.
+                 *
+                 * 
+                 * \param userProfile A new UserProfile object.
+                 * \param successCallBack Callback issued when the creating of the user is correctly finished.
+                 * \param errorCallback Callback issued if an error occurs during the processing time.
+                 *
+                 * \code
+                 * //create a new userProfile
+                 * var userProfile = new Object();
+                 *
+                 * //add attributes
+                 * userProfile.displayName = 'John Smith';
+                 * userProfile.nickname = 'johnny2011';
+                 * ...
+                 * userProfile.timezone = 'CET';
+                 * 
+                 * //creates a new userprofile in the webinos system
+                 * webinos.userprofile.createuserProfile(userProfile, successCB, errorCB);
+                 *
+                 * \endcode
+                 */
+                void createUserProfile(UserProfile userProfile, optional SuccessCB successCallBack, UserProfileErrorCB errorCallback);
+                
+                /**
+                 * \brief The replaceUserProfile() method - Replaces a userprofile. This method should be used to update a userprofile. 
+                 *
+                 * Three steps are necessary to use this method.
+                 *
+                 * 1. Get the existing user profile object
+                 *
+                 * 2. Update attributes
+                 *
+                 * 3. Use replaceUserProfile() method to update the existing user profile with new attributes by providing the entire user profile object to the method.
+                 *
+                 * \param userProfile The UserProfile object which should be replaced in the webinos system.
+                 * \param successCallBack Callback issued when the creating of the user is correctly finished.
+                 * \param errorCallback Callback issued if an error occurs during the opening. E.g. the userprofile id does not exist.
+                 *
+                 * \code
+                 * // Obtain a single existing UserProfile object resulting from webinos.userprofile.find()
+                 * var existingUserProfileObj = ...;
+                 *
+                 * // Modify some parameters as required. e.g. add a new phone number
+                 * existingUserProfileObj.phoneNumbers.push({
+                 * type: 'home', 
+                 * value: '654321'
+                 * });
+                 *
+                 * //update the userprofile
+                 * webinos.userprofile.replaceUserProfile(existingUserProfileObj, successCB, errorCB);
+                 * \endcode
+                 *
+                 */
+                void replaceUserProfile(DOMString id, UserProfile userProfile, optional SuccessCB successCallBack, UserProfileErrorCB errorCallback);
+                
+                /**
+                 * \brief The deleteUserProfile() method - Deletes an existing userprofile from the user in the webinos system.
+                 *
+                 * \param id The id of the existing object
+                 * \param successCallBack Callback issued when the creating of the user is correctly finished.
+                 * \param errorCallback Callback issued if an error occurs during the opening. E.g. the userprofile id does not exist.
+                 *
+                 * \code
+                 * //delete the userprofile
+                 * webinos.userprofile.deleteUserProfile('xxx', successCB, errorCB);
+                 * \endcode
+                 */
+                void deleteUserProfile(DOMString id, optional SuccessCB successCallBack, UserProfileErrorCB errorCallback);
+        };
+        
+        /**
+         * \brief The UserProfile interface. It is a userprofile specific extension to the interface Contact in the Contacts module.
+         *
+         * 
+         */
+        interface UserProfile : Contact {
+        
+                /**
+                 * \brief preferredUsername of type DOMString
+                 *
+                 * The preferred username of this user on sites that ask for a username (e.g. jsmarr or daveman692). This field may be useful for describing the owner (i.e. the value when /@me/@self is requested), e.g. Consumers MAY wish to use this value to pre-populate a username for this user when signing up for a new service. See [[PORT] section 7.2.1].
+                 */
+                attribute DOMString? preferredUsername;
+                
+                /**
+                 * \brief socialProfiles of type array of SocialNetworkProfile
+                 *
+                 * The User profile on a social network provider.
+                 */
+                attribute SocialNetworkProfile[]? socialProfiles;
+        };
+        
+        /**
+         * \brief The SocialNetworkProfile interface
+         *
+         * 
+         */
+        [NoInterfaceObject]
+        interface SocialNetworkProfile {
+        
+                /**
+                 * \brief pref of type boolean
+                 *
+                 * This attribute indicates whether this instance of the SocialNetworkProfile is the preferred, or primary, value for the user. By default, the value is false. 
+                 */
+                attribute boolean pref;
+                
+                /**
+                 * \brief socialNetworkProvider of type DOMString
+                 *
+                 * The identifier of the social network provider, for the purposes of sorting and filtering.
+                 */
+                attribute DOMString? socialNetworkProvider;
+                
+                /**
+                 * \brief userId of type DOMString
+                 *
+                 *      The user's IDs in the social network, that is one or more elements that can be used to uniquely identify the user (i.e. userName, social network ID number, email). Usually chosen automatically, and usually numeric but sometimes alphanumeric, e.g. "12345" or "1Z425A". 
+                 */
+                attribute DOMString? userId;
+        };
+        
+        /**
      * \brief The UserProfileFindOptions interface describes the options that can be applied to userprofile searching. It inherits directly from ContactFindOptions and could be used to declare an filter for userprofile attributes. When a UserProfileFindOptions parameter is provided to the UserProfile find() operation, it should be processed according to the provisions detailed in Options Processing. 
      *
      */ 
@@ -180,14 +181,14 @@ module userprofile {
     interface UserProfileFindOptions : ContactFindOptions {
 
     };
-	
-	/**
+        
+        /**
      * \brief The UserProfileError interface. It is a userprofile specific extension to the interface ContactError in the Contacts module.
      */
     [NoInterfaceObject]
-	interface UserProfileError : ContactError {
-		
-		/**
+        interface UserProfileError : ContactError {
+                
+                /**
          * \brief The userprofile does not exist in the webinos system.
          */
         const unsigned short USERPROFILE_NOT_EXIST = 101;
@@ -199,7 +200,7 @@ module userprofile {
      */         
     [Callback=FunctionOnly, NoInterfaceObject]
     interface UserProfileErrorCB  {  
-	
+        
         /**
          * \brief Callback on failure of a find() operation
          * \param error The UserProfileError object capturing the type of the error.
@@ -207,8 +208,8 @@ module userprofile {
          */
         void onerror(UserProfileError error);
     };
-	
-	/**
+        
+        /**
      * \brief This is the wrapper interface for callbacks indicating success of the find() operation. 
      *
      */         
@@ -221,17 +222,17 @@ module userprofile {
          */
         void onsuccess (UserProfile[] userProfileObjs);
     };
-	
-	/**
-	 * \brief The WebinosUserProfile interface describes the part of the user profile
-	 *        API accessible through the webinos object.
-	 */
-	[NoInterfaceObject] interface WebinosUserProfile {
-		/**
-		 * \brief webinos.userprofile object.
-		 */
-		readonly attribute UserProfileInterface userprofile;
-	};
+        
+        /**
+         * \brief The WebinosUserProfile interface describes the part of the user profile
+         *        API accessible through the webinos object.
+         */
+        [NoInterfaceObject] interface WebinosUserProfile {
+                /**
+                 * \brief webinos.userprofile object.
+                 */
+                readonly attribute UserProfileInterface userprofile;
+        };
 
-	webinoscore::Webinos implements WebinosUserProfile;
-};
+        webinoscore::Webinos implements WebinosUserProfile;
+
