@@ -1,5 +1,5 @@
 /** <p>This API provides SMS, MMS, Email and InstantMessaging sending, receiving and searching functionality.</p> 
- * \brief WAC based Messaging interface.
+ * \name Messaging API
  *
  * The messaging API provides access to the following capabilities:
  *  Sending messages through different technologies: SMS, MMS, Email and Instant Messages.
@@ -126,6 +126,7 @@
    * \endcode
    *
    * Throws DeviceAPIError INVALID_VALUES_ERR if the input parameter contains an invalid value. 
+   *
    * Throws DeviceAPIError TYPE_MISMATCH_ERR if the input parameter is not compatible with the expected type for that parameter. 
    *
    * \param type The type of message that is created. The possible values are: TYPE_SMS, TYPE_MMS, TYPE_EMAIL and TYPE_IM. 
@@ -263,8 +264,11 @@
    * \endcode
    *
    * Throws DeviceAPIError SECURITY_ERR if this operation is not allowed. 
+   *
    * Throws DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
+   *
    * Throws DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
+   *
    * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    *
    * \param messageHandler The function to be invoked on incoming SMSs 
@@ -293,8 +297,11 @@
    * \endcode
    *
    * Throws DeviceAPIError SECURITY_ERR if this operation is not allowed. 
+   *
    * Throws DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
+   *
    * Throws DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
+   *
    * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    *
    * \param messageHandler The function to be invoked on incoming MMSs 
@@ -326,8 +333,11 @@
    * \endcode
    *
    * Throws DeviceAPIError SECURITY_ERR if this operation is not allowed. 
+   *
    * Throws DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
+   *
    * Throws DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
+   *
    * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    *
    * \param messageHandler he function to be invoked on incoming emails 
@@ -360,8 +370,11 @@
    * \endcode
    *
    * Throws DeviceAPIError SECURITY_ERR if this operation is not allowed. 
+   *
    * Throws DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
+   *
    * Throws DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
+   *
    * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    *
    * \param messageHandler he function to be invoked on incoming instant message 
