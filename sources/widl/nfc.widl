@@ -600,7 +600,6 @@
                  *
                  * \param type The type of the ndef record
                  * \param payload The text payload of the record
-                 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
                  */
                 void addTextNdefRecord(unsigned short type, optional DOMString payload);
                 
@@ -613,7 +612,6 @@
                  *
                  * \param type The type of the ndef record
                  * \param payload The binary payload of the record
-                 * \throw NfcException with error code INVALID_ARGUMENT_ERR if parameters are of the wrong type
                  */
                 void addBinaryNdefRecord(unsigned short type, ByteArray payload);
                 
