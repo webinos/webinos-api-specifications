@@ -29,7 +29,6 @@
  * \version 1.0
  */
  
-module messaging {
 
  /**
    * \brief Sequence of Message objects
@@ -747,4 +746,4 @@ module messaging {
      */
         void cancel ();
      };
-};
+
