@@ -1,4 +1,4 @@
-/**
+/** <p>This API provides SMS, MMS, Email and InstantMessaging sending, receiving and searching functionality.</p> 
  * \brief WAC based Messaging interface.
  *
  * The messaging API provides access to the following capabilities:
@@ -747,3 +747,14 @@
         void cancel ();
      };
 
+ exception DeviceAPIError {
+  
+  const unsigned short NOT_FOUND_ERR = 1;
+  const unsigned short SECURITY_ERR = 2;
+  const unsigned short ABORT_ERR = 3;
+  
+  const unsigned short NOT_READABLE_ERR = 4;
+  const unsigned short ENCODING_ERR = 5;
+ 
+  unsigned short code;
+};
