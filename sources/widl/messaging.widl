@@ -505,16 +505,15 @@
    * 
    * If the errorCallback does not contain a valid function (e.g. null), case of any error that should be returned in the errorCallback (see above), the implementation MUST silently fail and no further action is required (i.e. the error is not notified to the developer).
    *
+   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    *
    * \param successCallback Function to call on successful update
    * \param errorCallback Function to call on unsuccessful update
    * \return PendingOperation to cancel the asynchronous call 
-   * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */         
     
     PendingOperation update(UpdateMessageSuccessCallback successCallback, 
-                            optional ErrorCallback errorCallback)
-                            raises(DeviceAPIError);
+                            optional ErrorCallback errorCallback);
   };
   
   Message implements Synchronisable;
