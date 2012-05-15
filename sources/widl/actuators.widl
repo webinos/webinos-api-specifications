@@ -1,6 +1,6 @@
 /**<p> The Webinos Generic Actuator API provides applications with an API to control actuators.</p> 
  * \name The Generic Actuator API 
- *
+ * 
  *
  *
  * The Webinos Generic Actuator API provides applications with an API to control actuators in the device, 
