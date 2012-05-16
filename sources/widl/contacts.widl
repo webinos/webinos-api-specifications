@@ -28,51 +28,6 @@
  * \version 1.9
  */
         /**
-         * \brief Contacts specific errors.
-         */
-         [NoInterfaceObject]
-        interface ContactError {
-           /**
-           * \brief An unknown error occurred.
-           */
-            const unsigned short UNKNOWN_ERROR = 0;
-           /**
-           * \brief An invalid parameter was provided when the requested method was invoked.
-           */
-            const unsigned short INVALID_ARGUMENT_ERROR = 1;
-           /**
-           * \brief The requested method timed out before it could be completed.
-           */
-            const unsigned short TIMEOUT_ERROR = 2;
-           /**
-           * \brief There is already a task in the device task source.
-           */
-            const unsigned short PENDING_OPERATION_ERROR = 3;
-           /**
-           * \brief An error occurred in communication with the underlying implementation that meant the requested method could not complete.
-           */
-            const unsigned short IO_ERROR = 4;
-           /**
-           * \brief The requested method is not supported by the current implementation.
-           */
-            const unsigned short NOT_SUPPORTED_ERROR = 5;
-           /**
-           * \brief An invalid value was provided when the requested method was invoked.
-           */
-            const unsigned short INVALID_VALUES_ERROR = 6;
-           /**
-           * \brief Access to the requested information was denied by the implementation or by the user.
-           */
-            const unsigned short PERMISSION_DENIED_ERROR = 20;
-           /**
-           * \brief An error code assigned by an implementation when an error has occurred in Contacts API processing.
-           * No exceptions.
-           */
-            readonly attribute unsigned short code;
-        };
-        
-        
-        /**
          * \brief The ServiceContacts interface is exposed on the Navigator object [NAVIGATOR]. Its goal is to provide an access point to the functionality in this specification. 
          */
         [NoInterfaceObject]
@@ -915,9 +870,9 @@
        
                  /**
                  * \brief Callback on failure  of a find(), addContact(), updateContact(), deleteContact()  operations
-                 * \param error The ContactError object capturing the type of the error.
+                 * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> object capturing the type of the error
                  * \return void                 
                  */
-                 callback ContactErrorCB = void (ContactError error);
+                 callback ContactErrorCB = void (DOMError error);
              
 
