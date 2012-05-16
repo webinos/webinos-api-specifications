@@ -193,35 +193,21 @@ or an additional information (e.g. query the Facebook Graph API for the buddylis
          */
         const unsigned short USERPROFILE_NOT_EXIST = 101;
     };
-        
-    /**
-     * \brief This is the wrapper interface for callbacks indicating failure of the createUserProfile(), updateUserProfile() and deleteUserProfile() operation. 
-     *
-     */         
-    [Callback=FunctionOnly, NoInterfaceObject]
-    interface UserProfileErrorCB  {  
-        
+
         /**
          * \brief Callback on failure of a find() operation
          * \param error The UserProfileError object capturing the type of the error.
          * \return void                 
          */
-        void onerror(UserProfileError error);
-    };
-        
-        /**
-     * \brief This is the wrapper interface for callbacks indicating success of the find() operation. 
-     *
-     */         
-    [Callback=FunctionOnly, NoInterfaceObject]
-    interface UserProfileFindCB {        
+        callback UserProfileErrorCB =  void (UserProfileError error);
+
+
         /**
          * \brief Callback on success of a find() operation
          * \param userProfileObjs An array of UserProfile objects resulting from the given UserProfile find() operation. 
          * \return void                 
          */
-        void onsuccess (UserProfile[] userProfileObjs);
-    };
+        callback UserProfileFindCB = void (UserProfile[] userProfileObjs);
         
         /**
          * \brief The WebinosUserProfile interface describes the part of the user profile

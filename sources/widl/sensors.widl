@@ -216,7 +216,6 @@
        *
        */
        callback SensorErrorCB = void(SensorCBError error); 
-    };
 
    /**
     * \brief SensorCBError interface definition
