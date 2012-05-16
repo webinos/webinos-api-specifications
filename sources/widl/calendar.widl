@@ -445,25 +445,19 @@
         };
         
         
-        [Callback=FunctionOnly, NoInterfaceObject]
-        interface CalendarEventSuccessCB {        
                  /**
                  * 
                  * \param eventObjs The resulting sequence of CalendarEvent objects resulting from a successful search operation. 
                  * \return void                 
                  */
-            void onSuccess (sequence<CalendarEvent> eventObjs);
-        };
+           callback CalendarEventSuccessCB = void (sequence<CalendarEvent> eventObjs);
         
-        [Callback=FunctionOnly, NoInterfaceObject]
-        interface CalendarErrorCB {
                  /**
                  * 
                  * \param error The Calendar API related error object of an unsuccessful asynchronous operation. 
                  * \return void                 
                  */
-            void onError (CalendarError error);
-        };
+          callback  CalendarErrorCB = void(CalendarError error);
         
           /**
          * \brief he CalendarError interface encapsulates all errors in the manipulation of CalendarEvent objects in the Calendar API. 
@@ -506,4 +500,5 @@
            */
             readonly attribute unsigned short code;
         };
-            
+        
+        
