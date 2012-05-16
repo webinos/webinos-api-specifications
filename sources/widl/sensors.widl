@@ -202,34 +202,20 @@
      };
 
 
-   /**
-    * \brief ConfigureSensorCB interface definition
-    *
-    */
-    [Callback=FunctionOnly, NoInterfaceObject] interface ConfigureSensorCB {
-
       /**
        * \brief onSuccess The onSuccess method is called when configuration of a sensor succeeded.  
        *
        */
-       void onSuccess();          
-    };
+       callback ConfigureSensorCB = void();          
 
-
-   /**
-    * \brief SensorErrorCB interface definition
-    *
-    */
-    [Callback=FunctionOnly, NoInterfaceObject] interface SensorErrorCB {
 
       /**
        * \brief onError The onError method is called if an error occurs during the configureSensor() process.  
        *
-       *
        * \param error The error object of an unsuccessful configureSensor() asynchronous operation.
        *
        */
-       void onErrror(SensorCBError error); 
+       callback SensorErrorCB = void(SensorCBError error); 
     };
 
    /**
