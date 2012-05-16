@@ -938,18 +938,12 @@
             void onsuccess ();
         };
    
-         /**
-         * \brief This is the wrapper interface for callbacks indicating failure  of the find(), addContact(), updateContact(), deleteContact() operations. 
-         *
-         */         
-        [Callback=FunctionOnly, NoInterfaceObject]
-        interface ContactErrorCB  {        
+       
                  /**
                  * \brief Callback on failure  of a find(), addContact(), updateContact(), deleteContact()  operations
                  * \param error The ContactError object capturing the type of the error.
                  * \return void                 
                  */
-              void onerror (ContactError error);
-        };
-        
+                 callback AuthErrorCB = void (ContactError error);
+             
 
