@@ -718,24 +718,18 @@
          * \brief Callback to be invoked in case of success.
          *
          */
-        [Callback=FunctionOnly, NoInterfaceObject] interface SuccessCallback {
-                void onsuccess();
-        };
+           callback SuccessCallback =  void();
 
         /**
          * \brief Callback to be invoked when an error occurs.
          *
          */
-        [Callback=FunctionOnly, NoInterfaceObject] interface ErrorCallback {
-                void onError(NfcError error);
-        };
+              callback ErrorCallback =   void (NfcError error);
 
         /**
          * \brief Callback to be invoked when reading a Ndef message.
          *
          */
-        [Callback=FunctionOnly, NoInterfaceObject] interface NdefSuccessCallback {
-                void onSuccess(NdefMessage obj);
-        };
+               callback NdefSuccessCallback =  void (NdefMessage obj);
         
 
