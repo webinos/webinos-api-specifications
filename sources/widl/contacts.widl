@@ -883,60 +883,39 @@
             attribute Date      updatedSince;
         };
 
-         /**
-         * \brief This is the wrapper interface for callbacks indicating success of the find() operation. 
-         *
-         */         
-        [Callback=FunctionOnly, NoInterfaceObject]
-        interface ContactFindSuccessCB {        
                  /**
                  * \brief Callback on success of a find() operation
                  * \param contactObjs An array of Contact objects resulting from the given Contacts find() operation. 
                  * \return void                 
                  */
-            void onsuccess (Contact[] contactObjs);
-        };
-        
-         /**
-         * \brief This is the wrapper interface for callbacks indicating success of the addContact() operation. 
-         * 
-         */         
-        [Callback=FunctionOnly, NoInterfaceObject]
-        interface ContactAddSuccessCB {        
+             callback ContactFindSuccessCB = void  (Contact[] contactObjs);
+            
+
+ 
                  /**
                  * \brief Callback on success of a addContact() operation
                  * \param contact The contact that just has been added, including the contact id                 
                  * \return void                 
                  */
-            void onsuccess (Contact contact);
-        };
+            callback ContactAddSuccessCB = void (Contact contact);
 
-         /**
-         * \brief This is the wrapper interface for callbacks indicating success of the updateContact() operation. 
-         * 
-         */         
-        [Callback=FunctionOnly, NoInterfaceObject]
-        interface ContactUpdateSuccessCB {        
+
+      
                  /**
                  * \brief Callback on success of a updateContact() operation               
                  * \return void                 
                  */
-            void onsuccess ();
-        };
+           callback ContactUpdateSuccessCB = void ();
 
 
-         /**
-         * \brief This is the wrapper interface for callbacks indicating success of the deleteContact() operation. 
-         * 
-         */         
-        [Callback=FunctionOnly, NoInterfaceObject]
-        interface ContactDeleteSuccessCB {        
+    
+         
                  /**
                  * \brief Callback on success of a deleteContact() operation               
                  * \return void                 
                  */
-            void onsuccess ();
-        };
+                callback ContactDeleteSuccessCB = void ();
+
    
        
                  /**
