@@ -680,21 +680,14 @@
    */         
     callback UpdateMessageSuccessCallback =  void (Message message);
 
-   /**                       
-   * \brief Interface for specifying the method called on new incoming message events. 
-   *
-   * This interface specifies a function that will provide a message object that represents the received message. It is used in the onSMS(), onMMS(), onEmail() method invocation. 
-   *
-   */           
-  [Callback=FunctionOnly, NoInterfaceObject] interface OnIncomingMessage {
+
    /**                       
    * \brief Method invoked when an incoming message is received 
    *
    * \param message The message received 
    * \return void
    */         
-     void onevent (Message message);
-  };
+     callback OnIncomingMessage = void (Message message);
 
    /**                       
    * \brief Interface for specifying the methods to be called for message send results for each recipient. 
@@ -702,7 +695,7 @@
    * This interface specifies a set of functions that will be invoked every time the result of the send operation to a recipient is obtained or when the message is successfully sent to all the recipients. 
    *
    */           
-  [Callback, NoInterfaceObject] interface MessageSendCallback {
+ callback  interface MessageSendCallback {
    /**                       
    * \brief Method invoked when the message is successfully sent to all the recipients 
    *
