@@ -237,31 +237,20 @@
                 PendingOperation setValue (float[] value, optional ActuatorSuccessCB successCB, optional ActuatorErrorCB errorCB);
         };
 
-        /**
-        * \brief ActuatorSuccessCB interface definition
-        */
-        [Callback=FunctionOnly, NoInterfaceObject] interface ActuatorSuccessCB {
-
                 /**
                 * \brief onSuccess The onSuccess method is called after the setValue succeeded.  
                 *
                 * \param event The event object associated to the asynchnonous operation setValue
                 */
-                void onSuccess(ActuatorEvent event); 
-        };
+                callback ActuatorSuccessCB =  void (ActuatorEvent event); 
 
-        /**
-        * \brief ActuatorErrorCB interface definition
-        */
-        [Callback=FunctionOnly, NoInterfaceObject] interface ActuatorErrorCB {
 
                 /**
                 * \brief onError The onError method is called if an error occurs during the setValue() process.  
                 *
                 * \param error The error object of an unsuccessful setValue() asynchronous operation.
                 */
-                void onError(ActuatorError error); 
-        };
+                callback ActuatorErrorCB = void(ActuatorError error); 
 
         /**
         * \brief The PendingOperation interface
