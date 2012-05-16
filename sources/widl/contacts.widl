@@ -690,74 +690,72 @@
         };
         
         /**
-         * \brief The ContactName interface describes a contact's name. 
+         * \brief The ContactName dictionary describes a contact's name. 
          *
          */        
-      [NoInterfaceObject]
-        interface ContactName {
+        dictionary ContactName {
            /**
            * \brief This attribute contains the full name, including all the individual components such as givenName, middleName, familyName, prefix, suffix as appropriate for the user's culture, and formatted for display (e.g. Mr. Joe Smith Jr). 
            *
            * No exceptions.
            */            
-            attribute DOMString? formatted;
+             DOMString? formatted;
            /**
            * \brief This attribute contains the family name (also referred to as the last name) of this Contact. 
            *
            * No exceptions.
            */            
-            attribute DOMString? familyName;
+             DOMString? familyName;
            /**
            * \brief This attribute contains the given name (also referred to as the first name) of this Contact. 
            *
            * No exceptions.
            */            
-            attribute DOMString? givenName;
+             DOMString? givenName;
            /**
            * \brief This attribute contains the middle name of this Contact. 
            *
            * No exceptions.
            */            
-            attribute DOMString? middleName;
+            DOMString? middleName;
            /**
            * \brief This attribute contains the honorific prefix (or title) of this Contact. E.g. Mr., Dr., Ms., Mrs. 
            *
            * No exceptions.
            */            
-            attribute DOMString? honorificPrefix;
+            DOMString? honorificPrefix;
            /**
            * \brief This attribute contains the honorific suffix of this Contact. E.g. Jr, III, Sr. 
            *
            * No exceptions.
            */            
-            attribute DOMString? honorificSuffix;
+            DOMString? honorificSuffix;
         };
 
         
         /**
-         * \brief The ContactField interface is a reusable component that is used to capture contact fields of the Contact interface that have some modicum of structure. 
+         * \brief The ContactField dictionary is a reusable component that is used to capture contact fields of the Contact interface that have some modicum of structure. 
          *
          */ 
-        [NoInterfaceObject]
-        interface ContactField {
+        dictionary ContactField {
            /**
            * \brief This attribute contains the type information for this ContactField and its content varies subject to the contact property this ContactField is representing. For example, if the ContactField is representing a phoneNumber property, the type attribute can be set to home, mobile; if the ContactField is representing the ims property, the type attribute could be set to xmpp, irc, bbm, etc. 
            *
            * No exceptions.
            */            
-            attribute DOMString  type;
+             DOMString  type;
            /**
            * \brief This attribute contains the value for this ContactField and its content varies subject to the contact property this ContactField is representing. For example, if the ContactField is representing an email, the value attribute could be set to JoeSmith@example.com, and if the ContactField is representing a url, the value attribute can be set to http://www.example.org/joesmith, etc. 
            *
            * No exceptions.
            */            
-            attribute DOMString? value;
+             DOMString? value;
            /**
            * \brief This attribute indicates whether this instance of the ContactField is the preferred, or primary, value for the contact property this ContactField is representing in the Contact interface. By default, the value is false. 
            *
            * No exceptions.
            */            
-            attribute boolean    pref;
+             boolean    pref;
         };
         
         
@@ -765,114 +763,111 @@
          * \brief The ContactAddress interface is a reusable component that is used to capture addresses within the Contact interface. 
          *
          */ 
-        [NoInterfaceObject]
-        interface ContactAddress {
+        dictionary ContactAddress {
            /**
            * \brief This attribute indicates whether this instance of the ContactAddress is the preferred, or primary, value for the contact. By default, the value is false. 
            *
            * No exceptions.
            */            
-            attribute boolean    pref;
+             boolean    pref;
            /**
            * \brief This attribute contains the type of address this object is representing (e.g. work, home, premises, etc). 
            *
            * No exceptions.
            */            
-            attribute DOMString? type;
+             DOMString? type;
            /**
            * \brief This attribute contains the full physical address including street, locality, region, postalCode, and country as appropriate, and formatted for display. 
            *
            * No exceptions.
            */            
-            attribute DOMString? formatted;
+             DOMString? formatted;
            /**
            * \brief This attribute contains the street address corresponding to this ContactAddress. 
            *
            * No exceptions.
            */            
-            attribute DOMString? streetAddress;
+             DOMString? streetAddress;
            /**
            * \brief This attribute contains the locality (or city) name corresponding to this ContactAddress. 
            *
            * No exceptions.
            */            
-            attribute DOMString? locality;
+             DOMString? locality;
            /**
            * \brief This attribute contains the region (or state/province) name corresponding to this ContactAddress. 
            *
            * No exceptions.
            */            
-            attribute DOMString? region;
+             DOMString? region;
            /**
            * \brief This attribute contains the postal code (or zip) corresponding to this ContactAddress. 
            *
            * No exceptions.
            */            
-            attribute DOMString? postalCode;
+             DOMString? postalCode;
            /**
            * \brief This attribute contains the country name corresponding to this ContactAddress. 
            *
            * No exceptions.
            */            
-            attribute DOMString? country;
+             DOMString? country;
         };
      
         /**
-         * \brief The ContactOrganization interface is a reusable component that is used to support contact organisations within the Contact interface. 
+         * \brief The ContactOrganization dictionary is a reusable component that is used to support contact organisations within the Contact interface. 
          *
          */ 
-     [NoInterfaceObject]
-        interface ContactOrganization {
+     dictionary ContactOrganization {
            /**
            * \brief This attribute indicates whether this instance of the ContactOrganization is the preferred, or primary, value for the contact. By default, the value is false. 
            *
            * No exceptions.
            */            
-            attribute boolean    pref;
+             boolean    pref;
            /**
            * \brief This attribute contains the type of organization this object is representing. 
            *
            * No exceptions.
            */            
-            attribute DOMString? type;
+             DOMString? type;
            /**
            * \brief The name of the organisation. 
            *
            * No exceptions.
            */            
-            attribute DOMString? name;
+             DOMString? name;
            /**
            * \brief The department within which this Contact works. 
            *
            * No exceptions.
            */            
-            attribute DOMString? department;
+             DOMString? department;
            /**
            * \brief The job title that the Contact holds inside this organisation. 
            *
            * No exceptions.
            */            
-            attribute DOMString? title;
+             DOMString? title;
         };
         
        /**
          * \brief The ContactFindOptions interface describes the options that can be applied to contact searching. When a ContactFindOptions parameter is provided to the Contacts find() operation, it should be processed according to the provisions detailed in Options Processing. 
          *
          */ 
-        [NoInterfaceObject]
-        interface ContactFindOptions {
+        dictionary ContactFindOptions {
            /**
            * \brief A string-based search filter which provides a hint to the user agent to facilitate contacts selection by the user. 
            *
            * No exceptions.
            */            
-            attribute DOMString? filter;
+             DOMString? filter;
             /**
            * \brief A boolean value to indicate whether multiple Contact objects are wanted as part of the Contacts find() operation. By default this option is set to false. 
            *
            * No exceptions.
            */            
-            attribute boolean?   multiple;
+             boolean?   multiple;
             /**
            * \brief Return only contact records that have been updated on or after the given time, specified as an ECMAScript Date object.
            *
@@ -880,7 +875,7 @@
            *
            * No exceptions.
            */            
-            attribute Date      updatedSince;
+             Date      updatedSince;
         };
 
                  /**
