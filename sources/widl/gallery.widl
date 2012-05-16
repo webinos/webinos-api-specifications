@@ -432,11 +432,6 @@
     attribute Date?           endDate;
 };
 
- /**                       
-  * \brief find specific success callback. 
-  *
-  */    
-[Callback=FunctionOnly, NoInterfaceObject] interface GalleryFindCB : PendingOp {
    /**
    * \brief Method invoked when the asynchronous call completes successfully 
    * 
@@ -445,14 +440,8 @@
    *
    * No exceptions.
    */   
-       void onSuccess (MediaObject[] mediaObjectObjs);
-};
+       callback GalleryFindCB = void (MediaObject[] mediaObjectObjs);
 
- /**                       
-  * \brief  getGalleries specific success callback. 
-  *
-  */    
-[Callback=FunctionOnly, NoInterfaceObject] interface GalleryInfoCB : PendingOp {
    /**
    * \brief Method invoked when the asynchronous call completes successfully 
    * 
@@ -461,13 +450,9 @@
    *
    * No exceptions.
    */   
-    void onSuccess (GalleryInfo[] galleryInfoObjs);
-};
- /**                       
-  * \brief  Gallery API specific error callback.
-  *
-  */    
-[Callback=FunctionOnly, NoInterfaceObject] interface GalleryErrorCB : PendingOp {
+    callback GalleryInfoCB = void(GalleryInfo[] galleryInfoObjs);
+
+
    /**
    * \brief Method invoked when the asynchronous call completes unsuccessfully 
    * 
@@ -476,8 +461,8 @@
    *
    * No exceptions.
    */   
-    void onError (GalleryError error);
-};
+    callback GalleryErrorCB = void(GalleryError error);
+
 
  /**                       
   * \brief  The GalleryError interface encapsulates all errors in the Gallery API.
