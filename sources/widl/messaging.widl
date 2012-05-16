@@ -662,38 +662,23 @@
     readonly attribute DOMString MIMEType; 
   };
   
-  
-   /**                       
-   * \brief findMessages specific success callback. 
-   *
-   * This callback interface specifies a success callback with a function taking a list of messages as input argument. It is used in the findMessages asynchronous operation. 
-   *
-   */           
-  [Callback=FunctionOnly, NoInterfaceObject] interface FindMessagesSuccessCallback {
+
    /**                       
    * \brief Method invoked when the asynchronous call completes successfully 
    *
    * \param messages The list of messages that correspond to the find criteria 
    * \return void
    */         
-    void onsuccess(MessageArray messages);
-  };
-  
-   /**                       
-   * \brief update specific success callback. 
-   *
-   * This callback interface specifies a success callback with a function that will provide a message object that is meant to represent the actual status of a message after an update has been triggered. It is used in the update asynchronous operation on the Message interface. 
-   *
-   */           
-  [Callback=FunctionOnly, NoInterfaceObject] interface UpdateMessageSuccessCallback {
+    callback FindMessagesSuccessCallback = void (MessageArray messages);
+
+
    /**                       
    * \brief Method invoked when the asynchronous call completes successfully 
    *
    * \param message The new message representing the actual updated status 
    * \return void
    */         
-    void onsuccess(Message message);
-  };
+    callback UpdateMessageSuccessCallback =  void (Message message);
 
    /**                       
    * \brief Interface for specifying the method called on new incoming message events. 

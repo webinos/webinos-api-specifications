@@ -923,6 +923,6 @@
                  * \param error The ContactError object capturing the type of the error.
                  * \return void                 
                  */
-                 callback AuthErrorCB = void (ContactError error);
+                 callback ContactErrorCB = void (ContactError error);
              
 
