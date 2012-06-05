@@ -33,9 +33,12 @@
  * \def-api-feature http://webinos.org/api/sensors.pressure
  * Identifies the pressure sensor type. 
  *
+ * \def-api-feature http://webinos.org/api/sensors.proximity
+ * Identifies the proximity sensor type. 
+ *
  * \author Claes Nilsson &lt;claes1.nilsson@sonyericsson.com&gt;
  * \author Updated to new WIDL by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
- * \version 0.95 
+ * \version 0.96 
  */
 
 
