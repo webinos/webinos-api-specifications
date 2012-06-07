@@ -660,6 +660,29 @@
     *
     */  
     readonly attribute DOMString MIMEType; 
+
+   /**
+    * \brief    Synchronisation status of the interface.
+    *
+    * This attribute describes whether the interface is synchronised. It will be true if the object is synchronized and false if the object is not synchronised. Default value is false. 
+    */          
+      readonly attribute   boolean isInSync;
+
+   /**                       
+   * \brief Request interface data is synchronized 
+   *
+   * When this method is invoked, the implementation MUST update all the interface attributes so that all of them are up to date.
+   *		
+   * If the object is already current (i.e. it is synchronised), the implementation MUST set the isInSync attribute to true and invoke the successCallback without further action.
+   * 
+   * If the interface is not current (i.e. it is not synchronised), the implementation MUST attempt to retrieve that data. If the data is successfully retrieved, the isInSync attribute will be set to true and the successCallback will be invoked. If an error occurs during the interface attributes update, the errorCallback will be invoked.
+   *
+   * \param success Function to be called on successful completion of the sync.
+   * \param error Function to be called in case of errors.
+   * \return void
+   */            
+  void sync(Function success,  optional Function? error);
+    
   };
   
 
