@@ -138,7 +138,7 @@
    /**
    * \brief Attempt to send the specified message. 
    *
-   * If the message type is set to email and the user has multiple email accounts set up, the runtime SHOULD use the default e-mail account. If no account has been set up, the runtime MAY either provide respective mechanisms to create a new one or throw the given ErrorCallback back to the requesting widget.
+   * If the message type is set to email and the user has multiple email accounts set up, the runtime SHOULD use the default e-mail account. If no account has been set up, the runtime MAY either provide respective mechanisms to create a new one or throw the given MessagingErrorCallback back to the requesting widget.
    *
    * Only the parameters supported by a specific technology and that can be set up by the developer (see Message interface attribute definition) are sent as specified in the following table (the rest are ignored):
    *
@@ -198,8 +198,8 @@
    * \param message The message to be sent. 
    * \return PendingOperation to cancel the asynchronous call 
    */                          
-    PendingOperation sendMessage(SuccessCallback successCallback, 
-                                 ErrorCallback errorCallback, 
+    PendingOperation sendMessage(MessagingSuccessCallback successCallback, 
+                                 MessagingErrorCallback errorCallback, 
                                  Message message);
  
                                  
@@ -241,7 +241,7 @@
    */                          
 
     PendingOperation findMessages(FindMessagesSuccessCallback successCallback, 
-                                  optional ErrorCallback errorCallback,
+                                  optional MessagingErrorCallback errorCallback,
                                   optional MessageFilter filter);
   
    /**
@@ -527,7 +527,7 @@
    */         
     
     PendingOperation update(UpdateMessageSuccessCallback successCallback, 
-                            optional ErrorCallback errorCallback);
+                            optional MessagingErrorCallback errorCallback);
   };
   
   Message implements Synchronisable;
@@ -681,7 +681,7 @@
    * \param error Function to be called in case of errors.
    * \return void
    */            
-  void sync(Function success,  optional Function? error);
+  void sync(MessagingSuccessCallback success,  optional MessagingErrorCallback? error);
     
   };
   
@@ -711,6 +711,22 @@
    * \return void
    */         
      callback OnIncomingMessage = void (Message message);
+     
+   /**                       
+   * \brief Generic method invoked when a parameterless success callback is performed needed.
+   *
+   * \return void
+   */          
+      callback MessagingSuccessCallback =  void();
+
+   /**                       
+   * \brief Method invoked when a messaging function returns an error
+   *
+   * \param error The error message received 
+   * \return void
+   */         
+     callback MessagingErrorCallback =   void (DeviceAPIError error);
+
 
    /**                       
    * \brief Interface for specifying the methods to be called for message send results for each recipient. 
