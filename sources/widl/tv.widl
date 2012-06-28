@@ -87,7 +87,7 @@ interface TVDisplayManager : EventTarget {
  \endcode
  */
   [TreatNonCallableAsNull]
-             attribute Function? onchannelchange;
+             attribute EventHandler onchannelchange;
 };
 
 /**
