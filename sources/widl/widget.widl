@@ -45,17 +45,10 @@
    */
    callback DeploymentErrorCallback = void (DOMString applicationID, DOMError error);
 
-    /**
-     * \brief Callback definition for changed life cycle states. 
-     * 
-     * All life-cylce handlers don't have any input params. They are just notifications.
-    */
-    callback LifecycleChangeHandler = void ();
 
   /**
    * \brief Widget Interface
    * 
-   * Defines that the webinos interface is part of the window global object.
    *
   */
   partial interface Widget {
@@ -205,45 +198,45 @@
     void cancelNotify(DOMString id);
 
     /**
-     * \brief Asynchronous callback indicating that the application will be terminated. 
+     * \brief Event handler indicating that the application will be terminated. 
      *
      * Callback function which is called if the application will be shut down by the WRT.
      * All application memory assigned to the application will be freed after returning
      * out of this function.
      * 
     */
-    attribute LifecycleChangeHandler onDestroy;
+    attribute EventHandler ondestroy;
 
     /**
-     * \brief Asynchronous callback indicating that the application is gone to background. 
+     * \brief Event handler indicating that the application is gone to background. 
      *
-     * Callback function which is called after the application was put to background, e.g., another application
+     *  called after the application was put to background, e.g., another application
      * goes to foreground and the application is not visible any more. After calling onBackground the application
      * is still running but not visible anymore.
      * 
     */
-    attribute LifecycleChangeHandler onBackground;
+    attribute EventHandler onbackground;
 
     /**
-     * \brief Asynchronous callback indicating that the application is gone to foreground. 
+     * \brief Event handler indicating that the application is gone to foreground. 
      *
      * Application goes to foreground after previously going to background.
     */
-    attribute LifecycleChangeHandler onForeground;
+    attribute EventHandler onforeground;
 
     /**
-     * \brief Asynchronous callback indicating that application execution is going to be stopped. 
+     * \brief EventHandler indicating that application execution is going to be stopped. 
      *
      * Application execution is stopped aftern returning out of this function.
     */
-    attribute LifecycleChangeHandler onStop;
+    attribute EventHandler onstop;
 
     /**
-     * \brief Asynchronous callback indicating that application execution is continued. 
+     * \brief EventHandler indicating that application execution is continued. 
      *
      * Application execution is continued after previously stopped.
      */
-    attribute LifecycleChangeHandler onStart;
+    attribute EventHandler onstart;
     
     /**
      * \brief Requests to install an application on another device.
