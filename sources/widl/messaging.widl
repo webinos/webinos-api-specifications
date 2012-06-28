@@ -161,15 +161,11 @@
    *
    * If the operation fails for any other reason, the errorCallback will be invoked with an appropriate error code amongst the following:
    * 
-   * INVALID_VALUES_ERR: If any of the input paramters contains an invalid value. E.g. successCallback or message is null, message contains invalid values in any of its attributes... Please note that in order to allow developer ignore errors errorCallback accepts null as a valid value.
-   *
    * NOT_SUPPORTED_ERR: If the specified messaging technology is not supported.
    *
    * SECURITY_ERR: If the operation is not allowed.
    *
    * UNKNOWN_ERR: In any other error case.
-   *
-   * If the errorCallback does not contain a valid function (e.g. null), case of any error that should be returned in the errorCallback (see above), the implementation MUST silently fail and no further action is required (i.e. the error is not notified to the developer).
    *
    * \code
    * // Define the success callback
@@ -199,18 +195,15 @@
    * \return PendingOperation to cancel the asynchronous call 
    */                          
     PendingOperation sendMessage(MessagingSuccessCallback successCallback, 
-                                 MessagingErrorCallback errorCallback, 
+                                 MessagingErrorCallback? errorCallback, 
                                  Message message);
  
                                  
    /**
    * \brief Gets an array of messages from the message folders matching the selected filter. 
    *
-   * If any of the input parameters is not compatible with the expected type for that parameter a DeviceAPIError with code TYPE_MISMATCH_ERR MUST be synchronously thrown.
-   *
    * If the this feature is not supported, a DeviceAPIError with code NOT_SUPPORTED_ERR MUST be returned in the errorCallback. If this functionality is not allowed the errorCallback MUST be invoked with a DeviceAPIError with code SECURITY_ERR.
    *
-   * If the successCallback does not contain a Function (i.e. it is null), a DeviceAPIError with code INVALID_VALUES_ERR MUST be returned.
    *
    * If the filter is passed and contains valid values, only those values in the message lists that matches the filter criteria as specified in the MessageFilter interface will be returned in the successCallback. If no filter is passed, it is null or undefined, or contains any invalid value, the implementation MUST return the full list of messages in the successCallback. If no messages are available in the lists or no one matches the filter criteria, the successCallback will be invoked with an empty array.
    *
@@ -241,7 +234,7 @@
    */                          
 
     PendingOperation findMessages(FindMessagesSuccessCallback successCallback, 
-                                  optional MessagingErrorCallback errorCallback,
+                                  optional MessagingErrorCallback? errorCallback,
                                   optional MessageFilter filter);
   
    /**
