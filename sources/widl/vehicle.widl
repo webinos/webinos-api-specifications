@@ -505,7 +505,7 @@
 	*      
 	*function tripDataHandler(data){
 	*	//Calculating, if the fuel efficiency increased, since the last update
-	*	var gap = latestConsumption - data.averageConsumption1;
+	*	var gap = latestConsumption - data.averageConsumption;
 	*	if(gap \< 0){
 	*	    console.log("Thumbs down. You decreased your fuel efficiency");
 	*	} else if (gap > 0){
@@ -513,7 +513,7 @@
 	*	} else {
 	*	    console.log("nothing changed");
 	*	}
-	*	latestConsumption = data.averageConsumption1;
+	*	latestConsumption = data.averageConsumption;
 	*      
 	*	if (data.range \< 20){
 	*	    console.log("You really need " + webinos.vehicle.fuel + "soon.");	
@@ -556,14 +556,14 @@
 		* \param bubbles True if event bubbles.
 		* \param cancelable True if event cancelable.
 		* \param averageConsumption overall average consumption of the vehicle in l/100kilometers.
-		* \param averageTripConsumption average consumption of the vehicle in l/100kilometers on the current trip.
+		* \param tripConsumption average consumption of the vehicle in l/100kilometers on the current trip.
 		* \param averageSpeed average speed of the vehicle in kilometers per hour. 
-		* \param averageTripSpeed average speed  of the vehicle in kilometers per hour on the current trup. 
+		* \param tripSpeed average speed  of the vehicle in kilometers per hour on the current trup. 
 		* \param tripDistance distance of the current trip in kilometers.
 		* \param mileage overall driven distance in kilometers.
 		* \param range range of the vehicle in kilometers. 
 		*/
-		void initTripComputerEvent(boolean bubbles, boolean cancelable, float averageConsumption, float tripConsumption, float averageSpeed1, float tripSpeed, float tripDistance, float mileage, float range);
+		void initTripComputerEvent(boolean bubbles, boolean cancelable, float averageConsumption, float tripConsumption, float averageSpeed, float tripSpeed, float tripDistance, float mileage, float range);
 	};
 
 
