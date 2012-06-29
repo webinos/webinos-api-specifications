@@ -185,7 +185,7 @@
 		* }
 		* \endcode
 
-		* \param vehicleDataId Parameter specifies the type of data, which shall be retrieved. The identifiers for the different data types are defined in the different vehicle event interfaces (ClimateControlEvent, ControlEvent, NavigationEvent, ParkSensorsEvent, ShiftEvent). The identifiers for climate control data  are defined as values of the various enums: ClimateZone, VehicleLight, VehicleWiperMode, DestinationEventType, ParkSensorPosition. 
+		* \param vehicleDataId Parameter specifies the type of data, which shall be retrieved. The identifiers for the different data types are defined in the different vehicle event interfaces (ClimateControlEvent, ControlEvent, NavigationEvent, ParkSensorsEvent, ShiftEvent, StatusDataEvent). The identifiers are defined as values of the various enums: ClimateZone, VehicleLight, DestinationEventType, ParkSensorPosition, VehicleStatusComponents. 
 		* \param handler Parameter specifies the function to handle the result.
 		* \param errorCB Parameter specifies the callback function in case of an error.
 		*/
@@ -306,11 +306,7 @@
 	*/
 	enum VehicleLight { "fog-front", "fog-rear", "signal-left", "signal-right", "signal-warn", "light-parking", "hibeam", "light-head" };
 
-	/**
-	* \brief Type of wiper mode
-	*/
-	enum VehicleWiperMode { "wiper-front-wash", "wiper-rear-wash", "wiper-automatic", "wiper-front-once", "wiper-rear-once", "wiper-front-level1", "wiper-front-level2" };
-
+	
 	/**
 	* \brief The interface defines a control event. 
 	* The event signals a change for a control unit inside the vehicle (e.g. lights, wiper, etc.). The identifiers for the different control events are defined in the enums VehicleLight and VehicleWiperMode
@@ -565,6 +561,40 @@
 		*/
 		void initTripComputerEvent(boolean bubbles, boolean cancelable, float averageConsumption, float tripConsumption, float averageSpeed, float tripSpeed, float tripDistance, float mileage, float range);
 	};
+	/**
+	* \brief The interface defines a vehicle status event.
+	*/
+	interface VehicleStatusEvent : VehicleEvent{
+		/**
+		* \brief Attribute reflects the relevant component. The value must be within VehicleStatusComponents.
+		*/		
+		readonly attribute DOMString component;
+		/**
+		* \brief Attrubute reflects the status of the vehicle component.
+		*/		
+		readonly attribute DOMString status;
+		/**
+		* \brief Method sets the initial values of a vehicle status event.
+		*
+		* \param bubbles True if event bubbles.
+		* \param cancelable True if event cancelable.
+		* \param component .
+		* \param status status of the given component.
+		*/
+		void initVehicleStatusEvent(boolean bubbles, boolean cancelable, DOMString component, DOMString status);
+	};
+	/**
+	* \brief Vehicle Status components
+	*/
+	enum VehicleStatusComponents {"wiperswitch", "oillevel"};
+	
+	/**
+	* \brief Status of the wipers
+	*/
+	enum WiperStatus { "wiper-front-wash", "wiper-rear-wash", "wiper-automatic", "wiper-front-once", "wiper-rear-once", "wiper-front-level1", "wiper-front-level2" };
 
-
+	/**
+	* \brief Levels of engine oil
+	*/
+	enum EngineOilLevels { "OVER_MAX","MAX", "OK", "MIN", "UNDER_MIN", "MEASURING"};
 
