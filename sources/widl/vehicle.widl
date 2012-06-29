@@ -523,21 +523,21 @@
 	*/
 	interface TripComputerEvent : VehicleEvent{
 		/**
-		* \brief Attrubute reflects the average consumption 1 of the vehicle in l/100kilometers (resets automatically after a trip).
+		* \brief Attrubute reflects the overall average consumption of the vehicle in l/100kilometers (resets on driver's demand).
 		*/		
-		readonly attribute float averageConsumption1;
+		readonly attribute float averageConsumption;
 		/**
-		* \brief Attrubute reflects the average consumption 2 of the vehicle in l/100kilometers (resets on driver's demand).
+		* \brief Attrubute reflects the average consumption of the vehicle in l/100kilometers on the ongoing journey (resets automatically).
 		*/		
-		readonly attribute float averageConsumption2;
+		readonly attribute float tripConsumption;
 		/**
-		* \brief Attrubute reflects the average speed of the vehicle in kilometers per hour (resets automatically after a trip).
+		* \brief Attrubute reflects the overall average speed of the vehicle in kilometers per hour (resets on driver's demand).
 		*/
-		readonly attribute float averageSpeed1;
+		readonly attribute float averageSpeed;
 		/**
-		* \brief Attrubute reflects average speed of the vehicle in kilometers per hour (resets on driver's demand).
+		* \brief Attrubute reflects average speed of the vehicle in kilometers per hour on the current trip (resets automatically).
 		*/		
-		readonly attribute float averageSpeed2;
+		readonly attribute float tripSpeed;
 		/**
 		* \brief Attrubute reflects trip distance in kilometers.
 		*/
@@ -555,15 +555,15 @@
 		*
 		* \param bubbles True if event bubbles.
 		* \param cancelable True if event cancelable.
-		* \param averageConsumption1 average consumption 1 of the vehicle in l/100kilometers.
-		* \param averageConsumption2 average consumption 2 of the vehicle in l/100kilometers.
-		* \param averageSpeed1 average speed 1 of the vehicle in kilometers per hour. 
-		* \param averageSpeed2 average speed 2 of the vehicle in kilometers per hour. 
+		* \param averageConsumption overall average consumption of the vehicle in l/100kilometers.
+		* \param averageTripConsumption average consumption of the vehicle in l/100kilometers on the current trip.
+		* \param averageSpeed average speed of the vehicle in kilometers per hour. 
+		* \param averageTripSpeed average speed  of the vehicle in kilometers per hour on the current trup. 
 		* \param tripDistance distance of the current trip in kilometers.
 		* \param mileage overall driven distance in kilometers.
 		* \param range range of the vehicle in kilometers. 
 		*/
-		void initTripComputerEvent(boolean bubbles, boolean cancelable, float averageConsumption1, float averageConsumption2, float averageSpeed1, float averageSpeed2, float tripDistance, float mileage, float range);
+		void initTripComputerEvent(boolean bubbles, boolean cancelable, float averageConsumption, float tripConsumption, float averageSpeed1, float tripSpeed, float tripDistance, float mileage, float range);
 	};
 
 
