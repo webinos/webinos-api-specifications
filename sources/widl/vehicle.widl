@@ -1,5 +1,5 @@
 /**<p>The webinos vehicle API provides access to specific vehicle data.</p>
- * It is derived from W3C's DOM Level 3 Events model and defines event types for retrieving information about the vehicle including trip computer data, gears or park sensors. Furthermore it offers methods for interacting with the on-board navigation system. The geolocation, speed and acceleration can be retrieved using the <a href="geolocation.html">geolocation</a> and <a href="deviceorientation.html">device orientation</a> API.
+ * It is derived from W3C's DOM Level 3 Events model and defines event types for retrieving information about the vehicle including trip computer data, gears or park sensors. Furthermore it offers methods for interacting with the on-board navigation system. The geolocation, speed and acceleration can be retrieved using the <a href="geolocation.html">geolocation</a> and <a href="deviceorientation.html">device orientation</a> API. The gps navigation related functions (see <a href='http://dev.webinos.org/specifications/draft/vehicle.html'>v0.7</a>) have been removed from the API. A new API about navigation has been defined.
  * \name Vehicle API.
  *
  * 
@@ -32,49 +32,6 @@
  */
 
 	/**
-	* \brief This interface defines the address properties, which can be passed to the navigation system using the requestGuidance() function.   The <a href="http://dev.w3.org/geo/api/spec-source-v2.html#address_interface" target="_blank">Address interface</a> defined in the v2 of the W3C Geolocation API is used for this purpose.
-	*
-	*/ 
-	dictionary Address{
-		/**
-		* \brief Attribute is specified by using the two-letter [ISO 3166-1] code.
-		*/
-		DOMString country;
-		/**
-		* \brief Attribute denotes the name of a country subdivision (e.g. the state name in the US).
-		*/		
-		DOMString? region;
-		/**
-		* \brief Attribute denotes the name of a land area within a larger region.
-		*/		
-		DOMString? county;
-		/**
-		* \brief Attribute reflects the name of the city.
-		*/		
-		DOMString city;
-		/**
-		* \brief Attribute reflects the name of the street.
-		*/		
-		DOMString street;
-		/**
-		* \brief Attribute describes the location's street number.
-		*/		
-		 DOMString streetNumber;
-		/**
-		* \brief Attribute denotes the details of the premises, such as a building name, block of flats, etc.
-		*/		
-		DOMString? premises;
-		/**
-		* \brief Attribute contains other address details that are not captured by the rest of the attributes in this interface. Examples include a floor number in a building, an apartment number, the name of an office occupant, etc..
-		*/		
-		DOMString additionalInformation;
-		/**
-		* \brief Attribute reflects the postal code of the location (e.g. the zip code in the US).
-		*/		
-		DOMString postalCode;
-	};
-	
-	/**
 	* \brief The interface defines a generic event for vehicle data specific events.
 	*
 	*/ 
@@ -82,49 +39,10 @@
 	interface VehicleEvent : Event{
 	
 	};
-	/**
-	* \brief This dictionary defines the LatLng properties, which can be passed to the navigation system using the requestGuidance() function. The format is WGS84. 
-	* <em>Note: The <a href="http://dev.w3.org/geo/api/spec-source-v2.html#coordinates">coordinate</a> interface from the Geolocation API v2 includes attributes, which are not feasible for beeing handled by the navigation system (accurancy, alitude accurency, heading, speed). In some special cases (destination is on a bridge, which crosses another street) it might make sense to add the altitude to LatLng interface at a later stage.</em> 
-	* 
-	*
-	*/ 
-	dictionary LatLng{
-		/**
-		* \brief Attribute reflect the latitude of a geolocation in WGS84.
-		*/
-		double latitude;
-		/**
-		* \brief Attribute reflect the Longitude of a geolocation in WGS84.
-		*/			
-		double longitude;
-	};
-	/**
-	* \brief This dictionary defines a Point of Interest (POI). 
-	*  The dictionary contains the name of a POI and its address and/or geolocation as a LatLng object. <em> Note: The <a href="http://www.w3.org/2010/POI/" target="_blank">W3C POI WG</a> has published a <a href="http://www.w3.org/TR/2011/WD-poi-core-20110512/" target="_blank">first working draft</a> for the POI handling. The draft focuses on a XML representation of a POI and does not seem handy for beeing handled by a navigation system.</em>
-	*/ 
-	dictionary POI{
-		/**
-		* \brief Attribute denotes the name of the POI.
-		*/		
-		DOMString? name;
-		/**
-		* \brief Attribute reflects the geolocation of the POI as LatLng object.
-		*/		
-		LatLng? position;
-		/**
-		* \brief Attribute denotes the address of the POI.
-		*/		
-		Address address;
-	};
+
 
 	/**
-	* \brief callback for a success from requestGuidance.
-	*
-	*/
-	callback VehicleSuccessCallback = void ();
-
-	/**
-	* \brief callback for a failure from requestGuidance, get, or findDestination
+	* \brief callback for a failure from get Method
 	* \param error a <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> containing information about the error (e.g. SecurityError if permission is denied).
 	*
 	*/
@@ -189,51 +107,7 @@
 		* \param handler Parameter specifies the function to handle the result.
 		* \param errorCB Parameter specifies the callback function in case of an error.
 		*/
-		void get(DOMString vehicleDataId, VehicleDataHandler handler, VehicleErrorCallback errorCB);
-		/**
-		* \brief Parameter sets the given POIs as the next destinations for the build-in navigation system. The method handles intermediate stops. The last POI in the array is the final destination.
-		* \code
-		*	var destinations =new Array();
-		*	destinations.push({name:"BMW AG", address : {street:"Petuelring", streetNumber: "130", postalCode: "80788", city: "MÜNCHEN", country: "DE"}});
-		*   destinations.push({name:"BMW Forschung und Technik", address:{street: "Hanauer Strasse", streetNumber: "46", postalCode: "80992", city: "MÜNCHEN", country: "DE"}});
-		*      webinos.vehicle.requestGuidance(succesCB, null, destinations);
-		*  	webinos.vehicle.addEventListener("destination-reached", handleDestinations, false);
-		*      
-		*	function handleDestinations(event){
-		*          if (event.address.street == destination[0].address.street) {
-		*	       console.log("Reached the HQ");
-		*          } else if (event.address.street == destination[1].address.street) {
-		*	        console.log("Reached the research center");
-		*          }
-		*	}
-		* \endcode
-
-		* \param successCallback callback, if the POIs are succesully transferred.
-		* \param errorCallback callback, if the address could not be transferred. 
-		* \param destinations in form of an POI array. The last POI in the array is the destination point. The other POIs are intermediate stops along the route.
-		*/
-		void requestGuidance(VehicleSuccessCallback successCallback, VehicleErrorCallback errorCallback, POI[] destinations);
-		/**
-		* \brief Queries the navigation system to retrieve POIs for a given search string.
-		*
-		* \code
-		*	var destinations =new Array();
-		*      webinos.vehicle.findDestination(destinationCB, errorCB,"BMW");
-		*      function destinationCB(pois){
-		*	if(destinations.length > 0){
-		*      	webinos.requestGuidance(successCB, errorCB, destinations);            
-		*	else{
-		*		console.log("No POI found");
-		*	}		
-		*}
-		* 
-		* \endcode
-		*
-		* \param destinationCallback callback to handle the results to the search string.
-		* \param errorCallback callback to handle errors.
-		* \param search search string for resolving a address.
-		*/
-		void findDestination(DestinationCallback destinationCallback, VehicleErrorCallback errorCallback, DOMString search);
+		void get(VehicleEventType vehicleDataId, VehicleDataHandler handler, VehicleErrorCallback errorCB);
 	};
 	
 	/**
@@ -244,11 +118,6 @@
                 readonly attribute VehicleInterface vehicle;
         };
 	Webinos implements Vehicle;
-	/**
-	* \brief callback for the asynchronous findDestination method.
-	* \param pois Parameter provides an array of POIs.
-	*/
- 	callback DestinationCallback = void (POI[] pois);
 
 	/**
 	* \brief Climate zone names
@@ -309,7 +178,7 @@
 	
 	/**
 	* \brief The interface defines a control event. 
-	* The event signals a change for a control unit inside the vehicle (e.g. lights, wiper, etc.). The identifiers for the different control events are defined in the enums VehicleLight and VehicleWiperMode
+	* The event signals a change for a light unit inside the vehicle. The identifiers for the different light events are defined in the enum VehicleLight.
 	* \code
 	*	webinos.vehicle.addEventListener("hibeam", lightHandler, false);
 	*      function lightHandler(cEvent){
@@ -323,53 +192,23 @@
 	*	}
 	* \endcode
 	*/
-	interface ControlEvent : VehicleEvent{
+	interface LightEvent : VehicleEvent{
 		/**
 		* \brief Attribute describes the source of the event.
 		*/	
-		readonly attribute (VehicleLight or VehicleWiperMode) controlId;
+		readonly attribute VehicleLight lightId;
 		/**
-		* \brief Attribute describes the status of the control unit.	
+		* \brief Attribute describes the status of the light unit.	
 		*/	
 		readonly attribute boolean active;
 		/**
 		* \brief Method sets initial values of a control event.
-		* \param bubbles True if event bubbles.
-		* \param cancelable True if event cancelable.
-		* \param controlId specifies the control unit.
+		* \param lightId specifies the control unit.
 		* \param active specifies if the unit is activated or not.
 		*/
-		void initControlEvent(boolean bubbles, boolean cancelable, DOMString controlId, boolean active);
+		void initLightEvent(VehicleLight lightId, boolean active);
 	};
-	/**
-	* \brief Type of destination event
-	*/
-	enum DestinationEventType { "destination-reached", "destination-changed", "destination-cancelled"};
 
-		/**
-	* \brief The interface defines the navigation event.
-	*/
-	interface NavigationEvent : VehicleEvent{
-		/**
-		
-		/**
-		* \brief Attribute defines the type of the navigation event. The type can either be  "destination-reached", "destination-changed" or "destination-cancelled".
-		*/			
-		readonly attribute DestinationEventType type;
-		/**
-		* \brief Attribute defines for which address the event occured.	
-		*/
-		readonly attribute Address address;
-
-		/**
-		* \brief Method sets initial values of a navigation event.
-		* \param bubbles True if event bubbles.
-		* \param cancelable True if event cancelable.
-		* \param navigationEventId Sensor type.
-		* \param destination destination for which the event occured.
-		*/
-		void initNavigationEvent(boolean bubbles, boolean cancelable, DOMString navigationEventId, Address destination);	
-	};
 	/**
 	*  \brief Position of parksensor event
 	*/
@@ -417,81 +256,12 @@
 		* \param midLeft data from the middle left sensor.
 		* \param midRight data from the middle right sensor.
 		* \param right data from the right sensor.
-		* \param outright data from the outer right sensor.
+		* \param outRight data from the outer right sensor.
 		*/
-		void initParkSensorsEvent(DOMString position, short outLeft ,short left, short midLeft, short midRight, short right, short outRight);
+		void initParkSensorsEvent(ParkSensorPosition position, short outLeft ,short left, short midLeft, short midRight, short right, short outRight);
 	};
 
 	/**
-	* \brief This interface defines a shift event. 
-	* A listener can be registered by vehicle.addEventLister("shift",listener,false).
-	* \code
-	* // registering an Event for a Shift
-	* webinos.vehicle.addEventListener("shift", shiftHandler);
-	* function shiftHandler(e){
-	*   document.getElementById("info").innerHTML = e.gear;
-	*  webinos.vehicle.removeEventListener("shift", shiftHandler);
-	* }				
-	* \endcode
-	*/
-	interface ShiftEvent : VehicleEvent{
-		/**
-		* \brief Constant defines the first gear.	
-		*/	
-		const short GEAR_ONE = 1;
-		/**
-		* \brief Constant defines the second gear.	
-		*/	
-		const short GEAR_TWO = 2;
-		/**
-		* \brief Constant defines the third gear.	
-		*/	
-		const short GEAR_THREE = 3;
-		/**
-		* \brief Constant defines the fourth gear.
-		*/	
-		const short GEAR_FOUR = 4;		
-		/**
-		* \brief Constant defines the fifth gear.	
-		*/	
-		const short GEAR_FIFE = 5;
-		/**
-		* \brief Constant defines the sixth gear.	
-		*/	
-		const short GEAR_SIX = 6;
-		/**
-		* \brief Constant defines the seventh gear.
-		*/	
-		const short GEAR_SEVEN = 7;
-		/**
-		* \brief Constant defines the eighth gear.	
-		*/	
-		const short GEAR_EIGHT = 8;
-		/**
-		* \brief Constant defines the reverse gear.	
-		*/	
-		const short GEAR_REVERSE = -1;
-		/**
-		* \brief Constant defines the neutral gear.	
-		*/	
-		const short GEAR_NEUTRAL = 0;
-		/**
-		* \brief Constant defines the parking gear.	
-		*/	
-		const short GEAR_PARKING = -2;		
-		/**
-		* \brief Attribute represents the current gear of the vehicle. 	
-		*/	
-		readonly attribute short gear;
-		/**
-		* \brief Method sets initial values a shift event.
-		* \param bubbles True if event bubbles.
-		* \param cancelable True if event cancelable.
-		* \param gear current gear of the engine.
-		*/
-		void initShiftEvent(boolean bubbles, boolean cancelable, short gear);
-	};
-		/**
 	* \brief The interface defines a trip computer event. 
 	* A listener can be registered by vehicle.addEventLister("tripcomputer",listener,false).
 	*
@@ -549,8 +319,6 @@
 		/**
 		* \brief Method sets the initial values of a trip computer event.
 		*
-		* \param bubbles True if event bubbles.
-		* \param cancelable True if event cancelable.
 		* \param averageConsumption overall average consumption of the vehicle in l/100kilometers.
 		* \param tripConsumption average consumption of the vehicle in l/100kilometers on the current trip.
 		* \param averageSpeed average speed of the vehicle in kilometers per hour. 
@@ -559,31 +327,77 @@
 		* \param mileage overall driven distance in kilometers.
 		* \param range range of the vehicle in kilometers. 
 		*/
-		void initTripComputerEvent(boolean bubbles, boolean cancelable, float averageConsumption, float tripConsumption, float averageSpeed, float tripSpeed, float tripDistance, float mileage, float range);
-	};
-	/**
-	* \brief The interface defines a vehicle status event.
-	*/
-	interface VehicleStatusEvent : VehicleEvent{
-		/**
-		* \brief Attribute reflects the relevant component. The value must be within VehicleStatusComponents.
-		*/		
-		readonly attribute DOMString component;
-		/**
-		* \brief Attrubute reflects the status of the vehicle component.
-		*/		
-		readonly attribute DOMString status;
-		/**
-		* \brief Method sets the initial values of a vehicle status event.
-		*
-		* \param bubbles True if event bubbles.
-		* \param cancelable True if event cancelable.
-		* \param component defines the component, which has changed.
-		* \param status status of the given component.
-		*/
-		void initVehicleStatusEvent(boolean bubbles, boolean cancelable, DOMString component, DOMString status);
+		void initTripComputerEvent(float averageConsumption, float tripConsumption, float averageSpeed, float tripSpeed, float tripDistance, float mileage, float range);
 	};
 	
+	/**
+	* \brief This interface defines a shift event. 
+	* A listener can be registered by vehicle.addEventLister("gear",listener,false).
+	* \code
+	* // registering an Event for a Shift
+	* webinos.vehicle.addEventListener("gear", shiftHandler);
+	* function shiftHandler(e){
+	*   document.getElementById("info").innerHTML = e.gear;
+	*  webinos.vehicle.removeEventListener("shift", shiftHandler);
+	* }				
+	* \endcode
+	*/
+	interface GearEvent : VehicleEvent{
+		/**
+		* \brief Attribute reflects the current gear.
+		*/
+		attribute Gear gear;
+		
+		/**
+		* \brief Method sets the value of the current gear.
+		*
+		* \param gear defines the value of the current gear. 
+		*/
+		void initGearEvent(Gear gear);		
+	};
+	
+
+	/**
+	* \brief Vehicle gears
+	* 
+	* supported gear values
+	*/
+	enum Gear {"R","P","N", "1", "2", "3", "4", "5", "6", "7", "8", "10"};
+	
+	/**
+	* \brief Status of the wipers switch
+	* defines the different positions of the wiper switch
+	*/
+	enum WiperStatus { "front-wash", "rear-wash", "automatic", "front-once", "rear-once", "front-level1", "front-level2" };
+	
+	interface WiperEvent : VehicleEvent{
+		attribute WiperStatus position;
+	};
+	
+	/**
+	* \brief This interface defines a engine oil event. 
+	*/
+	interface EngineOilEvent : VehicleEvent{
+		/**
+		* \brief Attribute defines the level of the oil in the engine.
+		*/
+		attribute EngineOilLevel level;
+		/**
+		* \brief Method sets the initial values of a engine oil event.
+		*
+		* \param level defines the level of the oil in the engine.
+
+		*/
+		void initEngineOilEvent(EngineOilLevel level);	
+	};
+	
+	/**
+	* \brief Levels of engine oil
+	* defines the different levels of engine oil.
+	*/
+	enum EngineOilStatus { "OVER_MAX","MAX", "OK", "MIN", "UNDER_MIN", "MEASURING"};
+
+
 	/**
 	* \brief The interface defines a tire pressure event.
 	*/
@@ -615,21 +429,47 @@
 		*/
 		void initTirePressureEvent(Short frontLeft, Short frontRight,Short rearRight,Short rearLeft);
 	};
-	/**
-	* \brief Vehicle Status components
+	
+		/**
+	* \brief The interface defines a tire pressure event.
 	*/
-	enum VehicleStatusComponents {"wiperswitch", "oillevel"};
+	interface DoorEvent : VehicleEvent{
+		/**
+		* \brief Attribute reflects ...
+		*/		
+		readonly attribute boolean driver;
+		/**
+		* \brief  Attribute reflects ...
+		*/		
+		readonly attribute boolean? frontPassenger;
+		/**
+		* \brief  Attribute reflects ...
+		*/		
+		readonly attribute boolean? rearRight;
+		/**
+		* \brief  Attribute reflects ...
+		*/		
+		readonly attribute boolean? rearLeft;
+		/**
+		* \brief  Attribute reflects ...
+		*/		
+		readonly attribute boolean? trunkDeck;
+		
+		
+		/**
+		* \brief Method sets the initial values of a vehicle status event.
+		*
+		* \param driver defines TODO.
+		* \param frontPassenger defines TODO.
+		* \param rearLeft defines TODO.
+		* \param rearRight defines TODO.
+		* \param trunkDeck defines TODO.
+		*/
+		void initDoorEvent(boolean driver, boolean frontPassenger,boolean rearRight,boolean rearLeft,boolean trunkDeck);
+	};
 	
 	/**
-	* \brief Status of the wipers
+	* \brief Vehicle event types
+	* defines the possible vehicle Events.
 	*/
-	enum WiperStatus { "wiper-front-wash", "wiper-rear-wash", "wiper-automatic", "wiper-front-once", "wiper-rear-once", "wiper-front-level1", "wiper-front-level2" };
-
-	/**
-	* \brief Levels of engine oil
-	*/
-	enum EngineOilLevels { "OVER_MAX","MAX", "OK", "MIN", "UNDER_MIN", "MEASURING"};
-	
-	
-	
-
+	enum VehicleEventType {"gear","tripcomputer","parksensors-front", "parksensors-rear", "engineoil","wipers","tirepressure","doors"};
