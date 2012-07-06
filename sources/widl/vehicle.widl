@@ -411,15 +411,15 @@
 		readonly attribute unsigned short rigth;
 		/**
 		* \brief Method sets initial values of a park sensors event.
-		* \param bubbles True if event bubbles.
-		* \param cancelable True if event cancelable.
 		* \param position position of the sensors: front or rear.
+		* \param left data from the outer left sensor.
 		* \param left data from the left sensor.
 		* \param midLeft data from the middle left sensor.
 		* \param midRight data from the middle right sensor.
 		* \param right data from the right sensor.
+		* \param outright data from the outer right sensor.
 		*/
-		void initParkSensorsEvent(boolean bubbles, boolean cancelable, DOMString position, short left, short midLeft, short midRight, short right);
+		void initParkSensorsEvent(DOMString position, short outLeft ,short left, short midLeft, short midRight, short right, short outRight);
 	};
 
 	/**
@@ -539,9 +539,9 @@
 		*/
 		readonly attribute float tripDistance;
 		/**
-		* \brief Attrubute reflects milage in kilometers.
+		* \brief Attrubute reflects mileage in kilometers.
 		*/
-		readonly attribute float milage;
+		readonly attribute float mileage;
 		/**
 		* \brief Attrubute reflects the range of the vehicle in kilometers.
 		*/
@@ -578,10 +578,42 @@
 		*
 		* \param bubbles True if event bubbles.
 		* \param cancelable True if event cancelable.
-		* \param component .
+		* \param component defines the component, which has changed.
 		* \param status status of the given component.
 		*/
 		void initVehicleStatusEvent(boolean bubbles, boolean cancelable, DOMString component, DOMString status);
+	};
+	
+	/**
+	* \brief The interface defines a tire pressure event.
+	*/
+	interface TirePressureEvent : VehicleEvent{
+		/**
+		* \brief Attribute reflects the pressure of the front left tire in bar.
+		*/		
+		readonly attribute unsigned short frontLeft;
+		/**
+		* \brief Attribute reflects the pressure of the front right tire in bar.
+		*/		
+		readonly attribute unsigned short frontRight;
+		/**
+		* \brief Attribute reflects the pressure of the rear left tire in bar.
+		*/		
+		readonly attribute unsigned short rearLeft;
+		/**
+		* \brief Attribute reflects the pressure of the rear left tire in bar.
+		*/	
+		readonly attribute unsigned short rearRight;
+		/**
+		* \brief Method sets the initial values of a vehicle status event.
+		*
+		* \param frontLeft defines the tire pressure of tire at the front left side of the vehicle.
+		* \param frontRight defines the tire pressure of tire at the front right side of the vehicle.
+		* \param rearLeft defines the tire pressure of tire at the rear left side of the vehicle.
+		* \param rearRight defines the tire pressure of tire at the rear right side of the vehicle.
+
+		*/
+		void initTirePressureEvent(Short frontLeft, Short frontRight,Short rearRight,Short rearLeft);
 	};
 	/**
 	* \brief Vehicle Status components
@@ -597,4 +629,7 @@
 	* \brief Levels of engine oil
 	*/
 	enum EngineOilLevels { "OVER_MAX","MAX", "OK", "MIN", "UNDER_MIN", "MEASURING"};
+	
+	
+	
 
