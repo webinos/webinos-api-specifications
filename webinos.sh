@@ -100,6 +100,11 @@ cat > "$SPECHOME/apis/index.html" <<DELIM
 
      <h1 class="head">Webinos Phase 2 Device APIs</h1>
 </div>
+<p>This page lists all API specifications that are defined or referenced/used within the Webinos project.</p>
+<p>All APIs defined by Webinos, are by default exposed under the <code>window.webinos</code> object and are available in the local web execution environment.</p>
+<p> One of the key elements of Webinos is that the framework provides means to <strong>bind to a service object in a remote execution environment</strong>. The <a href='http://dev.webinos.org/specifications/new/servicediscovery.html'>Webinos Discovery API</a> defines how a service discovered and how an application can bind to a remote service. The service object will act as proxy for sending/receiving events to/from the remote peer and hides the complexity of sending/receiving message between the peers in a trusted manner. This mechanism is not limited to Webinos defined APIs but also available for the APIs defined by W3C referenced below and user defined APIs.</p>
+<p>For more information see <a href='http://dev.webinos.org/specifications/new/servicediscovery.html'>Discovery API</a> and <a href='http://dev.webinos.org/deliverables/wp3/d31.html'>Architecture Specification</a>.</p>
+
 <div class="api">
   <h2 class="head">APIs Specified by Webinos</h2>
 </div>
