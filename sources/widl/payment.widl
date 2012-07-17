@@ -203,10 +203,8 @@
        * 
        *
        *
-       * \param successCallback Callback issued when the checkout is performed and payment is made
-       * \param errorCallback Callback issued if an error occurs during adding the amount   
-       * \param challengeCallback Callback that will be used if the payment provider requires additional confirmation to finalize payment
-       * \return PendingOperation enabling the requester to cancel this request.
+       * \param userResponse Information that the user issued in response to the challenge (on image and text challenges)
+       * \return void 
        */
         void answerChallenge(DOMstring userResponse);
 
