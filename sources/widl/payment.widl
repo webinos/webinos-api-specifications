@@ -346,8 +346,16 @@
         void cancel ();
      };
 
-     enum PaymentErrors {"basket_already_open", "basket_not_open", "payment_charge_failed", "payment_refund_not_supported", "payment_refund_failed", "payment_chargeable_exceeded", "payment_authentication_failed"};
-     enum PaymentChallengeType {"text", "image", "url"};
+
+        /**
+        * \brief Types of payment challenges
+        */
+          enum PaymentChallengeType {"text", "image", "url"};
+          
+        /**
+        * \brief Types of error messages specific to payment functionality
+        */
+         enum PaymentErrors {"basket_already_open", "basket_not_open", "payment_charge_failed", "payment_refund_not_supported", "payment_refund_failed", "payment_chargeable_exceeded", "payment_authentication_failed"};
 
         /**
          * \brief Payment specific errors.
