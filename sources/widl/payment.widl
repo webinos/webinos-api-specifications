@@ -200,8 +200,9 @@
        /**
        * \brief Provide the user response to a challenge to the payment provider
        *
-       * 
-       *
+       * If a payment provider presents an image or a text challenge to the user,
+       * the client needs to present them and gather a text response from the user,
+       * which is returned to the payment provider via the userResponse function.
        *
        * \param userResponse Information that the user issued in response to the challenge (on image and text challenges)
        * \return void 
@@ -281,6 +282,28 @@
 
         /**
          * \brief Callback for additional confirmation / identification challenges by the payment provider
+         *
+         * In many payment scenarios, the payment provider will require additional information
+         * and confirmation by the user to ensure that the payment is done with user consent
+         * and that the user is not impersonated by an application. To facilitate this, the
+         * payment provider can issue a challenge, which will be presented to the user and
+         * needs to be responded to by the user. It is the task of the payment provider to 
+         * ensure that challenges are changing and a capture/replay attack will not be successful.
+         * 
+         * Depening on the needs of the transaction, this can also be used to ensure that the
+         * payment is confirmed by a person (for example by using captcha-style images) and also
+         * to confirm to users that they are indeed connected to the proper payment provider (for
+         * example by presenting an image, only known to the user and the payment provider overlaid
+         * with information about the current payment process).
+         * 
+         * Challenges can take three forms:
+         *   Text challenges - such as "Enter the PIN from the SMS er just sent you."
+         *   Image challenges - captcha-style images or any image containing a textual question
+         *   URL - many payment providers require a re-direct to their own web page for additional
+         *         identification and confirmation. On receiving an URL, the client is required
+         *         to open a frame with this URL so the user can comunicate and provide credentials
+         *         directly to the payment provider.         
+         *
          * \param challengeType Defines the challenge type issued by the payment provider.
          * \param challenge Defines the challenge to be presented to the user
          */
