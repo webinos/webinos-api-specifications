@@ -77,7 +77,7 @@
    *        function updateSuccess() {
    *                alert("Total amount is: "myBasket.totalAmount+" Tax is "+myBasket.tax);
    *                // now close the bill and perform the actual payment
-   *                myBasket.checkout(checkoutSuccess, paymentFailure);
+   *                myBasket.checkout(checkoutSuccess, paymentFailure, paymentChallenge);
    *        }
    *        
    *        // Define the checkoutSuccess success callback.
@@ -91,6 +91,27 @@
    *                alert("Failure occured during payment.");
    *                 if (myBasket != null) myBasket.release();
    *        }
+   *
+   *        // Define the paymentChallenge callback.
+   *        function paymentChallenge(cType, cValue) {   
+   *                 
+   *         if(cType=="url"){
+   *           // direct web page of payment provider
+   *           window.open(cValue, "Confirm Payment", "width=300,height=200,scrollbars=yes");
+   *         }
+   *         else if(cType=="text"){
+   *             userInput = prompt(cValue, "");
+   *             answerChallenge(userInput);
+   *	     }
+   *         else if(cType=="image"){
+   *             // this would need a custom prompt, which would make this example
+   *             // too large - just pretent it's here.
+   *             userInput = graphicPrompt(cValue, "");
+   *             answerChallenge(userInput);
+   *	     }
+   *         else alert("Unknown challenge type "+cType+" issued by payment provider.");  *
+   *        }
+   *         
    *
    * \endcode
    *
