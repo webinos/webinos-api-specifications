@@ -279,7 +279,7 @@
          */
         callback PaymentErrorCB = void (PaymentError error);
         
-         enum PaymentChallengeType {"text", "image", "url");
+         enum PaymentChallengeType {"text", "image", "url"};
 
         /**
          * \brief Callback for additional confirmation / identification challenges by the payment provider
