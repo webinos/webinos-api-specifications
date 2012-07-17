@@ -299,7 +299,6 @@
          */
         callback PaymentErrorCB = void (PaymentError error);
         
-         enum PaymentChallengeType {"text", "image", "url"};
 
         /**
          * \brief Callback for additional confirmation / identification challenges by the payment provider
@@ -348,6 +347,7 @@
      };
 
      enum PaymentErrors {"basket_already_open", "basket_not_open", "payment_charge_failed", "payment_refund_not_supported", "payment_refund_failed", "payment_chargeable_exceeded", "payment_authentication_failed"};
+     enum PaymentChallengeType {"text", "image", "url"};
 
         /**
          * \brief Payment specific errors.
