@@ -191,10 +191,25 @@
        * might cause the checkout screen of the payment service provider to be displayed.
        *
        * \param successCallback Callback issued when the checkout is performed and payment is made
-       * \param errorCallback Callback issued if an error occurs during adding the amount       
+       * \param errorCallback Callback issued if an error occurs during adding the amount   
+       * \param challengeCallback Callback that will be used if the payment provider requires additional confirmation to finalize payment
        * \return PendingOperation enabling the requester to cancel this request.
        */
-        PendingOperation checkout(VoidFunction successCallback, PaymentErrorCB errorCallback);
+        PendingOperation checkout(VoidFunction successCallback, PaymentErrorCB errorCallback, PaymentChallengeCB challengeCallback);
+
+       /**
+       * \brief Provide the user response to a challenge to the payment provider
+       *
+       * 
+       *
+       *
+       * \param successCallback Callback issued when the checkout is performed and payment is made
+       * \param errorCallback Callback issued if an error occurs during adding the amount   
+       * \param challengeCallback Callback that will be used if the payment provider requires additional confirmation to finalize payment
+       * \return PendingOperation enabling the requester to cancel this request.
+       */
+        void answerChallenge(DOMstring userResponse);
+
 
         /**
        * \brief Releases a shopping basket.
@@ -263,6 +278,16 @@
          * \param error The Payment API related error object of an unsuccessful asynchronous operation. 
          */
         callback PaymentErrorCB = void (PaymentError error);
+        
+         enum PaymentChallengeType {"text", "image", "url");
+
+        /**
+         * \brief Callback for additional confirmation / identification challenges by the payment provider
+         * \param challengeType Defines the challenge type issued by the payment provider.
+         * \param challenge Defines the challenge to be presented to the user
+         */
+        callback PaymentChallengeCB = void (PaymentChallengeType challengeType, DOMString challenge);
+        
 
     /**
      * \brief The PendingOperation interface
