@@ -10,10 +10,10 @@
  * 
  * Aspect
  * \n  An aspect is an abstract namable thing (e.g., a "Device", "Battery", "Display", etc.) that the user agent knows about and can interact with. An aspect can contain one or more components.
- * \n Component
+ * \n \n Component
  * \n  A component is a concrete instance of an aspect (e.g., a real battery in the device, the real screens of the device). As devices can contain more than one instance of the thing being referred to by an aspect (e.g. two screens, three batteries, two SIM cards), each real instance of an aspect is referred to as a component. Each component has its own unique component name, which is assigned by the user agent and serves as the component's identifier for the life of the application (e.g., "screen_1", "battery2", "os", "hdd", "SDCard").
  * \n     This specification reserves two special components names ("_active" and "_default") which a user agent MUST NOT use when generating. 
- * \n Property
+ * \n \n Property
  * \n     A property of an component is something that can be queried to returns data (e.g., how much charge a battery has, if the WiFi is connected or not, the SSID of a WiFi network). 
  * 
  * A user agent supports aspect X if the user agent can verify that the aspect (hardware or software) exists on the device and/or has not been disabled (either by policy or by a feature declaration).
@@ -25,7 +25,7 @@
  * \n Default component:
  * \n     The component that is the default component for a given aspect, which may or may not be the active component. 
  * \n     In ECMAScript, a developer uses the string "_default" to refer to the default component. 
- * \n Active component:
+ * \n \n Active component:
  * \n     The component that is the acitve component for a given aspect, which may or may not be the default component. 
  * \n     In ECMAScript, a developer uses the string "_active" to refer to the active component. 
  *   
@@ -61,11 +61,11 @@
  *  
  *  The steps for processing a device status feature declaration is given by the following algorithm. Only the first feature declaration is respected by the user agent:
  *  
- *      Let declaration be the first device status feature declaration that was present in the configuration document, ignoring all others.
- *      Implement the DeviceapisDeviceStatusManager interface when the widget's start file is instantiated:
- *          For each supported aspect, identify the components and assign each of them a component name, and, where there are more than one component, identify which is the default and track which components are active. It is recommended that the component name assigned by the user agent to a component be something that is "developer-friendly": i.e., that logically relates to the aspect the component represents (e.g., candidats include "screen_1", "battery2", "os", "hdd", "SD-Card").
- *      If required, disable any aspects as needed by the particular feature declaration (see each device status feature strings).
- *      ignore all other subsequent device status feature declarations.
+ * \n  1. Let declaration be the first device status feature declaration that was present in the configuration document, ignoring all others.
+ * \n  2. Implement the DeviceapisDeviceStatusManager interface when the widget's start file is instantiated:
+ * \n     2a. For each supported aspect, identify the components and assign each of them a component name, and, where there are more than one component, identify which is the default and track which components are active. It is recommended that the component name assigned by the user agent to a component be something that is "developer-friendly": i.e., that logically relates to the aspect the component represents (e.g., candidats include "screen_1", "battery2", "os", "hdd", "SD-Card").
+ * \n  3. If required, disable any aspects as needed by the particular feature declaration (see each device status feature strings).
+ * \n  4. ignore all other subsequent device status feature declarations.
  *  
  *  XML Example
  *  
@@ -162,14 +162,14 @@ interface DeviceStatusManager {
         * 
         * The steps to retrieve the components are given by the following algorithm. The algorithm returns an array of component names, which may be empty.
         * 
-        *     Run the general invocation checks algorithm. If no exceptions were generated, continue.
-        *     Let components be an empty array.
-        *     If the first argument (aspect) null, return components and terminate this algorithm.
-        *     Let trimmed aspect be the result of trimming any space characters from the front and back of aspect.
-        *     If trimmed aspect is an empty string or does not exactly match the name of a supported aspect, return null and terminate this algorithm.
-        *     If trimmed aspect exactly matches the name of a supported aspect:
-        *         For each component of the matching aspect, create a DOMString representation of the component name and add it to the components array.
-        *   This offers methods to get information about the device status and subscribe to receive notifications of device status changes. To allow for asynchornous notification of changes to the various properties of components, the user agent keeps a list of active watch operations. Each entry in this list is identified by a number, which is unique within its list for the lifetime of the application.
+        * \n  1. Run the general invocation checks algorithm. If no exceptions were generated, continue.
+        * \n  2. Let components be an empty array.
+        * \n  3. If the first argument (aspect) null, return components and terminate this algorithm.
+        * \n  4. Let trimmed aspect be the result of trimming any space characters from the front and back of aspect.
+        * \n  5. If trimmed aspect is an empty string or does not exactly match the name of a supported aspect, return null and terminate this algorithm.
+        * \n  6. If trimmed aspect exactly matches the name of a supported aspect:
+        * \n      6a. For each component of the matching aspect, create a DOMString representation of the component name and add it to the components array.
+        * \n  7.  This offers methods to get information about the device status and subscribe to receive notifications of device status changes. To allow for asynchornous notification of changes to the various properties of components, the user agent keeps a list of active watch operations. Each entry in this list is identified by a number, which is unique within its list for the lifetime of the application.
         *         Example
         * \code
 //displays contain, for example, ["screen1"] 
