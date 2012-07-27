@@ -9,12 +9,12 @@
  * Aspects contain components, which contain properties The Device status tree model: at the root are the aspects, which contain one or more components, which themselves contain properties.
  * 
  * Aspect
- * \n \t An aspect is an abstract namable thing (e.g., a "Device", "Battery", "Display", etc.) that the user agent knows about and can interact with. An aspect can contain one or more components.
+ * \n  An aspect is an abstract namable thing (e.g., a "Device", "Battery", "Display", etc.) that the user agent knows about and can interact with. An aspect can contain one or more components.
  * \n Component
- * \n \t A component is a concrete instance of an aspect (e.g., a real battery in the device, the real screens of the device). As devices can contain more than one instance of the thing being referred to by an aspect (e.g. two screens, three batteries, two SIM cards), each real instance of an aspect is referred to as a component. Each component has its own unique component name, which is assigned by the user agent and serves as the component's identifier for the life of the application (e.g., "screen_1", "battery2", "os", "hdd", "SDCard").
- *     This specification reserves two special components names ("_active" and "_default") which a user agent MUST NOT use when generating. 
- * Property
- *     A property of an component is something that can be queried to returns data (e.g., how much charge a battery has, if the WiFi is connected or not, the SSID of a WiFi network). 
+ * \n  A component is a concrete instance of an aspect (e.g., a real battery in the device, the real screens of the device). As devices can contain more than one instance of the thing being referred to by an aspect (e.g. two screens, three batteries, two SIM cards), each real instance of an aspect is referred to as a component. Each component has its own unique component name, which is assigned by the user agent and serves as the component's identifier for the life of the application (e.g., "screen_1", "battery2", "os", "hdd", "SDCard").
+ * \n     This specification reserves two special components names ("_active" and "_default") which a user agent MUST NOT use when generating. 
+ * \n Property
+ * \n     A property of an component is something that can be queried to returns data (e.g., how much charge a battery has, if the WiFi is connected or not, the SSID of a WiFi network). 
  * 
  * A user agent supports aspect X if the user agent can verify that the aspect (hardware or software) exists on the device and/or has not been disabled (either by policy or by a feature declaration).
  * 
@@ -22,32 +22,32 @@
  * 
  *  To make the Device Status API easier to work with, this specification reserves two special component names ("_default" and "_active"). These two component names can be used by a developer in the API as proxies for either a default component or active component.
  * 
- * Default component:
- *     The component that is the default component for a given aspect, which may or may not be the active component. 
- *     In ECMAScript, a developer uses the string "_default" to refer to the default component. 
- * Active component:
- *     The component that is the acitve component for a given aspect, which may or may not be the default component. 
- *     In ECMAScript, a developer uses the string "_active" to refer to the active component. 
+ * \n Default component:
+ * \n     The component that is the default component for a given aspect, which may or may not be the active component. 
+ * \n     In ECMAScript, a developer uses the string "_default" to refer to the default component. 
+ * \n Active component:
+ * \n     The component that is the acitve component for a given aspect, which may or may not be the default component. 
+ * \n     In ECMAScript, a developer uses the string "_active" to refer to the active component. 
  *   
  * \def-api-feature http://wacapps.net/api/devicestatus.deviceinfo
  * 
  *     Only the following device-information aspects are available to the application (all others are disabled):
  *  
- *         Battery
- *         Device
- *         Display
- *         MemoryUnit
- *         OperatingSystem
- *         WebRuntime
+ * \n         Battery
+ * \n         Device
+ * \n         Display
+ * \n         MemoryUnit
+ * \n         OperatingSystem
+ * \n         WebRuntime
  * 
 * \def-api-feature http://wacapps.net/api/devicestatus.networkinfo
  * 
  *     Only the following network-information aspects are available to the application (all others are disabled):
  * 
- *         CellularHardware
- *         CellularNetwork
- *         WiFiHardware
- *         WiFiNetwork
+ * \n         CellularHardware
+ * \n         CellularNetwork
+ * \n         WiFiHardware
+ * \n         WiFiNetwork
  * 
 * \def-api-feature http://wacapps.net/api/devicestatus
  * 
