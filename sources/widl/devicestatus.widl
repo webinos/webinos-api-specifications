@@ -25,7 +25,7 @@
  * \n \n Active component:
  * \n     The component that is the acitve component for a given aspect, which may or may not be the default component. 
  * \n     In ECMAScript, a developer uses the string "_active" to refer to the active component. 
- */
+ *
  *   
  * \def-api-feature http://wacapps.net/api/devicestatus.deviceinfo
  * 
