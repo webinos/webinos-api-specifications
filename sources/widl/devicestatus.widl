@@ -70,39 +70,39 @@
  *  XML Example
  *  
  * \code
- <widget xmlns="http://www.w3.org/ns/widgets">
-   <feature name="http://wacapps.net/api/devicestatus"/>
- </widget>
+ \<widget xmlns="http://www.w3.org/ns/widgets">
+   \<feature name="http://wacapps.net/api/devicestatus"/>
+ \</widget>
  * \endcode
  *  
  *  The above example shows how a developer declares their intention to access all aspects of the Device Status API.
  *  XML Example
  *  
  * \code
- <widget xmlns="http://www.w3.org/ns/widgets">
-   <feature name="http://wacapps.net/api/devicestatus.deviceinfo"/>
- </widget>
+ \<widget xmlns="http://www.w3.org/ns/widgets">
+   \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/>
+ \</widget>
  * \endcode
  *  
  *  The above example shows a developers intention to access the device information aspects of the Device Status API.
  *  XML Example
  *  
  * \code
- <widget xmlns="http://www.w3.org/ns/widgets">
-   <feature name="http://wacapps.net/api/devicestatus.networkinfo"/>
- </widget>
+ \<widget xmlns="http://www.w3.org/ns/widgets">
+   \<feature name="http://wacapps.net/api/devicestatus.networkinfo"/>
+ \</widget>
  * \endcode
  *  
  *  The above example shows a developers intention to access network information aspects the aspects of the Device Status API.
  *  XML Example
  *  
  * \code
- <widget xmlns="http://www.w3.org/ns/widgets">
-   <feature name="http://wacapps.net/api/device.networkinfo"/>
-   <!-- The rest are ignored -->
-   <feature name="http://wacapps.net/api/devicestatus"/>
-   <feature name="http://wacapps.net/api/devicestatus.deviceinfo"/>
- </widget> 
+ \<widget xmlns="http://www.w3.org/ns/widgets">
+   \<feature name="http://wacapps.net/api/device.networkinfo"/>
+   \<!-- The rest are ignored -->
+   \<feature name="http://wacapps.net/api/devicestatus"/>
+   \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/>
+ \</widget> 
  * \endcode
  *  
  *  In the above example, only the network information aspects would be made available.
@@ -195,13 +195,13 @@ for (var i = 0; i < displays.length; i++) {
         * 
         * The steps to check if an aspect is supported are given by the following algorithm. The algorithm returns either true or false.
         * 
-        *     Run the general invocation checks algorithm. If no exceptions were generated, continue.
-        *     Let trimmed aspect be the result of trimming all white space from the front and back of the first argument.
-        *     If the user agent does not supports aspect trimmed aspect, return false and terminate this algorithm.
-        *     If the second argument (property) was passed, and it's not null,
-        *         Let trimmed property be the result of of trimming all white space from the front and back of the second argument.
-        *         If trimmed property is a supported property of trimmed aspect, then return true and terminate this algorithm.
-        *     Return false.
+        * \n 1. Run the general invocation checks algorithm. If no exceptions were generated, continue.
+        * \n 2. Let trimmed aspect be the result of trimming all white space from the front and back of the first argument.
+        * \n 3. If the user agent does not supports aspect trimmed aspect, return false and terminate this algorithm.
+        * \n 4. If the second argument (property) was passed, and it's not null,
+        * \n    4a. Let trimmed property be the result of of trimming all white space from the front and back of the second argument.
+        * \n    4b. If trimmed property is a supported property of trimmed aspect, then return true and terminate this algorithm.
+        * \n 5. Return false.
         * 
         * Example
         * \code
@@ -226,42 +226,42 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * 
         * The steps to get a property value are given by the following algorithm:
         * 
-        *     Run the general invocation checks algorithm. If no exceptions were generated, continue.
-        *     If either the aspect member or the property member is not present in the third argument (query):
-        *         If the second argument (errorCallback) is not an ECMAScript funtion, then terminate this algorithm skipping all steps below.
-        *         Let exception be a new DOMException of type "TypeMismatchError", with message "Required aspect or property was not passed." (or similar).
-        *         Queue a task to invoke the errorCallback with exception as the argument.
-        *         Terminate this algorithm, skipping all steps below.
-        *     Let aspect name be the result of trimming the value of the aspect member from the third argument (query).
-        *     If aspect name does not match an enabled aspect:
-        *         If the second argument (errorCallback) is not an ECMAScript function, then terminate this algorithm skipping all steps below.
-        *         If aspect name is one found in all aspects, but was disabled by policy or via a feature string, then:
-        *             Let exception be a new DOMException of type "SecurityError", with message "Access to this component was blocked by policy." (or similar).
-        *         If aspect name is not one found in the list of all aspects, then:
-        *             Let exception be a new DOMException of type "NotFoundError", with message "Aspect could not be found." (or similar).
-        *         Queue a task to invoke the errorCallback with exception as the argument.
-        *         Terminate this algorithm, skipping all steps below.
-        *     Let prop name be the result of trimming the value of the property member from the third argument (query).
-        *     If the component member is present in query, let component name be the result of trimming component member.
-        *     If the component name is not component of the aspect aspect name (e.g., {aspect:"Battery", component: "screen1"}:
-        *         If the second argument (errorCallback) is not an ECMAScript function, then terminate this algorithm skipping all steps below.
-        *         Let exception be a new DOMException of type "InvalidAccessError", with message "Component is not an instance of aspect." (or similar).
-        *         Queue a task to invoke the errorCallback with exception as the argument.
-        *         Terminate this algorithm, skipping all steps below.
-        *     If the component member is not present in query:
-        *         If the aspect aspect name has an active component, then let component name be "_active". Otherwise, let component name be "_default".
-        *     If the component component name does not have the property property name (e.g., {aspect:"Battery", component: "_active", "fooBar"):
-        *         If the second argument (errorCallback) is not an ECMAScript function, then terminate this algorithm skipping all steps below.
-        *         Let exception be a new DOMException of type "NotFoundError", with message "Property not found in component." (or similar).
-        *         Queue a task to invoke the errorCallback with exception as the argument.
-        *         Terminate this algorithm, skipping all steps below.
-        *     Let task be a task that does the following:
-        *         Let value be the value of property property name of the component component name.
-        *         Invoke the successCallback with value as the argument.
-        *     Let op be and object that implements the PendingOperation interface.
-        *     Associate task with op, so that if op's cancel() method is invoked, it attempts to remove task for the callbacks task queue.
-        *     Queue a task task.
-        *     Return op.
+        * \n  1. Run the general invocation checks algorithm. If no exceptions were generated, continue.
+        * \n  2. If either the aspect member or the property member is not present in the third argument (query):
+        * \n     2a.  If the second argument (errorCallback) is not an ECMAScript funtion, then terminate this algorithm skipping all steps below.
+        * \n     2b.  Let exception be a new DOMException of type "TypeMismatchError", with message "Required aspect or property was not passed." (or similar).
+        * \n     2c.  Queue a task to invoke the errorCallback with exception as the argument.
+        * \n     2d.  Terminate this algorithm, skipping all steps below.
+        * \n  3. Let aspect name be the result of trimming the value of the aspect member from the third argument (query).
+        * \n  4. If aspect name does not match an enabled aspect:
+        * \n     4a.  If the second argument (errorCallback) is not an ECMAScript function, then terminate this algorithm skipping all steps below.
+        * \n     4b.  If aspect name is one found in all aspects, but was disabled by policy or via a feature string, then:
+        * \n        4b1.   Let exception be a new DOMException of type "SecurityError", with message "Access to this component was blocked by policy." (or similar).
+        * \n     4c.  If aspect name is not one found in the list of all aspects, then:
+        * \n        4c1.   Let exception be a new DOMException of type "NotFoundError", with message "Aspect could not be found." (or similar).
+        * \n     4d.  Queue a task to invoke the errorCallback with exception as the argument.
+        * \n     4e.  Terminate this algorithm, skipping all steps below.
+        * \n  5. Let prop name be the result of trimming the value of the property member from the third argument (query).
+        * \n  6. If the component member is present in query, let component name be the result of trimming component member.
+        * \n  7. If the component name is not component of the aspect aspect name (e.g., {aspect:"Battery", component: "screen1"}:
+        * \n     7a.  If the second argument (errorCallback) is not an ECMAScript function, then terminate this algorithm skipping all steps below.
+        * \n     7b.  Let exception be a new DOMException of type "InvalidAccessError", with message "Component is not an instance of aspect." (or similar).
+        * \n     7c.  Queue a task to invoke the errorCallback with exception as the argument.
+        * \n     7d.  Terminate this algorithm, skipping all steps below.
+        * \n  8. If the component member is not present in query:
+        * \n     8a.  If the aspect aspect name has an active component, then let component name be "_active". Otherwise, let component name be "_default".
+        * \n  9. If the component component name does not have the property property name (e.g., {aspect:"Battery", component: "_active", "fooBar"):
+        * \n     9a.  If the second argument (errorCallback) is not an ECMAScript function, then terminate this algorithm skipping all steps below.
+        * \n     9b.  Let exception be a new DOMException of type "NotFoundError", with message "Property not found in component." (or similar).
+        * \n     9c.  Queue a task to invoke the errorCallback with exception as the argument.
+        * \n     9d.  Terminate this algorithm, skipping all steps below.
+        * \n 10. Let task be a task that does the following:
+        * \n    10a.  Let value be the value of property property name of the component component name.
+        * \n    10b.  Invoke the successCallback with value as the argument.
+        * \n 11. Let op be and object that implements the PendingOperation interface.
+        * \n 12. Associate task with op, so that if op's cancel() method is invoked, it attempts to remove task for the callbacks task queue.
+        * \n 13. Queue a task task.
+        * \n 14. Return op.
         * 
         * Example
         * \code
@@ -296,23 +296,23 @@ null, options);
         * 
         * The steps for watching property changes is given by the following algorithm:
         * 
-        *     Run the general invocation checks algorithm. If no exceptions were generated, continue.
-        *     Let subscription id be a user-agent-defined (random or sequential) unique integer that will represent the looping action to be created by invoking this method.
-        *     Add subscription id to the list of active watch operations.
-        *     Return subscription id, and then continue running this algorithm asynchronously.
-        *     Let interval be the value 0.
-        *     If the fourth argument (options) is present:
-        *         If the minChangePercent member is present, and it is a number greater than 0, then let percent interval be the value of minChangePercent.
-        *         If the minNotificationInterval member is present, and it is a number, then let interval be the value of minNotificationInterval.
-        *         If the maxNotificationInterval member is present, and it is a number, then let max interval be the value of minNotificationInterval.
-        *     If interval is less than a user-agent-defined value for a the smallest ammount of time between intevals (i.e., to protect the component from being flooded with requests or because it would drain too much battery, etc.), set interval to that user-agent-defined value.
-        *     If max interval is less than interval, discard max interval.
-        *     Let old value be the value 0.
-        *     Wait, at a minimum (optionally more time if needed), the amount of time indicated by the interval. If the max interval was not discarded, and the time waited exceeds the max interval, do this step again (i.e., wait).
-        *     If the entry for subscription id has been cleared from the list of active watch operations, terminate this algorithm. If subscription id has not been cleared from the list of active watch operations, create a task to run the getPropertyValue() method using successCallback as the first argument, and, if present, errorCallback as the second argument, and query dictionary as the third argument. Discard the resulting PendingOperation object.
-        *     TODO: Factor in the minChangePercent change value. Only queue the task when the change between the old value and new value is minChangePercent or greater.
-        *     Queue the task task.
-        *     Return to step labelled wait.
+        * \n  1. Run the general invocation checks algorithm. If no exceptions were generated, continue.
+        * \n  2. Let subscription id be a user-agent-defined (random or sequential) unique integer that will represent the looping action to be created by invoking this method.
+        * \n  3. Add subscription id to the list of active watch operations.
+        * \n  4. Return subscription id, and then continue running this algorithm asynchronously.
+        * \n  5. Let interval be the value 0.
+        * \n  6. If the fourth argument (options) is present:
+        * \n     6a.  If the minChangePercent member is present, and it is a number greater than 0, then let percent interval be the value of minChangePercent.
+        * \n     6b.  If the minNotificationInterval member is present, and it is a number, then let interval be the value of minNotificationInterval.
+        * \n     6c.  If the maxNotificationInterval member is present, and it is a number, then let max interval be the value of minNotificationInterval.
+        * \n  7. If interval is less than a user-agent-defined value for a the smallest ammount of time between intevals (i.e., to protect the component from being flooded with requests or because it would drain too much battery, etc.), set interval to that user-agent-defined value.
+        * \n  8. If max interval is less than interval, discard max interval.
+        * \n  9. Let old value be the value 0.
+        * \n 10. Wait, at a minimum (optionally more time if needed), the amount of time indicated by the interval. If the max interval was not discarded, and the time waited exceeds the max interval, do this step again (i.e., wait).
+        * \n 11. If the entry for subscription id has been cleared from the list of active watch operations, terminate this algorithm. If subscription id has not been cleared from the list of active watch operations, create a task to run the getPropertyValue() method using successCallback as the first argument, and, if present, errorCallback as the second argument, and query dictionary as the third argument. Discard the resulting PendingOperation object.
+        * \n 12. TODO: Factor in the minChangePercent change value. Only queue the task when the change between the old value and new value is minChangePercent or greater.
+        * \n 13. Queue the task task.
+        * \n 14. Return to step labelled wait.
         * 
         * Example
         * \code
