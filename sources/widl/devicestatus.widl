@@ -355,7 +355,7 @@ null, options);
         * 
         * If a valid watchid argument is passed that corresponds to a subscription already in place, then the watch process MUST immediately terminate and no further callbacks MUST be invoked. If the watchid argument does not correspond to a valid subscription, the method should return without any further action.
         * Example
-        * \endcode
+        * \code
            function propertyChange(value, ref) {
            	console.log("New value for " + ref.property + " is " + value);
            
