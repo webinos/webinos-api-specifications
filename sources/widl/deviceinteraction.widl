@@ -108,7 +108,7 @@ interface DeviceInteractionManager {
  	                              long duration) ;
 
     void startVibrate(Function successCallback,
-                                  optional ErrorCB? errorCallback,
+                                  optional ErrorCB? errorCallback
                                   optional unsinged long duration,
                                   optional DOMString pattern);
 
