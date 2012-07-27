@@ -401,31 +401,31 @@ dictionary PropQuery {
         enum NetworkStates {"connected", "available", "forbidden"};
 
 /**
-* \section Battery aspect
+* <h2> Battery aspect
 * 
 * The Battery aspect represents a battery in the device. Components of this aspect have the following properties:
 * 
 *     \li batteryBeingCharged
 *     \li batteryLevel
 * 
-* \subsection The batteryBeingCharged property
+* <h3> The batteryBeingCharged property
 * 
 * The batteryBeingCharged property is a boolean that indicates whether the battery is currently being charged or not. Returns true if the battery is being charged.
 * 
-* \subsection The batteryLevel property
+* <h3> The batteryLevel property
 * 
 * The batteryLevel property is an octet that represents the remaining percentage (0-100) of the battery capacity that available. When the battery is full, the value is 100. When the battery is drained, the value is 0.
 * 
-* \section CellularHardware aspect
+* <h2> CellularHardware aspect
 * 
 * The CellularHardware aspect represents the device's hardware that accesses to telephone network. Components of this aspect have the following properties:
 * 
 * \li status
 * 
-* \subsection The status property
+* <h3> The status property
 * 
 * The status property is a DOMString represented as a SwitchType that indicates the status of the Cellular Hardware.
-* \section CellularNetwork aspect
+* <h2> CellularNetwork aspect
 * 
 * The CellularNetwork aspect represents the cellular network being used by the device. Components of this aspect have the following properties:
 * 
@@ -435,22 +435,22 @@ dictionary PropQuery {
 * \li signalStrength
 * \li operatorName
 * 
-* \subsection The isInRoaming property
+* <h3> The isInRoaming property
 * 
 * The isInRoaming property is a boolean that indicates if the cellular connection is roaming. A value of true indicates that the connection is roaming.
-* \subsection The mcc property
+* <h3> The mcc property
 * 
 * The mcc property is a DOMString that represents the country of a mobile network.
-* \subsection The mnc property
+* <h3> The mnc property
 * 
 * The mnc property is a DOMString that represents the Mobile Network Code (MNC).
-* \subsection The signalStrength property
+* <h3> The signalStrength property
 * 
 * The signalStrength property is an octet that represent the signal strength of the cellular network represented as a percentage.
-* \subsection The operatorName property
+* <h3> The operatorName property
 * 
 * The operatorName property is a DOMString that represents the name of the operator of the cellular network.
-* \section Device aspect
+* <h2> Device aspect
 * 
 * The Device aspect represents the device on which the runtime is running. Components of this aspect have the following properties:
 * 
@@ -459,19 +459,19 @@ dictionary PropQuery {
 * \li vendor
 * \li version
 * 
-* \subsection The imei property
+* <h3> The imei property
 * 
 * The imei property is a DOMString that represents the International Mobile Equipment Identity (IMEI).
-* \subsection The model property
+* <h3> The model property
 * 
 * The model property is a DOMString that represents the name of the device model, as assigned by the vendor.
-* \subsection The vendor property
+* <h3> The vendor property
 * 
 * The vendor property is a DOMString that represents the vendor of the device.
-* \subsection The version property
+* <h3> The version property
 * 
 * The version property is a DOMString that represents the device version assigned by the vendor.
-* \section Display aspect
+* <h2> Display aspect
 * 
 * The Display aspect represents a screen on the device. Components of this aspect have the following properties:
 * 
@@ -482,25 +482,25 @@ dictionary PropQuery {
 * \li dpiX
 * \li colorDepth
 * 
-* \subsection The resolutionHeight property
+* <h3> The resolutionHeight property
 * 
 * The resolutionHeight property is an unsigned short representing the total number of pixels for the height of the screen.
-* \subsection The pixelAspectRatio property
+* <h3> The pixelAspectRatio property
 * 
 * The pixelAspectRatio property is a float that represents pixel aspect ratio, for example 1.333333333 for a 4:3 aspect. It's always the value of the resolutionHeight devided by the resolutionWidth.
-* \subsection The dpiY property
+* <h3> The dpiY property
 * 
 * The dpiY property is an unsigned short that represents the dots per inch of the display in the Y axis.
-* \subsection The resolutionWidth property
+* <h3> The resolutionWidth property
 * 
 * The resolutionWidth property is an unsigned short representing the total number of pixels for the width of the screen.
-* \subsection The dpiX property
+* <h3> The dpiX property
 * 
 * The dpiX property is an unsigned short that represents the dots per inch of the display in the X axis.
-* \subsection The colorDepth property
+* <h3> The colorDepth property
 * 
 * The colorDepth property is an octet that represents the number of bits used for color definition (e.g. 24).
-* \section MemoryUnit aspect
+* <h2> MemoryUnit aspect
 * 
 * The MemoryUnit aspect represents a memory component used in the device. This may include RAM, and other storage media. Components of this aspect have the following properties:
 * 
@@ -508,16 +508,16 @@ dictionary PropQuery {
 * \li removable
 * \li availableSize
 * 
-* \subsection The size property
+* <h3> The size property
 * 
 * The size property is an unsigned long that represents size of a memory component in bytes.
-* \subsection The removable property
+* <h3> The removable property
 * 
 * The removable property is a boolean indicating if the memory component can be removed from the device. The value is true if it is possible.
-* \subsection The availableSize property
+* <h3> The availableSize property
 * 
 * The availableSize property is an unsigned long representing the available size of the memory component in bytes.
-* \section OperatingSystem aspect
+* <h2> OperatingSystem aspect
 * 
 * The OperatingSystem aspect represents operating system running on the device. Components of this aspect have the following properties:
 * 
@@ -526,19 +526,19 @@ dictionary PropQuery {
 * \li name
 * \li vendor
 * 
-* \subsection The language property
+* <h3> The language property
 * 
 * The language property is a DOMString representation the locale of the operating system, in the RFC 4646 language tag format.
-* \subsection The version property
+* <h3> The version property
 * 
 * The version property is a DOMString that represents the version of the operating system.
-* \subsection The name property
+* <h3> The name property
 * 
 * The name property is a DOMString representing the name of the operating system.
-* \subsection The vendor property
+* <h3> The vendor property
 * 
 * The vendor property is a DOMString representing name of the vendor of the operating system.
-* \section WebRuntime aspect
+* <h2> WebRuntime aspect
 * 
 * The WebRuntime aspect represents the user agent. Components of this aspect have the following properties:
 * 
@@ -546,25 +546,25 @@ dictionary PropQuery {
 * \li name
 * \li vendor
 * 
-* \subsection The version property
+* <h3> The version property
 * 
 * The version property is a DOMString representing the version of the runtime assigned by the vendor.
-* \subsection The name property
+* <h3> The name property
 * 
 * The name property is an DOMString representing the name assigned by the vendor to the runtime.
-* \subsection The vendor property
+* <h3> The vendor property
 * 
 * The vendor property is an DOMString representing the name of the vendor who sells or created the runtime.
-* \section WiFiHardware aspect
+* <h2> WiFiHardware aspect
 * 
 * The WiFiHardware aspect represents hardware in a device that accesses WiFi networks. Components of this aspect have the following properties:
 * 
 * \li status
 * 
-* \subsection The status property
+* <h3> The status property
 * 
 * The status property is a DOMString represented as a SwitchType that indicates if the WiFi Harware is switched on or off.
-* \section WiFiNetwork aspect
+* <h2> WiFiNetwork aspect
 * 
 * The WiFiNetwork aspect represents the WiFi Network that the device is connected to (if any). Components of this aspects have the following propoerties:
 * 
@@ -572,13 +572,13 @@ dictionary PropQuery {
 * \li signalStrength
 * \li networkStatus
 * 
-* \subsection The ssid property
+* <h3> The ssid property
 * 
 * The ssid property A DOMString that represents the SSID of a WiFi network.
-* \subsection The signalStrength property
+* <h3> The signalStrength property
 * 
 * The signalStrength property is an octet that represents the relative signal strength offered by the WiFi network (from 0 to 100, where 100 is full strength).
-* \subsection The networkStatus property
+* <h3> The networkStatus property
 * 
 * The networkStatus property A DOMString represented as one of the NetworkStates that indicates the state of a WiFi network. 
 * 
