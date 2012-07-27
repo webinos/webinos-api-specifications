@@ -324,7 +324,7 @@ deviceapis.devicestatus.watchPropertyChange(propertyChange, null, {
 	property: "batteryLevel",
 	aspect: "Battery"
 });
-        * \code
+
 //The "_default" component is implied.
 var options = {
 	aspect: "Battery",
@@ -373,7 +373,6 @@ null, options);
         * \endcode
         * \param watchid Id of watch property change subscription
         * \param options Additonal options for property watch, such as the minimum range of change
-
         */
     void clearPropertyChange(long watchid);
   };
