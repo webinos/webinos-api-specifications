@@ -182,7 +182,7 @@ for (var i = 0; i < displays.length; i++) {
 	console.log("Display component " + i + ": " + displays[i]);
 }
         * \endcode
-        * \param aspects for component to retrieve
+        * \param aspect for component to retrieve
         * \return components
         */
     DOMString[]? getComponents(DOMString? aspect);
