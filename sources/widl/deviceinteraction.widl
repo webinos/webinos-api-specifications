@@ -34,33 +34,33 @@ Deviceapis implements DeviceapisDeviceInteractionManager;
  *
  * Example
  * \code
-var di = deviceapis.deviceinteraction;
-
-di.lightOn(function() {
-	console.log("Lighting for 1 second");
-},
-function() {
-	console.log("Failed to light");
-},
-1000);
-
-di.startNotify(
-function() {
-	console.log("Notifying for 1 second");
-},
-function() {
-	console.log("Failed to notify");
-},
-1000);
-
-di.startVibrate(
-function() {
-	console.log("Vibrating for 1 second");
-},
-function() {
-	console.log("Failed to vibrate");
-},
-1000);
+ * var di = deviceapis.deviceinteraction;
+ * 
+ * di.lightOn(function() {
+ * 	console.log("Lighting for 1 second");
+ * },
+ * function() {
+ * 	console.log("Failed to light");
+ * },
+ * 1000);
+ * 
+ * di.startNotify(
+ * function() {
+ * 	console.log("Notifying for 1 second");
+ * },
+ * function() {
+ * 	console.log("Failed to notify");
+ * },
+ * 1000);
+ * 
+ * di.startVibrate(
+ * function() {
+ * 	console.log("Vibrating for 1 second");
+ * },
+ * function() {
+ * 	console.log("Failed to vibrate");
+ * },
+ * 1000);
  * \endcode
  */
 
@@ -85,7 +85,6 @@ interface DeviceInteractionManager {
  * 
  * If the stopNotify method is invoked before the supplied notification duration expires, the active notification (beep/vibrate/backlight-on) MUST be terminated.
  *  
- * Example
  * \code
  * try {
  * 	deviceapis.deviceinteraction.startNotify(function() {
@@ -106,20 +105,155 @@ interface DeviceInteractionManager {
     void startNotify(Function successCallback,
 	                              optional ErrorCB? errorCallback,
  	                              long duration) ;
-
+/**
+ * \brief  Switch on device vibration for a specified duration and to an optional pattern.
+ * 
+ * When this method is invoked, the device vibrator MUST be activated for the time specified. The duration of vibration can be specified by 2 mechanisms:
+ * \n the duration input parameter,
+ * \n the on/off pattern.
+ * 
+ * The pattern argument is a DOMString composed by '.' and '_' chars. Where '.' denotes a 'vibration pulse' and '_' denotes a 'no vibration pulse'. The pattern has a limit of 10 characters, and the duration of every pulse SHOULD be 100 milliseconds.
+ * 
+ * For instance, the pattern "..__." denotes that the device should vibrate for 200 msecs, stop vibrating for 200 msecs and vibrate again for 100 msecs.
+ * 
+ * The success callback MUST be invoked as soon as the implementation determines that the vibration can be realized. If for some reason (security or other) cannot be realized the error callback MUST be called with the appropriate error code:
+ * \n INVALID_VALUES_ERR if any input parameter has invalid values.
+ * \n SECURITY_ERR if the operation is not allowed.
+ * \n NOT_SUPPORTED_ERR if the feature is not supported.
+ * \n UNKNOWN_ERR in any other case.
+ * 
+ * If both vibration arguments contain valid values other than null, then the pattern MUST be repeated until the duration interval has elapsed, and a complete pattern MUST be performed (i.e. the pattern MUST NOT be truncated).
+ * 
+ * If only one argument is valid and the other has a null value, then only the mechanism with the valid argument will be used.
+ * 
+ * The implementation MAY impose a duration limit that causes the vibration to stop before the specified duration expires.
+ * 
+ * If the stopVibrate method is invoked before the specified vibration duration expires, any vibration MUST be stopped.
+ * \code
+ * try {
+ * 	deviceapis.deviceinteraction.startVibrate(function() {
+ * 		console.log("Vibrating...");
+ * 	},
+ * 	function(e) {
+ * 		console.log("Failed to vibrate: " + e);
+ * 	},
+ * 	0);
+ * } catch(e) {
+ * 	console.log("Exception thrown: " + e);
+ * }
+ * \endcode
+ * \param successCallback Function to call on successfully retrieving a property value
+ * \param errorCallback Function to call if property value could not be retrieved
+ * \param duration Duration of notification
+ * \param pattern Pattern of short and long vibrations
+ */
     void startVibrate(Function successCallback,
                                   optional ErrorCB? errorCallback,
                                   optional unsigned long duration,
                                   optional DOMString pattern);
 
+/**
+ * \brief  Switches the backlight of the display on for a specified duration.
+ * 
+ * When this is not supported, or if any othee main screen backlight MUST be switched on for the time specified in the duration input parameter. If the lightOff method is invoked before the specified duration expires, the screen backlight MUST be switched off.
+ * 
+ * The implementation MAY impose a duration limit that causes the light to be switched off before the specified duration expires. If the duration input argument is 0, the implementation MUST perform this operation until this limit is reached or the lightOff method is invoked.
+ * 
+ * The implementation MUST call the success callback as soon as it determines that the request (light On) can be performed. The implementation MUST call the error callback if for any reason the request cannot be performed. The possible error codes are:
+ * \n INVALID_VALUES_ERR if any input parameter has invalid values.
+ * \n SECURITY_ERR if the operation is not allowed.
+ * \n NOT_SUPPORTED_ERR if the feature is not supported.
+ * \n UNKNOWN_ERR in any other case.
+ * \code
+ *  try {
+ * 	deviceapis.deviceinteraction.lightOn(function() {
+ * 		console.log("Lighting indefinitely");
+ * 	},
+ * 	function(e) {
+ * 		console.log("Failed to light: " + e);
+ * 	},
+ * 	0);
+ * } catch(e) {
+ * 	console.log("Exception thrown: " + e);
+ * }
+ * \endcode
+ * \param successCallback Function to call on successfully retrieving a property value
+ * \param errorCallback Function to call if property value could not be retrieved
+ * \param duration How long the light should be on
+ */
     void lightOn(Function successCallback,
-	                          optional ErrorCB? errorCallback,
-                            long duration);
-
+	                  optional ErrorCB? errorCallback,
+                          long duration);
+/**
+ * \brief   Sets the Wallpaper of the device to the specified image file.
+ * 
+ * This method sets the device wallpaper to the image file supplied as the fileName input parameter. If the wallpaper is successfully set, the successCallback MUST be invoked.
+ * 
+ * If any of the input arguments are not compatible with the expected type for that argument, throw a "TypeMismatchError" exception.
+ * 
+ * If the wallpaper cannot be set due to any other error, for example, an unsupported image format or invalid file format, the errorCallback MUST be invoked. The following error codes may be returned in the error callback depending on the error conditions:
+ *     NOT_SUPPORTED_ERR: If this feature is not supported.
+ *     SECURITY_ERR: If the operation is not allowed.
+ *     INVALID_VALUES_ERR: If any input parameter contain invalid values. For example, the successCallback is null or the fileName does not exist. Please note that in order to allow developer ignore errors, the erroCallback accepts null as a valid value.
+ *     UNKNOWN_ERR: In any other error case.
+ * 
+ * If the errorCallback does not contain a valid function (e.g. null), or in the case of any of the above errors that should be returned in the errorCallback, the implementation MUST silently fail, the developer is not notified of the error and no further action is required.
+ * \code
+ * try {
+ * 	deviceapis.deviceinteraction.setWallpaper(function() {
+ * 		alert("Set wallpaper to WAC logo");
+ * 	},
+ * 	function(e) {
+ * 		alert(e.message);
+ * 	},
+ * 	"wgt-package/images/waclogo_small.jpg");
+ * } catch(exp) {
+ * 	alert("setWallpaper Exception :[" + exp.code + "] " + exp.message);
+ * }
+ * \endcode
+ * \param successCallback Function to call on successfully retrieving a property value
+ * \param errorCallback Function to call if property value could not be retrieved
+ * \param fileName The image to be set as the wallpaper
+ */
     void setWallpaper(Function successCallback,
                                   optional ErrorCB? errorCallback,
                                   DOMString fileName);
+/**
+ * \brief  Terminates an ongoing notification alert.
+ * 
+ * When this method is invoked, the implementation MUST request to stop the notification. Although the implementation MUST make this request immediately, the device MAY have further limitations (e.g. timeouts) that MAY delay the operation completion.
+ * 
+ * If a notification is not in progress (i.e. the device is not beeping/vibrating/backlight-on) when this method is invoked, it MUST be ignored.
+ * 
+ * If this functionality is not supported, or if any other error occurs when executing the request, it MUST return immediately without performing any action.
+ * \code
+ * deviceapis.deviceinteraction.stopNotify();
+ * \endcode     
+ */                             
     void stopNotify();
+    
+/**
+ * \brief   Terminates an ongoing device vibration alert.
+ * 
+ * When this method is invoked the device vibrator MUST be terminated. If the device is not vibrating when this method is invoked it MUST be ignored.
+ * 
+ * If this functionality is not supported, or if any other error occurs when executing the request it MUST return immediately without performing any action.
+ * \code
+ * deviceapis.deviceinteraction.stopVibrate();
+ * \endcode
+ */
     void stopVibrate();
+    
+    
+/**
+ * \brief  Terminates the screen backlight notification.
+ * 
+ * When this method is invoked, the implementaion MUST request that the screen backlight is switched off. Although the implementation MUST make the request to switch off the light immediately, the device MAY have further limitations (e.g. timeouts) that MAY delay the operation.
+ * 
+ * If this functionality is not supported, or if any other error occurs when executing the request it MUST return immediately without performing any action.
+ * \code
+ * deviceapis.deviceinteraction.lightOff();
+ * \endcode
+ */
     void lightOff();
 };
