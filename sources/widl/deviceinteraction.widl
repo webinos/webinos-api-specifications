@@ -108,8 +108,8 @@ interface DeviceInteractionManager {
  	                              long duration) ;
 
     void startVibrate(Function successCallback,
-                                  optional ErrorCB? errorCallback
-                                  optional unsinged long duration,
+                                  optional ErrorCB? errorCallback,
+                                  optional unsigned long duration,
                                   optional DOMString pattern);
 
     void lightOn(Function successCallback,
