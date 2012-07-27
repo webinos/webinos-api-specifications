@@ -115,8 +115,6 @@
  
 	/**
 	 * \brief When an device status feature declaration appears in the widget's configuration document, the user agent implements the DeviceapisDeviceStatusManager interface.
-		 * \param options Defines search options. 
-		 * \param filter Defines a filter that be used to limit the service operation to certain constraints and context information. 
 		 */
 
  [NoInterfaceObject]
