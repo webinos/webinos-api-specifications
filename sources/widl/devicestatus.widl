@@ -1,10 +1,8 @@
 /**<p>The webinos The Device Status API lets you get information about various "aspects" of a device.</p>
  * \name Device Status API 
- *
- * Introduction
- *  
- * The Device Status API provides the means to get information about different "aspects" of a device. For example, you can query the battery to get its level of charge or you can query the operating system to see who the vendor is.
- * 
+ */
+ 
+/**
  *   
  * \def-api-feature http://wacapps.net/api/devicestatus.deviceinfo
  * 
