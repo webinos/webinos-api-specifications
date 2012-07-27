@@ -5,34 +5,10 @@
  *  
  * The Device Status API provides the means to get information about different "aspects" of a device. For example, you can query the battery to get its level of charge or you can query the operating system to see who the vendor is.
  * 
- * This API uses a kind of tree model to allow developers to get at the various bits of data about things on a device. The tree model is illustrated in figure 1: at the root you find aspects, which contain components, which contain properties - each of which is formally defined below.
- * Aspects contain components, which contain properties The Device status tree model: at the root are the aspects, which contain one or more components, which themselves contain properties.
- * 
- * Aspect
- * \n  An aspect is an abstract namable thing (e.g., a "Device", "Battery", "Display", etc.) that the user agent knows about and can interact with. An aspect can contain one or more components.
- * \n \n Component
- * \n  A component is a concrete instance of an aspect (e.g., a real battery in the device, the real screens of the device). As devices can contain more than one instance of the thing being referred to by an aspect (e.g. two screens, three batteries, two SIM cards), each real instance of an aspect is referred to as a component. Each component has its own unique component name, which is assigned by the user agent and serves as the component's identifier for the life of the application (e.g., "screen_1", "battery2", "os", "hdd", "SDCard").
- * \n     This specification reserves two special components names ("_active" and "_default") which a user agent MUST NOT use when generating. 
- * \n \n Property
- * \n     A property of an component is something that can be queried to returns data (e.g., how much charge a battery has, if the WiFi is connected or not, the SSID of a WiFi network). 
- * 
- * A user agent supports aspect X if the user agent can verify that the aspect (hardware or software) exists on the device and/or has not been disabled (either by policy or by a feature declaration).
- * 
- * A user agent supports aspect X and property Y if the user agent supports the aspect and is able to query property Y to retrieve its data. 
- * 
- *  To make the Device Status API easier to work with, this specification reserves two special component names ("_default" and "_active"). These two component names can be used by a developer in the API as proxies for either a default component or active component.
- * 
- * \n Default component:
- * \n     The component that is the default component for a given aspect, which may or may not be the active component. 
- * \n     In ECMAScript, a developer uses the string "_default" to refer to the default component. 
- * \n \n Active component:
- * \n     The component that is the acitve component for a given aspect, which may or may not be the default component. 
- * \n     In ECMAScript, a developer uses the string "_active" to refer to the active component. 
  *   
  * \def-api-feature http://wacapps.net/api/devicestatus.deviceinfo
  * 
  *     Only the following device-information aspects are available to the application (all others are disabled):
- *  
  * \n         Battery
  * \n         Device
  * \n         Display
@@ -43,7 +19,6 @@
 * \def-api-feature http://wacapps.net/api/devicestatus.networkinfo
  * 
  *     Only the following network-information aspects are available to the application (all others are disabled):
- * 
  * \n         CellularHardware
  * \n         CellularNetwork
  * \n         WiFiHardware
@@ -111,6 +86,33 @@
  * \author Normative: <a href="http://specs.wacapps.net/devicestatus/index.html">WAC Devicestatus API </a>
  * \author WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
  * \version 2.1
+ */
+ 
+ /**
+ * \brief  * This API uses a kind of tree model to allow developers to get at the various bits of data about things on a device. The tree model is illustrated in figure 1: at the root you find aspects, which contain components, which contain properties - each of which is formally defined below.
+ *
+ * Aspects contain components, which contain properties The Device status tree model: at the root are the aspects, which contain one or more components, which themselves contain properties.
+ * 
+ * Aspect
+ * \n  An aspect is an abstract namable thing (e.g., a "Device", "Battery", "Display", etc.) that the user agent knows about and can interact with. An aspect can contain one or more components.
+ * \n \n Component
+ * \n  A component is a concrete instance of an aspect (e.g., a real battery in the device, the real screens of the device). As devices can contain more than one instance of the thing being referred to by an aspect (e.g. two screens, three batteries, two SIM cards), each real instance of an aspect is referred to as a component. Each component has its own unique component name, which is assigned by the user agent and serves as the component's identifier for the life of the application (e.g., "screen_1", "battery2", "os", "hdd", "SDCard").
+ * \n     This specification reserves two special components names ("_active" and "_default") which a user agent MUST NOT use when generating. 
+ * \n \n Property
+ * \n     A property of an component is something that can be queried to returns data (e.g., how much charge a battery has, if the WiFi is connected or not, the SSID of a WiFi network). 
+ * 
+ * A user agent supports aspect X if the user agent can verify that the aspect (hardware or software) exists on the device and/or has not been disabled (either by policy or by a feature declaration).
+ * 
+ * A user agent supports aspect X and property Y if the user agent supports the aspect and is able to query property Y to retrieve its data. 
+ * 
+ *  To make the Device Status API easier to work with, this specification reserves two special component names ("_default" and "_active"). These two component names can be used by a developer in the API as proxies for either a default component or active component.
+ * 
+ * \n Default component:
+ * \n     The component that is the default component for a given aspect, which may or may not be the active component. 
+ * \n     In ECMAScript, a developer uses the string "_default" to refer to the default component. 
+ * \n \n Active component:
+ * \n     The component that is the acitve component for a given aspect, which may or may not be the default component. 
+ * \n     In ECMAScript, a developer uses the string "_active" to refer to the active component. 
  */
  
 	/**
