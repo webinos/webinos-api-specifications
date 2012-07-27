@@ -401,187 +401,166 @@ dictionary PropQuery {
         enum NetworkStates {"connected", "available", "forbidden"};
 
 /**
-* \header Battery aspect
-* 
-* The Battery aspect represents a battery in the device. Components of this aspect have the following properties:
-* 
-*     \li batteryBeingCharged
-*     \li batteryLevel
-* 
-* H3H3 The batteryBeingCharged property
-* 
-* The batteryBeingCharged property is a boolean that indicates whether the battery is currently being charged or not. Returns true if the battery is being charged.
-* 
-* H3H3 The batteryLevel property
-* 
-* The batteryLevel property is an octet that represents the remaining percentage (0-100) of the battery capacity that available. When the battery is full, the value is 100. When the battery is drained, the value is 0.
-* 
-* \header CellularHardware aspect
-* 
-* The CellularHardware aspect represents the device's hardware that accesses to telephone network. Components of this aspect have the following properties:
-* 
-* \li status
-* 
-* H3H3 The status property
-* 
-* The status property is a DOMString represented as a SwitchType that indicates the status of the Cellular Hardware.
-* \header CellularNetwork aspect
-* 
-* The CellularNetwork aspect represents the cellular network being used by the device. Components of this aspect have the following properties:
-* 
-* \li isInRoaming
-* \li mcc
-* \li mnc
-* \li signalStrength
-* \li operatorName
-* 
-* H3H3 The isInRoaming property
-* 
-* The isInRoaming property is a boolean that indicates if the cellular connection is roaming. A value of true indicates that the connection is roaming.
-* H3H3 The mcc property
-* 
-* The mcc property is a DOMString that represents the country of a mobile network.
-* H3H3 The mnc property
-* 
-* The mnc property is a DOMString that represents the Mobile Network Code (MNC).
-* H3H3 The signalStrength property
-* 
-* The signalStrength property is an octet that represent the signal strength of the cellular network represented as a percentage.
-* H3H3 The operatorName property
-* 
-* The operatorName property is a DOMString that represents the name of the operator of the cellular network.
-* \header Device aspect
-* 
-* The Device aspect represents the device on which the runtime is running. Components of this aspect have the following properties:
-* 
-* \li imei
-* \li model
-* \li vendor
-* \li version
-* 
-* H3H3 The imei property
-* 
-* The imei property is a DOMString that represents the International Mobile Equipment Identity (IMEI).
-* H3H3 The model property
-* 
-* The model property is a DOMString that represents the name of the device model, as assigned by the vendor.
-* H3H3 The vendor property
-* 
-* The vendor property is a DOMString that represents the vendor of the device.
-* H3H3 The version property
-* 
-* The version property is a DOMString that represents the device version assigned by the vendor.
-* \header Display aspect
-* 
-* The Display aspect represents a screen on the device. Components of this aspect have the following properties:
-* 
-* \li resolutionHeight
-* \li pixelAspectRatio
-* \li dpiY
-* \li resolutionWidth
-* \li dpiX
-* \li colorDepth
-* 
-* H3H3 The resolutionHeight property
-* 
-* The resolutionHeight property is an unsigned short representing the total number of pixels for the height of the screen.
-* H3H3 The pixelAspectRatio property
-* 
-* The pixelAspectRatio property is a float that represents pixel aspect ratio, for example 1.333333333 for a 4:3 aspect. It's always the value of the resolutionHeight devided by the resolutionWidth.
-* H3H3 The dpiY property
-* 
-* The dpiY property is an unsigned short that represents the dots per inch of the display in the Y axis.
-* H3H3 The resolutionWidth property
-* 
-* The resolutionWidth property is an unsigned short representing the total number of pixels for the width of the screen.
-* H3H3 The dpiX property
-* 
-* The dpiX property is an unsigned short that represents the dots per inch of the display in the X axis.
-* H3H3 The colorDepth property
-* 
-* The colorDepth property is an octet that represents the number of bits used for color definition (e.g. 24).
-* \header MemoryUnit aspect
-* 
-* The MemoryUnit aspect represents a memory component used in the device. This may include RAM, and other storage media. Components of this aspect have the following properties:
-* 
-* \li size
-* \li removable
-* \li availableSize
-* 
-* H3H3 The size property
-* 
-* The size property is an unsigned long that represents size of a memory component in bytes.
-* H3H3 The removable property
-* 
-* The removable property is a boolean indicating if the memory component can be removed from the device. The value is true if it is possible.
-* H3H3 The availableSize property
-* 
-* The availableSize property is an unsigned long representing the available size of the memory component in bytes.
-* \header OperatingSystem aspect
-* 
-* The OperatingSystem aspect represents operating system running on the device. Components of this aspect have the following properties:
-* 
-* \li language
-* \li version
-* \li name
-* \li vendor
-* 
-* H3H3 The language property
-* 
-* The language property is a DOMString representation the locale of the operating system, in the RFC 4646 language tag format.
-* H3H3 The version property
-* 
-* The version property is a DOMString that represents the version of the operating system.
-* H3H3 The name property
-* 
-* The name property is a DOMString representing the name of the operating system.
-* H3H3 The vendor property
-* 
-* The vendor property is a DOMString representing name of the vendor of the operating system.
-* \header WebRuntime aspect
-* 
-* The WebRuntime aspect represents the user agent. Components of this aspect have the following properties:
-* 
-* \li version
-* \li name
-* \li vendor
-* 
-* H3H3 The version property
-* 
-* The version property is a DOMString representing the version of the runtime assigned by the vendor.
-* H3H3 The name property
-* 
-* The name property is an DOMString representing the name assigned by the vendor to the runtime.
-* H3H3 The vendor property
-* 
-* The vendor property is an DOMString representing the name of the vendor who sells or created the runtime.
-* \header WiFiHardware aspect
-* 
-* The WiFiHardware aspect represents hardware in a device that accesses WiFi networks. Components of this aspect have the following properties:
-* 
-* \li status
-* 
-* H3H3 The status property
-* 
-* The status property is a DOMString represented as a SwitchType that indicates if the WiFi Harware is switched on or off.
-* \header WiFiNetwork aspect
-* 
-* The WiFiNetwork aspect represents the WiFi Network that the device is connected to (if any). Components of this aspects have the following propoerties:
-* 
-* \li ssid
-* \li signalStrength
-* \li networkStatus
-* 
-* H3H3 The ssid property
-* 
-* The ssid property A DOMString that represents the SSID of a WiFi network.
-* H3H3 The signalStrength property
-* 
-* The signalStrength property is an octet that represents the relative signal strength offered by the WiFi network (from 0 to 100, where 100 is full strength).
-* H3H3 The networkStatus property
-* 
-* The networkStatus property A DOMString represented as one of the NetworkStates that indicates the state of a WiFi network. 
-* 
+* \htmlonly
+<h2 id=battery-aspect><span class=secno>6 </span><code title="">Battery</code> aspect</h2>
+  <p>The <dfn id=battery>Battery</dfn> aspect represents a battery in the device.  Components of this aspect have the following properties: </p>
+<ul>
+<li><a href=#batterybeingcharged><code>batteryBeingCharged</code></a></li>
+<li><a href=#batterylevel><code>batteryLevel</code></a></li>
+</ul>
+
+<h3 id=the-batterybeingcharged-property><span class=secno>6.1 </span>The <a href=#batterybeingcharged><code>batteryBeingCharged</code></a> property </h3>
+<p>The <dfn id=batterybeingcharged><code>batteryBeingCharged</code></dfn> property is a <a class=ulink href=http://dev.w3.org/2006/webapi/WebIDL/#idl-boolean>boolean</a> that indicates whether the battery is currently being charged or not. Returns true if the battery is being charged. </p>
+
+<h3 id=the-batterylevel-property><span class=secno>6.2 </span>The <a href=#batterylevel><code>batteryLevel</code></a> property </h3>
+<p>The <dfn id=batterylevel><code>batteryLevel</code></dfn> property is an <a href=http://dev.w3.org/2006/webapi/WebIDL/#idl-octet>octet</a> that represents the remaining percentage (0-100) of the battery capacity that  available. When the battery is full, the value is 100. When the battery is drained, the value is 0.</p>
+<h2 id=cellularhardware-aspect><span class=secno>7 </span><code title="">CellularHardware</code> aspect</h2>
+  <p>The <dfn id=cellularhardware>CellularHardware</dfn> aspect represents the device's hardware  that accesses to telephone network.  Components of this aspect have the following properties: </p>
+  <ul>
+    <li><a href=#cellularhardware-status><code title="CellularHardware status">status</code></a></li>
+  </ul>
+  <h3 id=the-status-property><span class=secno>7.1 </span>The status property</h3>
+<p>The <dfn id=cellularhardware-status title="CellularHardware status"><code>status</code></dfn> property is a DOMString represented as a <a href=#switchtype><code>SwitchType</code></a> that indicates the status of the Cellular Hardware. </p>
+  
+  <h2 id=cellularnetwork-aspect><span class=secno>8 </span><code title="">CellularNetwork</code> aspect</h2>
+  <p>The <code><dfn id=cellularnetwork>CellularNetwork</dfn></code> aspect represents the cellular network being used by the device. Components of this aspect have the following properties:  </p>
+  <ul>
+    <li><a href=#isinroaming><code>isInRoaming</code></a></li>
+    <li><a href=#mcc><code>mcc</code></a></li>
+    <li><a href=#mnc><code>mnc</code></a></li>
+    <li><a href=#cellularnetwork-signalstrength><code title="CellularNetwork signalStrength">signalStrength</code></a></li>
+    <li><a href=#operatorname><code>operatorName</code></a></li>
+  </ul>
+  
+<h3 id=the-isinroaming-property><span class=secno>8.1 </span>The <code title="">isInRoaming</code> property</h3>
+<p>The <dfn id=isinroaming><code>isInRoaming</code></dfn> property is a <a class=ulink href=http://dev.w3.org/2006/webapi/WebIDL/#idl-boolean>boolean</a> that indicates if the cellular connection is roaming. A value of <code>true</code> indicates that the connection is roaming. </p>
+<h3 id=the-mcc-property><span class=secno>8.2 </span>The <code title="">mcc</code> property</h3>
+<p>The <dfn id=mcc><code>mcc</code></dfn> property is a <a class=ulink href=http://dev.w3.org/2006/webapi/WebIDL/#idl-DOMString>DOMString</a> that represents the country of a mobile network. </p>
+<h3 id=the-mnc-property><span class=secno>8.3 </span>The <code title="">mnc</code> property</h3>
+<p>The <dfn id=mnc><code>mnc</code></dfn> property is a <a class=ulink href=http://dev.w3.org/2006/webapi/WebIDL/#idl-DOMString>DOMString</a> that represents the Mobile Network Code (MNC). </p>
+<h3 id=the-signalstrength-property><span class=secno>8.4 </span>The <code title="">signalStrength</code> property</h3>
+<p>The <dfn id=cellularnetwork-signalstrength title="CellularNetwork signalStrength"><code>signalStrength</code></dfn> property is an <a href=http://dev.w3.org/2006/webapi/WebIDL/#idl-octet>octet</a> that represent the signal strength of the cellular network represented as a percentage.</p>
+<h3 id=the-operatorname-property><span class=secno>8.5 </span>The <code title="">operatorName</code> property</h3>
+<p>The <dfn id=operatorname><code>operatorName</code></dfn> property is a <a class=ulink href=http://dev.w3.org/2006/webapi/WebIDL/#idl-DOMString>DOMString</a> that represents the name of the operator of the cellular network.</p>
+  <h2 id=device-aspect><span class=secno>9 </span><code title="">Device</code> aspect</h2>
+  <p>The <code><dfn id=device>Device</dfn></code> aspect represents the device on which the runtime is running.  Components of this aspect have the following properties: </p>
+  <ul>
+    <li><a href=#imei><code>imei</code></a></li>
+    <li><a href=#model><code>model</code></a></li>
+    <li><a href=#device-vendor><code title="device vendor">vendor</code></a></li>
+    <li><a href=#device-version><code title="device version">version</code></a></li>
+  </ul>
+
+<h3 id=the-imei-property><span class=secno>9.1 </span>The <code title="">imei</code> property</h3>
+<p>The <dfn id=imei><code>imei</code></dfn> property is a <a class=ulink href=http://dev.w3.org/2006/webapi/WebIDL/#idl-DOMString>DOMString</a> that represents the  International Mobile Equipment Identity (IMEI).</p>
+<h3 id=the-model-property><span class=secno>9.2 </span>The <code title="">model</code> property</h3>
+<p>The <dfn id=model><code>model</code></dfn> property is a <a class=ulink href=http://dev.w3.org/2006/webapi/WebIDL/#idl-DOMString>DOMString</a> that represents the name of the device model, as assigned by the vendor. </p>
+<h3 id=the-vendor-property><span class=secno>9.3 </span>The <code title="">vendor</code> property</h3>
+<p>The <dfn id=device-vendor title="device vendor"><code>vendor</code></dfn> property is a <a class=ulink href=http://dev.w3.org/2006/webapi/WebIDL/#idl-DOMString>DOMString</a> that represents the vendor of the device.</p>
+<h3 id=the-version-property><span class=secno>9.4 </span>The <code title="">version</code> property</h3>
+<p>The <dfn id=device-version title="device version"><code>version</code></dfn> property is a <a class=ulink href=http://dev.w3.org/2006/webapi/WebIDL/#idl-DOMString>DOMString</a> that represents the device version assigned by the vendor. </p>
+  <h2 id=display-aspect><span class=secno>10 </span><code title="">Display</code> aspect</h2>
+  <p>The <code><dfn id=display>Display</dfn></code> aspect  represents a screen on the device. Components of this aspect have the following properties: </p>
+<ul>
+<li><a href=#resolutionheight><code>resolutionHeight</code></a></li>
+<li><a href=#pixelaspectratio><code>pixelAspectRatio  </code></a></li>
+<li><a href=#dpiy><code>dpiY  </code></a></li>
+<li><a href=#resolutionwidth><code>resolutionWidth  </code></a></li>
+<li><a href=#dpix><code>dpiX  </code></a></li>
+<li><a href=#colordepth><code>colorDepth</code></a></li>
+</ul>
+
+<h3 id=the-resolutionheight-property><span class=secno>10.1 </span>The <code title="">resolutionHeight</code> property</h3>
+<p>The <dfn id=resolutionheight><code>resolutionHeight</code></dfn> property is an <a href=http://dev.w3.org/2006/webapi/WebIDL/#idl-unsigned-short>unsigned short</a> representing the total number of  pixels for the height of the screen. </p>
+
+<h3 id=the-pixelaspectratio-property><span class=secno>10.2 </span>The <code title="">pixelAspectRatio</code> property</h3>
+<p>The <dfn id=pixelaspectratio><code>pixelAspectRatio</code></dfn> property  is a <a class=ulink href=http://dev.w3.org/2006/webapi/WebIDL/#idl-float>float</a> that represents pixel aspect ratio, for example 1.333333333 for a 4:3 aspect. It's always the value of the <a href=#resolutionheight>resolutionHeight</a> devided by the resolutionWidth. </p> 
+
+<h3 id=the-dpiy-property><span class=secno>10.3 </span>The <code title="">dpiY</code> property</h3>
+<p>The <dfn id=dpiy><code>dpiY</code></dfn> property is an <a href=http://dev.w3.org/2006/webapi/WebIDL/#idl-unsigned-short>unsigned short</a> that represents the dots per inch of the display in the Y axis.</p>
+
+<h3 id=the-resolutionwidth-property><span class=secno>10.4 </span>The <code title="">resolutionWidth</code> property</h3>
+<p>The <dfn id=resolutionwidth><code>resolutionWidth</code></dfn> property is an <a href=http://dev.w3.org/2006/webapi/WebIDL/#idl-unsigned-short>unsigned short</a> representing the total number of  pixels for the width of the screen. </p> 
+
+<h3 id=the-dpix-property><span class=secno>10.5 </span>The <code title="">dpiX</code> property</h3>
+<p>The <dfn id=dpix><code>dpiX</code></dfn> property is an <a href=http://dev.w3.org/2006/webapi/WebIDL/#idl-unsigned-short>unsigned short</a> that represents the dots per inch of the display in the X axis.</p>
+
+<h3 id=the-colordepth-property><span class=secno>10.6 </span>The <code title="">colorDepth</code> property</h3>
+<p>The <dfn id=colordepth><code>colorDepth</code></dfn> property is an <a href=http://dev.w3.org/2006/webapi/WebIDL/#idl-octet>octet</a> that represents the number of bits used for color definition (e.g. 24).
+</p>
+<h2 id=memoryunit-aspect><span class=secno>11 </span><code title="">MemoryUnit</code> aspect</h2>
+  <p>The <code><dfn id=memoryunit>MemoryUnit</dfn></code> aspect  represents a memory component used in the device. This may include RAM, and other storage media. Components of this aspect have the following properties: </p>
+  <ul>
+    <li><a href=#size><code>size</code></a></li>
+    <li><a href=#removable><code>removable</code></a></li>
+    <li><a href=#availablesize><code>availableSize</code></a></li>
+  </ul>
+  
+<h3 id=the-size-property><span class=secno>11.1 </span>The <code title="">size</code> property</h3>
+<p>The <dfn id=size><code>size</code></dfn> property is an <a class=ulink href=http://dev.w3.org/2006/webapi/WebIDL/#idl-unsigned-long>unsigned long</a> that represents size of a memory component in bytes.</p>
+
+<h3 id=the-removable-property><span class=secno>11.2 </span>The <code title="">removable</code> property</h3>
+<p>The <dfn id=removable><code>removable</code></dfn> property  is a <a class=ulink href=http://dev.w3.org/2006/webapi/WebIDL/#idl-boolean>boolean</a> indicating if the memory component can be removed from the device. The value is <code>true</code> if it is possible.</p>
+
+<h3 id=the-availablesize-property><span class=secno>11.3 </span>The <code title="">availableSize</code> property</h3>
+<p>The <dfn id=availablesize><code>availableSize</code></dfn> property is an <a class=ulink href=http://dev.w3.org/2006/webapi/WebIDL/#idl-unsigned-long>unsigned long</a> representing the available size of the memory component in bytes. </p>
+  
+  
+  
+  <h2 id=operatingsystem-aspect><span class=secno>12 </span><code title="">OperatingSystem</code> aspect</h2>
+  <p>The <code><dfn id=operatingsystem>OperatingSystem</dfn></code> aspect represents  operating system running on the device. Components of this aspect have the following properties: </p>
+  <ul>
+    <li><a href=#language><code>language</code></a></li>
+    <li><a href=#operatingsystem-version><code title="OperatingSystem version">version</code></a></li>
+    <li><a href=#operatingsystem-name><code title="OperatingSystem name">name</code></a></li>
+    <li><a href=#operatingsystem-vendor><code title="OperatingSystem vendor">vendor</code></a></li>
+  </ul>
+<h3 id=the-language-property><span class=secno>12.1 </span>The <code title="">language</code> property</h3>
+<p>The <dfn id=language><code>language</code></dfn> property is a <a class=ulink href=http://dev.w3.org/2006/webapi/WebIDL/#idl-DOMString>DOMString</a> representation the locale of the operating system, in the  RFC 4646 language tag format. </p>
+<h3 id=the-version-property-0><span class=secno>12.2 </span>The <code title="">version</code> property</h3>
+<p>The <dfn id=operatingsystem-version title="OperatingSystem version"><code>version</code></dfn> property  is a <a class=ulink href=http://dev.w3.org/2006/webapi/WebIDL/#idl-DOMString>DOMString</a> that represents the version of the operating system. </p>
+<h3 id=the-name-property><span class=secno>12.3 </span>The <code title="">name</code> property</h3>
+<p>The <dfn id=operatingsystem-name title="OperatingSystem name"><code>name</code></dfn> property is a <a class=ulink href=http://dev.w3.org/2006/webapi/WebIDL/#idl-DOMString>DOMString</a> representing the name of the operating system.</p>
+<h3 id=the-vendor-property-0><span class=secno>12.4 </span>The <code title="">vendor</code> property  </h3>
+<p>The <dfn id=operatingsystem-vendor title="OperatingSystem vendor"><code>vendor</code></dfn> property is a <a class=ulink href=http://dev.w3.org/2006/webapi/WebIDL/#idl-DOMString>DOMString</a> representing name of the vendor of the operating system. </p>
+  <h2 id=webruntime-aspect><span class=secno>13 </span><code title="">WebRuntime</code> aspect</h2>
+  <p>The <code><dfn id=webruntime>WebRuntime</dfn></code> aspect represents the user agent. Components of this aspect have the following properties: </p>
+  <ul>
+    <li><a href=#webruntime-version><code title="WebRuntime version">version</code></a></li>
+    <li><a href=#webruntime-name><code title="WebRuntime name">name</code></a></li>
+    <li><a href=#webruntime-vendor><code title="WebRuntime vendor">vendor</code></a></li>
+  </ul>
+<h3 id=the-version-property-1><span class=secno>13.1 </span>The <code title="">version</code> property</h3>
+<p>The <dfn id=webruntime-version title="WebRuntime version"><code>version</code></dfn> property is a <a class=ulink href=http://dev.w3.org/2006/webapi/WebIDL/#idl-DOMString>DOMString</a> representing the version of the runtime assigned by the vendor.</p>
+<h3 id=the-name-property-0><span class=secno>13.2 </span>The <code title="">name</code> property</h3>
+<p>The <dfn id=webruntime-name title="WebRuntime name"><code>name</code></dfn> property is an <a class=ulink href=http://dev.w3.org/2006/webapi/WebIDL/#idl-DOMString>DOMString</a> representing the name assigned by the vendor to the runtime.</p>
+<h3 id=the-vendor-property-1><span class=secno>13.3 </span>The <code title="">vendor</code> property  </h3>
+<p>The <dfn id=webruntime-vendor title="WebRuntime vendor"><code>vendor</code></dfn> property  is an <a class=ulink href=http://dev.w3.org/2006/webapi/WebIDL/#idl-DOMString>DOMString</a> representing the name of the vendor who sells or created the runtime. </p>
+  <h2 id=wifihardware-aspect><span class=secno>14 </span><code title="">WiFiHardware</code> aspect</h2>
+  <p>The <code><dfn id=wifihardware>WiFiHardware</dfn></code> aspect represents hardware in a device that accesses WiFi networks. Components of this aspect have the following properties: </p>
+  <ul>
+    <li><a href=#wifihardware-status><code title="WiFiHardware status">status</code></a></li>
+  </ul>
+<h3 id=the-status-property-0><span class=secno>14.1 </span>The <code>status</code> property</h3>
+  <p>The <dfn id=wifihardware-status title="WiFiHardware status"><code>status</code></dfn> property is a <a class=ulink href=http://dev.w3.org/2006/webapi/WebIDL/#idl-DOMString>DOMString</a> represented as a <a href=#switchtype><code>SwitchType</code></a> that indicates if the WiFi Harware is switched on or off. </p>
+  <h2 id=wifinetwork-aspect><span class=secno>15 </span><code title="">WiFiNetwork</code> aspect</h2>
+  <p>The <code><dfn id=wifinetwork>WiFiNetwork</dfn></code> aspect  represents the WiFi Network that the device is connected to (if any). Components of this aspects have the following propoerties: </p>
+  <ul>
+    <li>ssid</li>
+    <li>signalStrength</li>
+    <li>networkStatus</li>
+  </ul>
+  
+<h3 id=the-ssid-property><span class=secno>15.1 </span>The <code title="">ssid</code> property</h3>
+<p>The <dfn id=ssid><code>ssid</code></dfn> property A <a class=ulink href=http://dev.w3.org/2006/webapi/WebIDL/#idl-DOMString>DOMString</a> that represents the SSID of a WiFi network. </p>
+
+<h3 id=the-signalstrength-property-0><span class=secno>15.2 </span>The <code title="">signalStrength</code> property</h3>
+<p>The <dfn id=wifinetwork-signalstrength title="WiFiNetwork signalStrength">signalStrength</dfn> property is an <a href=http://dev.w3.org/2006/webapi/WebIDL/#idl-octet>octet</a> that represents the relative  signal strength offered by the WiFi network (from 0 to 100, where 100 is full strength). </p>
+
+<h3 id=the-networkstatus-property><span class=secno>15.3 </span>The <code title="">networkStatus</code> property  </h3>
+<p>The <dfn id=networkstatus><code>networkStatus</code></dfn> property A <a class=ulink href=http://dev.w3.org/2006/webapi/WebIDL/#idl-DOMString>DOMString</a> represented as one of the <a href=#networkstates><code>NetworkStates</code></a> that indicates the state of a WiFi network.
+</p>
+* \endonly
 **/
 
 Deviceapis implements DeviceapisDeviceStatusManager;
