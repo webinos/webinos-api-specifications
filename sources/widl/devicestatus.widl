@@ -400,9 +400,5 @@ dictionary PropQuery {
         */
         enum NetworkStates {"connected", "available", "forbidden"};
 
-        /**
-        * \name TestingPossible values for switch
-        * \brief TestingPossible values for switch
-        */
-
+ 
 Deviceapis implements DeviceapisDeviceStatusManager;
