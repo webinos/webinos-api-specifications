@@ -13,7 +13,7 @@
 * webinos.tv.
 *
 * \def-api-feature http://webinos.org/api/tv
-* \author Fraunhofer FOKUS, Alexander Fut&aacute;sz &lt;alexander.futasz@fokus.fraunhofer.de&gt;
+* \author Fraunhofer FOKUS, Martin Lasak &lt;martin.lasak@fokus.fraunhofer.de&gt;, Alexander Fut&aacute;sz &lt;alexander.futasz@fokus.fraunhofer.de&gt;
 * \author Dominique Hazael-Massieux
 */
 
@@ -47,7 +47,7 @@ interface TVManager {
   function success(channel) {
     ontv.normalize();
     ontv.removeChild(ontv.childNodes[0]);
-    ontv.appendChild(document.createTextNode(channel.name + ' (source: ' + channel.tvsource.name + ')'));
+    ontv.appendChild(document.createTextNode(channel.name));
   }
   \</script>
  * \endcode
@@ -81,7 +81,7 @@ interface TVDisplayManager : EventTarget {
   function channelchanged() {
     ontv.normalize();
     ontv.removeChild(ontv.childNodes[0]);
-    ontv.appendChild(document.createTextNode(channel.name + ' (source: ' + channel.tvsource.name + ')'));
+    ontv.appendChild(document.createTextNode(channel.name));
   }
   \</script>
  \endcode
@@ -219,10 +219,6 @@ dictionary Channel {
    *
    * This stream is a represents a valid source for a HTMLVideoElement.
    */
-   Stream stream;
+   MediaStream stream;
   
-  /**
-   * \brief The source this channels belongs too.
-   */
-   TVSource tvsource;
 };
