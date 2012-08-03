@@ -1,7 +1,8 @@
 /**<p>The webinos The Device Status API lets you get information about various "aspects" of a device.</p>
  * \name Device Status API 
  *
- * \introduction 
+ * \brief API OVERVIEW
+ * 
  * This API uses a kind of tree model to allow developers to get at the various bits of data about things on a device. The tree model is illustrated in figure 1: at the root you find aspects, which contain components, which contain properties - each of which is formally defined below.
  *
  * Aspects contain components, which contain properties The Device status tree model: at the root are the aspects, which contain one or more components, which themselves contain properties.
