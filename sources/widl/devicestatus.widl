@@ -1,6 +1,7 @@
 /**<p>The webinos The Device Status API lets you get information about various "aspects" of a device.</p>
  * \name Device Status API 
  *
+ * \brief Device Status API 
  * This API uses a kind of tree model to allow developers to get at the various bits of data about things on a device. The tree model is illustrated in figure 1: at the root you find aspects, which contain components, which contain properties - each of which is formally defined below.
  *
  * Aspects contain components, which contain properties The Device status tree model: at the root are the aspects, which contain one or more components, which themselves contain properties.
@@ -392,6 +393,14 @@ dictionary PropQuery {
      DOMString property;
 };  
 
+/**
+* \brief Just some test
+*
+* Filesystem event listeners are used in order to retrieve
+* notifications if root or default locations such as storage
+* cards are mounted/unmounted into/from the device filesystem.
+*/
+
         /**
         * \brief Possible values for switch
         */
@@ -401,8 +410,8 @@ dictionary PropQuery {
         */
         enum NetworkStates {"connected", "available", "forbidden"};
 
-        /**
-* \brief Jusr a test
+/**
+* \brief Just a test
 *
 * Filesystem event listeners are used in order to retrieve
 * notifications if root or default locations such as storage
