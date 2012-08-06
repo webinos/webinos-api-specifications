@@ -224,7 +224,7 @@
                 * \param id The id of the contact to delete from the contacts list.                                 
                 * \return A pending operation object making it possible to cancel the deleteontact operation 
                 */
-                PendingOp deleteContact(ContactDeleteSuccessCB successCB, ContactErrorCB errorCB?, DOMString id);          
+                PendingOp deleteContact(ContactDeleteSuccessCB successCB, ContactErrorCB? errorCB, DOMString id);          
 
 
                  /**
@@ -274,7 +274,7 @@
                  * \return A pending operation object making it possible to cancel the findContacts operation 
                  */
                  
-                PendingOp findContacts(ContactFindSuccessCB successCB, optional ContactErrorCB errorCB?, optional ContactFilter? filter);
+                PendingOp findContacts(ContactFindSuccessCB successCB, optional ContactErrorCB? errorCB, optional ContactFilter? filter);
 
         
         };
