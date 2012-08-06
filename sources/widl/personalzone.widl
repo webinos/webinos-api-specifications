@@ -1,0 +1,141 @@
+/**<p>Webinos Personal Zone API provides access to information about personal zone devices and applications </p>
+ * \name Webinos Personal Zone API
+ *
+ * This API encapsulates information PZP id, PZH id, Screen size, Input type, device type,
+ * It provides information specific about device to the developer.
+ * This information is intended to be used in the same personal zone and care should be to not disclose information to outside personal devices.
+ *
+ * \author Habib Virji &lt;habib.virji@samsung.com&gt;
+ * \author Simon Isenberg &lt;Simon.Isenberg@bmw.de&gt;
+ * \def-api-feature http://webinos.org/api/personalzone
+ * Identifies the static information about the personal zone
+ * \version 0.1
+ */
+
+  /**
+  * \brief The interface that is returned when application queries PersonalZoneInterface
+  */
+  [NoInterfaceObject]
+  interface PzpDetails : PersonalZoneData {
+    readonly attribute String     id;
+    readonly attribute String     name;
+    readonly attribute boolean    connected;
+    readonly attribute PzhDetails connpzh;
+    readonly attribute DeviceType type;
+    readonly attribute InputControl[] inputcontrols;
+    readonly attribute Screen[]   screens;
+  };
+
+  /**
+  * \brief Screen object details returned as part of PersonalZoneData
+  */
+  interface Screen {
+    readonly attribute unsigned short width;
+    readonly attribute unsigned short height;
+    readonly attribute unsigned short dpi;
+  };
+  /**
+  * \brief
+  */
+  interface PzhDetails : PersonalZoneData {
+    readonly attribute String  pzhid;
+    readonly attribute String  userid;
+    readonly attribute boolean connected;
+    readonly attribute boolean ownzone;
+    readonly attribute boolean trusted;
+  };
+  /**
+  * \brief device type returned by personal zone api
+  */
+  enum DeviceType {"tablet", "phone", "tv", "vehicle", "pc"};
+  /**
+  * \brief input controls supported on the device
+  */
+  enum InputControl {"touchpad", "touchscreen", "clickwheel", "keyboard", "numberpad", "mouse"};
+
+  /**
+  * \brief Personal zone api interface
+  */
+  [NoInterfaceObject] interface PersonalZoneInterface {
+    /**
+    * \brief Method allows to request the details of the PZP on which application is executed
+    */
+    void getPZPDetails(PersonalZoneDataHandler handler, ErrorCallback errorCB);
+    /**
+    * \brief Method allows to request the details of the connected personal zone hub
+    */
+    void getConnectedPZHs(PersonalZoneDataHandler handler, ErrorCallback errorCB);
+    /**
+    * \brief Method allows to request the details of the connected personal zone proxies
+    */
+    void getConnectedPZPs(PersonalZoneDataHandler handler, ErrorCallback errorCB);
+    /**
+    * \brief Method allows to request id of the current executed applications
+    */
+    void getAppId(PersonalZoneDataHandler handler, ErrorCallback errorCB);
+  };
+
+  /**
+  * \brief callback method to receive personal zone data in non-recurring and asynchronous way
+  */
+  callback PersonalZoneDataHandler = void (PersonalZoneData data);
+
+  /**
+   * \brief Error callback for personal zone api requests.
+   * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> object detailing what went wrong; e.g. SecurityError if permission denied, TimeoutError if operation timed out
+   */
+  callback ErrorCallbackCB = void (DOMError error);
+
+  /**
+  * \brief Interface to enable logging
+  */
+  [NoInterfaceObject]
+  interface PzpLogging : PersonalZoneLogging {
+    attribute boolean enable;
+    attribute string pzpid;
+    attribute string appid;
+    attribute string logdata;
+  };
+
+  /**
+  * \brief Interface to enable logging and fetch log
+  */
+  [NoInterfaceObject] interface PersonalZoneLoggingInteface{
+    /**
+    * \brief Method allows to enable or disabling logging for particular zone
+    */
+    void setLog(PersonalZoneLoggingHandler handler, ErrorCallback errorCB);
+    /**
+    * \brief Method allows to request id of the current executed applications
+    */
+    void fetchLog(PersonalZoneLoggingHandler handler, ErrorCallback errorCB);
+  };
+
+  /**
+  * \brief callback method to receive logging information in non-recurring and asynchronous way
+  */
+  callback PersonalZoneLoggingHandler = void (PersonalZoneLogging data);
+
+  /**
+  * \brief interface to store and fetch data in personal zone device
+  */
+  [NoInterfaceObject] interface PersonalZoneStoreInterface{
+    /**
+    * \brief Method allows to store application data
+    */
+    StoreId storeData(blob data, ErrorCallback errorCB);
+    /**
+    * \brief Method allows to retrieve application data
+    */
+    void fetchData(String StoreId, ErrorCallback errorCB);
+  };
+
+  [NoInterfaceObject] interface PersonaZone {
+    readonly attribute PersonalZoneInterface        details;
+    readonly attribute PersonalZoneLoggingInterface logging;
+    readonly attribute PersonalZoneStoreInterface   store;
+  };
+
+  Webinos implements PersonalZone;
+
+
