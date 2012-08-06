@@ -1,4 +1,4 @@
-/**<p>The webinos The Device Status API lets you get information about various "aspects" of a device.</p>
+/**<p>The webinos Device Status API lets you get information about various "aspects" of a device.</p>
  * \name Device Status API 
  *
  * This API uses a kind of tree model to allow developers to get at the various bits of data about things on a device. The tree model is illustrated in figure 1: at the root you find aspects, which contain components, which contain properties - each of which is formally defined below.
@@ -8,7 +8,8 @@
  * Aspect
  * \n  An aspect is an abstract namable thing (e.g., a "Device", "Battery", "Display", etc.) that the user agent knows about and can interact with. An aspect can contain one or more components.
  * \n \n Component
- * \n  A component is a concrete instance of an aspect (e.g., a real battery in the device, the real screens of the device). As devices can contain more than one instance of the thing being referred to by an aspect (e.g. two screens, three batteries, two SIM cards), each real instance of an aspect is referred to as a component. Each component has its own unique component name, which is assigned by the user agent and serves as the component's identifier for the life of the application (e.g., "screen_1", "battery2", "os", "hdd", "SDCard").
+ * \n  A component is a concrete instance of an aspect (e.g., a real battery in the device, the real screens of the device). As devices can contain more than one instance of the thing being referred to by an aspect (e.g. two screens, three batteries, two SIM cards), each real instance of an aspect is referred to as a component. Each component has its own unique component name, which is assigned by the user agent and serves as the component's identifier for the life of the application (e.g., "screen_1", "ba
+ttery2", "os", "hdd", "SDCard").
  * \n     This specification reserves two special components names ("_active" and "_default") which a user agent MUST NOT use when generating. 
  * \n \n Property
  * \n     A property of an component is something that can be queried to returns data (e.g., how much charge a battery has, if the WiFi is connected or not, the SSID of a WiFi network). 
@@ -110,9 +111,9 @@
  */
  
  
-	/**
-	 * \brief When an device status feature declaration appears in the widget's configuration document, the user agent implements the DeviceapisDeviceStatusManager interface.
-		 */
+        /**
+         * \brief When an device status feature declaration appears in the widget's configuration document, the user agent implements the DeviceapisDeviceStatusManager interface.
+                 */
 
  [NoInterfaceObject]
 interface DeviceapisDeviceStatusManager {
@@ -123,11 +124,11 @@ interface DeviceapisDeviceStatusManager {
 var info = deviceapis.devicestatus;
 info.getPropertyValue(
 function(model) {
-	console.log("Device model is: " + model);
+        console.log("Device model is: " + model);
 },
 null, {
-	aspect: "Device",
-	property: "model"
+        aspect: "Device",
+        property: "model"
 });
         * \endcode
         */
@@ -140,11 +141,11 @@ null, {
         * \code
 deviceapis.devicestatus.getPropertyValue(
 function(value) {
-	console.log("The battery level is at " + value + "%");
+        console.log("The battery level is at " + value + "%");
 },
 null, {
-	property: "batteryLevel",
-	aspect: "Battery"
+        property: "batteryLevel",
+        aspect: "Battery"
 });
         * \endcode
         */
@@ -175,8 +176,8 @@ console.log("Your device has " + displays.length + " displays");
 
 //iterate through and show the name of each component
 for (var i = 0; i < displays.length; i++) {
-	var display = displays[i];
-	console.log("Display component " + i + ": " + displays[i]);
+        var display = displays[i];
+        console.log("Display component " + i + ": " + displays[i]);
 }
         * \endcode
         * \param aspect for component to retrieve
@@ -203,9 +204,9 @@ for (var i = 0; i < displays.length; i++) {
         * Example
         * \code
 if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
-	console.log("batteryLevel property is available");
+        console.log("batteryLevel property is available");
 } else {
-	console.log("batteryLevel property is not available");
+        console.log("batteryLevel property is not available");
 }
         * \endcode
         * \param aspect Aspect to check for
@@ -264,13 +265,13 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * \code
 //The "_default" component is implied.
 var options = {
-	aspect: "Battery",
-	property: "batteryLevel"
+        aspect: "Battery",
+        property: "batteryLevel"
 };
 
 deviceapis.devicestatus.getPropertyValue(
 function batteryQuery(value) {
-	console.log("Battery is at " + value + "%");
+        console.log("Battery is at " + value + "%");
 },
 null, options);
         * \endcode
@@ -314,23 +315,23 @@ null, options);
         * Example
         * \code
 function propertyChange(value, ref) {
-	console.log("New value for " + ref.property + " is " + value);
+        console.log("New value for " + ref.property + " is " + value);
 }
 
 deviceapis.devicestatus.watchPropertyChange(propertyChange, null, {
-	property: "batteryLevel",
-	aspect: "Battery"
+        property: "batteryLevel",
+        aspect: "Battery"
 });
 
 //The "_default" component is implied.
 var options = {
-	aspect: "Battery",
-	property: "batteryLevel"
+        aspect: "Battery",
+        property: "batteryLevel"
 };
 
 deviceapis.devicestatus.getPropertyValue(
 function batteryQuery(value) {
-	console.log("Battery is at " + value + "%");
+        console.log("Battery is at " + value + "%");
 },
 null, options);
         * \endcode
@@ -354,18 +355,18 @@ null, options);
         * Example
         * \code
            function propertyChange(value, ref) {
-           	console.log("New value for " + ref.property + " is " + value);
+                console.log("New value for " + ref.property + " is " + value);
            
-           	if (id) {
-           		deviceapis.devicestatus.clearPropertyChange(id);
-           		console.log(id + " cleared");
-           	}
+                if (id) {
+                        deviceapis.devicestatus.clearPropertyChange(id);
+                        console.log(id + " cleared");
+                }
            }
            
            var id = deviceapis.devicestatus.watchPropertyChange(
            propertyChange, null, {
-           	property: "batteryLevel",
-           	aspect: "Battery"
+                property: "batteryLevel",
+                aspect: "Battery"
            });
         * \endcode
         * \param watchid Id of watch property change subscription
@@ -391,6 +392,7 @@ dictionary PropQuery {
      DOMString property;
 };  
 
+
         /**
         * \brief Possible values for switch
         */
@@ -400,5 +402,4 @@ dictionary PropQuery {
         */
         enum NetworkStates {"connected", "available", "forbidden"};
 
- 
 Deviceapis implements DeviceapisDeviceStatusManager;
