@@ -122,7 +122,7 @@
                 * \endcode
                 *
                 * \param successCB Function to call when the asynchronous operation completes successfully.
-                * \param errorCB Function to call when the asynchronous operation fails.
+                * \param errorCB Function to call when the asynchronous operation fails, can be null.
                 * \param contact The contact to add to the contacts list.                                 
                 * \return A pending operation object making it possible to cancel the addContact operation 
                 */
@@ -181,7 +181,7 @@
                 * \endcode
                 *   
                 * \param successCB Function to call when the asynchronous operation completes successfully.
-                * \param errorCB Function to call when the asynchronous operation fails.
+                * \param errorCB Function to call when the asynchronous operation fails, can be null.
                 * \param contact The contact to update in the contacts list.                                 
                 * \return A pending operation object making it possible to cancel the updateContact operation 
                 */
@@ -220,7 +220,7 @@
                 * \endcode
                 *
                 * \param successCB Function to call when the asynchronous operation completes successfully.
-                * \param errorCB Function to call when the asynchronous operation fails.
+                * \param errorCB Function to call when the asynchronous operation fails, can be null.
                 * \param id The id of the contact to delete from the contacts list.                                 
                 * \return A pending operation object making it possible to cancel the deleteontact operation 
                 */
@@ -269,7 +269,7 @@
                  * \endcode
                  *
                  * \param successCB Function to call when the asynchronous operation completes successfully.
-                 * \param errorCB Function to call when the asynchronous operation fails.
+                 * \param errorCB Function to call when the asynchronous operation fails, can be null.
                  * \param filter The search qualifier.                         
                  * \return A pending operation object making it possible to cancel the findContacts operation 
                  */
