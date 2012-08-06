@@ -15,7 +15,7 @@
  * The format of an individual contact is mostly taken from W3C, since it contains more information
  * than the WAC version.
  *
- * The available functtions on the Contacts are mostly taken from the WAC specification, since they
+ * The available functions on the Contacts are mostly taken from the WAC specification, since they
  * provide write functionality for contacts.
  * 
  * \def-api-feature http://www.w3.org/ns/api-perms/contacts.read 
@@ -77,8 +77,7 @@
                  *
                  * \code
                  * var contact = contacts.createContact({
-                 *         firstName: "John",
-                 *         lastName: "Doe"
+                 *         name: "John Doe"
                  * });                        
                  * \endcode
                  *
@@ -107,8 +106,7 @@
                 *         or undefined), no action is required (i.e. the error is not notified to the developer). 
                 * \code
                 * var contact = contacts.createContact({
-                *         firstName: "John",
-                *         lastName: "Doe"
+                *         name: "John Doe"
                 * });
                 * 
                 * contacts.addContact(successwrite, error, contact);
@@ -126,10 +124,10 @@
                 * \param successCB Function to call when the asynchronous operation completes successfully.
                 * \param errorCB Function to call when the asynchronous operation fails.
                 * \param contact The contact to add to the contacts list.                                 
-                * \return  void                 
+                * \return A pending operation object making it possible to cancel the addContact operation 
                 */
                 
-                void addContact(ContactAddSuccessCB successCB, ContactErrorCB errorCB, Contact contact);                
+                PendingOp addContact(ContactAddSuccessCB successCB, ContactErrorCB errorCB, Contact contact);                
 
                 /**
                 * \brief The updateContact() method asynchronously updates an existing contact in an address book.
@@ -158,14 +156,13 @@
                 *         to the developer). 
                 * \code
                 *  contacts.findContacts(toUpdate, errorCallback, {
-                *                          firstName: '%John%',
-                *                          lastName: '%Doe%'
+                *                          name: "%John Doe%"
                 *                  });
                 *  
                 *  function toUpdate(contactlist) {
                 *          if (contactlist.length > 0) {
                 *                  for (i = 0; i < contactlist.length; i++) {
-                *                          contactlist[i].nicknames = ["Jonny"];
+                *                          contactlist[i].nickname = ["Jonny"];
                 *                          contacts.updateContact(contactUpdatedCB, errorCallback, contactlist[i]);
                 *                  }
                 *          } else {
@@ -186,9 +183,9 @@
                 * \param successCB Function to call when the asynchronous operation completes successfully.
                 * \param errorCB Function to call when the asynchronous operation fails.
                 * \param contact The contact to update in the contacts list.                                 
-                * \return  void                 
+                * \return A pending operation object making it possible to cancel the updateContact operation 
                 */
-                void updateContact(ContactUpdateSuccessCB successCB, ContactErrorCB errorCB, Contact contact);                
+                PendingOp updateContact(ContactUpdateSuccessCB successCB, ContactErrorCB errorCB, Contact contact);                
 
                 /**
                 * \brief Deletes a contact from the address book asynchronously.
@@ -199,14 +196,12 @@
                 *
                 * \code
                 *  contacts.findContacts(toDelete, errorCallback, {
-                *                          firstName: '%John%',
-                *                          lastName: '%Doe%'
+                *                          name: "%John Doe%"
                 *                  });
                 *  
                 *  function toDelete(contactlist) {
                 *          if (contactlist.length > 0) {
                 *                  for (i = 0; i < contactlist.length; i++) {
-                *                          contactlist[i].nicknames = ["Jonny"];
                 *                          contacts.deleteContact(contactDeletedCB, errorCallback, contactlist[i].id);
                 *                  }
                 *          } else {
@@ -227,9 +222,9 @@
                 * \param successCB Function to call when the asynchronous operation completes successfully.
                 * \param errorCB Function to call when the asynchronous operation fails.
                 * \param id The id of the contact to delete from the contacts list.                                 
-                * \return  void                 
+                * \return A pending operation object making it possible to cancel the deleteontact operation 
                 */
-                void deleteContact(ContactDeleteSuccessCB successCB, ContactErrorCB errorCB, DOMString id);          
+                PendingOp deleteContact(ContactDeleteSuccessCB successCB, ContactErrorCB errorCB, DOMString id);          
 
 
                  /**
@@ -256,8 +251,7 @@
                  *
                  * \code
                  *  contacts.findContacts(findSuccess, errorCallback, {
-                 *                          firstName: '%John%',
-                 *                          lastName: '%Doe%'
+                 *                          name: "%John Doe%"
                  *                  });
                  *  
                  *  function findSuccess(contactlist) {
@@ -277,10 +271,10 @@
                  * \param successCB Function to call when the asynchronous operation completes successfully.
                  * \param errorCB Function to call when the asynchronous operation fails.
                  * \param filter The search qualifier.                         
-                 * \return  void                 
+                 * \return A pending operation object making it possible to cancel the findContacts operation 
                  */
                  
-                void findContacts(ContactFindSuccessCB successCB, optional ContactErrorCB errorCB, optional ContactFilter? filter);
+                PendingOp findContacts(ContactFindSuccessCB successCB, optional ContactErrorCB errorCB, optional ContactFilter? filter);
 
         
         };
@@ -501,6 +495,21 @@
            * exactly or with the specified wildcards) match the filtering criteria. 
            */        
               DOMString?             timezone;
+            /**
+           * \brief A boolean value to indicate whether multiple Contact objects are wanted as part of the Contacts find() operation. By default this option is set to false. 
+           *
+           * No exceptions.
+           */            
+             boolean?   multiple;
+            /**
+           * \brief Return only contact records that have been updated on or after the given time, specified as an ECMAScript Date object.
+           *
+           * This filter is applied to the revision field as defined in Contact. 
+           *
+           * No exceptions.
+           */            
+             Date      updatedSince;
+              
         };
 
       /**
@@ -806,32 +815,24 @@
              DOMString? title;
         };
         
-       /**
-         * \brief The ContactFindOptions interface describes the options that can be applied to contact searching. When a ContactFindOptions parameter is provided to the Contacts find() operation, it should be processed according to the provisions detailed in Options Processing. 
-         *
-         */ 
-        dictionary ContactFindOptions {
-           /**
-           * \brief A string-based search filter which provides a hint to the user agent to facilitate contacts selection by the user. 
-           *
-           * No exceptions.
-           */            
-             DOMString? filter;
-            /**
-           * \brief A boolean value to indicate whether multiple Contact objects are wanted as part of the Contacts find() operation. By default this option is set to false. 
-           *
-           * No exceptions.
-           */            
-             boolean?   multiple;
-            /**
-           * \brief Return only contact records that have been updated on or after the given time, specified as an ECMAScript Date object.
-           *
-           * This filter is applied to the revision field as defined in Contact. 
-           *
-           * No exceptions.
-           */            
-             Date      updatedSince;
-        };
+
+
+    /**
+     * \brief The PendingOp interface
+     *
+     * The PendingOp interface describes objects that are returned by asynchronous methods that are cancellable. It makes it possible to bring 
+     * these operations to a stop if they haven't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.\n
+     *
+     */
+     [NoInterfaceObject] interface PendingOp {
+
+    /**
+     * \brief Method Cancel
+     *
+     *  Cancel the pending asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return. No success or error callback for the pending operation will be invoked.
+     */
+        void cancel ();
+     };
 
                  /**
                  * \brief Callback on success of a find() operation
