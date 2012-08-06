@@ -1,0 +1,325 @@
+/**<p>Interface to enable and manage application synchronization.</p>
+* \name Object Synchronization API
+* 
+* The interface provides a set of operations for the management of shared synchronized objects. 
+* It abstracts from runtime application data exchange mechanisms and eases the
+* development of distributed application, by reducing the complexity to simple 
+* read and write operations of object properties. 
+* The interface includes creation of and querying for objects in the 
+* <a href="http://www.json.org">JSON</a> data exchange format 
+* and registration and deregistration for state changes.
+*
+* Changes to objects created by this interface will be detected and synchronized among 
+* all participating peers automatically, e.g. setting properties or changing 
+* their values will affect all object copies. The synchronization mode may be 
+* configured so that the participating peers may be distinct instances of the 
+* same application running on user's different devices (e.g. 
+* distributed cross-device application). 
+* In a further configuration an object may be synchroized across several 
+* different users and applications (e.g. cross-application chat or 
+* collaboration components).
+*
+* The Object Synchronization API is made available under the webinos namespace, i.e.
+* webinos.sync.
+*
+* \def-api-feature http://webinos.org/api/sync
+* \author Fraunhofer FOKUS, Martin Lasak &lt;martin.lasak@fokus.fraunhofer.de&gt;
+*/
+
+/**
+* \brief Creates the object synchronization namespace.
+*
+* Access to public constants and functions are available via the namespace webinos.sync.
+*/
+partial interface Webinos {
+  readonly attribute SyncManager sync;
+};
+
+/**
+* \brief Interface for management of the object synchronization. Covers three of the CRUD operations 
+* as an implizit object update should be provided by the synchronization mechanism.
+*/
+interface SyncManager {
+
+  /**
+   * \brief Creates a synchronized object that may be used for application synchronization.
+   *
+   * \param syncObjectIdentifier An identifier or name as a logical reference to the object. 
+   * \param callback The callback to notify the caller that create operation was completed, 
+   * either successfully or unsuccessfully,
+   * \param options For the creation of a synchronized object options may be specified. 
+   * If no options are specified then default values will be taken.
+   */
+  void create(DOMString syncObjectIdentifier, SyncObjectCB callback, optional SyncOptions options);
+
+  /**
+   * \brief Finds a previously created synchronized object.
+   *
+   * \param syncObjectIdentifier An identifier, name or key as a logical reference to the object. 
+   * \param callback The callback to notify the caller that create operation was completed, 
+   * either successfully or unsuccessfully.
+   */
+  void find(DOMString syncObjectIdentifier, SyncObjectCB callback);
+
+  /**
+   * \brief Detach a previously created synchronized object from the synchronization. 
+   *
+   * Permanently deactivates the synchronization of a previously created synchronized object.  
+   * Subsequent changes to the object will not be synchronized with remote peers
+   * and remote changes will not be reflected in local copy.
+   * 
+   * \param syncObjectIdentifier An identifier, name or key as a logical reference to the object. 
+   * \param callback The callback to notify the caller that create operation was completed, 
+   * either successfully or unsuccessfully.
+   */
+  void detach(DOMString syncObjectIdentifier, SyncObjectCB callback);
+
+  /**
+   * \brief Purge a previously created synchronized object. 
+   *
+   * Permanently purge the synchronization of a previously created synchronized object.  
+   * Subsequent changes to the object will not be possible at any peer.
+   * Only the creator may purge an synchronized object.
+   * 
+   * \param syncObjectIdentifier An identifier, name or key as a logical reference to the object. 
+   * \param callback The callback to notify the caller that create operation was completed, 
+   * either successfully or unsuccessfully.
+   */
+  void purge(DOMString syncObjectIdentifier, SyncObjectCB callback);
+}; 
+
+/**
+ * \brief Callback function that is called if an operation on synchronization is completed.
+*/
+callback SyncObjectCB = void (SyncObject syncObject);
+
+/**
+ * \brief The SyncObject Interface
+ *
+ * The SyncObject interface provides access to the object to be synchronized and its metadata 
+ * as well as events refering to the object.
+ */
+interface SyncObject : EventTarget {
+
+  /**
+   * \brief The root of the object to be synchronized.
+   *
+   * Changes to properties of this object will be synchronized among all connected peers.
+   */
+  attribute Object data;
+
+  /**
+   * \brief Metadata about the object to be synchronized.
+   *
+   * The status of the synchronized object may be accesses via properties of this object. 
+   */
+  attribute SyncObjectStatus status;
+
+/**
+ * \brief Event that fires when a synchronization update occured.
+ *
+ * A synchronization message may contain multiple updates, for each update a separate 
+ * event is fired. This concerns all type of updates.
+ * 
+ * \code
+  \<p>ui: \<span id='sync'>\</span>\</p>
+  \<script>
+  //todo
+  \</script>
+ \endcode
+ */
+  [TreatNonCallableAsNull] attribute EventHandler onsync;
+
+/**
+ * \brief Event that fires whenever a fatal error occurs. 
+ *
+ * In particular, the fired event notifies applications in case of a connection loss.
+ *
+ * \code
+  \<p>ui: \<span id='sync'>\</span>\</p>
+  \<script>
+  //todo
+  \</script>
+ \endcode
+ */
+  [TreatNonCallableAsNull] attribute EventHandler onfail;  
+
+/**
+ * \brief Event that fires when the object has been detached from synchronization. 
+ *
+ * \code
+  \<p>ui: \<span id='sync'>\</span>\</p>
+  \<script>
+  //todo
+  \</script>
+ \endcode
+ */
+  [TreatNonCallableAsNull] attribute EventHandler ondetach;
+
+/**
+ * \brief Event that fires whenthe object has been purged by its creator. 
+ *
+ * \code
+  \<p>ui: \<span id='sync'>\</span>\</p>
+  \<script>
+  //todo
+  \</script>
+ \endcode
+ */
+  [TreatNonCallableAsNull] attribute EventHandler onpurge;    
+
+  /**
+   * \brief Watch a property, e.g. primitive attribute or sub-object, for changes. 
+   *
+   * If a change to a watched property is detected then all registered listeners 
+   * are notified. 
+   * 
+   * \param propertyPath The path to the property of interest that should be watched, 
+   * e.g. "subobject.counter". 
+   * \param callback The callback to notify the caller that a change of the
+   * watched property or object occured.
+   */
+  void watch(DOMString propertyPath, PropertyChangedCB callback);
+
+  /**
+   * \brief Stop watching a property, e.g. primitive attribute or sub-object, for changes. 
+   *
+   * If a change to a watched property is detected then all registered listeners 
+   * are notified. 
+   * 
+   * \param propertyPath The path to the property of interest that should not watched 
+   * any longer.
+   * \param callback The callback that was used for the registration to notify 
+   * the caller that a change of the watched property or object occured.
+   */
+  void unwatch(DOMString propertyPath, PropertyChangedCB callback);
+
+};
+
+/**
+ * \brief Callback function that is called if an change of a watched property occured.
+*/
+callback PropertyChangedCB = void (SyncPropery syncProperty);
+
+/**
+ * \brief The SyncPropery Interface
+ *
+ * The SyncPropery interface provides information about the change of  
+ * a watched property, containing its old and current 
+ */
+dictionary SyncPropery {
+
+  /**
+   * \brief Path and name of the property reffering to the update.
+   */
+   DOMString propertyPath;
+
+  /**
+   * \brief Holds a reference to a copy of the watched property before the last update.
+   */
+   Any? previousValue;
+
+  /**
+   * \brief Holds a reference to the watched property after the last update, its current state.
+   */
+   Any? currentValue;
+};
+
+
+/**
+ * \brief The SyncOptions Interface
+ *
+ * For the creation of a sync object options may be specified.
+ */
+dictionary SyncOptions {
+
+  /**
+   * \brief Specifies if the object should be synchronized across different applicaion.
+   *
+   * If this property is set to true then the synchronization mechanism will 
+   * take care of sharing the state across different applications.
+   * The default value is false, thus limiting the synchronization to peers using 
+   * the same application.
+   */
+   Boolean crossAppSync = false;
+
+  /**
+   * \brief Specifies if the object should be synchronized across different users.
+   *
+   * If this property is set to true then the synchronization mechanism will 
+   * take care of sharing the state across different personal zones.
+   * The default value is false, thus limiting the synchronization to a single 
+   * person only.
+   */
+   Boolean crossUserSync = false;
+
+  /**
+   * \brief Specifies if the synchronized object should be maintained for a certain 
+   * amount of time (in minutes) if all peers get disconnected.
+   *
+   * If this property is set to a value higher then 0 then the synchronization mechanism will 
+   * take care of maintaining the object in case of all peers gets disconnected.
+   * The default value is 0, thus the object will be garbage collected immediatelly
+   * if no peer is connected.
+   */
+   Long maintainTimeoutMinutes = 0;
+
+  /**
+   * \brief This object is used as a template to set up the initial state.
+   *
+   * If this property is set then it will be taken as blueprint for the
+   * creation of the synchronization object. The state of the reference object
+   * will be taken as initial state. If the reference object is not specified
+   * then an empty new synchronization object will be created.
+   */
+   Object referenceObject = null;
+
+  /**
+   * \brief Specifies the access mode for the object properties.
+   *
+   * Two access modes are distinguished, a read-only ("ro") mode where only the creator
+   * may change the state of the synchronized object and
+   * a mode with enabled read and write access ("rw") for all peers.
+   * Default value is "rw".
+   */
+   AccessMode accessMode = "rw";
+};
+
+/**
+ * \brief State type of a synchronized object.
+*/
+enum AccessMode { "ro", "rw" };
+
+
+/**
+ * \brief Interface to access the status refering a synchronized object.
+ *
+*/
+dictionary SyncObjectStatus {
+
+  /**
+   * \brief The options that were used to create the synchronized object.
+   */	
+   SyncOptions options;
+
+  /**
+   * \brief The current state of the synchronized object.
+   */
+   StateType state;
+
+  /**
+   * \brief Time information about when the last synchronization was performed.
+   */
+   Date lastUpdate;
+
+  /**
+   * \brief Flag indicating if ownership of the synchronized object.
+   */
+   Boolean isOwner;
+};
+
+/**
+ * \brief State type of a synchronized object.
+*/
+enum StateType { "inited", "synced", "detached", "purged", "not_found" };
+
