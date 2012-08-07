@@ -149,34 +149,6 @@ document.onLoad = function() {
 		 * entries.
 		 */
 		attribute WebinosEventEntity[] to;
-		/**
-		 * \brief Array of secondary recipients.
-		 *
-		 * It MAY be empty.
-		 *
-		 * In the normalized form it SHALL be sorted in ascending order
-		 * by Unicode code points, SHALL NOT contain duplicate entries
-		 * and SHALL NOT contain entries that are also found in the "to"
-		 * array.
-		 *
-		 * The non-normalized form allows to use null or undefined to
-		 * indicate no secondary recipients.
-		 */
-		attribute WebinosEventEntity[] cc;
-		/**
-		 * \brief Array of blind-carbon-copy recipients.
-		 *
-		 * It MAY be empty.
-		 *
-		 * In the normalized form it SHALL be sorted in ascending order
-		 * by Unicode code points, SHALL NOT contain duplicate entries
-		 * and SHALL NOT contain entries that are also found in the "to"
-		 * or "cc" arrays.
-		 *
-		 * The non-normalized form allows to use null or undefined to
-		 * indicate no blind-carbon-copy recipients.
-		 */
-		attribute WebinosEventEntity[] bcc;
 	};
 
 	/**
@@ -289,8 +261,7 @@ document.onLoad = function() {
 		 * false otherwise.
 		 *
 	 	 * \b NOTE: Please, keep in mind that all recipients SHALL get
-		 * references to all entities specified in the "to" and "cc"
-		 * attributes.
+		 * references to all entities specified in the "to" attribute.
 		 *
 		 * \param callbacks Set of callbacks to monitor sending status
 		 *	  (null and undefined are considered as equivalent to a
@@ -318,69 +289,6 @@ document.onLoad = function() {
 		 * throws DOMException of type SecurityError if some local policy rule does not allow for the event to be sent.
 		 */
 		void dispatchWebinosEvent(
-				optional WebinosEventCallbacks? callbacks,
-				optional DOMTimeStamp? referenceTimeout,
-				optional boolean sync);
-		/**
-		 * \brief Forwards an event.
-		 *
-		 * W.r.t. the "Delivery notification wanted" attribute described
-		 * in the Webinos system specification, its value in the
-		 * implementation is to be deferred from the callbacks parameter
-		 * and allowed to change between dispatchWebinosEvent() and
-		 * forwardWebinosEvent() calls. It SHALL be true when delivery
-		 * and/or error callbacks are passed via the callbacks argument,
-		 * false otherwise.
-		 *
-		 * Conforming implementations SHALL NOT modify the "Forwarding"
-		 * attribute of the local WebinosEvent object when this function
-		 * is called.
-		 *
-	 	 * \b NOTE: Please, keep in mind that all recipients referenced
-		 * by the forwarding argument SHALL get references to all
-		 * entities specified in the "to", "cc" and "bcc" arrays of the
-		 * "addressing" attribute, as well as references to all entities
-		 * specified in the "to" and "cc" arrays of the forwarding
-		 * argument.
-		 *
-		 * \param forwarding References to the entity on the behalf of
-		 *        which the application wants to forward the event and
-		 *        to the recipients of such forwarding. This argument
-		 *        SHALL be processed in the same way as the
-		 *        webinos.events.createWebinosEvent() function processes
-		 *        its "addressing" argument (i.e., make a normalized
-		 *        copy).
-		 * \param withTimeStamp Whether to set the forwarding timestamp
-		 *        (undefined is considered as equivalent to false).
-		 * \param callbacks Set of callbacks to monitor forwarding
-		 *        status (null and undefined are considered as
-		 *        equivalent to an WebinosEventCallbacks object with all
-		 *        attributes set to null).
-		 * \param referenceTimeout Moment in time until which the
-		 *	  Webinos runtime SHALL ensure that the WebinosEvent
-		 *        object being forwarded is not garbage collected for
-		 *        the purpose of receiving events in response to the
-		 *        event being forwarded (null, undefined and values up
-		 *        to the current date/time mean that no special action
-		 *        is taken by the runtime in this regard).
-		 * \param sync If false or undefined, the function is
-		 *	  non-blocking, otherwise if true it will block until
-		 *	  one of the following conditions becomes true: \n
-		 *	   - if referenceTimeout represents a moment in time in
-		 *	     the future at call time, that moment is reached; \n
-		 *	   - otherwise, if the "expiryTimeStamp" attribute is
-		 *	     specified as a moment in time in the future at call
-		 *	     time, that moment is reached; \n
-		 *	   - in any case, the end result of the operation is
-		 *	     completely determined for all recipients and all
-		 *	     callbacks that were to be called have run.
-		 *
-		 * throws DOMException of type SecurityError  if some local policy rule does
-		 *        not allow for the event to be forwarded.
-		 */
-		void forwardWebinosEvent(
-				WebinosEventAddressing forwarding,
-				optional boolean withTimeStamp,
 				optional WebinosEventCallbacks? callbacks,
 				optional DOMTimeStamp? referenceTimeout,
 				optional boolean sync);
@@ -495,22 +403,7 @@ document.onLoad = function() {
 		/**
 		 * \brief Creates a new event.
 		 *
-		 * The function SHALL accept the "addressing" argument both in
-		 * normalized and non-normalized form and, either case, the
-		 * resulting "addressing" attribute in the newly created
-		 * WebinosEvent object SHALL reference a newly created and
-		 * normalized equivalent of such argument where: \n
-		 *  - entries that are found both in "to" and "cc" in the
-		 *    original argument are removed from the "cc" array of the
-		 *    resulting WebinosEventAddressing object; \n
-		 *  - entries that are found both in "to" and "bcc" in the
-		 *    original argument are removed from the "bcc" array of the
-		 *    resulting WebinosEventAddressing object; \n
-		 *  - entries that are found both in "cc" and "bcc" in the
-		 *    original argument are removed from the "bcc" array of the
-		 *    resulting WebinosEventAddressing object.
-		 *	
-		 * Furthermore, the function SHALL also make sure that it is
+		 * The function SHALL make sure that it is
 		 * valid for the application to create the event on the behalf
 		 * of the specified source, otherwise an WebinosEventException
 		 * exception with error code INVALID_ARGUMENT_ERROR SHALL be
