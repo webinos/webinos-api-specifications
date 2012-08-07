@@ -11,7 +11,7 @@
  * of this API.
  *
  * Despite its apparent complexity, this API revolves around three simple basic
- * concepts: generating events, sending/forwarding events and
+ * concepts: generating events, sending events and
  * registering/unregistering event listeners for incoming events.
  *
  * The following example demonstrates what the core functionality of a
@@ -226,22 +226,6 @@ document.onLoad = function() {
 		 * compute the event id.
 		 */
 		readonly attribute boolean addressingSensitive;
-		/**
-		 * \brief References to the entity that forwarded the event and
-		 *        the recipients of such forwarding.
-		 *
-		 * It is null if the event was not subject to any forwarding,
-		 * hence it comes straight from the original sending entity.
-		 */
-		readonly attribute WebinosEventAddressing forwarding;
-		/**
-		 * \brief Moment in time in which the event was forwarded by the
-		 *        forwarding source.
-		 *
-		 * It SHALL be null if "forwarding" is null and MAY be null also
-		 * if "forwarding" is not null.
-		 */
-		readonly attribute DOMTimeStamp? forwardingTimeStamp;
 		/**
 		 * \brief Event type-specific data.
 		 *
