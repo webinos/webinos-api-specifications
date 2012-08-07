@@ -153,7 +153,7 @@
    *    <tr><td>priority        </td><td>No      </td><td>No      </td><td>Yes     </td><td>No</td></tr>
    * </table>
    *
-   * When a message has been successfully or unsuccessfully sent, it will be stored in the relevant folder (e.g. sent folder if successfully sent). Please not that some platforms may store multiple copies of the message if multiple recipients were included.
+   * When a message has been successfully or unsuccessfully sent, it will be stored in the relevant folder (e.g. sent folder if successfully sent). Please note that some platforms may store multiple copies of the message if multiple recipients were included.
    * 
    * When the operation is fully completed (i.e. the implementation knows the result of the send operation to all the recipients), the onsuccess method of the successCallback will be invoked if the message is successfully sent to all the recipients.
    * 
@@ -202,7 +202,7 @@
    /**
    * \brief Gets an array of messages from the message folders matching the selected filter. 
    *
-   * If the this feature is not supported, a DeviceAPIError with code NOT_SUPPORTED_ERR MUST be returned in the errorCallback. If this functionality is not allowed the errorCallback MUST be invoked with a DeviceAPIError with code SECURITY_ERR.
+   * If this feature is not supported, a DeviceAPIError with code NOT_SUPPORTED_ERR MUST be returned in the errorCallback. If this functionality is not allowed the errorCallback MUST be invoked with a DeviceAPIError with code SECURITY_ERR.
    *
    *
    * If the filter is passed and contains valid values, only those values in the message lists that matches the filter criteria as specified in the MessageFilter interface will be returned in the successCallback. If no filter is passed, it is null or undefined, or contains any invalid value, the implementation MUST return the full list of messages in the successCallback. If no messages are available in the lists or no one matches the filter criteria, the successCallback will be invoked with an empty array.
@@ -254,6 +254,9 @@
    *    if (mySMSListener != null)
    *      deviceapis.messaging.unsubscribe(mySMSListener);
    *  }
+   *   // Register listener for new SMS events
+   *  var mySMSListener = null;
+   *  mySMSListener = deviceapis.messaging.onSMS(incomingSMS);
    * \endcode
    *
    * Throws DeviceAPIError SECURITY_ERR if this operation is not allowed. 
@@ -287,6 +290,9 @@
    *   if (myMMSListener != null)
    *     deviceapis.messaging.unsubscribe(myMMSListener);
    * }
+   *   // Register listener for new SMS events
+   *  var myMMSListener = null;
+   *  my<MSListener = deviceapis.messaging.onMMS(incomingMMS);
    * \endcode
    *
    * Throws DeviceAPIError SECURITY_ERR if this operation is not allowed. 
@@ -665,7 +671,7 @@
    * \brief Request interface data is synchronized 
    *
    * When this method is invoked, the implementation MUST update all the interface attributes so that all of them are up to date.
-   *		
+   *            
    * If the object is already current (i.e. it is synchronised), the implementation MUST set the isInSync attribute to true and invoke the successCallback without further action.
    * 
    * If the interface is not current (i.e. it is not synchronised), the implementation MUST attempt to retrieve that data. If the data is successfully retrieved, the isInSync attribute will be set to true and the successCallback will be invoked. If an error occurs during the interface attributes update, the errorCallback will be invoked.
