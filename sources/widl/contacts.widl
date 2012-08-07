@@ -1,4 +1,4 @@
-
+Ü
 /**<p>This API provides access to a user unified address book.</p> 
  * \name Contacts API
  *
@@ -294,7 +294,7 @@
            /**
            * \brief This attribute represents the full name of this Contact indicated by the name components associated with the ContactName object.
            */        
-                DOMString? name         = "";
+                ContactName? name         = "";
            /**
            * \brief This attribute contains the nickname (or a casual name) for this Contact. 
            */
