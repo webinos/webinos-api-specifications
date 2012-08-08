@@ -386,7 +386,27 @@ dictionary PropQuery {
         * \brief     The aspect member takes the identifier of an aspect (e.g., "Battery"). 
         * <TABLE>
         * <TR>
-        * <TD>ITEM1</TD><TD>ITEM3</TD>
+        * <TD><b>Aspect</b></TD><TD><b>Property</b></TD><TD><b>Description</b></TD>
+        * </TR>
+        * <TR>
+        *    <TD>Battery</TD><TD>batteryBeingCharged</TD>
+        *    <TD>The batteryBeingCharged property is a boolean that indicates whether the battery is currently being charged or not. <br /> Returns true if the battery is being charged. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>Battery</TD><TD>batteryLevel</TD>
+        *    <TD>The batteryLevel property is an octet that represents the remaining percentage (0-100) of the battery capacity that available. When the battery is full, the value is 100. When the battery is drained, the value is 0.</TD>
+        * </TR>
+        * <TR>
+        *    <TD></TD><TD></TD>
+        *    <TD></TD>
+        * </TR>
+        * <TR>
+        *    <TD></TD><TD></TD>
+        *    <TD></TD>
+        * </TR>
+        * <TR>
+        *    <TD></TD><TD></TD>
+        *    <TD></TD>
         * </TR>
         * </TABLE>
         */
