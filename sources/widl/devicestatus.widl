@@ -23,7 +23,7 @@
  * \n <b>Default component</b>
  * \n     The component that is the default component for a given aspect, which may or may not be the active component. 
  * \n     In ECMAScript, a developer uses the string "_default" to refer to the default component. 
- * \n \n <b>Active component</b?
+ * \n \n <b>Active component</b>
  * \n     The component that is the acitve component for a given aspect, which may or may not be the default component. 
  * \n     In ECMAScript, a developer uses the string "_active" to refer to the active component. 
  *
