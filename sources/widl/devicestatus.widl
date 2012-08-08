@@ -80,6 +80,12 @@ ttery2", "os", "hdd", "SDCard").
    \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/>
  \</widget>
  * \endcode
+ * \code
+ * <block>
+ *  \<widget xmlns="http://www.w3.org/ns/widgets">
+ *  \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/>
+ *  \</widget>
+ * </block>
  *  
  *  The above example shows a developers intention to access the device information aspects of the Device Status API.
  *  XML Example
@@ -121,15 +127,15 @@ interface DeviceapisDeviceStatusManager {
         * \brief The devicestatus attribute provides access to Device Status API. 
         *         Example
         * \code
-var info = deviceapis.devicestatus;
-info.getPropertyValue(
-function(model) {
-        console.log("Device model is: " + model);
-},
-null, {
-        aspect: "Device",
-        property: "model"
-});
+        * var info = deviceapis.devicestatus;
+        * info.getPropertyValue(
+        * function(model) {
+        *         console.log("Device model is: " + model);
+        * },
+        * null, {
+        *         aspect: "Device",
+        *         property: "model"
+        * });
         * \endcode
         */
     readonly attribute  DeviceStatusManager devicestatus;
@@ -139,14 +145,14 @@ null, {
         * \brief This offers methods to get information about the device status and subscribe to receive notifications of device status changes. To allow for asynchornous notification of changes to the various properties of components, the user agent keeps a list of active watch operations. Each entry in this list is identified by a number, which is unique within its list for the lifetime of the application.
         *         Example
         * \code
-deviceapis.devicestatus.getPropertyValue(
-function(value) {
-        console.log("The battery level is at " + value + "%");
-},
-null, {
-        property: "batteryLevel",
-        aspect: "Battery"
-});
+        * deviceapis.devicestatus.getPropertyValue(
+        * function(value) {
+        *         console.log("The battery level is at " + value + "%");
+        * },
+        * null, {
+        *         property: "batteryLevel",
+        *         aspect: "Battery"
+        * });
         * \endcode
         */
 
@@ -384,6 +390,9 @@ dictionary PropQuery {
      DOMString component;
        /**
         * \brief     The aspect member takes the identifier of an aspect (e.g., "Battery"). 
+        *
+        * The defined aspect / property combinations are listed in this table:
+        *        
         * <TABLE>
         * <TR>
         * <TD><b>Aspect</b></TD><TD><b>Property</b></TD><TD><b>Description</b></TD>
@@ -397,16 +406,124 @@ dictionary PropQuery {
         *    <TD>The batteryLevel property is an octet that represents the remaining percentage (0-100) of the battery capacity that available. When the battery is full, the value is 100. When the battery is drained, the value is 0.</TD>
         * </TR>
         * <TR>
-        *    <TD></TD><TD></TD>
-        *    <TD></TD>
+        *    <TD> CellularHardware</TD><TD>status</TD>
+        *    <TD>The status property is a DOMString represented as a SwitchType that indicates the status of the Cellular Hardware. </TD>
         * </TR>
         * <TR>
-        *    <TD></TD><TD></TD>
-        *    <TD></TD>
+        *    <TD>CellularNetwork aspect</TD><TD>isInRoaming</TD>
+        *    <TD>The isInRoaming property is a boolean that indicates if the cellular connection is roaming. A value of true indicates that the connection is roaming. </TD>
         * </TR>
         * <TR>
-        *    <TD></TD><TD></TD>
-        *    <TD></TD>
+        *    <TD>CellularNetwork aspect</TD><TD>mcc</TD>
+        *    <TD>The mcc property is a DOMString that represents the country of a mobile network. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>CellularNetwork aspect</TD><TD>mnc</TD>
+        *    <TD>The mnc property is a DOMString that represents the Mobile Network Code (MNC). </TD>
+        * </TR>
+        * <TR>
+        *    <TD>CellularNetwork aspect</TD><TD>signalStrength</TD>
+        *    <TD>The signalStrength property is an octet that represent the signal strength of the cellular network represented as a percentage.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>CellularNetwork aspect</TD><TD>operatorName</TD>
+        *    <TD>The operatorName property is a DOMString that represents the name of the operator of the cellular network.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Device</TD><TD>imei</TD>
+        *    <TD>The imei property is a DOMString that represents the International Mobile Equipment Identity (IMEI).</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Device</TD><TD>model</TD>
+        *    <TD>The model property is a DOMString that represents the name of the device model, as assigned by the vendor. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>Device</TD><TD>vendor</TD>
+        *    <TD>The vendor property is a DOMString that represents the vendor of the device.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Device</TD><TD>version</TD>
+        *    <TD>The version property is a DOMString that represents the device version assigned by the vendor. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>Display</TD><TD>resolutionHeight</TD>
+        *    <TD>The resolutionHeight property is an unsigned short representing the total number of pixels for the height of the screen. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>Display</TD><TD>pixelAspectRatio </TD>
+        *    <TD>The pixelAspectRatio property is a float that represents pixel aspect ratio, for example 1.333333333 for a 4:3 aspect. It's always the value of the resolutionHeight devided by the resolutionWidth. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>Display</TD><TD>dpiY </TD>
+        *    <TD>The dpiY property is an unsigned short that represents the dots per inch of the display in the Y axis.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Display</TD><TD>resolutionWidth </TD>
+        *    <TD>The resolutionWidth property is an unsigned short representing the total number of pixels for the width of the screen. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>Display</TD><TD>dpiX </TD>
+        *    <TD>The dpiX property is an unsigned short that represents the dots per inch of the display in the X axis.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Display</TD><TD>colorDepth</TD>
+        *    <TD>The colorDepth property is an octet that represents the number of bits used for color definition (e.g. 24). </TD>
+        * </TR>
+        * <TR>
+        *    <TD>MemoryUnit</TD><TD>size</TD>
+        *    <TD>The size property is an unsigned long that represents size of a memory component in bytes.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>MemoryUnit</TD><TD>removable</TD>
+        *    <TD>The removable property is a boolean indicating if the memory component can be removed from the device. The value is true if it is possible.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>MemoryUnit</TD><TD>availableSize</TD>
+        *    <TD>The availableSize property is an unsigned long representing the available size of the memory component in bytes. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>OperatingSystem</TD><TD>language</TD>
+        *    <TD>The language property is a DOMString representation the locale of the operating system, in the RFC 4646 language tag format. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>OperatingSystem</TD><TD>version</TD>
+        *    <TD>The version property is a DOMString that represents the version of the operating system. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>OperatingSystem</TD><TD>name</TD>
+        *    <TD>The name property is a DOMString representing the name of the operating system.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>OperatingSystem</TD><TD>vendor</TD>
+        *    <TD>The vendor property is a DOMString representing name of the vendor of the operating system. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>WebRuntime</TD><TD>version</TD>
+        *    <TD>The version property is a DOMString representing the version of the runtime assigned by the vendor.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>WebRuntime</TD><TD>name</TD>
+        *    <TD>The name property is an DOMString representing the name assigned by the vendor to the runtime.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>WebRuntime</TD><TD>vendor</TD>
+        *    <TD>The vendor property is an DOMString representing the name of the vendor who sells or created the runtime. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>WiFiHardware</TD><TD>status</TD>
+        *    <TD>The status property is a DOMString represented as a SwitchType that indicates if the WiFi Harware is switched on or off. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>WiFiNetwork</TD><TD>ssid</TD>
+        *    <TD>The ssid property A DOMString that represents the SSID of a WiFi network. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>WiFiNetwork</TD><TD>signalStrength</TD>
+        *    <TD>The signalStrength property is an octet that represents the relative signal strength offered by the WiFi network (from 0 to 100, where 100 is full strength). </TD>
+        * </TR>
+        * <TR>
+        *    <TD>WiFiNetwork</TD><TD>networkStatus</TD>
+        *    <TD>The networkStatus property A DOMString represented as one of the NetworkStates that indicates the state of a WiFi network. </TD>
         * </TR>
         * </TABLE>
         */
