@@ -80,7 +80,7 @@ ttery2", "os", "hdd", "SDCard").
    \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/>
  \</widget>
  * \endcode
- * \code
+ * 
  * <block>
  *  \<widget xmlns="http://www.w3.org/ns/widgets">
  *  \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/>
