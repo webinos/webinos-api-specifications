@@ -81,12 +81,10 @@ ttery2", "os", "hdd", "SDCard").
  \</widget>
  * \endcode
  * 
- * <block>
- *  \<widget xmlns="http://www.w3.org/ns/widgets">
- *  \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/>
- *  \</widget>
- * </block>
- *  
+ *  \<widget xmlns="http://www.w3.org/ns/widgets"> <br />
+ *  \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/><br />
+ *  \</widget><br />
+ *  <em> whetever em translates to </em>
  *  The above example shows a developers intention to access the device information aspects of the Device Status API.
  *  XML Example
  *  
