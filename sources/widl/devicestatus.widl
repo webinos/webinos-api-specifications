@@ -64,51 +64,38 @@ ttery2", "os", "hdd", "SDCard").
  * \n  3. If required, disable any aspects as needed by the particular feature declaration (see each device status feature strings).
  * \n  4. ignore all other subsequent device status feature declarations.
  *  
+ *  XML Example  
+ *
+ *  \<widget xmlns="http://www.w3.org/ns/widgets"> <br />
+ *    \<feature name="http://wacapps.net/api/devicestatus"/> <br />
+ *  \</widget> <br />
+ *  
+ *  The above example shows how a developer declares their intention to access all aspects of the Device Status API.
+ *
  *  XML Example
  *  
  *  \<widget xmlns="http://www.w3.org/ns/widgets"> <br />
  *  \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/><br />
  *  \</widget><br />
  *
- * \code
- *  \<widget xmlns="http://www.w3.org/ns/widgets">
- *    \<feature name="http://wacapps.net/api/devicestatus"/>
- *  \</widget>
- * \endcode
- *  
- *  The above example shows how a developer declares their intention to access all aspects of the Device Status API.
- *  XML Example
- *  
- * \code
- *  \<widget xmlns="http://www.w3.org/ns/widgets">
- *    \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/>
- *  \</widget>
- * \endcode
- * 
- *  \<widget xmlns="http://www.w3.org/ns/widgets"> <br />
- *  \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/><br />
- *  \</widget><br />
- *  <em> whetever em translates to </em>
  *  The above example shows a developers intention to access the device information aspects of the Device Status API.
+ *
  *  XML Example
  *  
- * \code
- *  \<widget xmlns="http://www.w3.org/ns/widgets">
- *    \<feature name="http://wacapps.net/api/devicestatus.networkinfo"/>
- *  \</widget>
- * \endcode
+ *  \<widget xmlns="http://www.w3.org/ns/widgets"> <br />
+ *    \<feature name="http://wacapps.net/api/devicestatus.networkinfo"/> <br />
+ *  \</widget> <br />
  *  
  *  The above example shows a developers intention to access network information aspects the aspects of the Device Status API.
+ *
  *  XML Example
  *  
- * \code
- *  \<widget xmlns="http://www.w3.org/ns/widgets">
- *    \<feature name="http://wacapps.net/api/device.networkinfo"/>
- *    \<!-- The rest are ignored -->
- *    \<feature name="http://wacapps.net/api/devicestatus"/>
- *    \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/>
- *  \</widget> 
- * \endcode
+ *  \<widget xmlns="http://www.w3.org/ns/widgets"> <br />
+ *    \<feature name="http://wacapps.net/api/device.networkinfo"/> <br />
+ *    \<!-- The rest are ignored --> <br />
+ *    \<feature name="http://wacapps.net/api/devicestatus"/> <br />
+ *    \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/> <br />
+ *  \</widget>  <br />
  *  
  *  In the above example, only the network information aspects would be made available.
  *   
