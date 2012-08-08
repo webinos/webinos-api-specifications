@@ -263,17 +263,17 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * 
         * Example
         * \code
-//The "_default" component is implied.
-var options = {
-        aspect: "Battery",
-        property: "batteryLevel"
-};
-
-deviceapis.devicestatus.getPropertyValue(
-function batteryQuery(value) {
-        console.log("Battery is at " + value + "%");
-},
-null, options);
+        * //The "_default" component is implied.
+        * var options = {
+        *         aspect: "Battery",
+        *         property: "batteryLevel"
+        * };
+        * 
+        * deviceapis.devicestatus.getPropertyValue(
+        * function batteryQuery(value) {
+        *         console.log("Battery is at " + value + "%");
+        * },
+        * null, options);
         * \endcode
         * \param successCallback Function to call on successfully retrieving a property value
         * \param errorCallback Function to call if property value could not be retrieved
@@ -314,26 +314,26 @@ null, options);
         * 
         * Example
         * \code
-function propertyChange(value, ref) {
-        console.log("New value for " + ref.property + " is " + value);
-}
-
-deviceapis.devicestatus.watchPropertyChange(propertyChange, null, {
-        property: "batteryLevel",
-        aspect: "Battery"
-});
-
-//The "_default" component is implied.
-var options = {
-        aspect: "Battery",
-        property: "batteryLevel"
-};
-
-deviceapis.devicestatus.getPropertyValue(
-function batteryQuery(value) {
-        console.log("Battery is at " + value + "%");
-},
-null, options);
+        * function propertyChange(value, ref) {
+        *         console.log("New value for " + ref.property + " is " + value);
+        * }
+        * 
+        * deviceapis.devicestatus.watchPropertyChange(propertyChange, null, {
+        *         property: "batteryLevel",
+        *         aspect: "Battery"
+        * });
+        * 
+        * //The "_default" component is implied.
+        * var options = {
+        *         aspect: "Battery",
+        *         property: "batteryLevel"
+        * };
+        * 
+        * deviceapis.devicestatus.getPropertyValue(
+        * function batteryQuery(value) {
+        *         console.log("Battery is at " + value + "%");
+        * },
+        * null, options);
         * \endcode
         * \param successCallback Function to call on changing property value
         * \param errorCallback Function to call if an error occurs
@@ -354,20 +354,20 @@ null, options);
         * If a valid watchid argument is passed that corresponds to a subscription already in place, then the watch process MUST immediately terminate and no further callbacks MUST be invoked. If the watchid argument does not correspond to a valid subscription, the method should return without any further action.
         * Example
         * \code
-           function propertyChange(value, ref) {
-                console.log("New value for " + ref.property + " is " + value);
-           
-                if (id) {
-                        deviceapis.devicestatus.clearPropertyChange(id);
-                        console.log(id + " cleared");
-                }
-           }
-           
-           var id = deviceapis.devicestatus.watchPropertyChange(
-           propertyChange, null, {
-                property: "batteryLevel",
-                aspect: "Battery"
-           });
+        * function propertyChange(value, ref) {
+        *      console.log("New value for " + ref.property + " is " + value);
+        * 
+        *       if (id) {
+        *              deviceapis.devicestatus.clearPropertyChange(id);
+        *              console.log(id + " cleared");
+        *      }
+        *  }
+        *  
+        *  var id = deviceapis.devicestatus.watchPropertyChange(
+        *   propertyChange, null, {
+        *        property: "batteryLevel",
+        *       aspect: "Battery"
+        *   });
         * \endcode
         * \param watchid Id of watch property change subscription
         */
@@ -383,7 +383,12 @@ dictionary PropQuery {
         */
      DOMString component;
        /**
-        * \brief       The aspect member takes the identifier of an aspect (e.g., "Battery"). 
+        * \brief     The aspect member takes the identifier of an aspect (e.g., "Battery"). 
+        * <TABLE>
+        * <TR>
+        * <TD>ITEM1</TD><TD>ITEM3</TD>
+        * </TR>
+        * </TABLE>
         */
      DOMString aspect;
        /**
