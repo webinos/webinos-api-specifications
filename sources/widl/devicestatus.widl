@@ -66,19 +66,23 @@ ttery2", "os", "hdd", "SDCard").
  *  
  *  XML Example
  *  
+ *  \<widget xmlns="http://www.w3.org/ns/widgets"> <br />
+ *  \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/><br />
+ *  \</widget><br />
+ *
  * \code
- \<widget xmlns="http://www.w3.org/ns/widgets">
-   \<feature name="http://wacapps.net/api/devicestatus"/>
- \</widget>
+ *  \<widget xmlns="http://www.w3.org/ns/widgets">
+ *    \<feature name="http://wacapps.net/api/devicestatus"/>
+ *  \</widget>
  * \endcode
  *  
  *  The above example shows how a developer declares their intention to access all aspects of the Device Status API.
  *  XML Example
  *  
  * \code
- \<widget xmlns="http://www.w3.org/ns/widgets">
-   \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/>
- \</widget>
+ *  \<widget xmlns="http://www.w3.org/ns/widgets">
+ *    \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/>
+ *  \</widget>
  * \endcode
  * 
  *  \<widget xmlns="http://www.w3.org/ns/widgets"> <br />
@@ -89,21 +93,21 @@ ttery2", "os", "hdd", "SDCard").
  *  XML Example
  *  
  * \code
- \<widget xmlns="http://www.w3.org/ns/widgets">
-   \<feature name="http://wacapps.net/api/devicestatus.networkinfo"/>
- \</widget>
+ *  \<widget xmlns="http://www.w3.org/ns/widgets">
+ *    \<feature name="http://wacapps.net/api/devicestatus.networkinfo"/>
+ *  \</widget>
  * \endcode
  *  
  *  The above example shows a developers intention to access network information aspects the aspects of the Device Status API.
  *  XML Example
  *  
  * \code
- \<widget xmlns="http://www.w3.org/ns/widgets">
-   \<feature name="http://wacapps.net/api/device.networkinfo"/>
-   \<!-- The rest are ignored -->
-   \<feature name="http://wacapps.net/api/devicestatus"/>
-   \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/>
- \</widget> 
+ *  \<widget xmlns="http://www.w3.org/ns/widgets">
+ *    \<feature name="http://wacapps.net/api/device.networkinfo"/>
+ *    \<!-- The rest are ignored -->
+ *    \<feature name="http://wacapps.net/api/devicestatus"/>
+ *    \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/>
+ *  \</widget> 
  * \endcode
  *  
  *  In the above example, only the network information aspects would be made available.
