@@ -14,13 +14,6 @@
 
 
 /**
-* \brief Error callback for personal zone api requests.
-* \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> object detailing what went wrong; e.g. SecurityError if permission denied, TimeoutError if operation timed out
-*/
-callback ErrorCallbackCB = void (DOMError error);
-
-
-/**
 * \brief The interface defines information provided by the platform about a Personal Zone Proxy (PZP) 
 * A PzpDetails object is returned by a PersonalZoneDataHandler, when the getPZPDetails and getConnectedPZHs is called.
 */
