@@ -519,6 +519,27 @@ dictionary PropQuery {
         *    <TD>WiFiNetwork</TD><TD>networkStatus</TD>
         *    <TD>The networkStatus property A DOMString represented as one of the NetworkStates that indicates the state of a WiFi network. </TD>
         * </TR>
+        * <TR>
+        *    <TD>InputControl</TD><TD>touchscreen</TD>
+        *    <TD>The touchscreen property is a boolean that indicates, if the device has a touchscreen</TD>
+        * </TR>      
+        * <TR>
+        *    <TD>InputControl</TD><TD>mouse</TD>
+        *    <TD>The mouse property is a boolean that indicates, if the device has a mouse attached</TD>
+        * </TR>      
+        * <TR>
+        *    <TD>InputControl</TD><TD>touchpad</TD>
+        *    <TD>The touchpad property is a boolean that indicates, if the device has a touchpad attached</TD>
+        * </TR>      
+		* <TR>
+        *    <TD>InputControl</TD><TD>scrollwheel</TD>
+        *    <TD>The scrollwheel property is a boolean that indicates, if the device has a scrollwheel attached</TD>
+        * </TR>  
+		* <TR>
+        *    <TD>InputControl</TD><TD>cursorkeyboard</TD>
+        *    <TD>The cursorkeyboard property is a boolean that indicates, if the device has a cursorkeyboard attached</TD>
+        * </TR>  
+
         * </TABLE>
         */
      DOMString aspect;
