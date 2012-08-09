@@ -42,38 +42,8 @@ interface PzpDetails : PersonalZoneData {
 	* \brief Attribute provides the information about the primary personal zone hub (PZH), to which the Personal Zone Proxy is connected.
 	*/	
 	readonly attribute PzhDetails connpzh;
-	/**
-	* \brief Attribute denotes the device category, on which the personal zone proxy is running (e.g. smartphone).
-	*/
-	readonly attribute DeviceType type;
-	/**
-	* \brief Attribute lists the attached input controls of the device, on which the personal zone proxy is executed.
-	*/
-	readonly attribute InputControl[] inputcontrols;
-	/**
-	* \brief Attribute provides information about the attached screens of the device, on which the personal zone proxy is running.
-	*/
-	readonly attribute Screen[]   screens;
 };
 
-/**
-* \brief Screen object provides the width, height and api of a attached screen to the device and is part of the PzhDetails
-*/
-interface Screen {
-	/**
-	* \brief attribute denotes the screen width
-	*/
-	readonly attribute unsigned short width;
-	/**
-	* \brief attribute denotes the screen height
-	*/
-	readonly attribute unsigned short height;
-	/**
-	* \brief attribute denotes the pixel density of the screen;
-	*/
-	readonly attribute unsigned short dpi;
-
-};
 
 /**
 * \brief Generic PersonalZoneData interface, which is used as a callback function for the PersonalZoneDataHandler
@@ -91,20 +61,6 @@ interface PzhDetails : PersonalZoneData {
 	readonly attribute boolean ownzone;
 	readonly attribute boolean trusted;
 };
-
-
-
-/**
-* \brief Device types
-* defines the possible device types on which a personal zone proxy executed.
-*/
-enum DeviceType {"tablet", "phone", "tv", "vehicle", "pc"};
-
-/**
-* \brief Input control types
-* defines the different input controls, which can be attached to a device executing a personal zone proxy. 
-*/
-enum InputControl {"touchpad", "touchscreen", "clickwheel", "keyboard", "numberpad", "mouse"};
 
 /**
 * \brief Personal Zone API interface
@@ -164,11 +120,12 @@ void fetchLog(PersonalZoneLoggingHandler handler, ErrorCallback errorCB);
 */
 callback PersonalZoneLoggingHandler = void (PersonalZoneLogging data);
 
-
+/**
+* \brief callback method to receive logging information in non-recurring and asynchronous way
+*/
 [NoInterfaceObject] interface PersonaZone {
-	readonly attribute PersonalZoneInterface        details;
+	readonly attribute PersonalZoneInterface        zone;
 	readonly attribute PersonalZoneLoggingInterface logging;
-	readonly attribute PersonalZoneStoreInterface   store;
 };
 
 Webinos implements PersonalZone;
