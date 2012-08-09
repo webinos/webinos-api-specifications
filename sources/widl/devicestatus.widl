@@ -425,7 +425,7 @@ dictionary PropQuery {
         * </TR>
         * <TR>
         *    <TD>Device</TD><TD>type</TD>
-        *    <TD>The type property is a DOMString that represents the device type ('smartphone','tablet','vehicle','tv','homemedia')</TD>
+        *    <TD>The type property is a DOMString that represents as DeviceType the device category</TD>
         * </TR>
         * <TR>
         *    <TD>Device</TD><TD>model</TD>
@@ -533,6 +533,11 @@ dictionary PropQuery {
         * \brief Possible values for switch
         */
         enum SwitchType {"ON", "OFF"};
+        /**
+        * \brief Possible values for the device type
+        */
+        enum DeviceType {"smartphone", "tablet","ivi","tv","homemediabox","pc","laptop"};
+
         /**
         * \brief Possible values for network states
         */
