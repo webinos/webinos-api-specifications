@@ -58,13 +58,13 @@ cp "$REPOS/resources/$XSL" "$SPECHOME/apis/"
 # is done in three steps in order to build the cross-references
 for i in $WIDLFILES
 do
-	"$WIDLPROC" "$REPOS/widl/$i" > "$SPECHOME/apis/$(basename "$i" .widl).widlprocxml"
-	if [ $? != 0 ]
-	then
-		echo Error: could not process $i
-		WIDLFILES=${WIDLFILES//$i} # remove widl with error from further process
-	       	rm "$SPECHOME/apis/$(basename "$i" .widl).widlprocxml" 
-	fi
+        "$WIDLPROC" "$REPOS/widl/$i" > "$SPECHOME/apis/$(basename "$i" .widl).widlprocxml"
+        if [ $? != 0 ]
+        then
+                echo Error: could not process $i
+                WIDLFILES=${WIDLFILES//$i} # remove widl with error from further process
+                rm "$SPECHOME/apis/$(basename "$i" .widl).widlprocxml" 
+        fi
 done
 
 cat > "$SPECHOME/apis/$XMLSOURCES" <<DELIM
@@ -74,16 +74,16 @@ DELIM
 
 for i in $WIDLFILES
 do
-	cp "$REPOS/widl/$i" "$SPECHOME/apis/"
-	echo "<file>$(basename "$i" .widl).widlprocxml</file>" >> "$SPECHOME/apis/$XMLSOURCES"
+        cp "$REPOS/widl/$i" "$SPECHOME/apis/"
+        echo "<file>$(basename "$i" .widl).widlprocxml</file>" >> "$SPECHOME/apis/$XMLSOURCES"
 done
 echo "</widlprocxml>" >> "$SPECHOME/apis/$XMLSOURCES"
 
 unset GIT_DIR
 for i in $WIDLFILES
 do
-	DATE=$(cd "$REPOS/widl" ; git log --pretty=format:'%aD' -1 "$i"|cut -d " " -f 2-4)
-	LD_LIBRARY_PATH="${XSLTLIB}" "$XSLPROC" --stringparam date "$DATE" "$SPECHOME/apis/$XSL" "$SPECHOME/apis/${i}procxml" > "$SPECHOME/apis/$(basename "$i" .widl).html"
+        DATE=$(cd "$REPOS/widl" ; git log --pretty=format:'%aD' -1 "$i"|cut -d " " -f 2-4)
+        LD_LIBRARY_PATH="${XSLTLIB}" "$XSLPROC" --stringparam date "$DATE" "$SPECHOME/apis/$XSL" "$SPECHOME/apis/${i}procxml" > "$SPECHOME/apis/$(basename "$i" .widl).html"
 done
 
 cat > "$SPECHOME/apis/index.html" <<DELIM
@@ -102,7 +102,8 @@ cat > "$SPECHOME/apis/index.html" <<DELIM
 </div>
 <p>This page lists all API specifications that are defined or referenced/used within the Webinos project.</p>
 <p>All APIs defined by Webinos, are by default exposed under the <code>window.webinos</code> object and are available in the local web execution environment.</p>
-<p> One of the key elements of Webinos is that the framework provides means to <strong>bind to a service object in a remote execution environment</strong>. The <a href='http://dev.webinos.org/specifications/new/servicediscovery.html'>Webinos Discovery API</a> defines how a service discovered and how an application can bind to a remote service. The service object will act as proxy for sending/receiving events to/from the remote peer and hides the complexity of sending/receiving message between the peers in a trusted manner. This mechanism is not limited to Webinos defined APIs but also available for the APIs defined by W3C referenced below and user defined APIs.</p>
+<p> One of the key elements of Webinos is that the framework provides means to <strong>bind to a service object in a remote execution environment</strong>. The <a href='http://dev.webinos.org/specifications/new/servicediscovery.html'>Webinos Discovery API</a> defines how a service discovered and how an application can bind to a remote service. The service object will act as proxy for sending/receiving events to/from the remote peer and hides the complexity of sending/receiving message between the peers in 
+a trusted manner. This mechanism is not limited to Webinos defined APIs but also available for the APIs defined by W3C referenced below and user defined APIs.</p>
 <p>For more information see <a href='http://dev.webinos.org/specifications/new/servicediscovery.html'>Discovery API</a> and <a href='http://dev.webinos.org/deliverables/wp3/d31.html'>Architecture Specification</a>.</p>
 
 <div class="api">
@@ -115,12 +116,12 @@ for i in $WIDLFILES
 do
     if [ "$i" != "foo.widl" ] && [ "$i" != "calendar.widl" ] && [ "$i" != "gallery.widl" ]  ; 
     then
-	basename2=$(basename "$i" .widl)
-	htmlfile="$SPECHOME/apis/"$basename2".html"
-	LD_LIBRARY_PATH="${XSLTLIB}" "$XSLPROC" --novalid --stringparam basename "$basename2" --html  "$REPOS/resources/getAPIdata.xsl" "$htmlfile" >> "$SPECHOME/apis/index.html"
+        basename2=$(basename "$i" .widl)
+        htmlfile="$SPECHOME/apis/"$basename2".html"
+        LD_LIBRARY_PATH="${XSLTLIB}" "$XSLPROC" --novalid --stringparam basename "$basename2" --html  "$REPOS/resources/getAPIdata.xsl" "$htmlfile" >> "$SPECHOME/apis/index.html"
     fi
-	#basename2="$(echo ${basename2:0:1} | tr 'a-z' 'A-Z' )""${basename2:1}"
-	#echo '<li><a href="./'"$(basename "$i" .widl).html"'">'"$basename2"' API</a><br /></li>' >> "$SPECHOME/apis/index.html"
+        #basename2="$(echo ${basename2:0:1} | tr 'a-z' 'A-Z' )""${basename2:1}"
+        #echo '<li><a href="./'"$(basename "$i" .widl).html"'">'"$basename2"' API</a><br /></li>' >> "$SPECHOME/apis/index.html"
 done
 echo '</tbody></table></div>'  >> "$SPECHOME/apis/index.html"
 
@@ -130,10 +131,6 @@ echo '<div id="content"><table><thead><tr><th>Specification</th><th>Summary</th>
 
 echo '<tr><td><a href=http://www.w3.org/TR/2011/WD-calendar-api-20110419/>The W3C calendar module</a></td><td><p>' >> "$SPECHOME/apis/index.html"
 echo 'This W3C API provides access to a user calendaring service.<br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
-echo '<tr><td><a href=http://specs.wacapps.net/devicestatus/index.html>The WAC devicestatus module</a></td><td><p>' >> "$SPECHOME/apis/index.html"
-echo 'This WAC API provides access to the information about the device status. The status information is organised as a tree structure utilising a vocabulary. <br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
-echo '<tr><td><a href=http://specs.wacapps.net/deviceinteraction/index.html>The WAC deviceinteraction module</a></td><td><p>' >> "$SPECHOME/apis/index.html"
-echo 'This WAC API allows applications the capability to access functions that allow them to interact with the end user.<br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
 echo '<tr><td><a href=http://www.w3.org/TR/2011/WD-orientation-event-20111201/>The W3C DeviceOrientation Event specification</a></td><td><p>' >> "$SPECHOME/apis/index.html"
 echo 'This specification defines several new DOM event types that provide information about the physical orientation and motion of a hosting device.<br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
 echo '<tr><td><a href=http://www.w3.org/TR/2011/WD-FileAPI-20111020/>The W3C File API </a></td><td><p>' >> "$SPECHOME/apis/index.html"
