@@ -78,7 +78,7 @@ interface TVDisplayManager : EventTarget {
   \<script>
   webinos.tv.display.addEventListener('channelchange', channelchanged);
   var ontv = document.getElementById('tv');
-  function channelchanged() {
+  function channelchanged(channel) {
     ontv.normalize();
     ontv.removeChild(ontv.childNodes[0]);
     ontv.appendChild(document.createTextNode(channel.name));
