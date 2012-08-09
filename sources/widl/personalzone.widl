@@ -70,19 +70,19 @@ interface PzhDetails : PersonalZoneData {
 	/**
 	* \brief Method allows to request the details of the PZP on which application is executed
 	*/
-	void getPZPDetails(PersonalZoneDataHandler handler, ErrorCallback errorCB);
+	void getPZPDetails(PersonalZoneDataHandler handler, PziErrorCallback errorCB);
 	/**
 	* \brief Method allows to request the details of the connected personal zone hub
 	*/
-	void getConnectedPZHs(PersonalZoneDataHandler handler, ErrorCallback errorCB);
+	void getConnectedPZHs(PersonalZoneDataHandler handler, PziErrorCallback errorCB);
 	/**
 	* \brief Method allows to request the details of the connected personal zone proxies
 	*/
-	void getConnectedPZPs(PersonalZoneDataHandler handler, ErrorCallback errorCB);
+	void getConnectedPZPs(PersonalZoneDataHandler handler, PziErrorCallback errorCB);
 	/**
 	* \brief Method allows to request id of the current executed applications
 	*/
-	void getAppId(PersonalZoneDataHandler handler, ErrorCallback errorCB);
+	void getAppId(PersonalZoneDataHandler handler, PziErrorCallback errorCB);
 };
 
 /**
@@ -108,11 +108,11 @@ interface PzpLogging : PersonalZoneLogging {
 /**
 * \brief Method allows to enable or disabling logging for particular zone
 */
-void setLog(PersonalZoneLoggingHandler handler, ErrorCallback errorCB);
+void setLog(PersonalZoneLoggingHandler handler, PziErrorCallback errorCB);
 /**
 * \brief Method allows to request id of the current executed applications
 */
-void fetchLog(PersonalZoneLoggingHandler handler, ErrorCallback errorCB);
+void fetchLog(PersonalZoneLoggingHandler handler, PziErrorCallback errorCB);
 };
 
 /**
@@ -127,6 +127,15 @@ callback PersonalZoneLoggingHandler = void (PersonalZoneLogging data);
 	readonly attribute PersonalZoneInterface        zone;
 	readonly attribute PersonalZoneLoggingInterface logging;
 };
+
+
+/**
+	* \brief callback for a failure from get* Methods
+	* \param error a <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> containing information about the error (e.g. SecurityError if permission is denied).
+	*
+	*/
+	callback PziErrorCallback = void (DOMError error);
+
 
 Webinos implements PersonalZone;
 
