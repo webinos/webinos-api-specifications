@@ -37,6 +37,7 @@
  * \n         MemoryUnit
  * \n         OperatingSystem
  * \n         WebRuntime
+  * \n        Input controls
  * 
 * \def-api-feature http://wacapps.net/api/devicestatus.networkinfo
  * 
@@ -421,6 +422,10 @@ dictionary PropQuery {
         * <TR>
         *    <TD>Device</TD><TD>imei</TD>
         *    <TD>The imei property is a DOMString that represents the International Mobile Equipment Identity (IMEI).</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Device</TD><TD>type</TD>
+        *    <TD>The type property is a DOMString that represents the device type ('smartphone','tablet','vehicle','tv','homemedia')</TD>
         * </TR>
         * <TR>
         *    <TD>Device</TD><TD>model</TD>
