@@ -36,6 +36,9 @@
  * \def-api-feature http://webinos.org/api/sensors.humidity
  * Identifies the relative humidity sensor type. 
  *
+ * \def-api-feature http://webinos.org/api/sensors.heartratemonitor
+ * Identifies a heart rate monitor sensor type. 
+ *
  * \author Claes Nilsson &lt;claes1.nilsson@sonyericsson.com&gt;
  * \author Updated to new WIDL by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
  * \version 0.96 
@@ -350,6 +353,9 @@
    *\n
    * http://webinos.org/api/sensors.humidity:\n
    * sensorValue[0] =  the measured relative humidity around the device in percent. \n
+   *\n
+   * http://webinos.org/api/sensors.heartratemonitor:\n
+   * sensorValue[0] =  the measured heart rate as beats per minute (bpm). \n
    *   
    */
     readonly attribute DOMString sensorType;
