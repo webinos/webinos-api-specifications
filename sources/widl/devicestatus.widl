@@ -396,6 +396,46 @@ dictionary PropQuery {
         *    <TD>The batteryLevel property is an octet that represents the remaining percentage (0-100) of the battery capacity that available. When the battery is full, the value is 100. When the battery is drained, the value is 0.</TD>
         * </TR>
         * <TR>
+        *    <TD>Camera</TD><TD>model</TD>
+        *    <TD>This property indicates the model of the Camera as a DOMString.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Camera</TD><TD>vendor</TD>
+        *    <TD>This property indicates the vendor of the camera as a DOMString.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Camera</TD><TD>status</TD>
+        *    <TD>This property indicates the status of the camera as a DOMString. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>Camera</TD><TD>resolutionHeight</TD>
+        *    <TD>This property indicates the height resolution of the camera as an unsigned short.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Camera</TD><TD>resolutionWidth</TD>
+        *    <TD>This property indicates the width resolution of the camera as an unsigned short.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Camera</TD><TD>maxZoom</TD>
+        *    <TD>This property indicates the maximum zoom of the camera a as an unsigned short.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Camera</TD><TD>minZoom</TD>
+        *    <TD>This property indicates the minimum zoom of the camera a as an unsigned short.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Camera</TD><TD>currentZoom</TD>
+        *    <TD>This property indicates the current zoom of the camera a as an unsigned short.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Camera</TD><TD>hasFlash</TD>
+        *    <TD>This property indicates if the camera has the flash as a boolean value.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Camera</TD><TD>flashOn</TD>
+        *    <TD>This property indicates if the flash of the camera is active as a boolean value.</TD>
+        * </TR>
+        * <TR>
         *    <TD> CellularHardware</TD><TD>status</TD>
         *    <TD>The status property is a DOMString represented as a SwitchType that indicates the status of the Cellular Hardware. </TD>
         * </TR>
@@ -418,6 +458,22 @@ dictionary PropQuery {
         * <TR>
         *    <TD>CellularNetwork aspect</TD><TD>operatorName</TD>
         *    <TD>The operatorName property is a DOMString that represents the name of the operator of the cellular network.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>CellularNetwork aspect</TD><TD>ipAddress</TD>
+        *    <TD>IP address of the connection (null if not connected) as a DOMstring.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>CellularNetwork aspect</TD><TD>macAddress</TD>
+        *    <TD>MAC address of the connection (null if not connected) as a DOMstring.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>CPU</TD><TD>model</TD>
+        *    <TD>This property indicates the model of the CPU as a DOMstring.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>CPU aspect</TD><TD>currentLoad</TD>
+        *    <TD>This property indicates the current load of the CPU as a percentage. In case of multi processor CPU, it reports the average. The currentLoad is an unsigned short,</TD>
         * </TR>
         * <TR>
         *    <TD>Device</TD><TD>imei</TD>
@@ -464,6 +520,11 @@ dictionary PropQuery {
         *    <TD>The colorDepth property is an octet that represents the number of bits used for color definition (e.g. 24). </TD>
         * </TR>
         * <TR>
+        *    <TD>InputDevice</TD><TD>type</TD>
+        *    <TD>This property indicates the type of input devices. It is a DOMString with a value chosen from the following list:
+        *       clickWheel,fourWayScroller, jogDial, mouse, numericKeypad, phoneKeypad, qwertyKeyboard, stylus, touchScreen, trackBall </TD>
+        * </TR>
+        * <TR>
         *    <TD>MemoryUnit</TD><TD>size</TD>
         *    <TD>The size property is an unsigned long that represents size of a memory component in bytes.</TD>
         * </TR>
@@ -492,6 +553,18 @@ dictionary PropQuery {
         *    <TD>The vendor property is a DOMString representing name of the vendor of the operating system. </TD>
         * </TR>
         * <TR>
+        *    <TD>ParentalRating</TD><TD>name</TD>
+        *    <TD>The name property is a DOMString representing the rating value as denoted by scheme, eg. "PG-13". </TD>
+        * </TR>
+        * <TR>
+        *    <TD>ParentalRating</TD><TD>scheme</TD>
+        *    <TD>>The scheme property is a DOMString representing the guidance scheme URIs as defined in MPEG-7.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>ParentalRating</TD><TD>region</TD>
+        *    <TD>The region property is a DOMString representing the region.</TD>
+        * </TR>
+        * <TR>
         *    <TD>WebRuntime</TD><TD>version</TD>
         *    <TD>The version property is a DOMString representing the version of the runtime assigned by the vendor.</TD>
         * </TR>
@@ -502,6 +575,10 @@ dictionary PropQuery {
         * <TR>
         *    <TD>WebRuntime</TD><TD>vendor</TD>
         *    <TD>The vendor property is an DOMString representing the name of the vendor who sells or created the runtime. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>WebRuntime</TD><TD>webinosVersion</TD>
+        *    <TD>>The webinosVersion property is an DOMString indicating the version of the webinos specs supported.</TD>
         * </TR>
         * <TR>
         *    <TD>WiFiHardware</TD><TD>status</TD>
@@ -518,6 +595,27 @@ dictionary PropQuery {
         * <TR>
         *    <TD>WiFiNetwork</TD><TD>networkStatus</TD>
         *    <TD>The networkStatus property A DOMString represented as one of the NetworkStates that indicates the state of a WiFi network. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>WiFiNetwork</TD><TD>ipAddress</TD>
+        *    <TD>IP address of the connection (null if not connected) as a DOMstring.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>WiFiNetwork</TD><TD>macAddress</TD>
+        *    <TD>MAC address of the connection (null if not connected) as a DOMstring.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>WiredNetwork</TD><TD>networkStatus</TD>
+        *    <TD>The networkStatus property A DOMString that represents the status of a network taken from the following list:
+        *        connected, unconnected </TD>
+        * </TR>
+        * <TR>
+        *    <TD>WiredNetwork</TD><TD>ipAddress</TD>
+        *    <TD>IP address of the connection (null if not connected) as a DOMstring.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>WiredNetwork</TD><TD>macAddress</TD>
+        *    <TD>MAC address of the connection (null if not connected) as a DOMstring.</TD>
         * </TR>
         * </TABLE>
         */
