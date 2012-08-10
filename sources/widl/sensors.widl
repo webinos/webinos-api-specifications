@@ -1,8 +1,5 @@
-/**<p> The Webinos Generic Sensor API provides web applications with an API to access data from sensors.</p> 
+/**<p> The Webinos Generic Sensor API provides web applications with an API to access data from sensors in the device or in another device.</p> 
  * \name The Generic Sensor API 
- *
- *
- * The Webinos Generic Sensor API provides web applications with an API to access data from sensors in the device, connected to the device or in another device.
  *
  * The API is agnostic to underlying low level methods for sensor discovery and communication with sensors. However, the sensor API should be used
  * in combination with the general Webinos service discovery methods findServices() and bind(). The sensors services can be located in the user's personal zone or be shared on the current network.
@@ -213,78 +210,12 @@
 
 
       /**
-       * \brief onError The onError method is called if an error occurs during the configureSensor() process.  
+       * \brief The SensorErrorCB method is called if an error occurs during the configureSensor() process.  
        *
-       * \param error The error object of an unsuccessful configureSensor() asynchronous operation.
+       * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> object detailing what went wrong in an unsuccessful configureSensor() asynchronous operation.
        *
        */
-       callback SensorErrorCB = void(SensorCBError error); 
-
-   /**
-    * \brief SensorCBError interface definition
-    *
-    */
-    [NoInterfaceObject] interface SensorCBError {
-
-      /**
-       * \brief Uknown error
-       */
-       const unsigned short UNKNOWN_ERROR = 0;
-
-      /**
-       * \brief No success callback within timeout period.
-       */
-       const unsigned short TIMEOUT_ERROR = 1;
-
-      /**
-       * \brief Illegal sensor type
-       */
-       const unsigned short ILLEGAL_SENSOR_TYPE_ERROR = 2;
-
-      /**
-       * \brief Illegal sensor type
-       */
-       const unsigned short SENSOR_TYPE_NOT_SUPPORTED_ERROR = 3;
-
-      /**
-       * \brief Illegal sensor id
-       */
-       const unsigned short ILLEGAL_SENSOR_ID_ERROR = 4;
-
-      /**
-       * \brief Other illegal input arguments
-       */
-       const unsigned short OTHER_ILLEGAL_INPUT_ARGUMENT_ERROR = 5;
-
-      /**
-       * \brief Sensor rate requested through configureSensor() not supported
-       */
-       const unsigned short REQUESTED_RATE_NOT_SUPPORTED_ERROR = 6;
-
-     /**
-       * \brief Interrupt mode requested through configureSensor() not supported
-       */
-       const unsigned short REQUESTED_INTERRUPTMODE_NOT_SUPPORTED_ERROR = 7;
-
-     /**
-       * \brief Permission denied
-       */
-       const unsigned short PERMISSION_DENIED_ERROR = 50;
-
-
-      /**
-       * \brief Error code assigned when an error has occurred in configureSensor() processing.
-       */
-       readonly attribute unsigned short code;
-
-
-     /**
-       * \brief Human readable message assigned when an error has occurred in configureSensor() processing.
-       */
-       readonly attribute DOMString message;
-
-    };    
-
+       callback SensorErrorCB = void (DOMError error);
 
   /**
     * \brief ConfigureSensorOptions interface definition
