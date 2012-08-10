@@ -177,8 +177,6 @@ document.onLoad = function() {
 		 * It is calculated by hashing a partial serialization of the
 		 * WebinosEvent object that involves: \n
 		 *  - the event type; \n
-		 *  - the original event source and primary recipients, case
-		 *    the "addressingSensitive" attribute is true; \n
 		 *  - the identifier of the event that this event is a response
 		 *    to, if any; \n
 		 *  - the event timestamp, if present; \n
@@ -217,15 +215,6 @@ document.onLoad = function() {
 		 * It MAY be null.
 		 */
 		readonly attribute DOMTimeStamp? expiryTimeStamp;
-		/**
-		 * \brief Indicates whether the original addressing information
-		 *        is part of the informative content of the event.
-		 *
-		 * In practice, when this is set to true, the identifiers of the
-		 * orignal event source and primary recipients are used to
-		 * compute the event id.
-		 */
-		readonly attribute boolean addressingSensitive;
 		/**
 		 * \brief Event type-specific data.
 		 *
@@ -406,10 +395,6 @@ document.onLoad = function() {
 		 * \param expiryTimeStamp Moment in time past which the event is
 		 *        no more valid or meaningful (undefined is considered
 		 *        as equivalent to null).
-		 * \param addressingSensitive Whether the addressing information
-		 *        is part of the informative content of the event
-		 *        (undefined is considered as equivalent to false).
-		 *
 		 * \return Newly created WebinosEvent object or null if an error
 		 *         occurred.
 		 *
@@ -421,8 +406,7 @@ document.onLoad = function() {
 				  optional DOMString? payload,
 				optional WebinosEvent? inResponseTo,
 				optional boolean withTimeStamp,
-				optional DOMTimeStamp? expiryTimeStamp,
-				optional boolean addressingSensitive);
+				optional DOMTimeStamp? expiryTimeStamp);
 		/**
 		 * \brief Registers an event listener.
 		 *
