@@ -33,6 +33,9 @@
  * \def-api-feature http://webinos.org/api/sensors.proximity
  * Identifies the proximity sensor type. 
  *
+ * \def-api-feature http://webinos.org/api/sensors.humidity
+ * Identifies the relative humidity sensor type. 
+ *
  * \author Claes Nilsson &lt;claes1.nilsson@sonyericsson.com&gt;
  * \author Updated to new WIDL by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
  * \version 0.96 
@@ -332,23 +335,21 @@
    *\n
    * http://webinos.org/api/sensors.light:\n
    * sensorValue[0] = the measured ambient light level around the device in SI lux units.\n
-   * sensorValue[1] = A normalized value between 0 and 1.\n
    *\n
    * http://webinos.org/api/sensors.noise:\n
    * sensorValue[0] = the measured ambient noise around the device, DB(SPL).\n
-   * sensorValue[1] = A normalized value between 0 and 1.\n
    *\n
    * http://webinos.org/api/sensors.temperature:\n
    * sensorValue[0] = the measured ambient temperature around the device, degrees Celsius.\n
-   * sensorValue[1] = A normalized value between 0 and 1.\n
    *\n
    * http://webinos.org/api/sensors.pressure:\n
    * sensorValue[0] = the measured atmospheric pressure around the device in hPa (millibar)\n
-   * sensorValue[1] = A normalized value between 0 and 1.\n
    *\n
    * http://webinos.org/api/sensors.proximity:\n
-   * sensorValue[0] =  Proximity sensor distance measured in centimeters.\n
-   * sensorValue[1] = A normalized value between 0 and 1.Some sensor can only state "near" (0) and "far" (1) \n
+   * sensorValue[0] =  proximity sensor distance measured in centimeters. Some sensor can only state "near" (0) and "far" (1)\n
+   *\n
+   * http://webinos.org/api/sensors.humidity:\n
+   * sensorValue[0] =  the measured relative humidity around the device in percent. \n
    *   
    */
     readonly attribute DOMString sensorType;
