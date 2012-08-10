@@ -97,7 +97,8 @@ document.onLoad = function() {
  * \endcode
  *
  * \def-api-feature http://webinos.org/api/events
- * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt;
+ * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt; 
+ * \author Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;
  * \version 0.9.13
  */
 
