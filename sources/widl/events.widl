@@ -97,7 +97,8 @@ document.onLoad = function() {
  * \endcode
  *
  * \def-api-feature http://webinos.org/api/events
- * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt;
+ * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt; 
+ * \author Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;
  * \version 0.9.13
  */
 
@@ -133,20 +134,20 @@ document.onLoad = function() {
 		/**
 		 * \brief Event source.
 		 *
-		 * In the normalized form it SHALL always be set.
+		 * Represents the entity that originally sent the event.
 		 *
 		 * The non-normalized form allows to use null or undefined to
 		 * indicate the current application.
 		 */
-		attribute WebinosEventEntity source;
+		attribute WebinosEventEntity from;
 		/**
-		 * \brief Array of primary recipients.
+		 * \brief Array of recipients.
 		 *
-		 * It MUST always contain at least one element.
+		 * It MUST contain at least one element in case
+		 * of a point-to-point event.
+		 * It MUST be NULL in case the event is used
+		 * with the publish/subscribe scheme.
 		 *
-		 * In the normalized form it SHALL be sorted in ascending order
-		 * by Unicode code points and SHALL NOT contain duplicate
-		 * entries.
 		 */
 		attribute WebinosEventEntity[] to;
 	};
@@ -174,26 +175,7 @@ document.onLoad = function() {
 		/**
 		 * \brief Event identifier.
 		 *
-		 * It is calculated by hashing a partial serialization of the
-		 * WebinosEvent object that involves: \n
-		 *  - the event type; \n
-		 *  - the original event source and primary recipients, case
-		 *    the "addressingSensitive" attribute is true; \n
-		 *  - the identifier of the event that this event is a response
-		 *    to, if any; \n
-		 *  - the event timestamp, if present; \n
-		 *  - the event expiry timestamp, if present; \n
-		 *  - the payload, if present.
-		 *
-		 * Even though not strictly required, conforming implementations
-		 * are recommended to implement some strategy to try to limit
-		 * the likelihood that an application instance is delivered more
-		 * than one event with a given id. Users of this API MUST assume
-		 * that no more than one event with a given id is ever delivered
-		 * to a given recipient.
-		 *
-		 * For more details, please refer to the Webinos system
-		 * specifications.
+		 * String identifying the event
 		 */
 		readonly attribute DOMString id;
 		/**
@@ -217,15 +199,6 @@ document.onLoad = function() {
 		 * It MAY be null.
 		 */
 		readonly attribute DOMTimeStamp? expiryTimeStamp;
-		/**
-		 * \brief Indicates whether the original addressing information
-		 *        is part of the informative content of the event.
-		 *
-		 * In practice, when this is set to true, the identifiers of the
-		 * orignal event source and primary recipients are used to
-		 * compute the event id.
-		 */
-		readonly attribute boolean addressingSensitive;
 		/**
 		 * \brief Event type-specific data.
 		 *
@@ -406,10 +379,6 @@ document.onLoad = function() {
 		 * \param expiryTimeStamp Moment in time past which the event is
 		 *        no more valid or meaningful (undefined is considered
 		 *        as equivalent to null).
-		 * \param addressingSensitive Whether the addressing information
-		 *        is part of the informative content of the event
-		 *        (undefined is considered as equivalent to false).
-		 *
 		 * \return Newly created WebinosEvent object or null if an error
 		 *         occurred.
 		 *
@@ -421,8 +390,7 @@ document.onLoad = function() {
 				  optional DOMString? payload,
 				optional WebinosEvent? inResponseTo,
 				optional boolean withTimeStamp,
-				optional DOMTimeStamp? expiryTimeStamp,
-				optional boolean addressingSensitive);
+				optional DOMTimeStamp? expiryTimeStamp);
 		/**
 		 * \brief Registers an event listener.
 		 *

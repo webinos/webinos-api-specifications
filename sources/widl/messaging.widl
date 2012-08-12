@@ -401,7 +401,6 @@
    *
    * Additionally, it also allows an application to retrieve the content of a message through the findMessages, onSMS, onMMS and onEmail methods. In those cases, the implementation MAY return in some situations only part of the body because of its size. In those situations the implementation MUST allow the developer to retrieve the remaining part of the message through the use of the sync method member of the Synchronisable interface implemented by Message.
    *
-   * Additionally, for the same reason, the implementation MAY decide to provide only the attachment information but not the attachment content. This is achieved by returning in the attachments attribute not a sequence of Files but a sequence of MessageAttachments (that implement the Synchronisable interface).
    *
    * If the developer attempts to access an attribute not supported by the messaging technology (see attribute description or summary table in the sendMessage mehtod description), the implementation MUST ignore this attempt.
    *
@@ -529,8 +528,6 @@
                             optional MessagingErrorCallback errorCallback);
   };
   
-  Message implements Synchronisable;
-
    /**                       
    * \brief Filter to restrict the items returned by the findMessages method 
    *
@@ -649,7 +646,7 @@
    /**                       
    * \brief Describes a message attachement 
    *
-   * This attribute extends the File interface (from W3C File reader (http://dev.w3.org/2006/webapi/FileAPI/#file)) by concurrently implementing the synchronizable interface. It allows attachments to be downloaded only if the user requests them by the use of the sync method specified in the Synchronizable interface. 
+   * This attribute extends the File interface (from W3C File reader (http://dev.w3.org/2006/webapi/FileAPI/#file)) by MIMEtype
    *
    */           
   
@@ -659,28 +656,6 @@
     *
     */  
     readonly attribute DOMString MIMEType; 
-
-   /**
-    * \brief    Synchronisation status of the interface.
-    *
-    * This attribute describes whether the interface is synchronised. It will be true if the object is synchronized and false if the object is not synchronised. Default value is false. 
-    */          
-      readonly attribute   boolean isInSync;
-
-   /**                       
-   * \brief Request interface data is synchronized 
-   *
-   * When this method is invoked, the implementation MUST update all the interface attributes so that all of them are up to date.
-   *            
-   * If the object is already current (i.e. it is synchronised), the implementation MUST set the isInSync attribute to true and invoke the successCallback without further action.
-   * 
-   * If the interface is not current (i.e. it is not synchronised), the implementation MUST attempt to retrieve that data. If the data is successfully retrieved, the isInSync attribute will be set to true and the successCallback will be invoked. If an error occurs during the interface attributes update, the errorCallback will be invoked.
-   *
-   * \param success Function to be called on successful completion of the sync.
-   * \param error Function to be called in case of errors.
-   * \return void
-   */            
-  void sync(MessagingSuccessCallback success,  optional MessagingErrorCallback? error);
     
   };
   
