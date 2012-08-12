@@ -1,5 +1,5 @@
 /**<p>Interface to enable and manage application synchronization.</p>
-* \name Object Synchronization API
+* \name AppState Synchronization API
 * 
 * The interface provides a set of operations for the management of shared synchronized objects. 
 * It abstracts from runtime application data exchange mechanisms and eases the
@@ -19,7 +19,7 @@
 * different users and applications (e.g. cross-application chat or 
 * collaboration components).
 *
-* The Object Synchronization API is made available under the webinos namespace, i.e.
+* The AppState Synchronization API is made available under the webinos namespace, i.e.
 * webinos.sync.
 *
 * \def-api-feature http://webinos.org/api/sync
@@ -27,7 +27,7 @@
 */
 
 /**
-* \brief Creates the object synchronization namespace.
+* \brief Creates the application state synchronization namespace.
 *
 * Access to public constants and functions are available via the namespace webinos.sync.
 */
@@ -36,8 +36,8 @@ partial interface Webinos {
 };
 
 /**
-* \brief Interface for management of the object synchronization. Covers three of the CRUD operations 
-* as an implizit object update should be provided by the synchronization mechanism.
+* \brief Interface for management of the application state synchronization. Covers three of the CRUD operations (create, read and delete) 
+* as an implizit object update is provided by the synchronization mechanism if changes occur.
 */
 interface SyncManager {
 
@@ -199,15 +199,15 @@ interface SyncObject : EventTarget {
 /**
  * \brief Callback function that is called if an change of a watched property occured.
 */
-callback PropertyChangedCB = void (SyncPropery syncProperty);
+callback PropertyChangedCB = void (SyncProperty syncProperty);
 
 /**
- * \brief The SyncPropery Interface
+ * \brief The SyncProperty Interface
  *
- * The SyncPropery interface provides information about the change of  
+ * The SyncProperty interface provides information about the change of  
  * a watched property, containing its old and current 
  */
-dictionary SyncPropery {
+dictionary SyncProperty {
 
   /**
    * \brief Path and name of the property reffering to the update.
@@ -275,11 +275,13 @@ dictionary SyncOptions {
    Object referenceObject = null;
 
   /**
-   * \brief Specifies the access mode for the object properties.
+   * \brief Specifies the access mode for the object and its properties.
    *
-   * Two access modes are distinguished, a read-only ("ro") mode where only the creator
+   * Three access modes are distinguished to restrict access on objects.
+   * In the no-access mode ("na") only the creator may access the object,
+   * in read-only ("ro") mode only the creator
    * may change the state of the synchronized object and
-   * a mode with enabled read and write access ("rw") for all peers.
+   * a in full access ("rw") mode all peers may read and write the object.
    * Default value is "rw".
    */
    AccessMode accessMode = "rw";
@@ -288,7 +290,7 @@ dictionary SyncOptions {
 /**
  * \brief State type of a synchronized object.
 */
-enum AccessMode { "ro", "rw" };
+enum AccessMode { "na", "ro", "rw" };
 
 
 /**
