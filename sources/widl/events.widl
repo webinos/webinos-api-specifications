@@ -253,19 +253,6 @@ document.onLoad = function() {
 	 */
 	callback interface WebinosEventCallbacks {
 		/**
-		 * \brief Called right after the event has been successfully
-		 *        transmitted to the "next hop".
-		 *
-		 * This callback SHALL NOT be called more than once per
-		 * recipient for each send/forward.
-		 *
-		 * \param event The event being transmitted.
-		 * \param recipient The recipient to which the event is being
-		 *        transmitted.
-		 */
-		void onSending(WebinosEvent event,
-			       WebinosEventEntity recipient);
-		/**
 		 * \brief Called right after the event has been put into the
 		 *        Local Event Cache for later transmission (e.g., when
 		 *        trying to send it to a remote entity but no
