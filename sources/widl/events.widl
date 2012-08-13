@@ -235,8 +235,7 @@ document.onLoad = function() {
 		 * \param recipient The recipient that notified delivery
 		 *                  success.
 		 */
-		void onDelivery(WebinosEvent event,
-				 recipient);
+		void onDelivery(WebinosEvent event,DOMString recipient);
 		/**
 		 * \brief Called right after the moment in time specified by the
 		 *        "referenceTimeout" attribute is reached and the given
@@ -253,8 +252,7 @@ document.onLoad = function() {
 		 *        back at least one event in response to the given
 		 *        event.
 		 */
-		void onTimeout(WebinosEvent event,
-			       DOMString recipient);
+		void onTimeout(WebinosEvent event, DOMString recipient);
 		/**
 		 * \brief Called as soon as unsuccessful event delivery has been
 		 *        reported w.r.t. a given recipient.
@@ -275,8 +273,7 @@ document.onLoad = function() {
 		 * \param recipient The recipient that notified delivery error.
 		 * \param error The reported error; the following new types of DOMError are to be used: InvalidError if the recipient received an invalid event; BadDestinationError if the intended recipient is unknown or unreachable, ExpiredError if the event expired before actual delivery, SecurityError if the event could not be received due to policy settings.
 		 */
-		void onError(WebinosEvent event,
-			     DOMString recipient,
+		void onError(WebinosEvent event, DOMString recipient,
 			     DOMError error);
 	};
 
