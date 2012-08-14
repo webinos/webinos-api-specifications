@@ -122,7 +122,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <xsl:call-template name="summary"/>
 
        <h2 class="section" id="intro">Introduction</h2>
-        <xsl:apply-templates select="descriptive/description[position &gt; 1]"/>
+        <xsl:apply-templates select="descriptive/description[position() &gt; 1]"/>
         <xsl:apply-templates select="descriptive/Code"/>
 
         <h2 class="section" id="interfaces">Interfaces and Dictionaries</h2>
