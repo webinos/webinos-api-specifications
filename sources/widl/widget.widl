@@ -205,7 +205,7 @@
      * out of this function.
      * 
     */
-    attribute EventHandler ondestroy;
+    attribute Function? ondestroy;
 
     /**
      * \brief Event handler indicating that the application is gone to background. 
@@ -215,28 +215,28 @@
      * is still running but not visible anymore.
      * 
     */
-    attribute EventHandler onbackground;
+    attribute Function? onbackground;
 
     /**
      * \brief Event handler indicating that the application is gone to foreground. 
      *
      * Application goes to foreground after previously going to background.
     */
-    attribute EventHandler onforeground;
+    attribute Function? onforeground;
 
     /**
      * \brief EventHandler indicating that application execution is going to be stopped. 
      *
      * Application execution is stopped aftern returning out of this function.
     */
-    attribute EventHandler onstop;
+    attribute Function? onstop;
 
     /**
      * \brief EventHandler indicating that application execution is continued. 
      *
      * Application execution is continued after previously stopped.
      */
-    attribute EventHandler onstart;
+    attribute Function? onstart;
     
     /**
      * \brief Requests to install an application on another device.
