@@ -59,9 +59,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
         <h2>Abstract</h2>
 
-        <xsl:apply-templates select="descriptive/brief"/>
-        <xsl:apply-templates select="descriptive/description"/>
-        <xsl:apply-templates select="descriptive/Code"/>
+        <xsl:apply-templates select="descriptive/description[1]"/>
 
 
         <h2>Table of Contents</h2>
@@ -124,7 +122,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <xsl:call-template name="summary"/>
 
        <h2 class="section" id="intro">Introduction</h2>
-        <xsl:apply-templates select="descriptive/description"/>
+        <xsl:apply-templates select="descriptive/description[position() &gt; 1]"/>
         <xsl:apply-templates select="descriptive/Code"/>
 
         <h2 class="section" id="interfaces">Interfaces and Dictionaries</h2>
