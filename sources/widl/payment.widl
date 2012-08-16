@@ -10,6 +10,9 @@
  * \def-api-feature http://webinos.org/api/payment
  * Identifies all payment interactions. 
  * 
+ * \def-api-feature http://webinos.org/api/payment.checkout
+ * Identifies access to the checkout function, enabling a separate policy (ask user consent) for the checkout itself. 
+ * 
  * \author Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
  */
  
@@ -102,13 +105,13 @@
    *         else if(cType=="text"){
    *             userInput = prompt(cValue, "");
    *             answerChallenge(userInput);
-   *	     }
+   *         }
    *         else if(cType=="image"){
    *             // this would need a custom prompt, which would make this example
    *             // too large - just pretent it's here.
    *             userInput = graphicPrompt(cValue, "");
    *             answerChallenge(userInput);
-   *	     }
+   *         }
    *         else alert("Unknown challenge type "+cType+" issued by payment provider.");  *
    *        }
    *         
