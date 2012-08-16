@@ -1,0 +1,125 @@
+/**<p> The webinos Web Notifications specification provides an API to display notifications to alert users outside the context of a web page.</p> 
+ * \name The Web Notifications API 
+ *
+ * The webinos Web Notifications specification is based on the W3C Web Notifications specification. It does not specify exactly how a user agent
+ * should display these notifications; the best presentation depends on the device where the user agent is run. When this specification refers
+ * to displaying notifications on the "desktop", it generally refers to some static display area outside the scope of the application, but may
+ * take several forms, including:\n
+ *
+ * - A corner of the user's display.
+ * - An area within the chrome of the user agent.
+ * - The "home" screen of a mobile device.
+ * 
+ * This specification does not define exactly how the user agent should display the notification, and the API is designed to be flexible with
+ * respect to presentation options. This specification is designed to be compatible with existing notification platforms as much as possible,
+ * but also to be platform-independent. Since the common platforms do not provide the same functionality, this spec will indicate what events
+ * are guaranteed and which are not. In particular, notifications as specified here only can contain text and icon content. In the future,
+ * notifications generated from web content may wish to contain web content themselves, but that is outside the scope of this document.\n
+ * 
+ * In contrast to the original W3C version of this API, the event model for notifications is reliable and not best-effort; the Notification object
+ * offers a click event and applications may enhance their functionality by listening for that event.
+ *
+ *
+ * \def-api-feature http://webinos.org/api/notifications
+ * Accessing the notification API
+ *
+ * \author Based on W3C Working Draft 14 June 2012 with removed permission functions which are replaced by the webinos security and policy system
+ * \author WIDL version for webinos created by Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;
+ * \version 0.9
+ */
+         /**
+         * \brief The NotificationManager interface which is accessible by using the webinos service discovery API. 
+         */
+        [NoInterfaceObject] 
+        interface NotificationManager {
+          /**
+           * \brief The object through which a new notification can be created.
+           * No exceptions.
+           */
+            attribute Notification notification;
+        };
+ 
+
+        /**
+         * \brief The Notification interface for showing notifications when created. 
+         *
+          */  
+        [Constructor(DOMString title, optional NotificationOptions options)]
+        interface Notification : EventTarget {
+  
+           /**
+            * \brief Callback called when the shown notification was clicked.
+            *
+            */  
+           attribute Function? onclick;
+           /**
+            * \brief Callback called when the notification is shown.
+            *
+            */  
+           attribute Function? onshow;
+           /**
+            * \brief Callback called when the could not be shown.
+            *
+            */  
+           attribute Function? onerror;
+           /**
+            * \brief Callback called when the notification was closed.
+            *
+            */  
+           attribute Function? onclose;
+
+           /**
+            * \brief Close the notification.
+            *
+            */  
+			close();
+        };
+
+        /**
+         * \brief The NotificationOptions that defining the content of the notification. 
+         *
+          */  
+        dictionary NotificationOptions {
+           /**
+		    * \brief The title direction of this notification.
+		    *
+   		    * Can be null.
+		    */
+           NotificationDirection titleDir;
+           /**
+		    * \brief The body content of this notification.
+		    *
+   		    * Can be null.
+		    */
+           DOMString body;
+           /**
+		    * \brief The body direction of this notification.
+		    *
+   		    * Can be null.
+		    */
+           NotificationDirection bodyDir;
+           /**
+		    * \brief The tag of this notification.
+		    *
+		    * Notifications which represent the same conceptual event can be tagged in the
+		    * same way, and when both are shown, the user will only receive one notification.
+		    * Can be null.
+		    */
+           DOMString tag;
+           /**
+		    * \brief The URI that represents an icon to be shown by the notification.
+		    *
+   		    * Can be null.
+		    */
+           DOMString iconUrl;
+        };
+
+        /**
+         * \brief The NotificationDirection that defines possible directions of displaying notifications. 
+         *
+          */  
+        enum NotificationDirection {
+           "auto",
+           "ltr",
+           "rtl"
+        };
