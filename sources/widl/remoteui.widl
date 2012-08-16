@@ -1,0 +1,37 @@
+/**<p>The webinos remoteUI API provides means to create and access a UI on a remote device using DOM manipulation commands.</p>
+ * \name The Remote UI API
+ *
+ * Any webinos device can offer access to its UI the same way any other service is offered. The access to the service is governed by policy settings on the local and remote device.
+ * 
+ * 
+ * Binding to a service creates an object that exposes the remoteDOM method, which takes, in addition to a success and error callback a DOMstring paramenter.
+ * 
+ * This string will be transmitted to the remote device and executed there, using the eval() method.
+ * All remote DOM commands need to be individually and directly executable on the remote 'document' element.
+ * 
+ * No direct access to remote object can and will be created. Basic values from the remote DOM can be retrieved, but not objects.
+ *
+ *
+ * \def-api-feature http://webinos.org/api/remoteUI
+ *
+ * \author Christian Fuhrhop &lt;christian.fuhrhop@@fokus.fraunhofer.de&gt;
+ * \version 0.7
+ */
+
+        /**
+         * \brief The RemoteUI interface provides access to the remoteDOM method and can be bound as a service,
+         *
+         * On binding to the service, a window on the remote device is opened, which needs to be uniquely recognizeable as a window instantiated by a remote instance by having a specific frame and including information about which application on which device has opened it remotely. The purpose of this is to avoid remote programs being able to spoof the appearance of programs running locally on the device.
+         * 
+         * The window will show a textual/graphical presentation of the device that runs the widget and the iconic/text representation of the application using the window. Within the window, the access to the DOM 'document' element is restricted the document element of an iFrame. If the browser supports it, the iFrame should be instantiated with the 'sandbox' attribute.
+         * 
+         * The opened window on the remote device contains as named elements a head element with the id "head" and a body element with the id 'body".
+         */
+        [NoInterfaceObject] interface RemoteUI {
+                /**
+                 * \brief Globally unique identifier.
+                 */
+                attribute DOMString id;
+        };
+
+        Webinos implements RemoteUI;
