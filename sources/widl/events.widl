@@ -19,7 +19,7 @@
  * this API.
  *
  * \code
-// Array of objects implementing the WebinosEventEntity interface that
+// Array of objects implementing the DOMString interface that
 // represents the list of participants to the chat session, excluding the
 // current application.
 var participants = [...];
@@ -48,7 +48,7 @@ function onMsg(evt) {
   // Appends event data to logElem.
   // E.g.: [00:00:00] Stefano said: Hi all!
   logElem.innerHTML += "[" + new Date(evt.timeStamp).toLocaleTimeString() + "] "
-                       + getName(evt.addressing.source) + " said: "
+                       + getName(evt.from) + " said: "
                        + escapeHTML(evt.payload) + "\\n";
 }
 
@@ -68,8 +68,7 @@ function onSendButtonClicked() {
   // participants with payload containing the text in inputElem and with
   // timestamp.
   var evt = webinos.events.createWebinosEvent("chatMessage", {to: participants},
-                                              inputElem.value, null, true, null,
-                                              true);
+                                              inputElem.value, true, null);
 
   // Sends the event and specifies the onMsgError callback for handling error
   // delivery notifications.
@@ -97,59 +96,10 @@ document.onLoad = function() {
  * \endcode
  *
  * \def-api-feature http://webinos.org/api/events
- * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt;
+ * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt; 
+ * \author Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;
  * \version 0.9.13
  */
-
-	/**
-	 * \brief The WebinosEventEntity interface describes an addressable
-	 *        entity of any kind.
-	 */
-	[NoInterfaceObject] interface WebinosEventEntity {
-		/**
-		 * \brief Globally unique identifier.
-		 */
-		attribute DOMString id;
-	};
-
-	/**
-	 * \brief The WebinosEventAddressing interface contains references to
-	 *        the sender and recipients of an event.
-	 *
-	 * This interfaces comes in two flavors: a strict normalized form for
-	 * events generated and/or processed by the Webinos runtime, and a more
-	 * lax non-normalized form to ease API usage.
-	 *
-	 * Please, keep in mind that the Webinos runtime always operates on
-	 * normalized equivalents of user-supplied objects implementing this
-	 * interface in non-normalized form, hence it creates those equivalents
-	 * by applying the normalization process described in the documentation
-	 * of the createWebinosEvent() function of the WebinosEventsInterface
-	 * interface.
-	 *
-	 * Details on both forms are given in each attribute's description.
-	 */
-	[NoInterfaceObject] interface WebinosEventAddressing {
-		/**
-		 * \brief Event source.
-		 *
-		 * In the normalized form it SHALL always be set.
-		 *
-		 * The non-normalized form allows to use null or undefined to
-		 * indicate the current application.
-		 */
-		attribute WebinosEventEntity source;
-		/**
-		 * \brief Array of primary recipients.
-		 *
-		 * It MUST always contain at least one element.
-		 *
-		 * In the normalized form it SHALL be sorted in ascending order
-		 * by Unicode code points and SHALL NOT contain duplicate
-		 * entries.
-		 */
-		attribute WebinosEventEntity[] to;
-	};
 
 	/**
 	 * \brief The WebinosEvent interface describes an incoming or outgoing
@@ -159,50 +109,31 @@ document.onLoad = function() {
 		/**
 		 * \brief Event type identifier.
 		 *
-		 * It MUST match the following regular expression:
-		 * [_a-zA-Z][_a-zA-Z0-9]*
-		 *
-		 * Identifiers "deliveryNotification", "JSONRPC20Request" and
-		 * "JSONRPC20Response" are reserved, hence not allowed.
+		 * The type of the event as specified by the sender of the event.
 		 */
 		readonly attribute DOMString type;
 		/**
-		 * \brief References to the original sender and recipients in
-		 *        normalized form.
+		 * \brief Event source.
+		 *
+		 * Represents the entity that originally sent/created the event.
 		 */
-		readonly attribute WebinosEventAddressing addressing;
+		readonly attribute DOMString from;
+		/**
+		 * \brief Array of recipients.
+		 *
+		 * It MUST contain at least one element in case
+		 * of a point-to-point event.
+		 * It MUST be NULL in case the event is used
+		 * with the publish/subscribe scheme.
+		 *
+		 */
+		attribute DOMString[] to;
 		/**
 		 * \brief Event identifier.
 		 *
-		 * It is calculated by hashing a partial serialization of the
-		 * WebinosEvent object that involves: \n
-		 *  - the event type; \n
-		 *  - the original event source and primary recipients, case
-		 *    the "addressingSensitive" attribute is true; \n
-		 *  - the identifier of the event that this event is a response
-		 *    to, if any; \n
-		 *  - the event timestamp, if present; \n
-		 *  - the event expiry timestamp, if present; \n
-		 *  - the payload, if present.
-		 *
-		 * Even though not strictly required, conforming implementations
-		 * are recommended to implement some strategy to try to limit
-		 * the likelihood that an application instance is delivered more
-		 * than one event with a given id. Users of this API MUST assume
-		 * that no more than one event with a given id is ever delivered
-		 * to a given recipient.
-		 *
-		 * For more details, please refer to the Webinos system
-		 * specifications.
+		 * String identifying the event
 		 */
 		readonly attribute DOMString id;
-		/**
-		 * \brief Event that this event is a response to.
-		 *
-		 * If null, this event was not sent in response to another
-		 * event.
-		 */
-		readonly attribute WebinosEvent inResponseTo;
 		/**
 		 * \brief Moment in time in which the event is generated by the
 		 *        original event source.
@@ -217,15 +148,6 @@ document.onLoad = function() {
 		 * It MAY be null.
 		 */
 		readonly attribute DOMTimeStamp? expiryTimeStamp;
-		/**
-		 * \brief Indicates whether the original addressing information
-		 *        is part of the informative content of the event.
-		 *
-		 * In practice, when this is set to true, the identifiers of the
-		 * orignal event source and primary recipients are used to
-		 * compute the event id.
-		 */
-		readonly attribute boolean addressingSensitive;
 		/**
 		 * \brief Event type-specific data.
 		 *
@@ -287,19 +209,6 @@ document.onLoad = function() {
 	 */
 	callback interface WebinosEventCallbacks {
 		/**
-		 * \brief Called right after the event has been successfully
-		 *        transmitted to the "next hop".
-		 *
-		 * This callback SHALL NOT be called more than once per
-		 * recipient for each send/forward.
-		 *
-		 * \param event The event being transmitted.
-		 * \param recipient The recipient to which the event is being
-		 *        transmitted.
-		 */
-		void onSending(WebinosEvent event,
-			       WebinosEventEntity recipient);
-		/**
 		 * \brief Called right after the event has been put into the
 		 *        Local Event Cache for later transmission (e.g., when
 		 *        trying to send it to a remote entity but no
@@ -326,8 +235,7 @@ document.onLoad = function() {
 		 * \param recipient The recipient that notified delivery
 		 *                  success.
 		 */
-		void onDelivery(WebinosEvent event,
-				WebinosEventEntity recipient);
+		void onDelivery(WebinosEvent event,DOMString recipient);
 		/**
 		 * \brief Called right after the moment in time specified by the
 		 *        "referenceTimeout" attribute is reached and the given
@@ -344,8 +252,7 @@ document.onLoad = function() {
 		 *        back at least one event in response to the given
 		 *        event.
 		 */
-		void onTimeout(WebinosEvent event,
-			       WebinosEventEntity recipient);
+		void onTimeout(WebinosEvent event, DOMString recipient);
 		/**
 		 * \brief Called as soon as unsuccessful event delivery has been
 		 *        reported w.r.t. a given recipient.
@@ -364,10 +271,9 @@ document.onLoad = function() {
 		 *
 		 * \param event The event that was not successfully delivered.
 		 * \param recipient The recipient that notified delivery error.
-		 * \param error The reported error; the following new types of DOMError are to be used: InvalidError if the recipient received an invalid event; BadDestinationError if the intended recipient is unknown or unreachable, ExpiredError if the event expired before actual delivery, SecurityError if the event could not be received due to policy settings, NoReferenceError if the recipient does not hold a reference to the event specified by the "inResponseTo" attribute
+		 * \param error The reported error; the following new types of DOMError are to be used: InvalidError if the recipient received an invalid event; BadDestinationError if the intended recipient is unknown or unreachable, ExpiredError if the event expired before actual delivery, SecurityError if the event could not be received due to policy settings.
 		 */
-		void onError(WebinosEvent event,
-			     WebinosEventEntity recipient,
+		void onError(WebinosEvent event, DOMString recipient,
 			     DOMError error);
 	};
 
@@ -394,35 +300,25 @@ document.onLoad = function() {
 		 * thrown.
 		 *
 		 * \param type Event type identifier.
-		 * \param addressing References to the sending entity on the
-		 *        behalf of which the application wants to create the
-		 *        event and to the event recipients.
+		 * \param to References to the event recipients.
 		 * \param payload Event type-specific data or null (undefined
 		 *        is considered as equivalent to null).
-		 * \param inResponseTo Event that this event is a response to
-		 *        (undefined is considered as equivalent to null).
 		 * \param withTimeStamp Whether to set the generation timestamp
 		 *        (undefined is considered as equivalent to false).
 		 * \param expiryTimeStamp Moment in time past which the event is
 		 *        no more valid or meaningful (undefined is considered
 		 *        as equivalent to null).
-		 * \param addressingSensitive Whether the addressing information
-		 *        is part of the informative content of the event
-		 *        (undefined is considered as equivalent to false).
-		 *
 		 * \return Newly created WebinosEvent object or null if an error
 		 *         occurred.
 		 *
 		 */
 		WebinosEvent createWebinosEvent(
 				DOMString type,
-				WebinosEventAddressing addressing,
+				DOMString[] to,
 				[TreatUndefinedAs=Null]
 				  optional DOMString? payload,
-				optional WebinosEvent? inResponseTo,
 				optional boolean withTimeStamp,
-				optional DOMTimeStamp? expiryTimeStamp,
-				optional boolean addressingSensitive);
+				optional DOMTimeStamp? expiryTimeStamp);
 		/**
 		 * \brief Registers an event listener.
 		 *
@@ -443,9 +339,9 @@ document.onLoad = function() {
 		 * \param listener The event listener.
 		 * \param type Specific event type or null for any type
 		 *        (undefined is considered as null).
-		 * \param source Specific event source or null for any source
+		 * \param from Specific event source or null for any source
 		 *        (undefined is considered as null).
-		 * \param destination Specific event recipient (whether primary
+		 * \param to Specific event recipient (whether primary
 		 *        or not) or null for any destination (undefined is
 		 *        considered as null).
 		 *
@@ -455,8 +351,8 @@ document.onLoad = function() {
 				WebinosEventListener listener,
 				[TreatUndefinedAs=Null]
 				optional DOMString? type,
-				optional WebinosEventEntity? source,
-				optional WebinosEventEntity? destination);
+				optional DOMString? from,
+				optional DOMString? to);
 		/**
 		 * \brief Unregisters an event listener.
 		 *
