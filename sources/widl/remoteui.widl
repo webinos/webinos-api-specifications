@@ -30,7 +30,18 @@
               * Binding to a service creates an object that exposes the remoteDOM method, which takes, in addition to a success and error callback a DOMstring paramenter.
               * 
               * This string will be transmitted to the remote device and executed there, using the eval() method.
+              *
               * All remote DOM commands need to be individually and directly executable on the remote 'document' element.
+              *
+              * \code
+              * webinos.discovery.findServices(new ServiceType('http://webinos.org/api/remoteui'), 
+              *   {onFound: function (service) {
+              *   remote_doc = service;   
+              *  }});          
+              * remote_doc.remoteDOM("document.getElementById('body').appendChild((document.createElement('div'))).id='div-id';");
+              * remote_doc.remoteDOM("document.getElementById('div-id').appendChild(document.createElement('p')).id='p-id'; ");
+              * remote_doc.remoteDOM("document.getElementById('p-id').textContent =('You got mail!'); ");
+              * \endcode              
               *
               * \param successCallback Callback issued when successfully remote command was handled successfully
               * \param errorCallback Callback issued if an error occurs during issuing a remote command
