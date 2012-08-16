@@ -155,7 +155,7 @@ interface DeviceStatusManager {
         * steps to retrieve the components
         * 
         * The steps to retrieve the components are given by the following algorithm. The algorithm returns an array of component names, which may be empty.
-        * 
+        * <ol><li>item1</li></ol>
         * \n  1. Run the general invocation checks algorithm. If no exceptions were generated, continue.
         * \n  2. Let components be an empty array.
         * \n  3. If the first argument (aspect) null, return components and terminate this algorithm.
