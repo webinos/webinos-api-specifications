@@ -41,10 +41,10 @@
  
 
         /**
-         * \brief The Notification interface for showing notifications when created. 
          *
           */  
         [Constructor(DOMString title, optional NotificationOptions options)]
+	/* \brief The Notification interface for showing notifications when created. */
         interface Notification : EventTarget {
   
            /**
