@@ -68,6 +68,11 @@
             */  
            attribute Function? onclose;
 
+           /**
+            * \brief Close the notification.
+            *
+            */  
+			close();
         };
 
         /**
