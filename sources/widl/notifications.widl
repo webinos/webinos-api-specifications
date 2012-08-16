@@ -51,22 +51,22 @@
             * \brief Callback called when the shown notification was clicked.
             *
             */  
-           [TreatNonCallableAsNull] attribute Function? onclick;
+           attribute Function? onclick;
            /**
             * \brief Callback called when the notification is shown.
             *
             */  
-           [TreatNonCallableAsNull] attribute Function? onshow;
+           attribute Function? onshow;
            /**
             * \brief Callback called when the could not be shown.
             *
             */  
-           [TreatNonCallableAsNull] attribute Function? onerror;
+           attribute Function? onerror;
            /**
             * \brief Callback called when the notification was closed.
             *
             */  
-           [TreatNonCallableAsNull] attribute Function? onclose;
+           attribute Function? onclose;
 
         };
 
