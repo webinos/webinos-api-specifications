@@ -263,7 +263,7 @@
    * unreliable = The sensor data cannot be trusted, calibrating is needed or the environment does not allow reading.\n
    * unavailable = The sensor is not available and no sensor data can be provided. This accuracy attribute will for example take this value when contact is lost with a sensor using Bluetooth communication.
    */
-   enum Accuracy { "high", "medium", "low", "unreliable", unavailable"};
+   enum Accuracy { "high", "medium", "low", "unreliable", "unavailable"};
 
 
   /**
