@@ -224,18 +224,18 @@
        callback SensorErrorCB = void (DOMError error);
 
    /**
-    * \brief Sensor event rate
-    * fastest = The sensor is reporting data as fast as possible.
-    * game = The sensor is reporting data with a rate suitable for games.
-    * ui = The sensor is reporting data with a rate suitable for user interface.
-    * normal = The sensor is reporting data with a normal rate, e.g. suitable for screen orientation changes .
+    * \brief Sensor event rate.\n
+    * fastest = The sensor is reporting data as fast as possible.\n
+    * game = The sensor is reporting data with a rate suitable for games.\n
+    * ui = The sensor is reporting data with a rate suitable for user interface.\n
+    * normal = The sensor is reporting data with a normal rate, e.g. suitable for screen orientation changes.
     * 
     */
     enum Rate { "fastest", "game", "ui", "normal"};
     
    /**
-    * \brief Sensor event fire mode
-    * fixedinterval = events fired with a fixed time interval
+    * \brief Sensor event fire mode.\n
+    * fixedinterval = events fired with a fixed time interval\n
     * valuechange = events fired when value changes
     */
     enum EventFireMode { "fixedinterval", "valuechange"};
@@ -255,7 +255,10 @@
        * \brief The requested rate of the sensor data.
        */
        Rate rate;
-
+       
+     /**
+       * \brief The requested sensor event fire mode.
+       */
        EventFireMode eventFireMode;
      };
 
