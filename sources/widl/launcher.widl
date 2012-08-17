@@ -39,14 +39,14 @@
    * \code
 
         // Define the launchApplication success callback.
-        function launchedCallback(response)   {
+        function launchedCallback()   {
                alert("Webinos application launched successfully");
         }
 
 
         // Define the error callback
         function errorCallback(response) {
-                        alert( "The following error: " +  response.code + ", occurred");
+                        alert( "The following error: " +  response + ", occurred");
         }
 
 
