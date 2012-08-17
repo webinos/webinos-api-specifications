@@ -41,35 +41,11 @@
  *
  * \author Claes Nilsson &lt;claes1.nilsson@sonyericsson.com&gt;
  * \author Updated to new WIDL by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
- * \version 0.97 
+ * \version 0.98 
  */
 
 
   /**
-   * \brief Defines the  error codes for this module
-   */
-   exception SensorException {
-
-     /**
-       * \brief Illegal sensor id
-       */
-       const unsigned short INVALID_INPUT_ARGUMENT = 0; 
-
-     /**
-       * \brief Exception code
-       */
-       unsigned short code;
-
-
-     /**
-       * \brief Exception message
-       */
-       DOMString message;
-
-   };
-
-  
-   /**
    * 
    * \code
 
@@ -194,8 +170,6 @@
         * \brief Configures a sensor.
         *
         * Question: Do we need the ability to specify high and low thresholds? This is for example not supported by Android sensor API.
-        *
-        * Throws SensorException with appropriate error code.
         *
         * \param options Sensor configuration options. 
         * \param successCB Callback issued when sensor configuration succeeded.
@@ -368,12 +342,10 @@
     readonly attribute unsigned short rate;
 
   /**
-   *  \brief Interrupt mode of the sensor.
-   *  The value is one of
-   *  false = INTERRUPT_DISABLED (events fired with a fixed time interval)
-   *  true = INTERRUPT_ENABLED (events fired when value changes)
+   *  \brief The event fire mode the sensor.
+   *
    */
-    readonly attribute boolean interrupt;
+    readonly attribute EventFireMode eventFireMode;
 
   /**
    * \brief Array of sensor values
