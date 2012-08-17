@@ -18,11 +18,17 @@
 */
 
 /**
-* \brief Creates tv object.
-*/
-partial interface Webinos {
+ * \brief The TVControl interface describes the part of the TV
+ *        Control API accessible through the webinos object.
+ */
+[NoInterfaceObject] interface TVControl {
+  /**
+   * \brief webinos.tv object.
+   */
   readonly attribute TVManager tv;
 };
+
+Webinos implements TVControl;
 
 /**
 * \brief Access to tuner and display managers.

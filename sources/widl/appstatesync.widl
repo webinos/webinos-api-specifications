@@ -31,9 +31,14 @@
 *
 * Access to public constants and functions are available via the namespace webinos.sync.
 */
-partial interface Webinos {
+[NoInterfaceObject] interface AppStateSync {
+  /**
+   * \brief webinos.sync object.
+   */
   readonly attribute SyncManager sync;
 };
+
+Webinos implements AppStateSync;
 
 /**
 * \brief Interface for management of the application state synchronization. Covers three of the CRUD operations (create, read and delete) 
