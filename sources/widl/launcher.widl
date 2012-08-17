@@ -23,13 +23,6 @@
  * \author Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;
  * \version 0.9 
  */
-
-  /**
-   * \brief Application ID for identifying installed webinos applications. 
-   *  NOTE: This definition could be moved to webinos core module in the future.
-   */
-  typedef DOMString applicationID;
-  
   
   /**
    * \brief NOTE: \n
@@ -52,11 +45,17 @@
 
 
         // Activate webinos application, if the application is installed in the device.
-        var appinstalled = webinos.AppLauncher.AppInstalled( appID);
+        var appinstalled = webinos.AppLauncher.AppInstalled(appID);
 
-        if ( appinstalled)  {
-            webinos.AppLauncher.launchApplication(launchedCallback, errorCallback, appID, null);
-        }                      
+        webinosAppLauncher.appInstalled(
+            function (result) {
+                if (result)  {
+                    webinos.AppLauncher.launchApplication(launchedCallback, errorCallback, appID, null);
+                }  
+            },
+            null,
+            appID
+        );
    * \endcode
    */  
   
@@ -68,14 +67,14 @@
        *
        * \param successCallback Callback invoked when a requested webinos app was activated successfully. 
        * \param errorCallback Callback invoked if activation of webinos app was not successful.
-       * \param appID Identifies webinos application that needs to be activated.
+       * \param applicationID  Identifies webinos application that needs to be activated.
        * \param params Optional set of parameters for starting the application.
        * \return A pending operation object
        */
 
     void launchApplication(VoidFunction successCallback,
                                        ErrorCallback errorCallback,
-                                       applicationID appID,
+                                       DOMString applicationID ,
                                        optional sequence<object> params);
 
 
