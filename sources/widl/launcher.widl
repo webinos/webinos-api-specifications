@@ -79,15 +79,23 @@
 
 
       /**
-       * \brief Reports if a specific webinos application is installed in the device. The method is synchronous. Throws DOMException when detection of the application failed, with type as defined in ErrorCallback
+       * \brief Reports if a specific webinos application is installed in the device. The method is synchronous.
        *
+       * \param callback AppInstalledCallback that is called when the result can be provided.
+       * \param errorCallback Callback invoked if the request could not be executed successfully.
        * \param appID Identifies webinos application presence of which needs to be tested.
        * \return True if the application is installed, false if the application is not installed.
        */
-       
-    boolean appInstalled(applicationID appID);
+      void appInstalled(AppInstalledCallback callback, ErrorCallback errorCallback, applicationID appID);
     };
     
+    
+    /**
+     * \brief Callback called when appInstalled operation provides a result. 
+     * \param result Result of the query operation that is true if the requested app is installed or false if not. 
+     *
+     */         
+    callback AppInstalledCallback = void (boolean result);
         
     /**
     * \brief callback for a failed activation of asynchronous launchApplication method.
