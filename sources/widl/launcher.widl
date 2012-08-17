@@ -72,7 +72,7 @@
        * \return A pending operation object
        */
 
-    PendingOperation launchApplication(VoidFunction successCallback,
+    void launchApplication(VoidFunction successCallback,
                                        ErrorCallback errorCallback,
                                        applicationID appID,
                                        optional sequence<object> params);
@@ -96,25 +96,6 @@
     callback ErrorCallback = void (DOMError error);
 
     
-    /**
-     * \brief The PendingOperation interface
-     *
-     * The PendingOperation interface describes operation of cancellable aynchronous methods.
-     * Cancellable asynchronous methods return PendingOperation objects exporting methods for
-     * cancelling the operation. 
-     *
-     */
-     [NoInterfaceObject] interface PendingOperation {
-
-    /**
-     * \brief Cancel method for cancelling asynchronous operation
-     *
-     *  Cancel ongoing asynchronous method call. Upon calling this method the runtime must immediately stop
-     *  the pending operation and return.
-     */
-        void cancel ();
-     };
-
 	/**
 	 * \brief The WebinosLauncher interface describes the part of the App Execution
 	 *        API accessible through the webinos object.
