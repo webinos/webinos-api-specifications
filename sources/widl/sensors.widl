@@ -41,7 +41,7 @@
  *
  * \author Claes Nilsson &lt;claes1.nilsson@sonyericsson.com&gt;
  * \author Updated to new WIDL by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
- * \version 0.96 
+ * \version 0.97 
  */
 
 
@@ -223,53 +223,40 @@
        */
        callback SensorErrorCB = void (DOMError error);
 
+   /**
+    * \brief Sensor event rate
+    * fastest = The sensor is reporting data as fast as possible.
+    * game = The sensor is reporting data with a rate suitable for games.
+    * ui = The sensor is reporting data with a rate suitable for user interface.
+    * normal = The sensor is reporting data with a normal rate, e.g. suitable for screen orientation changes .
+    * 
+    */
+    enum Rate { "fastest", "game", "ui", "normal"};
+    
+   /**
+    * \brief Sensor event fire mode
+    * fixedinterval = events fired with a fixed time interval
+    * valuechange = events fired when value changes
+    */
+    enum EventFireMode { "fixedinterval", "valuechange"};
+
   /**
     * \brief ConfigureSensorOptions interface definition
     */
-    [NoInterfaceObject] interface ConfigureSensorOptions {
+    dictionary ConfigureSensorOptions {
+
 
       /**
-       * \brief INFINITE Timeout Value
-       *
+       * \brief A timeout value for when configureSensor() is canceled in seconds between 0-65535. Default value is 120 seconds. 0 means infinite. 
        */
-       const unsigned short INFINITE = 0;
-
-      /**
-       * \brief The sensor is reporting data as fast as possible (rate attribute).
-       */
-       const unsigned short SENSOR_DELAY_FASTEST = 0;
-
-      /**
-       * \brief The sensor is reporting data with a rate suitable for games (rate attribute).
-       */
-       const unsigned short SENSOR_DELAY_GAME = 1;
-
-      /**
-       * \brief The sensor is reporting data with a rate suitable for user interface (rate attribute).
-       */
-       const unsigned short SENSOR_DELAY_UI = 2;
-
-      /**
-       * \brief The sensor is reporting data with a normal rate, e.g. suitable for screen orientation changes (rate attribute).
-       */
-       const unsigned short SENSOR_DELAY_NORMAL = 3;
-
-      /**
-       * \brief A timeout value for when configureSensor() is canceled in seconds between 0-65535. Default value is 120 seconds. 
-       */
-       attribute unsigned short timeout;
+       unsigned short timeout;
 
       /**
        * \brief The requested rate of the sensor data.
        */
-       attribute unsigned short rate;
+       Rate rate;
 
-      /**
-       * \brief The requested Interrupt mode of the sensor.\n
-       * False = INTERRUPT_DISABLED (events fired with a fixed time interval) \n
-       * True = INTERRUPT_ENABLED (events fired when value changes)
-       */
-       attribute boolean interrupt;
+       EventFireMode eventFireMode;
      };
 
     /**
