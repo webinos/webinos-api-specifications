@@ -20,7 +20,8 @@
  * Check if application is installed - allow to test of an application identified by a specific application ID is installed on the device.
  *
  * \author Michael Vakulenko &lt;michael@visionmobile.com&gt;
- * \version 0.1 
+ * \author Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;
+ * \version 0.9 
  */
 
   /**
