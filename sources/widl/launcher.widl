@@ -85,7 +85,7 @@
        * \return True if the application is installed, false if the application is not installed.
        */
        
-    boolean AppInstalled(applicationID appID);
+    boolean appInstalled(applicationID appID);
     };
     
         
