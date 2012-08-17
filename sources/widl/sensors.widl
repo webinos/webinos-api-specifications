@@ -41,35 +41,11 @@
  *
  * \author Claes Nilsson &lt;claes1.nilsson@sonyericsson.com&gt;
  * \author Updated to new WIDL by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
- * \version 0.96 
+ * \version 0.98 
  */
 
 
   /**
-   * \brief Defines the  error codes for this module
-   */
-   exception SensorException {
-
-     /**
-       * \brief Illegal sensor id
-       */
-       const unsigned short INVALID_INPUT_ARGUMENT = 0; 
-
-     /**
-       * \brief Exception code
-       */
-       unsigned short code;
-
-
-     /**
-       * \brief Exception message
-       */
-       DOMString message;
-
-   };
-
-  
-   /**
    * 
    * \code
 
@@ -195,8 +171,6 @@
         *
         * Question: Do we need the ability to specify high and low thresholds? This is for example not supported by Android sensor API.
         *
-        * Throws SensorException with appropriate error code.
-        *
         * \param options Sensor configuration options. 
         * \param successCB Callback issued when sensor configuration succeeded.
         * \param errorCB Callback issued if sensor configuration fails.  
@@ -223,53 +197,43 @@
        */
        callback SensorErrorCB = void (DOMError error);
 
+   /**
+    * \brief Sensor event rate.\n
+    * fastest = The sensor is reporting data as fast as possible.\n
+    * game = The sensor is reporting data with a rate suitable for games.\n
+    * ui = The sensor is reporting data with a rate suitable for user interface.\n
+    * normal = The sensor is reporting data with a normal rate, e.g. suitable for screen orientation changes.
+    * 
+    */
+    enum Rate { "fastest", "game", "ui", "normal"};
+    
+   /**
+    * \brief Sensor event fire mode.\n
+    * fixedinterval = events fired with a fixed time interval\n
+    * valuechange = events fired when value changes
+    */
+    enum EventFireMode { "fixedinterval", "valuechange"};
+
   /**
     * \brief ConfigureSensorOptions interface definition
     */
-    [NoInterfaceObject] interface ConfigureSensorOptions {
+    dictionary ConfigureSensorOptions {
+
 
       /**
-       * \brief INFINITE Timeout Value
-       *
+       * \brief A timeout value for when configureSensor() is canceled in seconds between 0-65535. Default value is 120 seconds. 0 means infinite. 
        */
-       const unsigned short INFINITE = 0;
-
-      /**
-       * \brief The sensor is reporting data as fast as possible (rate attribute).
-       */
-       const unsigned short SENSOR_DELAY_FASTEST = 0;
-
-      /**
-       * \brief The sensor is reporting data with a rate suitable for games (rate attribute).
-       */
-       const unsigned short SENSOR_DELAY_GAME = 1;
-
-      /**
-       * \brief The sensor is reporting data with a rate suitable for user interface (rate attribute).
-       */
-       const unsigned short SENSOR_DELAY_UI = 2;
-
-      /**
-       * \brief The sensor is reporting data with a normal rate, e.g. suitable for screen orientation changes (rate attribute).
-       */
-       const unsigned short SENSOR_DELAY_NORMAL = 3;
-
-      /**
-       * \brief A timeout value for when configureSensor() is canceled in seconds between 0-65535. Default value is 120 seconds. 
-       */
-       attribute unsigned short timeout;
+       unsigned short timeout;
 
       /**
        * \brief The requested rate of the sensor data.
        */
-       attribute unsigned short rate;
-
-      /**
-       * \brief The requested Interrupt mode of the sensor.\n
-       * False = INTERRUPT_DISABLED (events fired with a fixed time interval) \n
-       * True = INTERRUPT_ENABLED (events fired when value changes)
+       Rate rate;
+       
+     /**
+       * \brief The requested sensor event fire mode.
        */
-       attribute boolean interrupt;
+       EventFireMode eventFireMode;
      };
 
     /**
@@ -292,6 +256,17 @@
 
 
   /**
+   * \brief Sensor event accuracy.\n
+   * high = The sensor is reporting data with maximum accuracy\n
+   * medium = The sensor is reporting data with an average level of accuracy, calibrating with the environment may improve the reading.\n
+   * low = The sensor is reporting with low accuracy, calibrating with the environment is needed.\n
+   * unreliable = The sensor data cannot be trusted, calibrating is needed or the environment does not allow reading.\n
+   * unavailable = The sensor is not available and no sensor data can be provided. This accuracy attribute will for example take this value when contact is lost with a sensor using Bluetooth communication.
+   */
+   enum Accuracy { "high", "medium", "low", "unreliable", "unavailable"};
+
+
+  /**
    * \brief This interface defines the "genericsensor" event type.
    *
    *  Registration for generic sensor events is achieved by calling addEventListener instantiated on the selected sensor object with event type set to "sensor" (see code example in the beginning of this specification)
@@ -301,35 +276,6 @@
    */
 
    interface SensorEvent : Event {
-
- 
-  /**
-   * \brief A constant describing that the sensor is reporting data with maximum accuracy.
-   */
-    const unsigned short SENSOR_STATUS_ACCURACY_HIGH = 4;
-
-  /**
-   * \brief A constant describing that the sensor is reporting data with an average level of accuracy, calibrating with the environment may improve the
-   * reading.
-   */
-    const unsigned short SENSOR_STATUS_ACCURACY_MEDIUM = 3;
-
-  /**
-   * \brief A constant describing that the sensor is reporting with low accuracy, calibrating with the environment is needed.
-   */
-    const unsigned short SENSOR_STATUS_ACCURACY_LOW = 2;
-
-  /**
-   * \brief A constant describing that the sensor data cannot be trusted, calibrating is needed or the environment does not allow reading.
-   */
-    const unsigned short SENSOR_STATUS_UNRELIABLE = 1;
-
- /**
-   * \brief A constant describing that the sensor is not available and no sensor data can be provided. This accuracy attribute will for example take 
-   * this value when contact is lost with a sensor using Bluetooth communication.
-   */
-    const unsigned short SENSOR_STATUS_UNAVAILABLE = 0;
-
 
   /**
    *  \brief The type of sensor. This is a URI defining the sensor type according to the defined sensor "feature" URI strings. See section "Features". \n
@@ -369,21 +315,19 @@
   /**
    * \brief The accuracy of the sensor
    */
-    readonly attribute unsigned short accuracy;
+    readonly attribute Accuracy accuracy;
 
  
   /**
    * \brief The rate of the sensor data
    */
-    readonly attribute unsigned short rate;
+    readonly attribute Rate rate;
 
   /**
-   *  \brief Interrupt mode of the sensor.
-   *  The value is one of
-   *  false = INTERRUPT_DISABLED (events fired with a fixed time interval)
-   *  true = INTERRUPT_ENABLED (events fired when value changes)
+   *  \brief The event fire mode the sensor.
+   *
    */
-    readonly attribute boolean interrupt;
+    readonly attribute EventFireMode eventFireMode;
 
   /**
    * \brief Array of sensor values
@@ -403,8 +347,8 @@
    * \param sensorType Sensor type as a URI
    * \param sensorId The unique identity of the specific sensor
    * \param accuracy Accuracy of sensor data
-   * \param rate Rate
-   * \param interrupt Interrupt mode
+   * \param rate Rate of sensor data event
+   * \param eventFireMode Mode of firing events
    * \param sensorValues Array of sensor values
    */
     void initSensorEvent(DOMString type,
@@ -412,9 +356,9 @@
                          boolean cancelable,
                          DOMString sensorType,
                          DOMString sensorId,
-                         unsigned short accuracy,
-                         unsigned short rate,
-                         boolean interrupt, 
+                         Accuracy accuracy,
+                         Rate rate,
+                         EventFireMode eventFireMode, 
                          float[] sensorValues); 
     };
 

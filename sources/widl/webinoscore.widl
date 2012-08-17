@@ -7,22 +7,15 @@
  * This version of the specification defines: \n
  * - The core Webinos interface,  part of the window global object.\n
  * 
- * It is to be considered if more common interfaces should be included in this specification, for example: \n
- * - A common PendingOperation interface \n
- * - Methods to retrieve lists of available and activated feature \n
- * - Generic error interface \n
- * - Generic success callback \n
- * - Generic error callback \n
- * - Common array types \n
  *
- * \author Claes Nilsson &lt;claes1.nilsson@sonyericsson.com&gt;
- * \version 0.1 
+ * \author Claes Nilsson &lt;claes1.nilsson@sonymobile.com&gt;
+ * \version 0.2 
  */
-  interface WebinosObject {
-    readonly attribute Webinos webinos;
+ 
+  partial interface Window {
+    readonly attribute Webinos webinos;  
   };
-
-  Window implements WebinosObject;
+  
 
   /**
    * \brief Webinos interface 

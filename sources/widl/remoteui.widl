@@ -1,0 +1,86 @@
+/**<p>The webinos remoteUI API provides means to create and access a UI on a remote device using DOM manipulation commands.</p>
+ * \name The Remote UI API
+ *
+ * Any webinos device can offer access to its UI the same way any other service is offered. The access to the service is governed by policy settings on the local and remote device.
+ * 
+ * 
+ * No direct access to remote object can and will be created. Basic values from the remote DOM can be retrieved, but not objects.
+ *
+ *
+ * \def-api-feature http://webinos.org/api/remoteUI
+ *
+ * \author Christian Fuhrhop &lt;christian.fuhrhop@@fokus.fraunhofer.de&gt;
+ * \version 0.7
+ */
+
+        /**
+         * \brief The RemoteUI interface provides access to the remoteDOM method and can be bound as a service,
+         *
+         * On binding to the service, a window on the remote device is opened, which needs to be uniquely recognizeable as a window instantiated by a remote instance by having a specific frame and including information about which application on which device has opened it remotely. The purpose of this is to avoid remote programs being able to spoof the appearance of programs running locally on the device.
+         * 
+         * The window will show a textual/graphical presentation of the device that runs the widget and the iconic/text representation of the application using the window. Within the window, the access to the DOM 'document' element is restricted the document element of an iFrame. If the browser supports it, the iFrame should be instantiated with the 'sandbox' attribute.
+         * 
+         * The opened window on the remote device contains as named elements a head element with the id "head" and a body element with the id 'body".
+         */
+        [NoInterfaceObject] interface RemoteUI {
+             /**
+              * \brief Sends a DOM manipulation command to the remote UI and evaluates (executes) it there.
+              *
+              * 
+              * Binding to a service creates an object that exposes the remoteDOM method, which takes, in addition to a success and error callback a DOMstring paramenter.
+              * 
+              * This string will be transmitted to the remote device and executed there, using the eval() method.
+              *
+              * All remote DOM commands need to be individually and directly executable on the remote 'document' element.
+              *
+              * \code
+              * webinos.discovery.findServices(new ServiceType('http://webinos.org/api/remoteui'), 
+              *   {onFound: function (service) {
+              *   remote_doc = service;   
+              *  }});          
+              * remote_doc.remoteDOM("document.getElementById('body').appendChild((document.createElement('div'))).id='div-id';");
+              * remote_doc.remoteDOM("document.getElementById('div-id').appendChild(document.createElement('p')).id='p-id'; ");
+              * remote_doc.remoteDOM("document.getElementById('p-id').textContent =('You got mail!'); ");
+              * \endcode              
+              *
+              * \param successCallback Callback issued when successfully remote command was handled successfully
+              * \param errorCallback Callback issued if an error occurs during issuing a remote command
+              * \param remoteComand The remore command to be evalated on the remote UI
+              * \return PendingOperation enabling the requester to cancel this request.
+              */
+        PendingOperation remoteDOM(RemoteDOMSuccessCB? successCallback, RemoteDOMErrorCB? errorCallback, DOMstring remoteComand);
+                
+        };
+
+
+        Webinos implements RemoteUI;
+        
+       /**
+         * \brief Callback for successful DOM maniulation
+         * \param retval Basic type return value for any DOM call that returns a value on avaluation (such as getWidth()).
+         */
+        callback RemoteDOMSuccessCB = void (DOMString? retval);
+                        
+        /**
+         * \brief Callback  for failed DOM maniulation
+         * \param error DOMErrorcontaining information about the error.
+         */
+        callback RemoteDOMErrorCB  = void (DOMError error);
+        
+    /**
+     * \brief The PendingOperation interface
+     *
+     * The PendingOperation interface describes objects that are returned by asynchronous methods that are cancellable. It makes it possible to bring 
+     * these operations to a stop if they haven't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.\n
+     *
+     */
+     [NoInterfaceObject] interface PendingOperation {
+    /**
+     * \brief Method Cancel
+     *
+     *  Cancel the pending asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return. No success or error callback for the pending operation will be invoked.
+     */
+        void cancel ();
+     };
+
+        
