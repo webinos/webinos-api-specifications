@@ -347,8 +347,8 @@
    * \param sensorType Sensor type as a URI
    * \param sensorId The unique identity of the specific sensor
    * \param accuracy Accuracy of sensor data
-   * \param rate Rate
-   * \param interrupt Interrupt mode
+   * \param rate Rate of sensor data event
+   * \param eventFireMode Mode of firing events
    * \param sensorValues Array of sensor values
    */
     void initSensorEvent(DOMString type,
@@ -356,9 +356,9 @@
                          boolean cancelable,
                          DOMString sensorType,
                          DOMString sensorId,
-                         unsigned short accuracy,
-                         unsigned short rate,
-                         boolean interrupt, 
+                         Accuracy accuracy,
+                         Rate rate,
+                         EventFireMode eventFireMode, 
                          float[] sensorValues); 
     };
 
