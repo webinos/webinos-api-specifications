@@ -21,14 +21,12 @@
  * \brief The TVControl interface describes the part of the TV
  *        Control API accessible through the webinos object.
  */
-[NoInterfaceObject] interface TVControl {
+partial interface Webinos {
   /**
    * \brief webinos.tv object.
    */
   readonly attribute TVManager tv;
 };
-
-Webinos implements TVControl;
 
 /**
 * \brief Access to tuner and display managers.

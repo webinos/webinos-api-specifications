@@ -31,14 +31,12 @@
 *
 * Access to public constants and functions are available via the namespace webinos.sync.
 */
-[NoInterfaceObject] interface AppStateSync {
+partial interface Webinos {
   /**
-   * \brief webinos.sync object.
+   * \brief Partial interface that creates the webinos.sync namespace.
    */
   readonly attribute SyncManager sync;
 };
-
-Webinos implements AppStateSync;
 
 /**
 * \brief Interface for management of the application state synchronization. Covers three of the CRUD operations (create, read and delete) 
@@ -49,22 +47,26 @@ interface SyncManager {
   /**
    * \brief Creates a synchronized object that may be used for application synchronization.
    *
-   * \param syncObjectIdentifier An identifier or name as a logical reference to the object. 
-   * \param callback The callback to notify the caller that create operation was completed, 
-   * either successfully or unsuccessfully,
+   * \param syncObjectIdentifier An identifier or name as a logical reference to the synchronized object. 
+   * \param successCallback The callback function to be called to notify the caller that the create 
+   * operation was completed successfully,
+   * \param errorCallback The callback function to be used to notify the caller that the create 
+   * operation could not be completed successfully
    * \param options For the creation of a synchronized object options may be specified. 
    * If no options are specified then default values will be taken.
    */
-  void create(DOMString syncObjectIdentifier, SyncObjectCB callback, optional SyncOptions options);
+  void create(DOMString syncObjectIdentifier, SyncObjectSuccessCB successCallback, optional AppSyncErrorCB? errorCallback, optional SyncOptions? options);
 
   /**
    * \brief Finds a previously created synchronized object.
    *
-   * \param syncObjectIdentifier An identifier, name or key as a logical reference to the object. 
-   * \param callback The callback to notify the caller that create operation was completed, 
-   * either successfully or unsuccessfully.
+   * \param syncObjectIdentifier An identifier, name or key as a logical reference to the synchronized object. 
+   * \param successCallback The callback function to be called to notify the caller that the find 
+   * operation was completed successfully,
+   * \param errorCallback The callback function to be used to notify the caller that the find 
+   * operation could not be completed successfully
    */
-  void find(DOMString syncObjectIdentifier, SyncObjectCB callback);
+  void find(DOMString syncObjectIdentifier, SyncObjectSuccessCB successCallback, optional AppSyncErrorCB? errorCallback);
 
   /**
    * \brief Detach a previously created synchronized object from the synchronization. 
@@ -73,11 +75,13 @@ interface SyncManager {
    * Subsequent changes to the object will not be synchronized with remote peers
    * and remote changes will not be reflected in local copy.
    * 
-   * \param syncObjectIdentifier An identifier, name or key as a logical reference to the object. 
-   * \param callback The callback to notify the caller that create operation was completed, 
-   * either successfully or unsuccessfully.
+   * \param syncObjectIdentifier An identifier, name or key as a logical reference to the synchronized object. 
+   * \param successCallback The callback function to be called to notify the caller that the detach 
+   * operation was completed successfully,
+   * \param errorCallback The callback function to be used to notify the caller that the detach 
+   * operation could not be completed successfully
    */
-  void detach(DOMString syncObjectIdentifier, SyncObjectCB callback);
+  void detach(DOMString syncObjectIdentifier, SyncObjectSuccessCB successCallback, optional AppSyncErrorCB? errorCallback);
 
   /**
    * \brief Purge a previously created synchronized object. 
@@ -86,24 +90,30 @@ interface SyncManager {
    * Subsequent changes to the object will not be possible at any peer.
    * Only the creator may purge an synchronized object.
    * 
-   * \param syncObjectIdentifier An identifier, name or key as a logical reference to the object. 
-   * \param callback The callback to notify the caller that create operation was completed, 
-   * either successfully or unsuccessfully.
+   * \param syncObjectIdentifier An identifier, name or key as a logical reference to the synchronized object. 
+   * \param successCallback The callback function to be called to notify the caller that the purge 
+   * operation was completed successfully,
+   * \param errorCallback The callback function to be used to notify the caller that the purge 
+   * operation could not be completed successfully
    */
-  void purge(DOMString syncObjectIdentifier, SyncObjectCB callback);
+  void purge(DOMString syncObjectIdentifier, SyncObjectSuccessCB successCallback, optional AppSyncErrorCB? errorCallback);
 }; 
 
 /**
- * \brief Callback function that is called if an operation on synchronization is completed.
+ * \brief Callback function that is called if an operation on synchronization is completed
+ * successfully.
+ * \param syncObject Holds the reference to the object to be synchronized as well as 
+ * information about its status. 
 */
-callback SyncObjectCB = void (SyncObject syncObject);
+callback SyncObjectSuccessCB = void (SyncObject syncObject);
 
 /**
- * \brief The SyncObject Interface
+ * \brief The SyncObject Interface to access the synchronized object, its metadata and event handlers.
  *
  * The SyncObject interface provides access to the object to be synchronized and its metadata 
- * as well as events refering to the object.
+ * as well as event handlers refering to the object.
  */
+[NoInterfaceObject]
 interface SyncObject : EventTarget {
 
   /**
@@ -133,7 +143,7 @@ interface SyncObject : EventTarget {
   \</script>
  \endcode
  */
-  [TreatNonCallableAsNull] attribute EventHandler onsync;
+  [TreatNonCallableAsNull] attribute EventHandler? onsync;
 
 /**
  * \brief Event that fires whenever a fatal error occurs. 
@@ -147,7 +157,7 @@ interface SyncObject : EventTarget {
   \</script>
  \endcode
  */
-  [TreatNonCallableAsNull] attribute EventHandler onfail;  
+  [TreatNonCallableAsNull] attribute EventHandler? onfail;  
 
 /**
  * \brief Event that fires when the object has been detached from synchronization. 
@@ -159,7 +169,7 @@ interface SyncObject : EventTarget {
   \</script>
  \endcode
  */
-  [TreatNonCallableAsNull] attribute EventHandler ondetach;
+  [TreatNonCallableAsNull] attribute EventHandler? ondetach;
 
 /**
  * \brief Event that fires whenthe object has been purged by its creator. 
@@ -171,7 +181,7 @@ interface SyncObject : EventTarget {
   \</script>
  \endcode
  */
-  [TreatNonCallableAsNull] attribute EventHandler onpurge;    
+  [TreatNonCallableAsNull] attribute EventHandler? onpurge;    
 
   /**
    * \brief Watch a property, e.g. primitive attribute or sub-object, for changes. 
@@ -181,10 +191,12 @@ interface SyncObject : EventTarget {
    * 
    * \param propertyPath The path to the property of interest that should be watched, 
    * e.g. "subobject.counter". 
-   * \param callback The callback to notify the caller that a change of the
+   * \param successCallback The callback to notify the caller that a change of the
    * watched property or object occured.
+   * \param errorCallback Function to be called if something goes wrong when trying to 
+   * watch a property.
    */
-  void watch(DOMString propertyPath, PropertyChangedCB callback);
+  void watch(DOMString propertyPath, PropertyChangedSuccessCB successCallback, optional AppSyncErrorCB? errorCallback);
 
   /**
    * \brief Stop watching a property, e.g. primitive attribute or sub-object, for changes. 
@@ -194,17 +206,32 @@ interface SyncObject : EventTarget {
    * 
    * \param propertyPath The path to the property of interest that should not watched 
    * any longer.
-   * \param callback The callback that was used for the registration to notify 
+   * \param successCallback The callback that was used for the registration to notify 
    * the caller that a change of the watched property or object occured.
+   * \param errorCallback Function to be called if something goes wrong when trying to 
+   * unwatch a property.
    */
-  void unwatch(DOMString propertyPath, PropertyChangedCB callback);
+  void unwatch(DOMString propertyPath, PropertyChangedSuccessCB successCallback, optional AppSyncErrorCB? errorCallback);
 
 };
 
 /**
  * \brief Callback function that is called if an change of a watched property occured.
+ * \param syncProperty Holds information about the watched property.
 */
-callback PropertyChangedCB = void (SyncProperty syncProperty);
+callback PropertyChangedSuccessCB = void (SyncProperty syncProperty);
+
+/**
+ * \brief Callback function that is called if an operation could not
+ * be completed successfully.
+ * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> object detailing what went wrong; 
+ * For example, the error name attribute may have one of the following values:
+ * <b>NotFoundError</b> if object or property cannot be found, 
+ * <b>InvalidModificationError</b> if operation on the object or property cannot be done this way,
+ * <b>TimeoutError</b> if an operation could not be completed within 
+ * the duration of one synchronizations round.
+*/
+callback AppSyncErrorCB = void (DOMError error);
 
 /**
  * \brief The SyncProperty Interface
