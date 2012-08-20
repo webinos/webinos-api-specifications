@@ -19,10 +19,117 @@
 * different users and applications (e.g. cross-application chat or 
 * collaboration components).
 *
+* The following example illustrates how a simple shopping-list component
+* can be realized utilizing the AppState Synchronization API. 
+* This component may be used by different applications and users 
+* while cooperatively operating on the same data.
+*
+* \code
+//shared shopping data 
+var sharedShopping = {
+	listName:"After-work BBQ shopping list",
+	itemsToBuy:[],
+	itemsBought:[],
+	totalSpent:0
+};
+
+//shopping list controller
+//uses a 'uiHandler' function for user interface updates
+var shoppingListController = {
+	initializeList:function(){
+		uiHandler("init-lists",sharedShopping);
+	},
+	addItemToList:function(itemName){
+		sharedShopping.itemsToBuy.push(itemName);
+	},
+	moveItemToBoughtList:function(itemName,price){
+		var itemIndex=sharedShopping.itemsToBuy.indexOf(itemName);
+		if(itemIndex>-1){
+			var item = sharedShopping.itemsToBuy.slice(itemIndex,itemIndex+1);
+			if(item.length) if(item[0]===itemName){
+				sharedShopping.itemsBought.push(itemName);
+				sharedShopping.totalSpent+=price;
+			}else{
+				//adds wrongly sliced item back to the tobuy list
+				sharedShopping.itemsToBuy.push(item[0]);
+				shoppingListController.moveItemToBoughtList(itemName,price);
+			}
+		}
+	},
+	updateShoppingStatus:function(){
+		uiHandler("mark-shopping-as",
+			(sharedShopping.itemsBought.length>0 \&\& 
+			sharedShopping.itemsToBuy.length===0)?"complete":"incomplete");
+		uiHandler("update-bought-items",haredShoppingList.itemsBought);
+		uiHandler("update-tobuy-items",haredShoppingList.itemsToBuy);
+	},
+	updateTotalSpent:function(){
+		uiHandler("set-total-spent",sharedShopping.totalSpent);
+	}
+};
+
+//The functions shoppingListController.addItemToList(itemName) and shoppingListController.moveItemToBoughtList(itemName,price) 
+//are used in user interface event handlers and/or the sharedShopping object
+//is altered anywhere within the application.
+//The following initializes the applications state synchronization.
+
+//success callback function that is called if an operation is completed successfully
+var scb = function(syncObject){
+	//update reference to synchronized object
+	sharedShopping = syncObject.data;
+
+	//add event handlers if necessary
+	syncObject.onfail = function(){
+
+	};
+
+	//watch certain properties for changes
+	syncObject.watch("itemsToBuy.length",shoppingListController.updateShoppingStatus);
+	syncObject.watch("itemsBought.length",shoppingListController.updateShoppingStatus);
+
+	shoppingListController.initializeList();
+};
+
+//error callback function that is called if an operation fails
+var ecb = function(e){
+	console.log('Error occured with name: '+e.name);
+};
+
+//specifies set up options for sync object creation that differ from defaults
+var options = {
+	//allow synchronization across different applications
+	crossAppSync:true,
+	//allow synchronization with other users
+	crossUserSync:true,
+	//remain state even if all participants get temporarily disconnected
+	maintainTimeoutMinutes:120;
+	//specify a reference object to be synchronized
+	referenceObject:shoppingList;
+};
+
+//application state sync identifier
+var syncSessionName = "after-work-bbq-shopping-list";
+
+//searches for the shared and synchronized object that an other participant may have created already
+webinos.sync.find(syncSessionName, scb,
+ function(e){
+ 	if(e.name==="NotFoundError"){
+ 		//this app/user is the first participant, so create the sync object
+ 		webinos.sync.create(syncSessionName,scb,ecb,options);
+ 	}else{
+ 		ecb(e);
+ 	}
+ }
+); 
+
+  \endcode
+*
 * The AppState Synchronization API is made available under the webinos namespace, i.e.
 * webinos.sync.
 *
 * \def-api-feature http://webinos.org/api/sync
+* Identifies the application state synchronization service.
+*
 * \author Fraunhofer FOKUS, Martin Lasak &lt;martin.lasak@fokus.fraunhofer.de&gt;
 */
 
