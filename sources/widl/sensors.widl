@@ -79,7 +79,7 @@
                
 
                 // Configure the sensor.
-                mySensor.configureSensor ( {timeout: 120, rate: SENSOR_DELAY_NORMAL, interrupt: False}, 
+                mySensor.configureSensor ( {timeout: 120, rate: "normal", eventFireMode: "valuechange"}, 
                                            successHandler () {alert('Sensor ' + mySensor.displayName + ' with ID: ' + mySensor.id +
                                                                     ' is configured') },
                                            errorHandler (error) {alert('Sensor ' + mySensor.displayName + ' with ID: ' + mySensor.id +
@@ -202,15 +202,15 @@
     * fastest = The sensor is reporting data as fast as possible.\n
     * game = The sensor is reporting data with a rate suitable for games.\n
     * ui = The sensor is reporting data with a rate suitable for user interface.\n
-    * normal = The sensor is reporting data with a normal rate, e.g. suitable for screen orientation changes.
+    * normal = The sensor is reporting data with a normal rate, e.g. suitable for screen orientation changes. This is the default value.
     * 
     */
     enum Rate { "fastest", "game", "ui", "normal"};
     
    /**
     * \brief Sensor event fire mode.\n
-    * fixedinterval = events fired with a fixed time interval\n
-    * valuechange = events fired when value changes
+    * fixedinterval = Events fired with a fixed time interval.\n
+    * valuechange = Events fired when value changes. This is the default value.
     */
     enum EventFireMode { "fixedinterval", "valuechange"};
 
@@ -269,7 +269,8 @@
   /**
    * \brief This interface defines the "genericsensor" event type.
    *
-   *  Registration for generic sensor events is achieved by calling addEventListener instantiated on the selected sensor object with event type set to "sensor" (see code example in the beginning of this specification)
+   *  Registration for generic sensor events is achieved by calling addEventListener instantiated on the selected sensor object with event type set to "sensor" (see code example in the beginning of this specification).\n
+   *  To stop listening to a sensor removeEventListener is called.
    * 
    *
    * 
@@ -339,7 +340,7 @@
    *
    * The initSensorEvent() method must initialize the event in a manner analogous to the initEvent() method in http://www.w3.org/TR/2010/WD-DOM-Level-3-Events-20100907/.
    * The method can for example be used with document.createEvent() and EventTarget.dispatchEvent() to simulate a specific event.
-   * The sensorType, sensorId, accuracy, rate, interrupt and sensorvalues arguments must initialize the attributes with the same names.
+   * The sensorType, sensorId, accuracy, rate, eventFireMode and sensorvalues arguments must initialize the attributes with the same names.
    *   
    * \param type Event type i.e. 'sensor'
    * \param bubbles True if event bubbles
