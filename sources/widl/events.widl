@@ -370,11 +370,6 @@ document.onLoad = function() {
 	 * \brief The WebinosEvents interface describes the part of the Event
 	 *        Handling API accessible through the webinos object.
 	 */
-	[NoInterfaceObject] interface WebinosEvents {
-		/**
-		 * \brief webinos.events object.
-		 */
-		readonly attribute WebinosEventsInterface events;
+	partial interface Webinos {
+  		readonly attribute WebinosEvents events;
 	};
-
-	Webinos implements WebinosEvents;
