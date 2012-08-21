@@ -359,17 +359,12 @@
 		 */
 		void cancel();
 	};
-  
 	
+
 	/**
 	 * \brief The WebinosDiscovery interface describes the part of the Discovery
 	 *        API accessible through the webinos object.
 	 */
-	[NoInterfaceObject] interface WebinosDiscovery {
-		/**
-		 * \brief webinos.discovery object.
-		 */
-		readonly attribute DiscoveryInterface discovery;
+	partial interface Webinos {
+  		readonly attribute DiscoveryInterface discovery;
 	};
-
-	Webinos implements WebinosDiscovery;
