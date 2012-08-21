@@ -399,9 +399,91 @@
 
 
 	/**
+	* \brief The interface defines a generic data object for navigation specific data.
+	*
+	*/ 
+	[NoInterfaceObject]
+	interface TirePressure{
+		/**
+		* \brief Attribute defines the type NavigationData.
+		*/
+		readonly attribute TirePosition position;
+		/**
+		* \brief Attribute defines the creation time of the data object.
+		*/
+		readonly attribute unsigned short pressure; 
+	};
+	
+		/**
+	* \brief Tire position
+	*
+	* defines the different positions of a tire.
+	*/
+	enum TirePosition { "frontleft","frontright", "rearright", "leftright", "front", "left"};
+
+	/**
 	* \brief The interface defines a tire pressure event.
 	*/
 	interface TirePressureEvent : VehicleEvent{
+		readonly attribute TirePressure[] tires;
+		/**
+		* \brief Method sets the initial values of a vehicle status event.
+		*
+		* \param tires defines the tire pressure of tire at the rear right side of the vehicle.
+		*/
+		void initTirePressureEvent(TirePressure[] tires);
+	};
+
+	/*
+	* SEAT EXAMPLE STARTS HERE
+	*/
+
+	/**
+	* \brief The interface defines TODO.
+	*
+	*/ 
+	[NoInterfaceObject]
+	interface SeatSetting{
+		/**
+		* \brief Attribute defines TODO
+		*/
+		readonly attribute SeatOption option;
+		/**
+		* \brief Attribute defines TODO
+		*/
+		readonly attribute Integer value; 
+	};
+	
+	/**
+	* \brief The interface defines a tire pressure event.
+	*/
+	interface SeatEvent : VehicleEvent{
+		readonly attribute SeatPosition position;
+		readonly attribute SeatSetting[] settings;
+		/**
+		* \brief Method sets the initial values of a vehicle status event.
+		*
+		* \param position TODO.
+		* \param position TODO.
+		*/
+		void initSeatEvent(SeatPosition position, SeatSetting[] settings);
+	};
+	
+	enum SeatPosition { "driver","frontpassaneger", "rearleft", "rearright"};
+	enum SeatOption { "recline-seatback","slide", "cushion-heigh", "headrest", "back-cushion", "side-cushion"};
+
+
+	/*
+	* SEAT EXAMPLE ENDS HERE
+	*/
+
+
+
+
+	/**
+	* \brief The interface defines a tire pressure event.
+	*/
+	interface TirePressureEvent2 : VehicleEvent{
 		/**
 		* \brief Attribute reflects the pressure of the front left tire in bar.
 		*/		
