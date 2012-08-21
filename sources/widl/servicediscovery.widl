@@ -78,7 +78,15 @@
 	if (serviceId) {
 		// If serviceId is known, bind to the service directly. Assumes
 		// that serviceId is stored persistently or received via an out
-		// of band channel.  	 
+		// of band channel. 
+		
+		window.webinos.discovery.findServices(
+			{api:'http://www.w3.org/ns/api-perms/geolocation'}, 
+			{onFound:serviceFoundCB, onLost:serviceLostCB},
+			null,
+			{serviceID : serviceId});
+		
+		 	 
 		serviceHandle = window.webinos.discovery.createService().bind({onBind:bindCB}, serviceId);
 	} 
 	else {
@@ -124,13 +132,6 @@
 		 */
 		 DOMString getServiceId(DOMString serviceType);
 		 
-		/**
-		 * \brief 	The createService method creates an instance of a Service object
-		 *			that can be used to establish a service binding directly if the service identity is already known.
-		 *			This is for example applicable if the service identity is stored persistently in a database or
-		 *			received via some kind of out of band channel.   
-		 */                                                          
-		 Service createService();
 	};		
 	/**
 	 * \brief The Service Type dictionary is used to define which type of service that is requested. 
@@ -301,6 +302,14 @@
 		 *			has been defined via the personal zone management UI.  
 		 */
 		DOMString[] zoneId;
+		
+		/**
+		 * \brief 	If set service discovery will only return the service with the given identifier. This
+		 *		  	can be used to establish a service binding directly if the service identity is already
+		 * 		  	known, for example if the service identity was stored persistently for later reuse
+		 *		  	or it was received via out of band.  
+		 */
+		DOMString serviceID;
 		 
 	 	/**
 		 * \brief 	If remoteService is false the findServices method will limit the search for services that are  
