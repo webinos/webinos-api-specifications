@@ -41,7 +41,7 @@
  *
  * \author Claes Nilsson &lt;claes1.nilsson@sonyericsson.com&gt;
  * \author Updated to new WIDL by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
- * \version 0.98 
+ * \version 1.98 
  */
 
 
@@ -169,16 +169,12 @@
        /**
         * \brief Configures a sensor.
         *
-        * Question: Do we need the ability to specify high and low thresholds? This is for example not supported by Android sensor API.
-        *
         * \param options Sensor configuration options. 
         * \param successCB Callback issued when sensor configuration succeeded.
         * \param errorCB Callback issued if sensor configuration fails.  
         * \return A pending operation object making it possible to cancel the configureSensor operation     
         */
-        PendingOp configureSensor (ConfigureSensorOptions options, ConfigureSensorCB successCB, optional SensorErrorCB errorCB);
-
-
+        PendingSensorConfigOp configureSensor (ConfigureSensorOptions options, ConfigureSensorCB successCB, optional SensorErrorCB errorCB);
      };
 
 
@@ -237,19 +233,20 @@
      };
 
     /**
-     * \brief The PendingOp interface
+     * \brief The PendingSensorConfigOp interface
      *
-     * The PendingOp interface describes objects that are returned by asynchronous methods that are cancellable. It makes it possible to bring 
-     * these operations to a stop if they haven't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.\n
-     * TBD: Elaborate on cancel of ongoing configureSensor() operation...
+     * The PendingSensorConfigOp interface describes the object that is returned by the asynchronous configure sensor method. It makes it possible to abort
+     * this operation to a stop if it hasn't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.
      *
      */
-     [NoInterfaceObject] interface PendingOp {
+     [NoInterfaceObject] interface PendingSensorConfigOp {
 
     /**
      * \brief Method Cancel
      *
-     *  Cancel the pending asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return. No success or error callback for the pending operation will be invoked.
+     *  Cancel the pending configure sensor asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
+     *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
+     *  name "AbortError" is issued.
      */
         void cancel ();
      };
