@@ -114,10 +114,9 @@
 	* \brief The Vehicle interface describes the part of the Vehicle API accessible through the webinos object. 
 	*
 	*/
-	[NoInterfaceObject] interface Vehicle {
-                readonly attribute VehicleInterface vehicle;
-        };
-	Webinos implements Vehicle;
+	partial interface Webinos {
+	  readonly attribute VehicleInterface tv;
+	 };
 
 	/**
 	* \brief Climate zone names
@@ -398,41 +397,6 @@
 	enum EngineOilStatus { "OVER_MAX","MAX", "OK", "MIN", "UNDER_MIN", "MEASURING"};
 
 
-	/**
-	* \brief The interface defines a generic data object for navigation specific data.
-	*
-	*/ 
-	[NoInterfaceObject]
-	interface TirePressure{
-		/**
-		* \brief Attribute defines the type NavigationData.
-		*/
-		readonly attribute TirePosition position;
-		/**
-		* \brief Attribute defines the creation time of the data object.
-		*/
-		readonly attribute unsigned short pressure; 
-	};
-	
-		/**
-	* \brief Tire position
-	*
-	* defines the different positions of a tire.
-	*/
-	enum TirePosition { "frontleft","frontright", "rearright", "leftright", "front", "left"};
-
-	/**
-	* \brief The interface defines a tire pressure event.
-	*/
-	interface TirePressureEvent : VehicleEvent{
-		readonly attribute TirePressure[] tires;
-		/**
-		* \brief Method sets the initial values of a vehicle status event.
-		*
-		* \param tires defines the tire pressure of tire at the rear right side of the vehicle.
-		*/
-		void initTirePressureEvent(TirePressure[] tires);
-	};
 
 	/*
 	* SEAT EXAMPLE STARTS HERE
@@ -442,16 +406,15 @@
 	* \brief The interface defines TODO.
 	*
 	*/ 
-	[NoInterfaceObject]
-	interface SeatSetting{
+	dictionary SeatSetting{
 		/**
-		* \brief Attribute defines TODO
+		* \brief TODO
 		*/
-		readonly attribute SeatOption option;
+		SeatOption option;
 		/**
-		* \brief Attribute defines TODO
+		* \brief TODO
 		*/
-		readonly attribute Integer value; 
+		Integer value; 
 	};
 	
 	/**
@@ -483,7 +446,7 @@
 	/**
 	* \brief The interface defines a tire pressure event.
 	*/
-	interface TirePressureEvent2 : VehicleEvent{
+	interface TirePressureEvent : VehicleEvent{
 		/**
 		* \brief Attribute reflects the pressure of the front left tire in bar.
 		*/		
@@ -555,3 +518,9 @@
 	* defines the possible vehicle Events.
 	*/
 	enum VehicleEventType {"gear","tripcomputer","parksensors-front", "parksensors-rear", "engineoil","wipers","tirepressure","doors"};
+	
+	/**
+	* \brief Seat option 
+	* defines the possible options for a seat.
+	*/
+	enum SeatOption {};
