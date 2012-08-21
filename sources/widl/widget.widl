@@ -8,18 +8,6 @@
   * \version 0.9 
  */
    /**
-    * \brief Callback for successfull notifications
-    * \param id the id of the notification request or null if no id was provided.
-   */
-   callback NotifySuccessCallback = void (DOMString? id);
-  
-   /**
-    * \brief Callback for failed notifications
-    * \param id the id of the notification request or null if no id was provided.
-   */
-   callback NotifyErrorCallback = void (DOMString? id);
-   
-   /**
     * \brief Callback for successfully send the Widget to background
    */
    callback HideSuccessCallback = void ();
@@ -90,7 +78,7 @@
      *
      * Asks the WRT wheather the application is currently hidden (not visible to the user) or not
      * if the application is hidden and want to come to foreground it may notify an event to
-     * the user.
+     * the user using the notification API.
      *
      * \code
      * 
@@ -135,67 +123,6 @@
      * \endcode
     */
     void hide(HideSuccessCallback onSuccess, HideErrorCallback onError);
-
-    /**
-     * \brief Issues a notification to the user.
-     *
-     * Triggers the WRT to notify occurence of an event, as described using the parameters, to the user
-     * The user can click the event. If the application is in background the application must be brought to foreground.
-     * After that onSuccess is called.
-     *
-     * Triggers the WRT to notify occurrence of an event, as described using the parameters, to the user
-     * The user can click the event or reject it. If the application is in background and the user accepted
-     * the event, e.g., by clicking on it, the application must be brought back to foreground. The notify
-     * success callback is then called after onForeground was called.
-     *
-     * \code
-     *
-     * function error(id){ 
-     *    if (id == "1"){
-     *   	//e.g, clear new e-mail list
-     *   }
-     * }
-     *
-     * function success(id){
-     *   if (id == "1"){
-     *   	//e.g, show new e-mails
-     *   }
-     *   else{
-     *      if (id == "2"){
-     *         //e.g, show new SMS messages
-     *      }
-     *   }
-     * }
-     * 
-     * window.widget.notify(success, error, "New Emails", "You have 5 new E-Mails", 1);
-     *
-     * \endcode
-     *
-     * \param title A short title describing the notification.
-     * \param onSuccess NotifySuccessCallback issued when the user accepts the notification.
-     * \param onError ErrorCallback issued when the notification is discarded.
-     * \param shortDescription A short description about the notification.
-     * \param icon A relative path within the application package to an icon describing the notification. 
-     * \param id An local identifier that represents the event and can be used to cancel the event or to
-     *        take actions within the callbacks. 
-    */
-    void notify(NotifySuccessCallback onSuccess, NotifyErrorCallback onError, DOMString title, optional DOMString shortDescription, optional DOMString id, optional DOMString icon);
-
-    /**
-     * \brief Cancels an ongoing notification.
-     *
-     * To cancel a previous notify because it is updated or expired (if ongoing / not clicked by the user)
-     *
-     * \code
-     * 
-     * //cancel notifications with id 1
-     * window.widget.cancelNotify("1");
-     *
-     * \endcode
-     *
-     * \param id The notification id to cancel.
-    */
-    void cancelNotify(DOMString id);
 
     /**
      * \brief Event handler indicating that the application will be terminated. 
