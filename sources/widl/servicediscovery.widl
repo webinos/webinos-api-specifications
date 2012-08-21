@@ -18,7 +18,8 @@
  *
  * \def-api-feature http://webinos.org/api/discovery
  * \author Anders Isberg &lt;anders.isberg@sonyericsson.com&gt;
- * \version 0.5 
+ * \author Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;
+ * \version 0.8 
  */
 	/**
 	 * \brief The DiscoveryInterface interface provides functionality for discovery of services. 
@@ -127,7 +128,7 @@
 		 	optional Filter filter);
 		 
 		/**
-		 * \brief The getServiceId method generates a service identity tat can be shared with other peers to establish a binding without invoking a findServices operation. If no matching API is found the method will return Null. 
+		 * \brief For the case that the application itself exposes functionality via JavaScript service interfaces the getServiceId method generates a service identity that can be shared with other peers to establish a binding without invoking a findServices operation. If no matching API is found the method will return Null. 
 		 * \param serviceType URI identifying which type of API that shall be exposed. The URI shall be must be declared in the manifest in the api-name attribute of the webinos:shared-api element.
 		 */
 		 DOMString getServiceId(DOMString serviceType);
