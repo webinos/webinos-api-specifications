@@ -27,10 +27,11 @@
  * \version 1.9
  */
         /**
-         * \brief The ServiceContacts interface is exposed on the Navigator object [NAVIGATOR]. Its goal is to provide an access point to the functionality in this specification. 
-         */
-        [NoInterfaceObject]
-        interface ServiceContacts {
+          * \brief Creates the application state synchronization namespace.
+          *
+          * Access to public constants and functions are available via the namespace webinos.sync.
+          */
+         partial interface Webinos {
            /**
            * \brief The object through which the contacts functionality can be accessed.
            * No exceptions.

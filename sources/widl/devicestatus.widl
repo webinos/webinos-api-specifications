@@ -107,12 +107,12 @@
  */
  
  
-        /**
-         * \brief When an device status feature declaration appears in the widget's configuration document, the user agent implements the DeviceapisDeviceStatusManager interface.
-                 */
-
- [NoInterfaceObject]
-interface DeviceapisDeviceStatusManager {
+/**
+* \brief Creates the application state synchronization namespace.
+*
+* Access to public constants and functions are available via the namespace webinos.sync.
+*/
+partial interface Webinos {
        /**
         * \brief The devicestatus attribute provides access to Device Status API. 
         *         Example
@@ -676,4 +676,3 @@ dictionary PropQuery {
         */
         enum NetworkStates {"connected", "available", "forbidden"};
 
-Deviceapis implements DeviceapisDeviceStatusManager;

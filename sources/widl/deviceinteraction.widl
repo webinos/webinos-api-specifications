@@ -21,13 +21,14 @@
  
  
 /**
- * \brief There will be a deviceapis.deviceinteraction object that allows accessing the functionality of the deviceinteraction module. 
- */
-interface DeviceapisDeviceInteractionManager {
+* \brief Creates the application state synchronization namespace.
+*
+* Access to public constants and functions are available via the namespace webinos.sync.
+*/
+partial interface Webinos {
     readonly attribute DeviceInteractionManager deviceinteraction;
 };
  
-Deviceapis implements DeviceapisDeviceInteractionManager;
 
 /**
  * \brief This is the top-level interface for the deviceinteraction API that provides access to the module functionalities.
@@ -37,28 +38,28 @@ Deviceapis implements DeviceapisDeviceInteractionManager;
  * var di = deviceapis.deviceinteraction;
  * 
  * di.lightOn(function() {
- * 	console.log("Lighting for 1 second");
+ *      console.log("Lighting for 1 second");
  * },
  * function() {
- * 	console.log("Failed to light");
+ *      console.log("Failed to light");
  * },
  * 1000);
  * 
  * di.startNotify(
  * function() {
- * 	console.log("Notifying for 1 second");
+ *      console.log("Notifying for 1 second");
  * },
  * function() {
- * 	console.log("Failed to notify");
+ *      console.log("Failed to notify");
  * },
  * 1000);
  * 
  * di.startVibrate(
  * function() {
- * 	console.log("Vibrating for 1 second");
+ *      console.log("Vibrating for 1 second");
  * },
  * function() {
- * 	console.log("Failed to vibrate");
+ *      console.log("Failed to vibrate");
  * },
  * 1000);
  * \endcode
@@ -87,15 +88,15 @@ interface DeviceInteractionManager {
  *  
  * \code
  * try {
- * 	deviceapis.deviceinteraction.startNotify(function() {
- * 		console.log("Notifying indefinitely");
- * 	},
- * 	function(e) {
- * 		console.log("Failed to notify: " + e);
- * 	},
- * 	0);
+ *      deviceapis.deviceinteraction.startNotify(function() {
+ *              console.log("Notifying indefinitely");
+ *      },
+ *      function(e) {
+ *              console.log("Failed to notify: " + e);
+ *      },
+ *      0);
  * } catch(e) {
- * 	console.log("Exception thrown: " + e);
+ *      console.log("Exception thrown: " + e);
  * }
  * \endcode
  * \param successCallback Function to call on successfully retrieving a property value
@@ -103,8 +104,8 @@ interface DeviceInteractionManager {
  * \param duration Duration of notification
  */
     void startNotify(Function successCallback,
-	                              optional ErrorCB? errorCallback,
- 	                              long duration) ;
+                                      optional ErrorCB? errorCallback,
+                                      long duration) ;
 /**
  * \brief  Switch on device vibration for a specified duration and to an optional pattern.
  * 
@@ -131,15 +132,15 @@ interface DeviceInteractionManager {
  * If the stopVibrate method is invoked before the specified vibration duration expires, any vibration MUST be stopped.
  * \code
  * try {
- * 	deviceapis.deviceinteraction.startVibrate(function() {
- * 		console.log("Vibrating...");
- * 	},
- * 	function(e) {
- * 		console.log("Failed to vibrate: " + e);
- * 	},
- * 	0);
+ *      deviceapis.deviceinteraction.startVibrate(function() {
+ *              console.log("Vibrating...");
+ *      },
+ *      function(e) {
+ *              console.log("Failed to vibrate: " + e);
+ *      },
+ *      0);
  * } catch(e) {
- * 	console.log("Exception thrown: " + e);
+ *      console.log("Exception thrown: " + e);
  * }
  * \endcode
  * \param successCallback Function to call on successfully retrieving a property value
@@ -166,15 +167,15 @@ interface DeviceInteractionManager {
  * \n UNKNOWN_ERR in any other case.
  * \code
  *  try {
- * 	deviceapis.deviceinteraction.lightOn(function() {
- * 		console.log("Lighting indefinitely");
- * 	},
- * 	function(e) {
- * 		console.log("Failed to light: " + e);
- * 	},
- * 	0);
+ *      deviceapis.deviceinteraction.lightOn(function() {
+ *              console.log("Lighting indefinitely");
+ *      },
+ *      function(e) {
+ *              console.log("Failed to light: " + e);
+ *      },
+ *      0);
  * } catch(e) {
- * 	console.log("Exception thrown: " + e);
+ *      console.log("Exception thrown: " + e);
  * }
  * \endcode
  * \param successCallback Function to call on successfully retrieving a property value
@@ -182,7 +183,7 @@ interface DeviceInteractionManager {
  * \param duration How long the light should be on
  */
     void lightOn(Function successCallback,
-	                  optional ErrorCB? errorCallback,
+                          optional ErrorCB? errorCallback,
                           long duration);
 /**
  * \brief   Sets the Wallpaper of the device to the specified image file.
@@ -200,15 +201,15 @@ interface DeviceInteractionManager {
  * If the errorCallback does not contain a valid function (e.g. null), or in the case of any of the above errors that should be returned in the errorCallback, the implementation MUST silently fail, the developer is not notified of the error and no further action is required.
  * \code
  * try {
- * 	deviceapis.deviceinteraction.setWallpaper(function() {
- * 		alert("Set wallpaper to WAC logo");
- * 	},
- * 	function(e) {
- * 		alert(e.message);
- * 	},
- * 	"wgt-package/images/waclogo_small.jpg");
+ *      deviceapis.deviceinteraction.setWallpaper(function() {
+ *              alert("Set wallpaper to WAC logo");
+ *      },
+ *      function(e) {
+ *              alert(e.message);
+ *      },
+ *      "wgt-package/images/waclogo_small.jpg");
  * } catch(exp) {
- * 	alert("setWallpaper Exception :[" + exp.code + "] " + exp.message);
+ *      alert("setWallpaper Exception :[" + exp.code + "] " + exp.message);
  * }
  * \endcode
  * \param successCallback Function to call on successfully retrieving a property value

@@ -42,15 +42,14 @@
 
 
 
-/**
- * \brief Defines what is instantiated in the deviceapis object 
- *
- * When the messaging feature is instantiated, the messaging object is available in the deviceapis object. 
- */
-  [NoInterfaceObject] interface DeviceapisMessaging {
-    readonly attribute Messaging messaging;
+//**
+* \brief Creates the application state synchronization namespace.
+*
+* Access to public constants and functions are available via the namespace webinos.sync.
+*/
+partial interface Webinos {
+   readonly attribute Messaging messaging;
   };
-  Deviceapis implements DeviceapisMessaging;
   
  /**
  * \brief Messaging creation, sending and reading capabilities 
