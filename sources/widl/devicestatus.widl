@@ -252,7 +252,7 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * \n 10. Let task be a task that does the following:
         * \n    10a.  Let value be the value of property property name of the component component name.
         * \n    10b.  Invoke the successCallback with value as the argument.
-        * \n 11. Let op be and object that implements the PendingOperation interface.
+        * \n 11. Let op be and object that implements the PendingDeviceStatusOp interface.
         * \n 12. Associate task with op, so that if op's cancel() method is invoked, it attempts to remove task for the callbacks task queue.
         * \n 13. Queue a task task.
         * \n 14. Return op.
@@ -274,9 +274,9 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * \param successCallback Function to call on successfully retrieving a property value
         * \param errorCallback Function to call if property value could not be retrieved
         * \param query Property to retrieve
-        * \return PendingOperation enabling the requester to cancel this request.        
+        * \return PendingDeviceStatusOp enabling the requester to cancel this request.        
         */
-    PendingOperation getPropertyValue(Function  successCallback,
+    PendingDeviceStatusOp getPropertyValue(Function  successCallback,
                                       ErrorCB? errorCallback,
                                       PropQuery query);
 
@@ -303,7 +303,7 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * \n  8. If max interval is less than interval, discard max interval.
         * \n  9. Let old value be the value 0.
         * \n 10. Wait, at a minimum (optionally more time if needed), the amount of time indicated by the interval. If the max interval was not discarded, and the time waited exceeds the max interval, do this step again (i.e., wait).
-        * \n 11. If the entry for subscription id has been cleared from the list of active watch operations, terminate this algorithm. If subscription id has not been cleared from the list of active watch operations, create a task to run the getPropertyValue() method using successCallback as the first argument, and, if present, errorCallback as the second argument, and query dictionary as the third argument. Discard the resulting PendingOperation object.
+        * \n 11. If the entry for subscription id has been cleared from the list of active watch operations, terminate this algorithm. If subscription id has not been cleared from the list of active watch operations, create a task to run the getPropertyValue() method using successCallback as the first argument, and, if present, errorCallback as the second argument, and query dictionary as the third argument. Discard the resulting PendingDeviceStatusOp object.
         * \n 12. TODO: Factor in the minChangePercent change value. Only queue the task when the change between the old value and new value is minChangePercent or greater.
         * \n 13. Queue the task task.
         * \n 14. Return to step labelled wait.
@@ -654,6 +654,27 @@ dictionary PropQuery {
         */
      DOMString property;
 };  
+
+
+    /**
+     * \brief The PendingDeviceStatusOp interface
+     *
+     * The PendingSensorConfigOp interface describes the object that is returned by the asynchronous device status method. It makes it possible to abort
+     * this operation to a stop if it hasn't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.
+     *
+     */
+     [NoInterfaceObject] interface PendingDeviceStatusOp {
+
+    /**
+     * \brief Method Cancel
+     *
+     *  Cancel the pending device status asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
+     *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
+     *  name "AbortError" is issued.
+     */
+        void cancel ();
+     };
+
 
 
         /**
