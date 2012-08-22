@@ -135,9 +135,9 @@ partial interface Webinos {
        * \param serviceProviderID is the name of the payment provider to be used
        * \param customerID is identification of the person making the payment as known to the payment provider
        * \param shopID is the identification of the shop the payment is made to
-       * \return PendingOperation enabling the requester to cancel this request.
+       * \return void
        */
-        PendingOperation createShoppingBasket(SuccessShoppingBasketCallback successCallback, PaymentErrorCB errorCallback,
+        void createShoppingBasket(SuccessShoppingBasketCallback successCallback, PaymentErrorCB errorCallback,
         DOMString serviceProviderID, DOMString customerID, DOMString shopID);
   };
   
@@ -182,9 +182,9 @@ partial interface Webinos {
        * \param successCallback Callback issued when successfully added the item to the shopping basket
        * \param errorCallback Callback issued if an error occurs during adding the item
        * \param item the item to purchase
-       * \return PendingOperation enabling the requester to cancel this request.
+       * \return void
        */
-        PendingOperation addItem(VoidFunction successCallback, PaymentErrorCB errorCallback, ShoppingItem item);
+        void addItem(VoidFunction successCallback, PaymentErrorCB errorCallback, ShoppingItem item);
 
         /**
        * \brief Updates the shopping basket
@@ -204,9 +204,9 @@ partial interface Webinos {
        *
        * \param successCallback Callback issued when the update is performed
        * \param errorCallback Callback issued if an error occurs during update 
-       * \return PendingOperation enabling the requester to cancel this request.
+       * \return void
        */
-        PendingOperation update(VoidFunction successCallback, PaymentErrorCB errorCallback);
+        void update(VoidFunction successCallback, PaymentErrorCB errorCallback);
 
         /**
        * \brief Performs the checkout of the shopping basket.
@@ -219,9 +219,9 @@ partial interface Webinos {
        * \param successCallback Callback issued when the checkout is performed and payment is made
        * \param errorCallback Callback issued if an error occurs during adding the amount   
        * \param challengeCallback Callback that will be used if the payment provider requires additional confirmation to finalize payment
-       * \return PendingOperation enabling the requester to cancel this request.
+       * \return void
        */
-        PendingOperation checkout(VoidFunction successCallback, PaymentErrorCB errorCallback, PaymentChallengeCB challengeCallback);
+        void checkout(VoidFunction successCallback, PaymentErrorCB errorCallback, PaymentChallengeCB challengeCallback);
 
        /**
        * \brief Provide the user response to a challenge to the payment provider
