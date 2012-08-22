@@ -222,6 +222,8 @@ dictionary Channel {
    * \brief The video stream.
    *
    * This stream is a represents a valid source for a HTMLVideoElement.
+   * The MediaStream object itself is defined by the W3C at
+   * <a href="http://dev.w3.org/2011/webrtc/editor/getusermedia.html#mediastream">Media Capture and Streams API</a> 
    */
    MediaStream stream;
   
