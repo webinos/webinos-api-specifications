@@ -48,7 +48,7 @@
               * \param successCallback Callback issued when successfully remote command was handled successfully
               * \param errorCallback Callback issued if an error occurs during issuing a remote command
               * \param remoteComand The remore command to be evalated on the remote UI
-              * \return void enabling the requester to cancel this request.
+              * \return void 
               */
         void remoteDOM(RemoteDOMSuccessCB? successCallback, RemoteDOMErrorCB? errorCallback, DOMstring remoteComand);
                 
