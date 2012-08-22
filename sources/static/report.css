@@ -1,0 +1,36 @@
+#toc { counter-reset: toc1 }
+#toc li { list-style: none }
+#toc li { counter-increment: toc1; counter-reset: toc2 }
+#toc li li { counter-increment: toc2;  counter-reset: toc3 }
+#toc li li li { counter-increment: toc3; counter-reset: toc4 }
+#toc li:before { content: counter(toc1) " " }
+#toc li li:before { content: counter(toc1) "." counter(toc2) " " }
+#toc li li li:before { content: counter(toc1) "." counter(toc2) "." counter(toc3) " " }
+
+body { counter-reset: toc1; counter-reset: toc2; counter-reset: toc3 }
+h2 { counter-increment: toc1; counter-reset: toc2; page-break-before: always }
+h3 { counter-increment: toc2; counter-reset: toc3; page-break-after: avoid }
+h4 { counter-increment: toc3; page-break-after: avoid }
+
+h2:before { content: counter(toc1) " " }
+h3:before { content: counter(toc1) "." counter(toc2) " " }
+h4:before { content: counter(toc1) "." counter(toc2) "." counter(toc3) " " }
+
+#toc a { color: black; text-decoration: none }
+#toc a:visited { color: black; text-decoration: none }
+#toc a:hover { color: blue; text-decoration: underline; background-color: white }
+
+h1 { text-align: center }
+
+.no-toc:before { content: "" }
+#toc-end { counter-reset: toc1; }
+
+
+p.fig-caption { font-weight: bold }
+
+table { border: solid 1px black }
+td,th { border: solid 1px black; padding: 0.2em }
+td.yes { background-color: #DFD }
+td.no { background-color: #FDD }
+
+p.copyright { font-size: smaller }

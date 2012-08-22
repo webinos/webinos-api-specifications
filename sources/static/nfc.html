@@ -1,0 +1,820 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>T3.4 Device API specs - Phase II - NFC API - Redmine - for Webinos</title>
+<link rel="stylesheet" type="text/css" href="webinos-apis.css" media="screen">
+<link rel="stylesheet" type="text/css" href="report.css">
+<link rel="stylesheet" type="text/css" href="webinos-apis.css" media="screen">
+<script type="text/javascript" src="webinos-apis.js"></script>
+</head>
+<body class="controller-wiki action-show" id="content"><section id="NFC_API">
+<a href="http://webinos.org"><img src="http://webinos.org/wp-content/uploads/2011/press_releases/webinos_thumb_150x48.png" alt="Webinos Logo"></a>
+
+<h1 class="no-toc" id="APIs-The-NFC-module">APIs: The NFC module</h1>
+
+
+	
+<h2 class="no-toc" id="Webinos-API-Specifications">Webinos API Specifications</h2>
+
+
+	<p>21 August 2012</p>
+
+
+	
+<h2 class="no-toc" id="Author">Author</h2>
+
+
+	<ul>
+	<li>Dave Raggett (W3C), &lt;<a class="email" href="mailto:dsr@w3.org">dsr@w3.org</a>&gt;</li>
+	</ul>
+
+
+	<p class="copyright">Copyright © 2012 <a href="http://www.webinos.org">webinos consortium</a></p>
+
+
+	
+<h2 class="no-toc" id="Abstract">Abstract</h2>
+
+
+	<p>Near Field Communication (NFC) is an international standard (ISO/IEC 18092) that specifies an interface and protocol for simple wireless interconnection of closely coupled devices operating at 13.56 MHz. (<a class="external" href="http://www.nfc-forum.org/specs/spec_list/">http://www.nfc-forum.org/specs/spec_list/</a>). There are three groups of application scenarios for NFC: The first one is to hold a device close to a wireless tag to exchange some digital information or data. The second is to hold two devices close to each other in order to exchange some information or data between them. The third one is to make payments by holding mobile phones close to point of sales terminals instead of swiping smart cards.</p>
+
+
+	
+<h2 class="no-toc" id="Table-of-Contents">Table of Contents</h2>
+
+
+	<ul id="toc">
+	<li><a href="#NFC_Intro_" class="wiki-page"> Introduction</a>
+	<ul>
+	<li><a href="#NFC_Listen_" class="wiki-page"> Listening for a Tag</a></li>
+		<li><a href="#NFC_Writing_" class="wiki-page"> Writing to a Tag</a></li>
+		<li><a href="#NFC_Set_Read_Only_" class="wiki-page"> Setting Tag to read-only</a></li>
+		<li><a href="#NFC_Push_" class="wiki-page"> Pushing NDEF Message to another device</a></li>
+		<li><a href="#NFC_P2P_" class="wiki-page"> Peer to Peer Communications with LLCP</a></li>
+	</ul>
+	</li>
+		<li><a href="#NFC_Interface_" class="wiki-page"> NFC Interface</a>
+	<ul>
+	<li><a href="#NFC_addListener_" class="wiki-page"> addListener</a></li>
+		<li><a href="#NFC_addTextTypeListener_" class="wiki-page"> addTextTypeListener</a></li>
+		<li><a href="#NFC_addUriTypeListener_" class="wiki-page"> addUriTypeListener</a></li>
+		<li><a href="#NFC_addMimeTypeListener_" class="wiki-page"> addMimeTypeListener</a></li>
+		<li><a href="#NFC_shareTag_" class="wiki-page"> shareTag</a></li>
+		<li><a href="#NFCunshareTag_" class="wiki-page"> unshareTag</a></li>
+		<li><a href="#NFC_peer_" class="wiki-page"> peer </a></li>
+		<li><a href="#NFC_stringToBytes_" class="wiki-page"> stringToBytes</a></li>
+		<li><a href="#NFC_bytesToString_" class="wiki-page"> bytesToString</a></li>
+	</ul>
+	</li>
+		<li><a href="#NFC_Callbacks_" class="wiki-page"> Callbacks</a>
+	<ul>
+	<li><a href="#NFC_NfcEventCallBack_" class="wiki-page"> NfcEventCallBack</a></li>
+		<li><a href="#NFC_SuccessCallBack_" class="wiki-page"> SuccessCallBack</a></li>
+		<li><a href="#NFC_FailCallBack_" class="wiki-page"> FailCallBack</a></li>
+		<li><a href="#NFC_LLCPCallBack_" class="wiki-page"> LLCPCallBack</a></li>
+		<li><a href="#NFC_CloseCallBack_" class="wiki-page"> CloseCallBack</a></li>
+	</ul>
+	</li>
+		<li><a href="#NFC_Tag_" class="wiki-page"> NFC Tag</a>
+	<ul>
+	<li><a href="#NFC_Technologies_" class="wiki-page"> NFC Technologies</a></li>
+		<li><a href="#NFC_NDEF_Message_" class="wiki-page"> NDEF Message</a></li>
+		<li><a href="#NFC_write_" class="wiki-page"> write</a></li>
+		<li><a href="#NFC_makeReadOnly_" class="wiki-page"> makeReadOnly</a></li>
+	</ul>
+	</li>
+		<li><a href="#NFC_WebIDL_" class="wiki-page"> Complete WebIDL</a></li>
+		<li><a href="#NFC_Acknowledgements_" class="wiki-page"> Acknowledgements</a></li>
+		<li><a href="/redmine/projects/t3-4/wiki/NFC_References_" class="wiki-page new"> References</a></li>
+	</ul><p id="toc-end"></p>
+
+
+	<p></p>
+<section id="NFC_Intro_">
+  
+<h2 id="NFC-Introduction">Introduction</h2>
+
+
+	<p>It is becoming increasingly common for smart phones and other devices to include support for NFC. NFC Tags are inexpensive and widely used. There are many potential applications, e.g. here are just a few:</p>
+
+
+	<ul>
+	<li>Electronic payments (tap to pay)</li>
+		<li>Exchange of contact details (an electronic business card)</li>
+		<li>Exchange of security credentials e.g. for a WiFi network</li>
+		<li>Credentials for induction of a new device into a user's Personal Zone</li>
+		<li>Tap to play - automatic induction into a multiplayer game</li>
+	</ul>
+
+
+	<p>The phase 2 NFC API provides for a range of capabilities.</p>
+
+
+	<ul>
+	<li>The means to register listeners for the presence of NFC Tags</li>
+		<li>The means to read and write NDEF records to NFC Tags</li>
+		<li>The means to set Tags to prevent further write operations</li>
+		<li>The means to configure a NFC device to push NDEF messages to other such devices</li>
+		<li>The means to establish a temporary bidirectional asynchronous message channel</li>
+	</ul>
+
+
+	<p>This specification starts with some informative examples for how the API can be used. The next section deals with the normative definition of the API and is followed by the full WebIDL definition of API. The specification closes with acknowledgements and references.</p>
+
+
+	<p></p>
+<section id="NFC_Listen_">
+  
+<h3 id="NFC-Listen">Listen</h3>
+
+
+	<p>To set up an event listener for an NFC Tag:</p>
+
+
+<pre class="javascript prettyprint">Webinos.nfc.addListener(listener, success, fail);
+
+function listener (event)
+{
+  var tag = event.tag;  // object proxying the NFC Tag
+  console.log("tag technology: " + tag.tech);
+  tag.close = function () {
+    console.log("lost contact with the Tag");
+  };
+}
+
+function success ()
+{
+  console.log("successfully registered NFC event listener");
+}
+
+function fail ()
+{
+  console.log("failed to register NFC event listener");
+}
+</pre>
+
+	<p>The tag.tech field is a string identifying the kind of NFC Tag:</p>
+
+
+	<ul>
+	<li><strong>OTHERS</strong></li>
+		<li><strong>NFCA</strong></li>
+		<li><strong>NFCB</strong></li>
+		<li><strong>NFCF</strong></li>
+		<li><strong>NFCV</strong></li>
+		<li><strong>ISODEP</strong></li>
+		<li><strong>NDEF</strong></li>
+	</ul>
+
+
+	<p>If the Tag is an NDEF Tag, the ndefMessage property can be used to access the NDEF records:</p>
+
+
+<pre class="javascript prettyprint">  var records = tag.ndefMessage || [];
+
+  for (var i = 0; i &lt; records.length; ++i
+  {
+    var record = records[i];
+    console.log("Record: " + i);
+    console.log("type: " + record.type);
+    console.log("id: " + record.id);
+    console.log("payload: " + Webinos.nfc.bytesToString(record.payload));
+    console.log("");
+  }
+</pre>
+
+	<p>As a convenience to developers, you can also register for events for Tags with specific NDEF record types:</p>
+
+
+<pre class="javascript prettyprint">  // register for Tags with VCARD data
+  Webinos.nfc.addMimeTypeListener("text/vcard", listener, success, fail);
+
+  // register for Tags with URIs, e.g. for pointers to websites
+  Webinos.nfc.addURITypeListener(listener, success, fail);
+</pre>
+
+	<p></p>
+</section><section id="NFC_Writing_">
+  
+<h3 id="NFC-Writing-var-nfc-Webinosnfc">Writing</h3>
+
+
+	<p>To write to a tag having discovered one:</p>
+
+
+<pre class="javascript prettyprint">// called when the Tag is discovered
+function listener (event)
+{
+  var nfc = Webinos.nfc;
+
+  // read the tag here if you want ...
+
+  // prepare an NDEF message
+  var message = [
+    nfc.textRecord("Have a nice day!");
+  ];
+
+  // and write it back to the Tag
+  event.tag.write(message, success, fail);
+}
+
+function success ()
+{
+  console.log("successfully wrote message to Tag");
+}
+
+function fail ()
+{
+  console.log("failed to write message to Tag");
+}
+</pre>
+
+	<p>There could be more than one Tag in range, e.g. you might have several in your wallet. This approach allows you to write back to the same Tag that you just read.</p>
+
+
+	<p></p>
+</section><section id="NFC_Set_Read_Only_">
+  
+<h3 id="NFC-Set-Read-Only">Set Read Only</h3>
+
+
+	<p>To prevent further modifications to a Tag you can do the following:</p>
+
+
+<pre class="javascript prettyprint">  tag.makeReadOnly(success, fail);
+
+...
+
+function success ()
+{
+  console.log("successfully make Tag read-only");
+}
+
+function fail ()
+{
+  console.log("failed to make Tag read-only");
+}
+</pre>
+
+	<p></p>
+</section><section id="NFC_Push_">
+  
+<h3 id="NFC-Push">Push</h3>
+
+
+	<p><em><strong>How to determine when it is reasonable to exit sharing mode? Is there a way to determine that the other device has moved out of range? Or perhaps an acknowledgement that it read the shared data?</strong></em></p>
+
+
+	<p>You can set your NFC device, e.g. a smart phone to push an NDEF message to another such device. The first step is to prepare the message. You then call the shareTag method to enter the sharing mode:</p>
+
+
+<pre class="javascript prettyprint">// called when the Tag is discovered
+function listener (event)
+{
+  var nfc = Webinos.nfc;
+
+  // prepare an NDEF message
+  var message = [
+    nfc.uriRecord("http://www.example.com/");
+  ];
+
+  // and write it back to the Tag
+  nfc.shareTag(message, success, fail);
+}
+
+function success ()
+{
+  console.log("entered NFC sharing mode");
+}
+
+function fail ()
+{
+  console.log("failed to enter NFC sharing mode");
+}
+</pre>
+
+	<p>Some time later, you call the unshareTag method to restore your device to normal mode of operation where it is listening for NFC Tags that come in range:</p>
+
+
+<pre class="javascript prettyprint">  nfc.unshareTag(success, fail);
+
+...
+
+function success ()
+{
+  console.log("exited NFC sharing mode");
+}
+
+function fail ()
+{
+  console.log("error on exiting NFC sharing mode");
+}
+</pre>
+
+	<p></p>
+</section><section id="NFC_P2P_">
+  
+<h3 id="NFC-Peer-to-Peer-Communications-with-LLCP">Peer to Peer Communications with LLCP</h3>
+
+
+	<p><em><strong>What if multiple devices come in range? Do we get multiple calls for the success method set by peer()? How do you detect when a message channel closes? Presumably, there is no need for an unpeer method, as you simply need to stop the port, right? However, there is scope for a method to cancel waiting for peering.</strong></em></p>
+
+
+	<p>The Link Logical Control Protocol (LLCP) can be used to set up an HTML Message Channel for a temporary bidirectional aysnchronous connection. Message Channels are part of HTML5</p>
+
+
+	<ul>
+	<li><a href="http://www.w3.org/TR/html5/comms.html" class="external">HTML5 MessageChannel</a></li>
+	</ul>
+
+
+	<p>Here is a simple example:</p>
+
+
+<pre class="javascript prettyprint">  // first set phone into peering mode
+  Webinos.nfc.peer(success, fail);
+
+function success (channel)
+{
+  console.log("successfully initiated peering mode");
+
+  // to send a message to the other device
+  channel.port1.postMessage('hello');
+
+  // to receive a message from the other device
+  // first you set a message handler
+  channel.port1.onmessage = handleMessage;
+
+  // you next instruct the channel to dispatch events
+  // you can later close the port with the stop() method
+  // your device then reverts to its normal mode
+  channel.port1.start();
+}
+
+function handleMessage(event)
+{
+  // message is in event.data
+  // ...
+}
+
+// after a time out when peering couldn't be established
+function fail ()
+{
+  console.log("failed to initiate peering mode");
+}
+</pre>  
+
+	<p></p>
+</section></section><section id="NFC_Interface_">
+  
+<h2 id="NFC-Interface">NFC Interface</h2>
+
+
+	<p>This interface provides a variety of means for adding listeners for NFC tags, setting the device into a sharing mode, and helper methods for dealing with NDEF records.</p>
+
+
+	<p></p>
+<section id="NFC_addListener_">
+  
+<h3 id="addListener">addListener</h3>
+
+
+	<p>This is a method for registering a call back for all NFC tag technologies.</p>
+
+
+<pre class="webidl prettyprint">  // add generic listener for all NFC tag technologies
+  void addListener(NfcEventCallBack listener,
+      SuccessCallBack success, FailCallBack fail);
+</pre>
+
+	<p>It makes use of the success and failure call back pattern. These call backs are defined in a subsequent section.</p>
+
+
+	<p></p>
+</section><section id="NFC_addTextTypeListener_">
+  
+<h3 id="addTextTypeListener">addTextTypeListener</h3>
+
+
+	<p>This is a method for registering a call back for NFC tags with NDEF text records.</p>
+
+
+<pre class="webidl prettyprint">  // add listener for NDEF tags with text record(s)
+  void addTextTypeListener(NfcEventCallBack listener,
+      SuccessCallBack success, FailCallBack fail);
+</pre>
+
+	<p>It makes use of the success and failure call back pattern. These call backs are defined in a subsequent section.</p>
+
+
+	<p></p>
+</section><section id="NFC_addUriTypeListener_">
+  
+<h3 id="addUriTypeListener">addUriTypeListener</h3>
+
+
+	<p>This is a method for registering a call back for NFC tags with NDEF URI records.</p>
+
+
+<pre class="webidl prettyprint">  // add listener for NDEF tags with URI record(s)
+  void addUriTypeListener(NfcEventCallBack listener,
+      SuccessCallBack success, FailCallBack fail);
+</pre>
+
+	<p>It makes use of the success and failure call back pattern. These call backs are defined in a subsequent section.</p>
+
+
+	<p></p>
+</section><section id="NFC_addMimeTypeListener_">
+  
+<h3 id="addMimeTypeListener">addMimeTypeListener</h3>
+
+
+	<p>This is a method for registering a call back for NFC tags with NDEF MIME content records with a specific MIME type, e.g. "text/vcard", which is used for an electronic equivalent of a business card.</p>
+
+
+<pre class="webidl prettyprint">  // add listener for NDEF tags with MIME content record(s)
+  void addMimeTypeListener(DOMString mimeType,
+      NfcEventCallBack listener, SuccessCallBack success, FailCallBack fail);
+</pre>
+
+	<p>It makes use of the success and failure call back pattern. These call backs are defined in a subsequent section.</p>
+
+
+	<p></p>
+</section><section id="NFC_shareTag_">
+  
+<h3 id="shareTag">shareTag</h3>
+
+
+	<p>This is a method for setting a device into a sharing mode for pushing an NDEF message to another NDEF device.</p>
+
+
+<pre class="webidl prettyprint">  // set device to push NDEF message to another NDEF device
+  void shareTag(NfcNdefRecord[] message, SuccessCallBack success, FailCallBack fail);
+</pre>
+
+	<p>It makes use of the success and failure call back pattern. These call backs are defined in a subsequent section.</p>
+
+
+	<p></p>
+</section><section id="NFCunshareTag_">
+  
+<h3 id="unshareTag">unshareTag</h3>
+
+
+	<p>This method is used after the shareTag method, and sets the device back to the default mode in which it listens for the presence of NFC tags.</p>
+
+
+<pre class="webidl prettyprint">  // unset device from NDEF push sharing mode
+  void unshareTag(SuccessCallBack success, FailCallBack fail);
+</pre>
+
+	<p>It makes use of the success and failure call back pattern. These call backs are defined in a subsequent section.</p>
+
+
+	<p></p>
+</section><section id="NFC_peer_">
+  
+<h3 id="peer">peer</h3>
+
+
+<pre class="webidl prettyprint">  // establish HTML MessageChannel with another device via LLCP
+  void peer(LLCPCallBack success, FailCallBack fail);
+</pre>
+
+	<p>It makes use of the success and failure call back pattern. These call backs are defined in a subsequent section.</p>
+
+
+	<p>This method is used to establish a bidirectional channel with another NFC device for asynchronous exchange of data. It makes use of the Link Logical Control Protocol and exposes it as an HTML MessageChannel, see:</p>
+
+
+	<ul>
+	<li><a class="external" href="http://www.w3.org/TR/html5/comms.html">http://www.w3.org/TR/html5/comms.html</a></li>
+	</ul>
+
+
+	<p>Each message channel exposes a pair of ports. The first port represents the local end of the channel, and the second port represents the remote end of the channel. Messages are posted between ports using the postMessage method. Messages can be strings or other kinds of JavaScript objects, and are serialized and reassembled automatically as structured clones, see:</p>
+
+
+	<ul>
+	<li><a class="external" href="http://www.w3.org/TR/html5/common-dom-interfaces.html#structured-clone">http://www.w3.org/TR/html5/common-dom-interfaces.html#structured-clone</a></li>
+	</ul>
+
+
+	<p>You can register a listener for notifications of incoming data. The channel is closed by calling the close method on the ports exposed by the message channel. For more details see the above link to the specification of the HTML MessageChannel.</p>
+
+
+	<p></p>
+</section><section id="NFC_stringToBytes_">
+  
+<h3 id="stringToBytes">stringToBytes</h3>
+
+
+<pre class="webidl prettyprint">  byte[] stringToBytes(DOMString string);
+</pre>
+
+	<p>This is a helper method for converting strings to byte arrays for use in NDEF messages.</p>
+
+
+	<p></p>
+</section><section id="NFC_bytesToString_">
+  
+<h3 id="bytesToString">bytesToString</h3>
+
+
+<pre class="webidl prettyprint">  DOMString bytesToString(byte[] data);
+</pre>
+
+	<p>This is a helper method for converting byte arrays from NDEF messages into strings.</p>
+
+
+	<p></p>
+</section></section><section id="NFC_Callbacks_">
+  
+<h2 id="Callbacks">Callbacks</h2>
+
+
+	<p>This is a collection of method definitions for NFC events, success and failure call backs, and for notifying the establishment of a message channel over LLCP.</p>
+
+
+	<p></p>
+<section id="NFC_NfcEventCallBack_">
+  
+<h3 id="NfcEventCallBack">NfcEventCallBack</h3>
+
+
+<pre class="webidl prettyprint">  // call back for NDEF events
+  callback NfcEventCallBack = void (NfcNdefEvent event);
+</pre>
+
+	<p>This is a call back for notifying the presence of NFC tags. The event property is defined as follows:</p>
+
+
+<pre class="webidl prettyprint">  // the NFC event has a single property -- the NFC Tag
+  interface NfcNdefEvent : DOMEvent {
+    readonly attribute NfcTag tag; 
+  };
+</pre>
+
+	<p></p>
+</section><section id="NFC_SuccessCallBack_">
+  
+<h3 id="SuccessCallBack">SuccessCallBack</h3>
+
+
+<pre class="webidl prettyprint">  // call back with associated operation has succeeded
+  callback SuccessCallBack = void ();
+</pre>
+
+	<p>This is a call back for notifying the success of an operation such as registering a listener for the presence of NFC tags.</p>
+
+
+	<p></p>
+</section><section id="NFC_FailCallBack_">
+  
+<h3 id="FailCallBack">FailCallBack</h3>
+
+
+<pre class="webidl prettyprint">  // call back with associated operation has failed
+  callback FailCallBack = void ();
+</pre>
+
+	<p>This is a call back for notifying the failure of an operation such as registering a listener for the presence of NFC tags.</p>
+
+
+	<p><em>Should this be extended to pass some information on the nature of the failure, assuming that such information is available from the underlying implementation?</em></p>
+
+
+	<p></p>
+</section><section id="NFC_LLCPCallBack_">
+  
+<h3 id="LLCPCallBack">LLCPCallBack</h3>
+
+
+<pre class="webidl prettyprint">  // call back when message channel has been established over LLCP
+  callback LLCPCallBack = void (MessageChannel channel);
+</pre>
+
+	<p>This is a call back for notifying when a message channel has been established with another NFC device via the Link Logical Control Protocol.</p>
+
+
+	<p></p>
+</section><section id="NFC_CloseCallBack_">
+  
+<h3 id="CloseCallBack">CloseCallBack</h3>
+
+
+<pre class="webidl prettyprint">  callback CloseCallBack = void ();
+</pre>
+
+	<p>This is a call back that indicates that a NFC tag is no longer accessible, e.g. because the user has pulled the tag away from the reader.</p>
+
+
+	<p></p>
+</section></section><section id="NFC_Tag_">
+  
+<h2 id="NFCTag">NFCTag</h2>
+
+
+	<p>The NFCTag interface defines properties and methods for NFC tags.</p>
+
+
+<pre class="webidl prettyprint">  // the properties and methods for Tags
+  interface NfcTag {
+    readonly attribute NfCTagTech tech;  
+    readonly attribute NfcNdefRecord[] ndefMessage;
+
+    attribute CloseCallBack close;
+
+    void write(NfcNdefRecord[] ndefMessage,
+               SuccessCallBack success, FailCallBack fail);
+
+    void makeReadOnly(SuccessCallBack success, FailCallBack fail);
+  };
+</pre>
+
+	<p></p>
+<section id="NFC_Technologies_">
+  
+<h3 id="NFC-Technologies">NFC Technologies</h3>
+
+
+<pre class="webidl prettyprint">  // enumeration of tag technologies
+  [NoInterfaceObject]
+  interface NfCTagTech {
+    const DOMString "OTHERS";
+    const DOMString "NFCA";
+    const DOMString "NFCB";
+    const DOMString "NFCF";
+    const DOMString "NFCV";
+    const DOMString "ISODEP";
+    const DOMString "NDEF";
+  };
+</pre>
+
+	<p>This is an enumeration of string constants for the various kinds of NFC technologies that are generally supported by NFC devices.</p>
+
+
+	<p></p>
+</section><section id="NFC_NDEF_Message_">
+  
+<h3 id="NDEF-Message">NDEF Message</h3>
+
+
+<pre class="webidl prettyprint">  // the properties for NDEF records
+  // definitions come from the NFC Forum
+  interface NfcNdefRecord {
+    readonly attribute DOMString tnf;
+    readonly attribute DOMString type;
+    readonly attribute DOMString id;
+    readonly attribute byte[] payload;
+  };
+</pre>
+
+	<p>An NDEF message is an array of records as defined above.</p>
+
+
+	<p></p>
+</section><section id="NFC_write_">
+  
+<h3 id="write">write</h3>
+
+
+<pre class="webidl prettyprint">  void write(NfcNdefRecord[] ndefMessage,
+             SuccessCallBack success, FailCallBack fail);
+</pre>
+
+	<p>This method can be called on an open NFC tag to write an NDEF message. It will fail if the tag is read-only.</p>
+
+
+	<p></p>
+</section><section id="NFC_makeReadOnly_">
+  
+<h3 id="makeReadOnly">makeReadOnly</h3>
+
+
+<pre class="webidl prettyprint">  void makeReadOnly(SuccessCallBack success, FailCallBack fail);
+</pre>
+
+	<p>This method can be called on an open NFC tag to set it to read-only.</p>
+
+
+	<p></p>
+</section></section><section id="NFC_WebIDL_">
+  
+<h2 id="NFC-WebIDL">NFC WebIDL</h2>
+
+
+<pre class="webidl prettyprint">// nfc.webidl - proposed NFC API inspired by PhoneGap
+// Question: how to import DOMEvent and MessageChannel?
+
+Webinos implements NFCProperty;
+
+partial interface NFCProperty {
+  readonly attribute NFC nfc;
+}
+
+interface NFC {
+  // add generic listener for all NFC tag technologies
+  void addListener(NfcEventCallBack listener,
+      SuccessCallBack success, FailCallBack fail);
+
+  // add listener for NDEF tags with text record(s)
+  void addTextTypeListener(NfcEventCallBack listener,
+      SuccessCallBack success, FailCallBack fail);
+
+  // add listener for NDEF tags with URI record(s)
+  void addUriTypeListener(NfcEventCallBack listener,
+      SuccessCallBack success, FailCallBack fail);
+
+  // add listener for NDEF tags with MIME content record(s)
+  void addMimeTypeListener(DOMString mimeType,
+      NfcEventCallBack listener, SuccessCallBack success, FailCallBack fail);
+
+  // set device to push NDEF message to another NDEF device
+  void shareTag(NfcNdefRecord[] message, SuccessCallBack success, FailCallBack fail);
+
+  // unset device from NDEF push sharing mode
+  void unshareTag(SuccessCallBack success, FailCallBack fail);
+
+  // establish HTML MessageChannel with another device via LLCP
+  void peer(LLCPCallBack success, FailCallBack fail);
+
+  // methods for creating NDEF records
+  NfcNdefRecord textRecord(DOMString text);
+  NfcNdefRecord uriRecord(DOMString uri);
+  NfcNdefRecord mimeRecord(DOMString mimeType, byte[] data);
+
+  // ancilliary methods for NDEF record payloads
+  byte[] stringToBytes(DOMString string);
+
+  DOMString bytesToString(byte[] data);
+};
+
+// call back for NDEF events
+callback NfcEventCallBack = void (NfcNdefEvent event);
+
+// call back with associated operation has succeeded
+callback SuccessCallBack = void ();
+
+// call back with associated operation has failed
+// Question: consider passing some information on the failure
+callback FailCallBack = void ();
+
+// call back when message channel has been established over LLCP
+callback LLCPCallBack = void (MessageChannel channel);
+
+// the NFC event has a single property -- the NFC Tag
+interface NfcNdefEvent : DOMEvent {
+  readonly attribute NfcTag tag; 
+};
+
+// the properties and methods for Tags
+interface NfcTag {
+  readonly attribute NfCTagTech tech;  
+  readonly attribute NfcNdefRecord[] ndefMessage;
+
+  attribute CloseCallBack close;
+
+  void write(NfcNdefRecord[] ndefMessage,
+             SuccessCallBack success, FailCallBack fail);
+
+  void makeReadOnly(SuccessCallBack success, FailCallBack fail);
+};
+
+// call back when connection with tag is closed
+// e.g. when user pulls the tag away from the reader
+callback CloseCallBack = void ();
+
+// enumeration of tag technologies
+[NoInterfaceObject]
+interface NfCTagTech {
+  const DOMString "OTHERS";
+  const DOMString "NFCA";
+  const DOMString "NFCB";
+  const DOMString "NFCF";
+  const DOMString "NFCV";
+  const DOMString "ISODEP";
+  const DOMString "NDEF";
+};
+
+// the properties for NDEF records
+// definitions come from the NFC Forum
+interface NfcNdefRecord {
+  readonly attribute DOMString tnf;
+  readonly attribute DOMString type;
+  readonly attribute DOMString id;
+  readonly attribute byte[] payload;
+};
+</pre>
+
+	<p></p>
+</section><section id="NFC_Acknowledgements_">
+  
+<h2 id="NFC-Acknowledgements">NFC Acknowledgements</h2>
+
+
+	<p>With thanks to Hans Myrhaug and Stefano Vercelli for their work on the webinos phase 1 NFC API module. Also thanks to Don Coleman and Kevin Griffin at Charriot Solutions for their work on extending PhoneGap to support NFC, which formed the inspiration for this specification.</p>
+
+
+	<p></p>
+</section></section></body></html>
