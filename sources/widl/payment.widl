@@ -335,21 +335,6 @@ partial interface Webinos {
         callback PaymentChallengeCB = void (PaymentChallengeType challengeType, DOMString challenge);
         
 
-    /**
-     * \brief The PendingOperation interface
-     *
-     * The PendingOperation interface describes objects that are returned by asynchronous methods that are cancellable. It makes it possible to bring 
-     * these operations to a stop if they haven't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.\n
-     *
-     */
-     [NoInterfaceObject] interface PendingOperation {
-    /**
-     * \brief Method Cancel
-     *
-     *  Cancel the pending asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return. No success or error callback for the pending operation will be invoked.
-     */
-        void cancel ();
-     };
 
 
         /**
