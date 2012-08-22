@@ -1,5 +1,5 @@
 /**<p>Webinos specific extensions to <a href="http://www.w3.org/TR/widgets-apis/">W3C Widget Interface</a></p>
- * \name Widget API
+ * \name webinos Widget API
  *
  * This specification defines the common widget interface. The webinos application packaging
  * is based on <a href="http://www.w3.org/TR/widgets/">W3C Widget Specifications</a>, and this API completes the <a href="http://www.w3.org/TR/widgets-apis/">W3C Widget Interface</a>.
@@ -35,7 +35,7 @@
 
 
   /**
-   * \brief Widget Interface
+   * \brief webinos Widget Interface which extends the W3C Widget API
    * 
    *
   */
