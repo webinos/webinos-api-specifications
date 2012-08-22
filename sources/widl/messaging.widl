@@ -191,9 +191,9 @@ partial interface Webinos {
    * \param successCallback To be invoked if the message is successfully sent. 
    * \param errorCallback To be invoked in case the sending request fails. 
    * \param message The message to be sent. 
-   * \return PendingOperation to cancel the asynchronous call 
+   * \return PendingSendMessageOperation to cancel the asynchronous call 
    */                          
-    PendingOperation sendMessage(MessagingSuccessCallback successCallback, 
+    PendingSendMessageOperation sendMessage(MessagingSuccessCallback successCallback, 
                                  MessagingErrorCallback? errorCallback, 
                                  Message message);
  
@@ -229,10 +229,10 @@ partial interface Webinos {
    * \param successCallback function called when the invocation ends successfully. 
    * \param errorCallback function called when an error occurs 
    * \param filter message data to be used when filtering 
-   * \return PendingOperation to cancel the asynchronous call 
+   * \return PendingFindMessagesOperation to cancel the asynchronous call 
    */                          
 
-    PendingOperation findMessages(FindMessagesSuccessCallback successCallback, 
+    PendingFindMessagesOperation findMessages(FindMessagesSuccessCallback successCallback, 
                                   optional MessagingErrorCallback? errorCallback,
                                   optional MessageFilter filter);
   
@@ -520,10 +520,10 @@ partial interface Webinos {
    *
    * \param successCallback Function to call on successful update
    * \param errorCallback Function to call on unsuccessful update
-   * \return PendingOperation to cancel the asynchronous call 
+   * \return void
    */         
     
-    PendingOperation update(UpdateMessageSuccessCallback successCallback, 
+    void update(UpdateMessageSuccessCallback successCallback, 
                             optional MessagingErrorCallback errorCallback);
   };
   
@@ -734,20 +734,42 @@ partial interface Webinos {
   };
   
       /**
-     * \brief The PendingOperation interface
+     * \brief The PendingFindMessagesOperation interface
      *
-     * The PendingOperation interface describes operation of cancellable aynchronous methods.
-     * Cancellable asynchronous methods return PendingOperation objects exporting methods for
-     * cancelling the operation. 
+     * The PendingFindMessagesOperation interface describes the object that is returned by the asynchronous find messages method. It makes it possible to abort
+     * this operation to a stop if it hasn't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.
      *
      */
-     [NoInterfaceObject] interface PendingOperation {
+     [NoInterfaceObject] interface PendingFindMessagesOperation {
 
     /**
-     * \brief Cancel method for cancelling asynchronous operation
+     * \brief Cancel method for cancelling asynchronous find messages operation
      *
-     *  Cancel ongoing asynchronous method call. Upon calling this method the runtime must immediately stop
-     *  the pending operation and return.
+     *  Cancel the pending find messages asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
+     *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
+     *  name "AbortError" is issued.
+     */
+        void cancel ();
+     };
+
+      /**
+     * \brief The PendingSendMessageOperation interface
+     *
+     * The PendingSendMessageOperation interface describes the object that is returned by the asynchronous send message method. It makes it possible to abort
+     * this operation to a stop if it hasn't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.
+     *
+     */
+     [NoInterfaceObject] interface PendingSendMessageOperation {
+
+    /**
+     * \brief Cancel method for cancelling asynchronous send message method operation
+     *
+     *  Cancel the pending send message method asynchronous operation if the message has not already been irrevokeably sent. 
+     *  When this method is called, and the message is not yet sent the user agent must immediately bring the operation to a stop and return.
+     *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
+     *  name "AbortError" is issued. If the message has already been sent out and is no longer under control of the calling process,
+     *  the cancel function will be ignored and all neccessary 'housekeeping functions' required after the sending of a message will be performed
+     *  as if the cancel had never been issued.
      */
         void cancel ();
      };
