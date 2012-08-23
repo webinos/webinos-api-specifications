@@ -238,11 +238,9 @@ partial interface Webinos  {
    * 
    * <b>Peer to Peer Communications with LLCP</b>
    * 
-   * What if multiple devices come in range? Do we get multiple calls for the success method set by peer()? How do you detect when a message channel closes? Presumably, there is no need for an unpeer method, as you simply need to stop the port, right? However, there is scope for a method to cancel waiting for peering.
-   * 
    * The Link Logical Control Protocol (LLCP) can be used to set up an HTML Message Channel for a temporary bidirectional aysnchronous connection. Message Channels are part of HTML5
    * 
-   *     HTML5 MessageChannel http://www.w3.org/TR/html5/comms.html
+   *     <a href="http://www.w3.org/TR/html5/comms.html">HTML5 MessageChannel</a>
    * 
    * Here is a simple example:
    * 
@@ -369,11 +367,11 @@ interface NFC {
        * 
        * This method is used to establish a bidirectional channel with another NFC device for asynchronous exchange of data. It makes use of the Link Logical Control Protocol and exposes it as an HTML MessageChannel, see:
        * 
-       *     http://www.w3.org/TR/html5/comms.html
+       *     <a href="http://www.w3.org/TR/html5/comms.html">http://www.w3.org/TR/html5/comms.html</a>
        * 
        * Each message channel exposes a pair of ports. The first port represents the local end of the channel, and the second port represents the remote end of the channel. Messages are posted between ports using the postMessage method. Messages can be strings or other kinds of JavaScript objects, and are serialized and reassembled automatically as structured clones, see:
        * 
-       *     http://www.w3.org/TR/html5/common-dom-interfaces.html#structured-clone
+       *    <a href="http://www.w3.org/TR/html5/common-dom-interfaces.html#structured-clone">http://www.w3.org/TR/html5/common-dom-interfaces.html#structured-clone</a>
        * 
        * You can register a listener for notifications of incoming data. The channel is closed by calling the close method on the ports exposed by the message channel. For more details see the above link to the specification of the HTML MessageChannel.
        *
