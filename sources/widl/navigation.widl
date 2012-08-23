@@ -65,7 +65,7 @@
 		/**
 		* \brief Attribute defines the type NavigationEvent.
 		*/
-		readonly attribute NavigationEventType type;
+		readonly attribute NavigationEventType status;
 		/**
 		* \brief Attribute defines the creation time of the data object.
 		*/
@@ -179,10 +179,15 @@
 		void findDestination(DestinationCallback destinationCallback, NavigationErrorCallback errorCallback, DOMString search, PoiSearchOptions? options);
 		/**
 		* \brief Provides the information if guidance is active or not.
+		*
+		* \code
+		* navigation.getStatus(function(data){alert(data.status)}); 
+		* \endcode
+		*
 		* \param successHandler callback to handle the status of navigation system.
 		* \param errorHandler callback to handle if information cannot be retrieved.
 		*/
-		void getStatus(NavigationEventHandler successHandler, NavigationErrorCallback errorHandler);
+		void getStatus(NavigationEventHandler successHandler, NavigationErrorCallback? errorHandler);
 	};
 	
 	/**
