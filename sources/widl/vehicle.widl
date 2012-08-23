@@ -564,6 +564,21 @@
 		void initDoorEvent(boolean driver, boolean frontPassenger,boolean behindDriver,boolean behindPassenger,boolean trunkDeck);
 	};
 	
+		/**
+	* \brief The interface defines window data.
+	* WindowData exposes the information of the current position of the different windows of a vehicle.
+	* \code
+	* // checking if driver door is openend.
+	* vehicle.addEventListener("windows", windowHandler);
+	* function windowsHandler(windows){
+	*  if(windows.driver == 0){
+	*  	document.getElementById("info").innerHTML = 'Window is closed';
+	*  } else{
+	*   document.getElementById("info").innerHTML = 'Driver window is opened to ' + window.driver + '%' ;
+	*  }
+	* }				
+	* \endcode
+	*/
 		interface WindowData : VehicleData{
 		/**
 		* \brief Attribute reflects the position of the driver window (100 = open; 0 = closed)
