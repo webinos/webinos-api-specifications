@@ -8,12 +8,15 @@
  * - A sensor interface that provides attributes for the sensors and a method to configure a selected sensor.\n
  * - A DOM level 3 event that provides sensor data.\n
  *
- * Currently 5 different sensor types are defined but the API could easily be extended with additional sensor types.
+ * This list of sensor types supported in the API could easily be extended with additional sensor types.
  * 
- * This is an experimental API and security and privacy issues are not specifically addressed in the specification. If access to security or privacy
+ * Implementation notes:\n
+ * - This is an experimental API and security and privacy issues are not specifically addressed in the specification. If access to security or privacy
  * sensitive sensors are provided the user agent must either acquire access permission through a user interface or control access through a prearranged
- * trust relationship with users. 
- *
+ * trust relationship with users.\n
+ * - Consider a visual warnings on the device with the sensor when the sensor is in use, to avoid eavesdropping / privacy invasion by a remote or local application.\n
+ * - Consider roaming costs for accessing remote sensors through the mobile network. An implementation might provide 'roaming' and 'non-roaming' profiles.\n
+ * - Avoid unnecessary high rate of sensor events. Consider battery drain.\n 
  *
  * \def-api-feature http://webinos.org/api/sensors
  * Identifies all the sensor types. 
@@ -188,25 +191,29 @@
       /**
        * \brief The SensorErrorCB method is called if an error occurs during the configureSensor() process.  
        *
-       * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> object detailing what went wrong in an unsuccessful configureSensor() asynchronous operation.
-       *
+       * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> object detailing what 
+       * went wrong in an unsuccessful configureSensor() asynchronous operation. The follwoing error names cold be issued:\n
+       * - "SyntaxError": Input parameters did not match the expected pattern.\n
+       * - "NotSupportedError": Sensor configuration not supported.\n
+       * - "InvalidModificationError": Sensor can not be configured in this way.\n
+       * - "AbortError": Operation was aborted by the user.\n
+       * - "TimeoutError": The operation timed out.
        */
        callback SensorErrorCB = void (DOMError error);
 
    /**
     * \brief Sensor event rate.\n
-    * fastest = The sensor is reporting data as fast as possible.\n
-    * game = The sensor is reporting data with a rate suitable for games.\n
-    * ui = The sensor is reporting data with a rate suitable for user interface.\n
-    * normal = The sensor is reporting data with a normal rate, e.g. suitable for screen orientation changes. This is the default value.
-    * 
+    * - fastest = The sensor is reporting data as fast as possible.\n
+    * - game = The sensor is reporting data with a rate suitable for games.\n
+    * - ui = The sensor is reporting data with a rate suitable for user interface.\n
+    * - normal = The sensor is reporting data with a normal rate, e.g. suitable for screen orientation changes. This is the default value.
     */
     enum Rate { "fastest", "game", "ui", "normal"};
     
    /**
     * \brief Sensor event fire mode.\n
-    * fixedinterval = Events fired with a fixed time interval.\n
-    * valuechange = Events fired when value changes. This is the default value.
+    * - fixedinterval = Events fired with a fixed time interval.\n
+    * - valuechange = Events fired when value changes. This is the default value.
     */
     enum EventFireMode { "fixedinterval", "valuechange"};
 
@@ -246,7 +253,7 @@
      *
      *  Cancel the pending configure sensor asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
      *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
-     *  name "AbortError" is issued.
+     *  name "AbortError".
      */
         void cancel ();
      };
