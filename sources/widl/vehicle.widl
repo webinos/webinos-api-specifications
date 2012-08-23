@@ -150,13 +150,13 @@
 	*
 	*/
 	partial interface Webinos {
-	  readonly attribute VehicleInterface tv;
+	  readonly attribute VehicleInterface vehicle;
 	 };
 
 	/**
 	* \brief Climate zone names
 	*/
-	enum VehicleClimateZone { "climate-all", "climate-driver", "climate-passenger-front", "climate-passenger-rear-left", "climate-passenger-rear-right"};
+	enum VehicleClimateZone { "all", "driver", "passenger", "behind-driver", "behind-passenger"};
 	
 	/**
 	* \brief The interface defines a climate control event. 
@@ -207,14 +207,14 @@
 	/**
 	* \brief Type of vehicle light
 	*/
-	enum VehicleLight { "fog-front", "fog-rear", "signal-left", "signal-right", "signal-warn", "light-parking", "hibeam", "light-head" };
+	enum VehicleLight { "fog-front", "fog-rear", "signal-left", "signal-right", "signal-warn", "parking", "hibeam", "head" };
 
 	
 	/**
 	* \brief The interface defines a light data. 
 	* The event signals a change for a light unit inside the vehicle. The identifiers for the different light events are defined in the enum VehicleLight.
 	* \code
-	*	webinos.vehicle.addEventListener("hibeam", lightHandler, false);
+	*	webinos.vehicle.addEventListener("light-hibeam", lightHandler, false);
 	*      function lightHandler(cEvent){
 	*		if(cEvent.controlId == "hibeam"){
 	*			if(cEvent.active == true){
@@ -423,7 +423,7 @@
 		/**
 		* \brief Method sets the initial values of a wiper data.
 		*
-		* \param level defines the level of the oil in the engine.
+		* \param position defines the position of the wiper stick.
 		*/
 		void initWiperData(WiperStatus position);
 	};
@@ -470,7 +470,7 @@
 	/**
 	* \brief The interface defines a tire pressure event.
 	*/
-	interface SeatEvent : VehicleData{
+	interface SeatData : VehicleData{
 		readonly attribute SeatPosition position;
 		readonly attribute SeatSetting[] settings;
 		/**
@@ -479,7 +479,7 @@
 		* \param position TODO.
 		* \param settings TODO.
 		*/
-		void initSeatEvent(SeatPosition position, SeatSetting[] settings);
+		void initSeatData(SeatPosition position, SeatSetting[] settings);
 	};
 	
 	enum SeatPosition { "driver","frontpassaneger", "rearleft", "rearright"};
@@ -564,6 +564,21 @@
 		void initDoorEvent(boolean driver, boolean frontPassenger,boolean behindDriver,boolean behindPassenger,boolean trunkDeck);
 	};
 	
+		/**
+	* \brief The interface defines window data.
+	* WindowData exposes the information of the current position of the different windows of a vehicle.
+	* \code
+	* // checking if driver door is openend.
+	* vehicle.addEventListener("windows", windowHandler);
+	* function windowsHandler(windows){
+	*  if(windows.driver == 0){
+	*  	document.getElementById("info").innerHTML = 'Window is closed';
+	*  } else{
+	*   document.getElementById("info").innerHTML = 'Driver window is opened to ' + window.driver + '%' ;
+	*  }
+	* }				
+	* \endcode
+	*/
 		interface WindowData : VehicleData{
 		/**
 		* \brief Attribute reflects the position of the driver window (100 = open; 0 = closed)
@@ -599,5 +614,5 @@
 	* \brief Vehicle event types
 	* defines the possible vehicle data, which can be retrieved using the addEventListener or the get method.
 	*/
-	enum VehicleDataType {"gear","tripcomputer","parksensors-front", "parksensors-rear", "engineoil","wipers","tirepressure","doors", "windows"}
+	enum VehicleDataType {"gear","tripcomputer","parksensors-front", "parksensors-rear", "engineoil","wipers","tirepressure","doors", "windows", "climate-all", "climate-driver", "climate-behind-driver", "climate-passenger", "climate-behind-passenger", "light-fog-front", "light-fog-rear", "light-signal-left", "ligth-signal-right", "light-signal-warn", "light-parking", "light-hibeam", "light-head"};
 	
