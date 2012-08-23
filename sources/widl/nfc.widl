@@ -39,7 +39,245 @@ partial interface Webinos  {
     /**
    * \brief The NFCinterface
    *
-   * Most of the descriptibe text will end up here.
+   * <b>Introduction</b>
+   * 
+   * It is becoming increasingly common for smart phones and other devices to include support for NFC. NFC Tags are inexpensive and widely used. There are many potential applications, e.g. here are just a few:
+   * 
+   *  <ul>
+   * <li>    Electronic payments (tap to pay)</li>
+   * <li>     Exchange of contact details (an electronic business card)</li>
+   * <li>     Exchange of security credentials e.g. for a WiFi network</li>
+   * <li>     Credentials for induction of a new device into a user's Personal Zone</li>
+   * <li>    Tap to play - automatic induction into a multiplayer game</li>
+   * </ul>
+   * 
+   * The phase 2 NFC API provides for a range of capabilities.
+   * <ul>
+   * <li>    The means to register listeners for the presence of NFC Tags </li>
+   * <li>    The means to read and write NDEF records to NFC Tags</li>
+   * <li>   The means to set Tags to prevent further write operations</li>
+   * <li>    The means to configure a NFC device to push NDEF messages to other such devices</li>
+   * <li>    The means to establish a temporary bidirectional asynchronous message channel</li>
+   * </ul>
+   * 
+   * This specification starts with some informative examples for how the API can be used. The next section deals with the normative definition of the API and is followed by the full WebIDL definition of API. The specification closes with acknowledgements and references.
+   *   
+   * <b>Listen</b>
+   * 
+   * To set up an event listener for an NFC Tag:
+   * 
+   * Webinos.nfc.addListener(listener, success, fail);
+   * 
+   * \code
+   * function listener (event)
+   * {
+   *   var tag = event.tag;  // object proxying the NFC Tag
+   *   console.log("tag technology: " + tag.tech);
+   *   tag.close = function () {
+   *     console.log("lost contact with the Tag");
+   *   };
+   * }
+   * 
+   * function success ()
+   * {
+   *   console.log("successfully registered NFC event listener");
+   * }
+   * 
+   * function fail ()
+   * {
+   *   console.log("failed to register NFC event listener");
+   * }
+   * \endcode
+   * 
+   * The tag.tech field is a string identifying the kind of NFC Tag:
+   * 
+   * <ul>
+   * <li>    OTHERS  </li>
+   * <li>    NFCA <li>
+   * <li>    NFCB <li>
+   * <li>    NFCF <li>
+   * <li>    NFCV <li>
+   * <li>    ISODEP <li>
+   * <li>    NDEF <li>
+   * </ul>
+   * 
+   * If the Tag is an NDEF Tag, the ndefMessage property can be used to access the NDEF records:
+   * 
+   * \code
+   *   var records = tag.ndefMessage || [];
+   * 
+   *   for (var i = 0; i < records.length; ++i
+   *   {
+   *     var record = records[i];
+   *     console.log("Record: " + i);
+   *     console.log("type: " + record.type);
+   *     console.log("id: " + record.id);
+   *     console.log("payload: " + Webinos.nfc.bytesToString(record.payload));
+   *     console.log("");
+   *   }
+   * \endcode
+   * 
+   * As a convenience to developers, you can also register for events for Tags with specific NDEF record types:
+   * 
+   * \code
+   *   // register for Tags with VCARD data
+   *   Webinos.nfc.addMimeTypeListener("text/vcard", listener, success, fail);
+   * 
+   *   // register for Tags with URIs, e.g. for pointers to websites
+   *   Webinos.nfc.addURITypeListener(listener, success, fail);
+   * \endcode
+   *  
+   * <b>Writing</b>
+   * 
+   * To write to a tag having discovered one:
+   * 
+   * \code
+   * // called when the Tag is discovered
+   * function listener (event)
+   * {
+   *   var nfc = Webinos.nfc;
+   * 
+   *   // read the tag here if you want ...
+   * 
+   *   // prepare an NDEF message
+   *   var message = [
+   *     nfc.textRecord("Have a nice day!");
+   *   ];
+   * 
+   *   // and write it back to the Tag
+   *   event.tag.write(message, success, fail);
+   * }
+   * 
+   * function success ()
+   * {
+   *   console.log("successfully wrote message to Tag");
+   * }
+   * 
+   * function fail ()
+   * {
+   *   console.log("failed to write message to Tag");
+   * }
+   * \endcode
+   * 
+   * 
+   * There could be more than one Tag in range, e.g. you might have several in your wallet. This approach allows you to write back to the same Tag that you just read.
+   * 
+   * <b>Set Read Only</b>
+   * 
+   * To prevent further modifications to a Tag you can do the following:
+   * 
+   * 
+   * \code
+   *   tag.makeReadOnly(success, fail);
+   * 
+   * ...
+   * 
+   * function success ()
+   * {
+   *   console.log("successfully make Tag read-only");
+   * }
+   * 
+   * function fail ()
+   * {
+   *   console.log("failed to make Tag read-only");
+   * }
+   * \endcode
+   * 
+   * 
+   * <b> Push </b>
+   * 
+   * How to determine when it is reasonable to exit sharing mode? Is there a way to determine that the other device has moved out of range? Or perhaps an acknowledgement that it read the shared data?
+   * 
+   * You can set your NFC device, e.g. a smart phone to push an NDEF message to another such device. The first step is to prepare the message. You then call the shareTag method to enter the sharing mode:
+   * 
+   * \code
+   * // called when the Tag is discovered
+   * function listener (event)
+   * {
+   *   var nfc = Webinos.nfc;
+   * 
+   *   // prepare an NDEF message
+   *   var message = [
+   *     nfc.uriRecord("http://www.example.com/");
+   *   ];
+   * 
+   *   // and write it back to the Tag
+   *   nfc.shareTag(message, success, fail);
+   * }
+   * 
+   * function success ()
+   * {
+   *   console.log("entered NFC sharing mode");
+   * }
+   * 
+   * function fail ()
+   * {
+   *   console.log("failed to enter NFC sharing mode");
+   * }
+   * \endcode
+   * 
+   * Some time later, you call the unshareTag method to restore your device to normal mode of operation where it is listening for NFC Tags that come in range:
+   * 
+   * \code
+   *   nfc.unshareTag(success, fail);
+   * 
+   * ...
+   * 
+   * function success ()
+   * {
+   *   console.log("exited NFC sharing mode");
+   * }
+   * 
+   * function fail ()
+   * {
+   *   console.log("error on exiting NFC sharing mode");
+   * }
+   * \endcode
+   * 
+   * <b>Peer to Peer Communications with LLCP</b>
+   * 
+   * What if multiple devices come in range? Do we get multiple calls for the success method set by peer()? How do you detect when a message channel closes? Presumably, there is no need for an unpeer method, as you simply need to stop the port, right? However, there is scope for a method to cancel waiting for peering.
+   * 
+   * The Link Logical Control Protocol (LLCP) can be used to set up an HTML Message Channel for a temporary bidirectional aysnchronous connection. Message Channels are part of HTML5
+   * 
+   *     HTML5 MessageChannel http://www.w3.org/TR/html5/comms.html
+   * 
+   * Here is a simple example:
+   * 
+   * \code
+   *   // first set phone into peering mode
+   *   Webinos.nfc.peer(success, fail);
+   * 
+   * function success (channel)
+   * {
+   *   console.log("successfully initiated peering mode");
+   * 
+   *   // to send a message to the other device
+   *   channel.port1.postMessage('hello');
+   * 
+   *   // to receive a message from the other device
+   *   // first you set a message handler
+   *   channel.port1.onmessage = handleMessage;
+   * 
+   *   // you next instruct the channel to dispatch events
+   *   // you can later close the port with the stop() method
+   *   // your device then reverts to its normal mode
+   *   channel.port1.start();
+   * }
+   * 
+   * function handleMessage(event)
+   * {
+   *   // message is in event.data
+   *   // ...
+   * }
+   * 
+   * // after a time out when peering couldn't be established
+   * function fail ()
+   * {
+   *   console.log("failed to initiate peering mode");
+   * }
+   * \endcode
+   * 
    */
 
 
