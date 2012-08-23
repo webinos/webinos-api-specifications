@@ -470,7 +470,7 @@
 	/**
 	* \brief The interface defines a tire pressure event.
 	*/
-	interface SeatEvent : VehicleData{
+	interface SeatData : VehicleData{
 		readonly attribute SeatPosition position;
 		readonly attribute SeatSetting[] settings;
 		/**
@@ -479,7 +479,7 @@
 		* \param position TODO.
 		* \param settings TODO.
 		*/
-		void initSeatEvent(SeatPosition position, SeatSetting[] settings);
+		void initSeatData(SeatPosition position, SeatSetting[] settings);
 	};
 	
 	enum SeatPosition { "driver","frontpassaneger", "rearleft", "rearright"};
