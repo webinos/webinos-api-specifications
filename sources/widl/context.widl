@@ -407,6 +407,7 @@ enum WhereClauseOperator { "eq", "lt", "gt", "let", "get", "starts", "ends", "in
  * \brief This is the entry point for the ContextRule management. 
  *
  * Application developers may create new ContextRule in order to trigger events based on those rules. 
+ * If a ContextRule is not used in a perion more than a 
  *
  * \code
  * TODO
@@ -485,6 +486,16 @@ interface ContextRule{
 	 * \brief The Interval between each ContextRule evaluation
 	 */
 	attribute Interval interval;
+	
+	/**
+	 * \brief The timestamp until when this ContextRule is available. After that it will be removed. This is automatically set for new ContextRule to a month after the creation date.
+	 */
+	readonly attribute DOMTimeStamp ValidUntil;
+	
+	/**
+	 * \brief Extends the ValidUntil DOMTimeStamp for a month
+	 */
+	void renew();
 	
 };
 
@@ -602,4 +613,14 @@ interface ScheduledAPICall{
 	 * \brief The Interval between each API call
 	 */
 	attribute Interval interval;
+	
+	/**
+	 * \brief The timestamp until when this ScheduledAPICall is valid. After that it will be removed. This is automatically set for new ScheduledAPICall to a month after the creation date.
+	 */
+	readonly attribute DOMTimeStamp ValidUntil;
+	
+	/**
+	 * \brief Extends the ValidUntil DOMTimeStamp for a month
+	 */
+	void renew();
 };
