@@ -23,8 +23,7 @@
  */
  
 /**
- * \brief The ContextManager interface describes the part of the TV
- * Context API accessible through the webinos object.
+ * \brief The ContextManager interface is exposed through the webinos object.
  */
 partial interface webinos {
 	/**
