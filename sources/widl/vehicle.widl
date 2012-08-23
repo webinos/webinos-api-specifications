@@ -1,10 +1,12 @@
 /**<p>The webinos vehicle API provides access to specific vehicle data.</p>
- * It is derived from W3C's DOM Level 3 Events model and defines event types for retrieving information about the vehicle including trip computer data, gears or park sensors. Furthermore it offers methods for interacting with the on-board navigation system. The geolocation, speed and acceleration can be retrieved using the <a href="geolocation.html">geolocation</a> and <a href="deviceorientation.html">device orientation</a> API. The gps navigation related functions (see <a href='http://dev.webinos.org/specifications/draft/vehicle.html'>v0.7</a>) have been removed from the API. A new API about navigation has been defined.
+ * The design is influenced from W3C's DOM Level 3 Events model and defines event types for retrieving information about the vehicle including trip computer data, gears or park sensors.Further more it exposes information about lights, doors, windows and seating setting. The geolocation, speed and acceleration can be retrieved using the <a href="geolocation.html">geolocation</a> and <a href="deviceorientation.html">device orientation</a> API. The gps navigation related functions (see <a href='http://dev.webinos.org/specifications/draft/vehicle.html'>draft version</a>) have been moved the <a href='navigation.html'>Navigation API</a>.
  * \name Vehicle API.
  *
  * 
  *
- * The API gives access to vehicle data, which is available on the infotainment vehicle bus (e.g. <a href="http://en.wikipedia.org/wiki/MOST_Bus">MOST</a>). The infotainment bus is the only access point for the headunit to receveive vehicle data (<a href="http://dev.webinos.org/redmine/attachments/download/666/vehicle_bus_infrastructure.pdf" target="_blank">diagram on vehicle bus architecture</a>). Some data from other busses (high/low speed <a href="http://en.wikipedia.org/wiki/Controller_area_network" target="_blank">CAN</a>) are routed into the bus over the central gateway such as speed or gear (RPM is currently not provided on the MOST). 
+ * The API exposes vehicle data, which is available on the infotainment vehicle bus (e.g. <a href="http://en.wikipedia.org/wiki/MOST_Bus">MOST</a>). The infotainment bus is usually the access point for the headunit to receveive vehicle data (<a href="http://dev.webinos.org/redmine/attachments/download/666/vehicle_bus_infrastructure.pdf" target="_blank">diagram on vehicle bus architecture</a>). Some data from other busses (high/low speed <a href="http://en.wikipedia.org/wiki/Controller_area_network" target="_blank">CAN</a>) are routed into the bus over the central gateway such as speed or gear.
+ 
+ 
  *
  * \def-api-feature http://webinos.org/api/vehicle
  * Identifies the static information about the vehicle 
@@ -12,31 +14,43 @@
  * \def-api-feature http://webinos.org/api/vehicle.climate
  * Identifies vehicle data related to climate controls. 
  *
- * \def-api-feature http://webinos.org/api/vehicle.navigation
- * Identifies the navigation module of a vehicle.
- *
  * \def-api-feature http://webinos.org/api/vehicle.parksensors
  * Identifies park sensor modules of a vehicle.
  *
  * \def-api-feature http://webinos.org/api/vehicle.tripcomputer
  * Identifies the trip computer information of a vehicle.
  *
- * \def-api-feature http://webinos.org/api/vehicle.controls
- * Identifies control data (e.g. wipers and lights) of a vehicle
+ * \def-api-feature http://webinos.org/api/vehicle.lights
+ * Identifies light data of a vehicle
  *
- * \def-api-feature http://webinos.org/api/vehicle.shift
+ * \def-api-feature http://webinos.org/api/vehicle.gearbox
  * Identifies gear data
+ *
+ * \def-api-feature http://webinos.org/api/vehicle.engineoil
+ * Identifies information about engine oil level
+ *
+ * \def-api-feature http://webinos.org/api/vehicle.seating
+ * Identifies information about engine oil level
+ *
+ * \def-api-feature http://webinos.org/api/vehicle.tires
+ * Identifies information about the tires
+ *
+ * \def-api-feature http://webinos.org/api/vehicle.windows
+ * Identifies information about the tire pressure
+ *
+ * \def-api-feature http://webinos.org/api/vehicle.doors
+ * Identifies information about the doors
  * 
  * \author Simon Isenberg (BMW Forschung \& Technik) &lt;Simon.Isenberg@bmw.de&gt;
- * \version 0.7
+ * \version 0.9
  */
 
 	/**
-	* \brief The interface defines a generic event for vehicle data specific events.
-	*
+	* \brief Generic Vehicle Data
+	* The interface defines a generic data event for vehicle specific data. It is derived from Event. 
 	*/ 
 	[NoInterfaceObject]
-	interface VehicleEvent : Event{
+	interface VehicleData : Event{
 	
 	};
 
@@ -51,12 +65,25 @@
 	/**
 	* \brief callback method to receive vehicle data in a non-recurring and asynchronous way.
 	*/ 	
-	callback VehicleDataHandler = void (VehicleEvent data);
+	callback VehicleDataHandler = void (VehicleData data);
 
 	/**
 	* \brief Possible values for vehicle fuel 
 	*/
-	enum Fuel { "unleaded", "premium", "diesel" };
+	enum Fuel { "unleaded", "premium", "diesel", "electric", "cng" };
+	
+	/**
+	* \brief Possible hybrid types
+	*/
+	enum Hybrid { "none", "mild", "full"};
+
+
+	/**
+	* \brief Possible positions of the steering wheel
+	*/
+	enum SteeringWheelPosition {"right", "left"};
+
+	
 
 	/**
 	* \brief Possible values for transmission type 
@@ -86,6 +113,14 @@
 		*/		
 		readonly attribute Fuel fuel;
 		/**
+		* \brief Attribute reflects hybrid type of the vehicle
+		*/		
+		readonly attribute Hybrid hybrid;
+		/**
+		* \brief Attribute reflects steering wheel position
+		*/		
+		readonly attribute SteeringWheelPosition steeringwheel;
+		/**
 		* \brief Attribute denotes transmission type of the vehicle.
 		*/		
 		readonly attribute VehicleTransmission transmission;
@@ -107,7 +142,7 @@
 		* \param handler Parameter specifies the function to handle the result.
 		* \param errorCB Parameter specifies the callback function in case of an error.
 		*/
-		void get(VehicleEventType vehicleDataId, VehicleDataHandler handler, VehicleErrorCallback errorCB);
+		void get(VehicleDataType vehicleDataId, VehicleDataHandler handler, VehicleErrorCallback errorCB);
 	};
 	
 	/**
@@ -135,7 +170,7 @@
 	* \endcode
 	*/
 	[NoInterfaceObject]
-	interface ClimateControlEvent : VehicleEvent{
+	interface ClimateControlData : VehicleData{
 		/**
 		* \brief Attribute defines the zone of the climate control event.
 		*/	
@@ -166,7 +201,7 @@
 		* \param ventLevel level of the vent.
 		* \param ventMode true, if the vent is in automatic mode.
 		*/
-		void initClimateControlEvent(boolean bubbles, boolean cancelable, DOMString zone, short desiredTemperature, boolean acStatus, short ventLevel, short ventMode);
+		void initClimateControlData(boolean bubbles, boolean cancelable, DOMString zone, short desiredTemperature, boolean acStatus, short ventLevel, short ventMode);
 	};
 
 	/**
@@ -176,7 +211,7 @@
 
 	
 	/**
-	* \brief The interface defines a control event. 
+	* \brief The interface defines a light data. 
 	* The event signals a change for a light unit inside the vehicle. The identifiers for the different light events are defined in the enum VehicleLight.
 	* \code
 	*	webinos.vehicle.addEventListener("hibeam", lightHandler, false);
@@ -191,7 +226,7 @@
 	*	}
 	* \endcode
 	*/
-	interface LightEvent : VehicleEvent{
+	interface LightData : VehicleData{
 		/**
 		* \brief Attribute describes the source of the event.
 		*/	
@@ -205,16 +240,16 @@
 		* \param lightId specifies the control unit.
 		* \param active specifies if the unit is activated or not.
 		*/
-		void initLightEvent(VehicleLight lightId, boolean active);
+		void initLightData(VehicleLight lightId, boolean active);
 	};
 
 	/**
-	*  \brief Position of parksensor event
+	*  \brief Position of park sensors
 	*/
-	enum ParkSensorPosition { "parksensor-front", "parksensor-rear"};
+	enum ParkSensorPosition { "front", "rear"};
 
 	/**
-	* \brief This interface defines an event related to the built-in park sensors. 
+	* \brief This interface defines an data related to the built-in park sensors. 
 	* A listener can be registered by vehicle.addEventLister("parksensor-front",listener,false).
 	* \code
 	*	webinos.vehicle.addEventListener("parksensor-front", psHandler, false);
@@ -226,7 +261,7 @@
 	*	}
 	* \endcode
 	*/
-	interface ParkSensorsEvent : VehicleEvent{
+	interface ParkSensorsData : VehicleData{
 		/**
 		* \brief Attribute defines the position of the sensor.
 		*/
@@ -257,11 +292,11 @@
 		* \param right data from the right sensor.
 		* \param outRight data from the outer right sensor.
 		*/
-		void initParkSensorsEvent(ParkSensorPosition position, short outLeft ,short left, short midLeft, short midRight, short right, short outRight);
+		void initParkSensorsData(ParkSensorPosition position, short outLeft ,short left, short midLeft, short midRight, short right, short outRight);
 	};
 
 	/**
-	* \brief The interface defines a trip computer event. 
+	* \brief The interface defines a trip computer data. 
 	* A listener can be registered by vehicle.addEventLister("tripcomputer",listener,false).
 	*
 	* \code
@@ -286,7 +321,7 @@
 	*}
 	* \endcode
 	*/
-	interface TripComputerEvent : VehicleEvent{
+	interface TripComputerData : VehicleData{
 		/**
 		* \brief Attrubute reflects the overall average consumption of the vehicle in l/100kilometers (resets on driver's demand).
 		*/		
@@ -326,11 +361,11 @@
 		* \param mileage overall driven distance in kilometers.
 		* \param range range of the vehicle in kilometers. 
 		*/
-		void initTripComputerEvent(float averageConsumption, float tripConsumption, float averageSpeed, float tripSpeed, float tripDistance, float mileage, float range);
+		void initTripComputerData(float averageConsumption, float tripConsumption, float averageSpeed, float tripSpeed, float tripDistance, float mileage, float range);
 	};
 	
 	/**
-	* \brief This interface defines a shift event. 
+	* \brief This interface defines a gear data. 
 	* A listener can be registered by vehicle.addEventLister("gear",listener,false).
 	* \code
 	* // registering an Event for a Shift
@@ -341,7 +376,7 @@
 	* }				
 	* \endcode
 	*/
-	interface GearEvent : VehicleEvent{
+	interface GearData : VehicleData{
 		/**
 		* \brief Attribute reflects the current gear.
 		*/
@@ -369,14 +404,17 @@
 	*/
 	enum WiperStatus { "front-wash", "rear-wash", "automatic", "front-once", "rear-once", "front-level1", "front-level2" };
 	
-	interface WiperEvent : VehicleEvent{
+	/**
+	* \brief This interface defines a engine oil event. 
+	*/
+	interface WiperData : VehicleData{
 		attribute WiperStatus position;
 	};
 	
 	/**
 	* \brief This interface defines a engine oil event. 
 	*/
-	interface EngineOilEvent : VehicleEvent{
+	interface EngineOilData : VehicleData{
 		/**
 		* \brief Attribute defines the level of the oil in the engine.
 		*/
@@ -420,7 +458,7 @@
 	/**
 	* \brief The interface defines a tire pressure event.
 	*/
-	interface SeatEvent : VehicleEvent{
+	interface SeatEvent : VehicleData{
 		readonly attribute SeatPosition position;
 		readonly attribute SeatSetting[] settings;
 		/**
@@ -446,7 +484,7 @@
 	/**
 	* \brief The interface defines a tire pressure event.
 	*/
-	interface TirePressureEvent : VehicleEvent{
+	interface TirePressureEvent : VehicleData{
 		/**
 		* \brief Attribute reflects the pressure of the front left tire in bar.
 		*/		
@@ -475,20 +513,20 @@
 		void initTirePressureEvent(Short frontLeft, Short frontRight,Short rearRight,Short rearLeft);
 	};
 	
-		/**
-	* \brief The interface defines a tire pressure event.
+	/**
+	* \brief The interface defines door data.
 	*/
-	interface DoorEvent : VehicleEvent{
+	interface DoorData : VehicleData{
 		/**
-		* \brief Attribute reflects ...
+		* \brief Attribute reflects if driver door is opened or closed
 		*/		
 		readonly attribute boolean driver;
 		/**
-		* \brief  Attribute reflects ...
+		* \brief  Attribute reflects if front passenger door is opened or closed.
 		*/		
 		readonly attribute boolean? frontPassenger;
 		/**
-		* \brief  Attribute reflects ...
+		* \brief  Attribute reflects if front passenger door is opened or closed.
 		*/		
 		readonly attribute boolean? rearRight;
 		/**
@@ -515,9 +553,9 @@
 	
 	/**
 	* \brief Vehicle event types
-	* defines the possible vehicle Events.
+	* defines the possible vehicle data, which can be retrieved using the addEventListener or the get method.
 	*/
-	enum VehicleEventType {"gear","tripcomputer","parksensors-front", "parksensors-rear", "engineoil","wipers","tirepressure","doors"};
+	enum VehicleDataType {"gear","tripcomputer","parksensors-front", "parksensors-rear", "engineoil","wipers","tirepressure","doors"};
 	
 	/**
 	* \brief Seat option 
