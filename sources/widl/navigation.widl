@@ -1,6 +1,6 @@
 /**<p>The webinos Navigation API provides mechanism to interact with on-board navigation software.</p>
- * It is a spin-off of the Vehicle API. The navigation related methods were removed in v0.8 
- * \name Navigation API.
+ * It is a spin-off of the Vehicle API. The API expose the functionality to interact with a satelite navigation service. It provides a method for handing over an point-of-interest to the service, querying the service for POI and monitoring if the navigation service is active.
+ * \name Navigation API
  *
  * 
  *
@@ -61,11 +61,11 @@
 	*
 	*/ 
 	[NoInterfaceObject]
-	interface NavigationData{
+	interface NavigationEvent : Event{
 		/**
-		* \brief Attribute defines the type NavigationData.
+		* \brief Attribute defines the type NavigationEvent.
 		*/
-		readonly attribute DOMString type;
+		readonly attribute NavigationEventType type;
 		/**
 		* \brief Attribute defines the creation time of the data object.
 		*/
@@ -107,13 +107,28 @@
 	};
 
 	/**
+	* \brief This dictionary defines the search options for a POI. 
+	*/ 
+	dictionary PoiSearchOptions{
+		/**
+		* \brief denotes the position for which the search is performed .
+		*/		
+		LatLng? closeTo;
+		/**
+		* \brief reflects the maximum distance for a POI.
+		*/		
+		unsigned short? distance;
+	};
+
+
+	/**
 	* \brief callback for a success from requestGuidance.
 	*
 	*/
 	callback NavigationSuccessCallback = void ();
 
 	/**
-	* \brief callback for a failure from requestGuidance, get, or findDestination
+	* \brief callback for a failure from requestGuidance, getStatus, or findDestination
 	* \param error a <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> containing information about the error (e.g. SecurityError if permission is denied).
 	*
 	*/
@@ -122,7 +137,7 @@
 	/**
 	* \brief callback method to receive vehicle data in a non-recurring and asynchronous way.
 	*/ 	
-	callback NavigationDataHandler = void (NavigationData data);
+	callback NavigationEventHandler = void (NavigationEvent data);
 	
 	/**
 	* \brief The interface defines general information about the vehicle and is the object, where the event listener for vehicle related data can be registered. The interface is accessible through the webinos.vehicle object. 
@@ -161,21 +176,34 @@
 		* \param errorCallback callback to handle errors.
 		* \param search search string for resolving a address.
 		*/
-		void findDestination(DestinationCallback destinationCallback, NavigationErrorCallback errorCallback, DOMString search);
+		void findDestination(DestinationCallback destinationCallback, NavigationErrorCallback errorCallback, DOMString search, PoiSearchOptions? options);
+		/**
+		* \brief Provides the information if guidance is active or not.
+		* \param successHandler callback to handle the status of navigation system.
+		* \param errorHandler callback to handle if information cannot be retrieved.
+		*/
+		void getStatus(NavigationEventHandler successHandler, NavigationErrorCallback errorHandler);
 	};
 	
 	/**
 	* \brief The Vehicle interface describes the part of the Vehicle API accessible through the webinos object. 
 	*
 	*/
-	[NoInterfaceObject] interface Navigation {
-                readonly attribute NavigationInterface navigation;
-        };
-	Webinos implements Navigation;
+	partial interface Webinos {
+	  readonly attribute NavigationInterface navigation;
+	 };
+	 
 	/**
 	* \brief callback for the asynchronous findDestination method.
 	* \param pois Parameter provides an array of POIs.
 	*/
  	callback DestinationCallback = void (POI[] pois);
+ 	
+ 	
+ 	/**
+	* \brief Navigation Event type
+	* defines the possible status of the navigation system.
+	*/
+	enum NavigationEventType {"guidance-active", "guidance-inactive"};
 
 
