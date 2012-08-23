@@ -359,7 +359,6 @@ callback CloseCallBack = void ();
         * \brief enumeration of tag technologies
         */
           enum NfCTagTech {"OTHERS", "NFCA", "NFCB", "NFCF", "NFCV", "ISODEP", "NDEF"};
-};
 
 // the properties for NDEF records
 // definitions come from the NFC Forum
