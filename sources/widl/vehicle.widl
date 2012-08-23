@@ -156,7 +156,7 @@
 	/**
 	* \brief Climate zone names
 	*/
-	enum VehicleClimateZone { "climate-all", "climate-driver", "climate-passenger-front", "climate-passenger-rear-left", "climate-passenger-rear-right"};
+	enum VehicleClimateZone { "all", "driver", "passenger", "behind-driver", "behind-passenger"};
 	
 	/**
 	* \brief The interface defines a climate control event. 
@@ -207,14 +207,14 @@
 	/**
 	* \brief Type of vehicle light
 	*/
-	enum VehicleLight { "fog-front", "fog-rear", "signal-left", "signal-right", "signal-warn", "light-parking", "hibeam", "light-head" };
+	enum VehicleLight { "fog-front", "fog-rear", "signal-left", "signal-right", "signal-warn", "parking", "hibeam", "head" };
 
 	
 	/**
 	* \brief The interface defines a light data. 
 	* The event signals a change for a light unit inside the vehicle. The identifiers for the different light events are defined in the enum VehicleLight.
 	* \code
-	*	webinos.vehicle.addEventListener("hibeam", lightHandler, false);
+	*	webinos.vehicle.addEventListener("light-hibeam", lightHandler, false);
 	*      function lightHandler(cEvent){
 	*		if(cEvent.controlId == "hibeam"){
 	*			if(cEvent.active == true){
@@ -614,5 +614,5 @@
 	* \brief Vehicle event types
 	* defines the possible vehicle data, which can be retrieved using the addEventListener or the get method.
 	*/
-	enum VehicleDataType {"gear","tripcomputer","parksensors-front", "parksensors-rear", "engineoil","wipers","tirepressure","doors", "windows"};
+	enum VehicleDataType {"gear","tripcomputer","parksensors-front", "parksensors-rear", "engineoil","wipers","tirepressure","doors", "windows", "climate-all", "climate-driver", "climate-behind-driver", "climate-passenger", "climate-behind-passenger", "light-fog-front", "light-fog-rear", "light-signal-left", "ligth-signal-right", "light-signal-warn", "light-parking", "light-hibeam", "light-head"};
 	
