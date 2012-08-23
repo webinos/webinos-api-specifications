@@ -599,5 +599,5 @@
 	* \brief Vehicle event types
 	* defines the possible vehicle data, which can be retrieved using the addEventListener or the get method.
 	*/
-	enum VehicleDataType {"gear","tripcomputer","parksensors-front", "parksensors-rear", "engineoil","wipers","tirepressure","doors", "windows"}
+	enum VehicleDataType {"gear","tripcomputer","parksensors-front", "parksensors-rear", "engineoil","wipers","tirepressure","doors", "windows"};
 	
