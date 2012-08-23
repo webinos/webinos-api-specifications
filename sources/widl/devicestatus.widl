@@ -60,8 +60,6 @@
  *  The steps for processing a device status feature declaration is given by the following algorithm. Only the first feature declaration is respected by the user agent:
  *  
    *  <ul>
-   * <li>    Let declaration be the first device status feature declaration that was present in the configuration document, ignoring all others. </li>
-   * <li>    Implement the DeviceapisDeviceStatusManager interface when the widget's start file is instantiated:</li>
    * <ul> 
    * <li>     Exchange of security credentials e.g. for a WiFi network </li> 
    * </ul>
@@ -70,7 +68,9 @@
    * </ul>
  *
  * <ul>  
- * <ul> <li>   2a. For each supported aspect, identify the components and assign each of them a component name, and, where there are more than one component, identify which is the default and track which components are active. It is recommended that the component name assigned by the user agent to a component be something that is "developer-friendly": i.e., that logically relates to the aspect the component represents (e.g., candidats include "screen_1", "battery2", "os", "hdd", "SD-Card"). </li> </ul>
+   * <li>    Let declaration be the first device status feature declaration that was present in the configuration document, ignoring all others. </li>
+   * <li>    Implement the DeviceapisDeviceStatusManager interface when the widget's start file is instantiated:</li>
+ * <li>   2a. For each supported aspect, identify the components and assign each of them a component name, and, where there are more than one component, identify which is the default and track which components are active. It is recommended that the component name assigned by the user agent to a component be something that is "developer-friendly": i.e., that logically relates to the aspect the component represents (e.g., candidats include "screen_1", "battery2", "os", "hdd", "SD-Card"). </li> 
  * <li> If required, disable any aspects as needed by the particular feature declaration (see each device status feature strings). </li>
  * <li> ignore all other subsequent device status feature declarations. </li>
  * </ul> 
