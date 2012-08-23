@@ -1,6 +1,6 @@
 /**<p>The webinos vehicle API provides access to specific vehicle data.</p>
  * The design is influenced from W3C's DOM Level 3 Events model and defines event types for retrieving information about the vehicle including trip computer data, gears or park sensors.Further more it exposes information about lights, doors, windows and seating setting. The geolocation, speed and acceleration can be retrieved using the <a href="geolocation.html">geolocation</a> and <a href="deviceorientation.html">device orientation</a> API. The gps navigation related functions (see <a href='http://dev.webinos.org/specifications/draft/vehicle.html'>draft version</a>) have been moved the <a href='navigation.html'>Navigation API</a>.
- * \name Vehicle API.
+ * \name Vehicle API
  *
  * 
  *
@@ -150,13 +150,13 @@
 	*
 	*/
 	partial interface Webinos {
-	  readonly attribute VehicleInterface tv;
+	  readonly attribute VehicleInterface vehicle;
 	 };
 
 	/**
 	* \brief Climate zone names
 	*/
-	enum VehicleClimateZone { "climate-all", "climate-driver", "climate-passenger-front", "climate-passenger-rear-left", "climate-passenger-rear-right"};
+	enum VehicleClimateZone { "all", "driver", "passenger", "behind-driver", "behind-passenger"};
 	
 	/**
 	* \brief The interface defines a climate control event. 
@@ -207,14 +207,14 @@
 	/**
 	* \brief Type of vehicle light
 	*/
-	enum VehicleLight { "fog-front", "fog-rear", "signal-left", "signal-right", "signal-warn", "light-parking", "hibeam", "light-head" };
+	enum VehicleLight { "fog-front", "fog-rear", "signal-left", "signal-right", "signal-warn", "parking", "hibeam", "head" };
 
 	
 	/**
 	* \brief The interface defines a light data. 
 	* The event signals a change for a light unit inside the vehicle. The identifiers for the different light events are defined in the enum VehicleLight.
 	* \code
-	*	webinos.vehicle.addEventListener("hibeam", lightHandler, false);
+	*	webinos.vehicle.addEventListener("light-hibeam", lightHandler, false);
 	*      function lightHandler(cEvent){
 	*		if(cEvent.controlId == "hibeam"){
 	*			if(cEvent.active == true){
@@ -402,17 +402,34 @@
 	* \brief Status of the wipers switch
 	* defines the different positions of the wiper switch
 	*/
-	enum WiperStatus { "front-wash", "rear-wash", "automatic", "front-once", "rear-once", "front-level1", "front-level2" };
+	enum WiperStatus { "front-wash", "rear-wash", "automatic", "front-once", "rear-once", "front-level1", "front-level2", "notactive" };
 	
 	/**
-	* \brief This interface defines a engine oil event. 
+	* \brief This interface defines wiper data. 
+		* A listener can be registered by vehicle.addEventLister("gear",listener,false).
+	* \code
+	* // requesting the status of the wiper stick.
+	* vehicle.get("wipers", wiperHandler);
+	* function wiperHandler(e){
+	*   document.getElementById("info").innerHTML = e.position;
+	* }				
+	* \endcode
 	*/
 	interface WiperData : VehicleData{
+		/**
+		* \brief Attribute defines the position of the wiper stick.
+		*/
 		attribute WiperStatus position;
+		/**
+		* \brief Method sets the initial values of a wiper data.
+		*
+		* \param position defines the position of the wiper stick.
+		*/
+		void initWiperData(WiperStatus position);
 	};
 	
 	/**
-	* \brief This interface defines a engine oil event. 
+	* \brief This interface defines a engine oil data. 
 	*/
 	interface EngineOilData : VehicleData{
 		/**
@@ -420,10 +437,9 @@
 		*/
 		attribute EngineOilLevel level;
 		/**
-		* \brief Method sets the initial values of a engine oil event.
+		* \brief Method sets the initial values of a engine oil data.
 		*
 		* \param level defines the level of the oil in the engine.
-
 		*/
 		void initEngineOilEvent(EngineOilLevel level);	
 	};
@@ -435,10 +451,6 @@
 	enum EngineOilStatus { "OVER_MAX","MAX", "OK", "MIN", "UNDER_MIN", "MEASURING"};
 
 
-
-	/*
-	* SEAT EXAMPLE STARTS HERE
-	*/
 
 	/**
 	* \brief The interface defines TODO.
@@ -452,39 +464,31 @@
 		/**
 		* \brief TODO
 		*/
-		Integer value; 
+		Long value; 
 	};
 	
 	/**
 	* \brief The interface defines a tire pressure event.
 	*/
-	interface SeatEvent : VehicleData{
+	interface SeatData : VehicleData{
 		readonly attribute SeatPosition position;
 		readonly attribute SeatSetting[] settings;
 		/**
 		* \brief Method sets the initial values of a vehicle status event.
 		*
 		* \param position TODO.
-		* \param position TODO.
+		* \param settings TODO.
 		*/
-		void initSeatEvent(SeatPosition position, SeatSetting[] settings);
+		void initSeatData(SeatPosition position, SeatSetting[] settings);
 	};
 	
 	enum SeatPosition { "driver","frontpassaneger", "rearleft", "rearright"};
 	enum SeatOption { "recline-seatback","slide", "cushion-heigh", "headrest", "back-cushion", "side-cushion"};
 
-
-	/*
-	* SEAT EXAMPLE ENDS HERE
-	*/
-
-
-
-
 	/**
-	* \brief The interface defines a tire pressure event.
+	* \brief The interface defines a tire pressure data.
 	*/
-	interface TirePressureEvent : VehicleData{
+	interface TirePressureData : VehicleData{
 		/**
 		* \brief Attribute reflects the pressure of the front left tire in bar.
 		*/		
@@ -502,7 +506,7 @@
 		*/	
 		readonly attribute unsigned short rearRight;
 		/**
-		* \brief Method sets the initial values of a vehicle status event.
+		* \brief Method sets the initial values of tire pressure data.
 		*
 		* \param frontLeft defines the tire pressure of tire at the front left side of the vehicle.
 		* \param frontRight defines the tire pressure of tire at the front right side of the vehicle.
@@ -515,26 +519,35 @@
 	
 	/**
 	* \brief The interface defines door data.
+	* \code
+	* // checking if driver door is openend.
+	* vehicle.addEventListener("doors", doorHandler);
+	* function doorHandler(doors){
+	*  if(doors.driver){
+	*  	document.getElementById("info").innerHTML = 'Please close driver door';
+	*  }  
+	* }				
+	* \endcode
 	*/
 	interface DoorData : VehicleData{
 		/**
-		* \brief Attribute reflects if driver door is opened or closed
+		* \brief Attribute reflects if driver door is opened (true) or closed (false)
 		*/		
 		readonly attribute boolean driver;
 		/**
-		* \brief  Attribute reflects if front passenger door is opened or closed.
+		* \brief  Attribute reflects if front passenger door is opened (true) or closed (false)
 		*/		
 		readonly attribute boolean? frontPassenger;
 		/**
-		* \brief  Attribute reflects if front passenger door is opened or closed.
+		* \brief  Attribute reflects if the door behind the driver is opened (true) or closed (false)
 		*/		
-		readonly attribute boolean? rearRight;
+		readonly attribute boolean? behindDriver;
 		/**
-		* \brief  Attribute reflects ...
+		* \brief  Attribute reflects if the door behind the front passenger is opened (true) or closed (false).
 		*/		
-		readonly attribute boolean? rearLeft;
+		readonly attribute boolean? behindPassenger;
 		/**
-		* \brief  Attribute reflects ...
+		* \brief  Attribute reflects if the trunk deck is opened (true) or closed (false). 
 		*/		
 		readonly attribute boolean? trunkDeck;
 		
@@ -542,23 +555,64 @@
 		/**
 		* \brief Method sets the initial values of a vehicle status event.
 		*
-		* \param driver defines TODO.
-		* \param frontPassenger defines TODO.
-		* \param rearLeft defines TODO.
-		* \param rearRight defines TODO.
-		* \param trunkDeck defines TODO.
+		* \param driver defines status of driver door.
+		* \param frontPassenger defines status of front passenger door.
+		* \param behindDriver defines status of door behind driver.
+		* \param behindPassenger defines status of door behind front passenger.
+		* \param trunkDeck defines status of trunk deck.
 		*/
-		void initDoorEvent(boolean driver, boolean frontPassenger,boolean rearRight,boolean rearLeft,boolean trunkDeck);
+		void initDoorEvent(boolean driver, boolean frontPassenger,boolean behindDriver,boolean behindPassenger,boolean trunkDeck);
 	};
+	
+		/**
+	* \brief The interface defines window data.
+	* WindowData exposes the information of the current position of the different windows of a vehicle.
+	* \code
+	* // checking if driver door is openend.
+	* vehicle.addEventListener("windows", windowHandler);
+	* function windowsHandler(windows){
+	*  if(windows.driver == 0){
+	*  	document.getElementById("info").innerHTML = 'Window is closed';
+	*  } else{
+	*   document.getElementById("info").innerHTML = 'Driver window is opened to ' + window.driver + '%' ;
+	*  }
+	* }				
+	* \endcode
+	*/
+		interface WindowData : VehicleData{
+		/**
+		* \brief Attribute reflects the position of the driver window (100 = open; 0 = closed)
+		*/		
+		readonly attribute unsigned short driver;
+		/**
+		* \brief  Attribute reflects the position of the front passenger window (100 = open; 0 = closed)
+		*/		
+		readonly attribute unsigned short? frontPassenger;
+		/**
+		* \brief  Attribute reflects the position of the window behind the driver  (100 = open; 0 = closed)
+		*/		
+		readonly attribute unsigned short? behindDriver;
+		/**
+		* \brief  Attribute reflects the position of the window behind front passenger (100 = open; 0 = closed)
+		*/		
+		readonly attribute unsigned short? behindPassenger;
+		
+		
+		/**
+		* \brief Method sets the initial values of a vehicle status event.
+		*
+		* \param driver defines position of the driver window.
+		* \param frontPassenger defines position of the front passenger window.
+		* \param behindDriver defines position of the .
+		* \param behindPassenger defines the position of the window behind the front passenger.
+		*/
+		void initDoorEvent(boolean driver, boolean frontPassenger,short behindDriver,short behindPassenger);
+	};
+	
 	
 	/**
 	* \brief Vehicle event types
 	* defines the possible vehicle data, which can be retrieved using the addEventListener or the get method.
 	*/
-	enum VehicleDataType {"gear","tripcomputer","parksensors-front", "parksensors-rear", "engineoil","wipers","tirepressure","doors"};
+	enum VehicleDataType {"gear","tripcomputer","parksensors-front", "parksensors-rear", "engineoil","wipers","tirepressure","doors", "windows", "climate-all", "climate-driver", "climate-behind-driver", "climate-passenger", "climate-behind-passenger", "light-fog-front", "light-fog-rear", "light-signal-left", "ligth-signal-right", "light-signal-warn", "light-parking", "light-hibeam", "light-head"};
 	
-	/**
-	* \brief Seat option 
-	* defines the possible options for a seat.
-	*/
-	enum SeatOption {};
