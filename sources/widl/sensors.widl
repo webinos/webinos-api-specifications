@@ -14,9 +14,9 @@
  * - This is an experimental API and security and privacy issues are not specifically addressed in the specification. If access to security or privacy
  * sensitive sensors are provided the user agent must either acquire access permission through a user interface or control access through a prearranged
  * trust relationship with users.\n
- * - Consider a visual warnings on the device with the sensor when the sensor is in use, to avoid eavesdropping / privacy invasion by a remote or local application.\n
+ * - Consider a visual warning on the device when the sensor is accessed, to avoid eavesdropping / privacy invasion by a remote or local application.\n
  * - Consider roaming costs for accessing remote sensors through the mobile network. An implementation might provide 'roaming' and 'non-roaming' profiles.\n
- * - Avoid unnecessary high rate of sensor events. Consider battery drain.\n 
+ * - Avoid unnecessary high rates of sensor events. Consider battery drain.\n 
  *
  * \def-api-feature http://webinos.org/api/sensors
  * Identifies all the sensor types. 
@@ -136,7 +136,7 @@
     * The added attributes correspond to Android sensor API attributes.
     */ 
  
-    [NoInterfaceObject] interface Sensor : Service {
+    interface Sensor : Service {
  
        /**
         * \brief Max range of sensor in the sensors unit.
@@ -192,7 +192,7 @@
        * \brief The SensorErrorCB method is called if an error occurs during the configureSensor() process.  
        *
        * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> object detailing what 
-       * went wrong in an unsuccessful configureSensor() asynchronous operation. The follwoing error names cold be issued:\n
+       * went wrong in an unsuccessful configureSensor() asynchronous operation. The following error names cold be issued:\n
        * - "SyntaxError": Input parameters did not match the expected pattern.\n
        * - "NotSupportedError": Sensor configuration not supported.\n
        * - "InvalidModificationError": Sensor can not be configured in this way.\n
@@ -246,7 +246,7 @@
      * this operation to a stop if it hasn't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.
      *
      */
-     [NoInterfaceObject] interface PendingSensorConfigOp {
+     interface PendingSensorConfigOp {
 
     /**
      * \brief Method Cancel
