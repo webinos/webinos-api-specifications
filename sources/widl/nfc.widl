@@ -93,12 +93,12 @@ partial interface Webinos  {
    * 
    * <ul>
    * <li>    OTHERS  </li>
-   * <li>    NFCA <li>
-   * <li>    NFCB <li>
-   * <li>    NFCF <li>
-   * <li>    NFCV <li>
-   * <li>    ISODEP <li>
-   * <li>    NDEF <li>
+   * <li>    NFCA </li>
+   * <li>    NFCB </li>
+   * <li>    NFCF </li>
+   * <li>    NFCV </li>
+   * <li>    ISODEP </li>
+   * <li>    NDEF </li>
    * </ul>
    * 
    * If the Tag is an NDEF Tag, the ndefMessage property can be used to access the NDEF records:
