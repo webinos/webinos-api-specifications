@@ -410,6 +410,8 @@ interface NFC {
       /**
        * \brief This is a helper method for converting strings to byte arrays for use in NDEF messages.
        *
+       * This is a helper method for converting strings to byte arrays for use in NDEF messages. It maps 16 bit Unicode characters into a byte array in the big-endian manner with the most significant byte appearing first.
+       *
        * \param string String to convert 
        * \return byte[] Resulting byte array for NDEF message use
        */
@@ -417,6 +419,8 @@ interface NFC {
 
       /**
        * \brief This is a helper method for converting byte arrays from NDEF messages into strings.
+       *
+       * This is a helper method for converting byte arrays from NDEF messages into strings. This performs the inverse mapping from stringToBytes, and maps a big-endian byte array into a JavaScript string consisting of 16 bit unicode characters.
        *
        * \param data NDEF style byte array
        * \return DOMString Converted NDEF data in text
