@@ -1,5 +1,5 @@
-/**
- * \brief The Context API 
+/**<p>Context API client side reference.</p>
+ * \name Context API 
  *
  * The Context API defines the high-level interfaces required to obtain access to a user's context data. User must enable Context Manager on his device in order to keep track of his context objects. 
  * The API supports two basic ways of accessing context data:
@@ -9,14 +9,16 @@
  * 
  * The API also offers the ability to schedule API calls in order to update the context data store even if the application is not running.
  *
- * Acccess to all the module. This feature provides access to the whole API.
- * Security and Privacy enforcement may depend on the query or subscription requested by the developer.
  *
  * \def-instantiated 
  * \def-api-feature http://webinos.org/api/context
- * \author Christos Botsikas &lt;cbot@epu.ntua.gr&gt;
- * \author Christos Ntanos &lt;cntanos@epu.ntua.gr&gt;
- * \author Andreas Botsikas &lt;abot@epu.ntua.gr&gt;
+ * Acccess to all the module. This feature provides access to the whole API.
+ * Security and Privacy enforcement may depend on the query or subscription requested by the developer.
+ * 
+ * \author Christos Botsikas (NTUA) &lt;cbot@epu.ntua.gr&gt;
+ * \author Christos Ntanos (NTUA) &lt;cntanos@epu.ntua.gr&gt;
+ * \author Andreas Botsikas (NTUA) &lt;abot@epu.ntua.gr&gt;
+ *
  * \version 0.5 
  */
  
