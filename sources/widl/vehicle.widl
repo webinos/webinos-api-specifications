@@ -423,7 +423,7 @@
 		/**
 		* \brief Method sets the initial values of a wiper data.
 		*
-		* \param level defines the level of the oil in the engine.
+		* \param position defines the position of the wiper stick.
 		*/
 		void initWiperData(WiperStatus position);
 	};
