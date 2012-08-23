@@ -415,7 +415,6 @@
 	* }				
 	* \endcode
 	*/
-	*/
 	interface WiperData : VehicleData{
 		/**
 		* \brief Attribute defines the position of the wiper stick.
