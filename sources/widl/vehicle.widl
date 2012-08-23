@@ -150,7 +150,7 @@
 	*
 	*/
 	partial interface Webinos {
-	  readonly attribute VehicleInterface tv;
+	  readonly attribute VehicleInterface vehicle;
 	 };
 
 	/**
