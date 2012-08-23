@@ -34,7 +34,7 @@
 
 partial interface Webinos  {
   readonly attribute NFC nfc;
-}
+};
 
     /**
    * \brief The NFCinterface
