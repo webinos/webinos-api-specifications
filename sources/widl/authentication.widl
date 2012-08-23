@@ -46,13 +46,13 @@
   };
   
   /**
-    * \brief Success callback for authentication events.
+    * \brief Success callback for authenticate() and getAuthenticationStatus() methods.
     * \param status contains information about when and how authentication occurred
     */
   callback AuthSuccessCB = void (AuthStatus status);
   
   /**
-    * \brief Success callback for authentication events.
+    * \brief Success callback for isAuthenticated() method.
     * \param authenticated specifies whether the user is authenticated or not
     */
   callback IsAuthenticatedSuccessCB = void (boolean authenticated);
