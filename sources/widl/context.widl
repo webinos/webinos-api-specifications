@@ -584,6 +584,11 @@ interface ScheduledAPICall{
 	readonly attribute DOMString API;
 	
 	/**
+	 * \brief The webinos API method to call. The dev will be allowed to add only a specific list of methods and will not be allowed to add methods like the addEventListener.
+	 */
+	readonly attribute DOMString Method;
+	
+	/**
 	 * \brief The parameters to pass to the API
 	 */
 	attribute object[] Params;
