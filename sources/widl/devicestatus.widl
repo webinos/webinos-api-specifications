@@ -62,7 +62,9 @@
    *  <ul>
    * <li>    Let declaration be the first device status feature declaration that was present in the configuration document, ignoring all others. </li>
    * <li>    Implement the DeviceapisDeviceStatusManager interface when the widget's start file is instantiated:</li>
-   * <ul> <li>     Exchange of security credentials e.g. for a WiFi network </li> </ul>
+   * <ul> 
+   * <li>     Exchange of security credentials e.g. for a WiFi network </li> 
+   * </ul>
    * <li>     Credentials for induction of a new device into a user's Personal Zone </li> 
    * <li>    Tap to play - automatic induction into a multiplayer game</li>
    * </ul>
