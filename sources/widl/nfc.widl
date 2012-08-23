@@ -44,7 +44,7 @@ partial interface Webinos  {
    * <b>Introduction</b>
    * 
    * It is becoming increasingly common for smart phones and other devices to include support for NFC. NFC Tags are inexpensive and widely used. There are many potential applications, e.g. here are just a few:
-   * 
+   *  
    *  <ul>
    * <li>    Electronic payments (tap to pay)</li>
    * <li>     Exchange of contact details (an electronic business card)</li>
