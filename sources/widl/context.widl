@@ -153,7 +153,7 @@ callback SchemaIsDefinedCB = void (DOMString? version);
 /**
  * \brief This is the entry point for the Application ContextObject management. 
  *
- * Application developers may register their own ContextObject data by defining a schema. The application may save this kind of ContextObject which will be shared among applications and devices for later process.
+ * Application developers may register their own ContextObject data by defining a schema. The application may save this kind of ContextObject which will be shared among applications and devices for later processing.
  * The end user will be able to give access to these data based on policy manager rules.
  *
  * \code
@@ -200,9 +200,9 @@ interface ApplicationContextManager{
  
 
 /**
- * \brief This is the entry point for the context API. 
+ * \brief This is the main interface for querying data stored in the context database. 
  *
- * TODO: Long description
+ * Context manager is available through the webinos.context object.
  *
  * \code
  * TODO
@@ -227,7 +227,7 @@ interface ContextManager {
 	/**
 	 * \brief Performs a ContextQuery against the context database.
 	 *
-	 * When this method is invoked it executes the provided query against the context storage. The context storage is a collection context objects, each one with specific attributes, which hold context data that have been acquired over time by identifying a number of context related events. The Query parameter that this method uses specifies what context data (i.e. from which context objects) should be retrieved. 
+	 * When this method is invoked it executes the provided query against the context storage. The context storage is a collection of context objects, each one with specific attributes, which hold context data that have been acquired over time by identifying a number of context related events. The Query parameter that this method uses specifies what context data (i.e. from which context objects) should be retrieved. 
 	 *
 	 * Mediation by policy and security: this method, as it provides application with data (context) about the user, is expected to have privacy considerations. Therefore the system is able to ignore the request of an app to receive context data if the User Privacy Policy dictates so (i.e. the user has not authorized the app to access the context data it ask for in the Query parameter).
 	 *
@@ -256,60 +256,11 @@ interface ContextManager {
 };
 
 /**
- * \brief Interface for errors that may occure during a Context Query. 
- *
- * When the developer makes a ContextQuery some errors may occur which must be handled in the ContextQueryErrorCB function.
- * 
- * \code
- * TODO
- * \endcode
- *
- */
-interface ContextQueryError {
-	/**
-	 * \brief Security error originating from Policy Manager
-	 */
-	const unsigned short PERMISSION_DENIED = 1;
-	/**
-	 * \brief The requested Context Object is not found in Context DB
-	 */
-	const unsigned short CONTEXT_OBJECT_UNAVAILABLE = 2;
-	/**
-	 * \brief The query was not well formed and can not be parsed
-	 */
-	const unsigned short BAD_QUERY_FORMAT = 3;
-	/**
-	 * \brief Aggregated Context Object can not be created due to insufficient data
-	 */
-	const unsigned short INSUFICIENT_DATA = 4;
-	/**
-	 * \brief Context manager did not respond in time
-	 */
-	const unsigned short TIME_OUT = 5;
-	/**
-	 * \brief The query involved too many data and the Context DB would stall if allowed
-	 */
-	const unsigned short THRESSHOLD_REACHED = 6;
-	/**
-	 * \brief An unexpected error occured. Check the message for more info.
-	 */
-	const unsigned short UNDEFINED_ERROR = 99;
-	/**
-	 * \brief The error code of the current ContextQueryError
-	 */
-	readonly attribute unsigned short code;
-	/**
-	 * \brief An english error message that describes the current ContextQueryError
-	 */
-	readonly attribute DOMString message;
-};
-
-/**
  * \brief Callback function when an error occurs while ContextQuery is being executed.
  * 
- * \param error Error object detailing what went wrong.
+ * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#interface-domerror">DOMError</a> object detailing what went wrong; e.g. SecurityError if a security error originating from Policy Manager, NotFoundError if the requested Context Object is not found in Context DB, SyntaxError if the query was not well formed and can not be parsed,InsuficientData if aggregated Context Object can not be created due to insuficient data,TimeoutError if context manager did not respond in time,
  */
-callback ContextQueryErrorCB = void (ContextQueryError error);
+callback ContextQueryErrorCB = void (DOMError error);
 
 /**
  * \brief Array of ContextObject.
@@ -392,22 +343,22 @@ enum WhereClauseType { "and", "or"};
  * <ul>
  * <li>eq: Equals</li>
  * <li>lt: Less than</li>
- * <li>let: Less or equal than</li>
+ * <li>le: Less or equal than</li>
  * <li>gt: Greater than</li>
- * <li>get: Greater or equal than</li>
+ * <li>ge: Greater or equal than</li>
  * <li>starts: Starts with</li>
  * <li>ends: Ends with</li>
  * <li>in: In the given list. The value must be and array.</li>
  * <li>contains: Value contains the given value, only applicable to DOMString</li>
  * </ul>
  */
-enum WhereClauseOperator { "eq", "lt", "gt", "let", "get", "starts", "ends", "in", "contains"};
+enum WhereClauseOperator { "eq", "lt", "gt", "le", "ge", "starts", "ends", "in", "contains"};
 
 /**
  * \brief This is the entry point for the ContextRule management. 
  *
  * Application developers may create new ContextRule in order to trigger events based on those rules. 
- * If a ContextRule is not used in a perion more than a 
+ * If a ContextRule is not used in a perion more than a month, then it is automatically deleted. In order to renew the Rule, the application must call the renew() function of the ContextRule
  *
  * \code
  * TODO
