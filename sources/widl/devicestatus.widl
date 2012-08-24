@@ -158,14 +158,17 @@ interface DeviceStatusManager {
         * 
         * The steps to retrieve the components are given by the following algorithm. The algorithm returns an array of component names, which may be empty.
         * 
-        * \n  1. Run the general invocation checks algorithm. If no exceptions were generated, continue.
-        * \n  2. Let components be an empty array.
-        * \n  3. If the first argument (aspect) null, return components and terminate this algorithm.
-        * \n  4. Let trimmed aspect be the result of trimming any space characters from the front and back of aspect.
-        * \n  5. If trimmed aspect is an empty string or does not exactly match the name of a supported aspect, return null and terminate this algorithm.
-        * \n  6. If trimmed aspect exactly matches the name of a supported aspect:
-        * \n      6a. For each component of the matching aspect, create a DOMString representation of the component name and add it to the components array.
-        * \n  7.  This offers methods to get information about the device status and subscribe to receive notifications of device status changes. To allow for asynchornous notification of changes to the various properties of components, the user agent keeps a list of active watch operations. Each entry in this list is identified by a number, which is unique within its list for the lifetime of the application.
+	* <ol>
+        * <li>  Run the general invocation checks algorithm. If no exceptions were generated, continue.</li>
+        * <li>  Let components be an empty array.</li>
+        * <li>  If the first argument (aspect) null, return components and terminate this algorithm.</li>
+        * <li>  Let trimmed aspect be the result of trimming any space characters from the front and back of aspect.</li>
+        * <li>  If trimmed aspect is an empty string or does not exactly match the name of a supported aspect, return null and terminate this algorithm.</li>
+        * <li>  If trimmed aspect exactly matches the name of a supported aspect:
+        * \n      6a. For each component of the matching aspect, create a DOMString representation of the component name and add it to the components array.</li>
+        * <li>   This offers methods to get information about the device status and subscribe to receive notifications of device status changes. To allow for asynchornous notification of changes to the various properties of components, the user agent keeps a list of active watch operations. Each entry in this list is identified by a number, which is unique within its list for the lifetime of the application.</li>
+	* </ol>
+	*
         *         Example
         * \code
 //displays contain, for example, ["screen1"] 
@@ -191,13 +194,15 @@ for (var i = 0; i < displays.length; i++) {
         * 
         * The steps to check if an aspect is supported are given by the following algorithm. The algorithm returns either true or false.
         * 
-        * \n 1. Run the general invocation checks algorithm. If no exceptions were generated, continue.
-        * \n 2. Let trimmed aspect be the result of trimming all white space from the front and back of the first argument.
-        * \n 3. If the user agent does not supports aspect trimmed aspect, return false and terminate this algorithm.
-        * \n 4. If the second argument (property) was passed, and it's not null,
+	* <ol>
+        * <li> Run the general invocation checks algorithm. If no exceptions were generated, continue.</li>
+        * <li> Let trimmed aspect be the result of trimming all white space from the front and back of the first argument.</li>
+        * <li> If the user agent does not supports aspect trimmed aspect, return false and terminate this algorithm.</li>
+        * <li> If the second argument (property) was passed, and it's not null,
         * \n    4a. Let trimmed property be the result of of trimming all white space from the front and back of the second argument.
-        * \n    4b. If trimmed property is a supported property of trimmed aspect, then return true and terminate this algorithm.
-        * \n 5. Return false.
+        * \n    4b. If trimmed property is a supported property of trimmed aspect, then return true and terminate this algorithm.</li>
+        * <li> Return false.</li>
+	* </ol>
         * 
         * Example
         * \code
@@ -222,42 +227,44 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * 
         * The steps to get a property value are given by the following algorithm:
         * 
-        * \n  1. Run the general invocation checks algorithm. If no exceptions were generated, continue.
-        * \n  2. If either the aspect member or the property member is not present in the third argument (query):
+	* <ol>
+        * <li>  1. Run the general invocation checks algorithm. If no exceptions were generated, continue.</li>
+        * <li>  2. If either the aspect member or the property member is not present in the third argument (query):
         * \n     2a.  If the second argument (errorCallback) is not an ECMAScript funtion, then terminate this algorithm skipping all steps below.
         * \n     2b.  Let exception be a new DOMException of type "TypeMismatchError", with message "Required aspect or property was not passed." (or similar).
         * \n     2c.  Queue a task to invoke the errorCallback with exception as the argument.
-        * \n     2d.  Terminate this algorithm, skipping all steps below.
-        * \n  3. Let aspect name be the result of trimming the value of the aspect member from the third argument (query).
-        * \n  4. If aspect name does not match an enabled aspect:
+        * \n     2d.  Terminate this algorithm, skipping all steps below.</li>
+        * <li>  3. Let aspect name be the result of trimming the value of the aspect member from the third argument (query).</li>
+        * <li>  4. If aspect name does not match an enabled aspect:
         * \n     4a.  If the second argument (errorCallback) is not an ECMAScript function, then terminate this algorithm skipping all steps below.
         * \n     4b.  If aspect name is one found in all aspects, but was disabled by policy or via a feature string, then:
         * \n        4b1.   Let exception be a new DOMException of type "SecurityError", with message "Access to this component was blocked by policy." (or similar).
         * \n     4c.  If aspect name is not one found in the list of all aspects, then:
         * \n        4c1.   Let exception be a new DOMException of type "NotFoundError", with message "Aspect could not be found." (or similar).
         * \n     4d.  Queue a task to invoke the errorCallback with exception as the argument.
-        * \n     4e.  Terminate this algorithm, skipping all steps below.
-        * \n  5. Let prop name be the result of trimming the value of the property member from the third argument (query).
-        * \n  6. If the component member is present in query, let component name be the result of trimming component member.
-        * \n  7. If the component name is not component of the aspect aspect name (e.g., {aspect:"Battery", component: "screen1"}:
+        * \n     4e.  Terminate this algorithm, skipping all steps below.</li>
+        * <li>  5. Let prop name be the result of trimming the value of the property member from the third argument (query).</li>
+        * <li>  6. If the component member is present in query, let component name be the result of trimming component member.</li>
+        * <li>  7. If the component name is not component of the aspect aspect name (e.g., {aspect:"Battery", component: "screen1"}:
         * \n     7a.  If the second argument (errorCallback) is not an ECMAScript function, then terminate this algorithm skipping all steps below.
         * \n     7b.  Let exception be a new DOMException of type "InvalidAccessError", with message "Component is not an instance of aspect." (or similar).
         * \n     7c.  Queue a task to invoke the errorCallback with exception as the argument.
-        * \n     7d.  Terminate this algorithm, skipping all steps below.
-        * \n  8. If the component member is not present in query:
-        * \n     8a.  If the aspect aspect name has an active component, then let component name be "_active". Otherwise, let component name be "_default".
-        * \n  9. If the component component name does not have the property property name (e.g., {aspect:"Battery", component: "_active", "fooBar"):
+        * \n     7d.  Terminate this algorithm, skipping all steps below.</li>
+        * <li>  8. If the component member is not present in query:
+        * \n     8a.  If the aspect aspect name has an active component, then let component name be "_active". Otherwise, let component name be "_default".</li>
+        * <li>  9. If the component component name does not have the property property name (e.g., {aspect:"Battery", component: "_active", "fooBar"):
         * \n     9a.  If the second argument (errorCallback) is not an ECMAScript function, then terminate this algorithm skipping all steps below.
         * \n     9b.  Let exception be a new DOMException of type "NotFoundError", with message "Property not found in component." (or similar).
         * \n     9c.  Queue a task to invoke the errorCallback with exception as the argument.
-        * \n     9d.  Terminate this algorithm, skipping all steps below.
-        * \n 10. Let task be a task that does the following:
+        * \n     9d.  Terminate this algorithm, skipping all steps below.</li>
+        * <li> 10. Let task be a task that does the following:
         * \n    10a.  Let value be the value of property property name of the component component name.
-        * \n    10b.  Invoke the successCallback with value as the argument.
-        * \n 11. Let op be and object that implements the PendingDeviceStatusOp interface.
-        * \n 12. Associate task with op, so that if op's cancel() method is invoked, it attempts to remove task for the callbacks task queue.
-        * \n 13. Queue a task task.
-        * \n 14. Return op.
+        * \n    10b.  Invoke the successCallback with value as the argument.</li>
+        * <li> 11. Let op be and object that implements the PendingDeviceStatusOp interface.</li>
+        * <li> 12. Associate task with op, so that if op's cancel() method is invoked, it attempts to remove task for the callbacks task queue.</li>
+        * <li> 13. Queue a task task.</li>
+        * <li> 14. Return op.</li>
+        * </ol>
         * 
         * Example
         * \code
