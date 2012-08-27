@@ -148,7 +148,6 @@ echo 'This specification defines an API that provides access to the audio, image
 echo '<br/></p></td></tr>' >> "$SPECHOME/apis/index.html"
 echo '</tbody></table></div>' >> "$SPECHOME/apis/index.html"
 
-echo '<p>See also the <a href="patterns.html">Webinos design patterns and guidelines for APIs</a></p>'  >> "$SPECHOME/apis/index.html"
 echo '</body>' >> "$SPECHOME/apis/index.html"
 echo '</html>' >> "$SPECHOME/apis/index.html"
 

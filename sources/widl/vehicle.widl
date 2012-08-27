@@ -453,22 +453,22 @@
 
 
 	/**
-	* \brief The interface defines TODO.
+	* \brief The interface defines the current setting of a given part of a seat.
 	*
 	*/ 
 	dictionary SeatSetting{
 		/**
-		* \brief TODO
+		* \brief relevant seat part
 		*/
 		SeatOption option;
 		/**
-		* \brief TODO
+		* \brief value of the specified seat part
 		*/
 		Long value; 
 	};
 	
 	/**
-	* \brief The interface defines a tire pressure event.
+	* \brief The interface defines a seating data.
 	*/
 	interface SeatData : VehicleData{
 		readonly attribute SeatPosition position;
@@ -476,13 +476,22 @@
 		/**
 		* \brief Method sets the initial values of a vehicle status event.
 		*
-		* \param position TODO.
-		* \param settings TODO.
+		* \param position defines the position of the seat.
+		* \param settings defines the settings of the different seat parts.
 		*/
 		void initSeatData(SeatPosition position, SeatSetting[] settings);
 	};
 	
-	enum SeatPosition { "driver","frontpassaneger", "rearleft", "rearright"};
+	/**
+	* \brief seat position.
+	* defines the different positions of a seat
+	*/
+	enum SeatPosition { "driver","frontpassaneger", "behindDriver", "behindPassenger"};
+	
+	/**
+	* \brief seat option.
+	* defines the different parts of a seat, which can be customized
+	*/
 	enum SeatOption { "recline-seatback","slide", "cushion-heigh", "headrest", "back-cushion", "side-cushion"};
 
 	/**
@@ -568,7 +577,7 @@
 	* \brief The interface defines window data.
 	* WindowData exposes the information of the current position of the different windows of a vehicle.
 	* \code
-	* // checking if driver door is openend.
+	* // checking if driver window is openend.
 	* vehicle.addEventListener("windows", windowHandler);
 	* function windowsHandler(windows){
 	*  if(windows.driver == 0){
@@ -614,5 +623,5 @@
 	* \brief Vehicle event types
 	* defines the possible vehicle data, which can be retrieved using the addEventListener or the get method.
 	*/
-	enum VehicleDataType {"gear","tripcomputer","parksensors-front", "parksensors-rear", "engineoil","wipers","tirepressure","doors", "windows", "climate-all", "climate-driver", "climate-behind-driver", "climate-passenger", "climate-behind-passenger", "light-fog-front", "light-fog-rear", "light-signal-left", "ligth-signal-right", "light-signal-warn", "light-parking", "light-hibeam", "light-head"};
+	enum VehicleDataType {"gear","tripcomputer","parksensors-front", "parksensors-rear", "engineoil","wipers","tirepressure","doors", "windows", "climate-all", "climate-driver", "climate-behind-driver", "climate-passenger", "climate-behind-passenger", "light-fog-front", "light-fog-rear", "light-signal-left", "ligth-signal-right", "light-signal-warn", "light-parking", "light-hibeam", "light-head", "seat-driver", "seat-passenger", "seat-behind-driver", "seat-behind-passenger"};
 	
