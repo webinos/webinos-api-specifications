@@ -102,7 +102,7 @@ interface DeviceInteractionManager {
  * \param duration Duration of notification
  */
     void startNotify(Function successCallback,
-                                      optional ErrorCB? errorCallback,
+                                      optional DeviceInteractionErrorCB? errorCallback,
                                       long duration) ;
 /**
  * \brief  Switch on device vibration for a specified duration and to an optional pattern.
@@ -147,7 +147,7 @@ interface DeviceInteractionManager {
  * \param pattern Pattern of short and long vibrations
  */
     void startVibrate(Function successCallback,
-                                  optional ErrorCB? errorCallback,
+                                  optional DeviceInteractionErrorCB? errorCallback,
                                   optional unsigned long duration,
                                   optional DOMString pattern);
 
@@ -181,7 +181,7 @@ interface DeviceInteractionManager {
  * \param duration How long the light should be on
  */
     void lightOn(Function successCallback,
-                          optional ErrorCB? errorCallback,
+                          optional DeviceInteractionErrorCB? errorCallback,
                           long duration);
 /**
  * \brief   Sets the Wallpaper of the device to the specified image file.
@@ -215,7 +215,7 @@ interface DeviceInteractionManager {
  * \param fileName The image to be set as the wallpaper
  */
     void setWallpaper(Function successCallback,
-                                  optional ErrorCB? errorCallback,
+                                  optional DeviceInteractionErrorCB? errorCallback,
                                   DOMString fileName);
 /**
  * \brief  Terminates an ongoing notification alert.
@@ -256,3 +256,9 @@ interface DeviceInteractionManager {
  */
     void lightOff();
 };
+
+/**
+* \brief Callback for errors during device interaction related functions
+* \param error The Device Interaction API related error object of an unsuccessful asynchronous operation. 
+*/
+callback DeviceInteractionErrorCB = void (DOMError error);
