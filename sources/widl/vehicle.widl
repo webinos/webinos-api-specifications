@@ -468,7 +468,7 @@
 	};
 	
 	/**
-	* \brief The interface defines a tire pressure event.
+	* \brief The interface defines a seating data.
 	*/
 	interface SeatData : VehicleData{
 		readonly attribute SeatPosition position;
@@ -482,7 +482,16 @@
 		void initSeatData(SeatPosition position, SeatSetting[] settings);
 	};
 	
-	enum SeatPosition { "driver","frontpassaneger", "rearleft", "rearright"};
+	/**
+	* \brief seat position.
+	* defines the different positions of a seat
+	*/
+	enum SeatPosition { "driver","frontpassaneger", "behindDriver", "behindPassenger"};
+	
+	/**
+	* \brief seat option.
+	* defines the different parts of a seat, which can be customized
+	*/
 	enum SeatOption { "recline-seatback","slide", "cushion-heigh", "headrest", "back-cushion", "side-cushion"};
 
 	/**
@@ -568,7 +577,7 @@
 	* \brief The interface defines window data.
 	* WindowData exposes the information of the current position of the different windows of a vehicle.
 	* \code
-	* // checking if driver door is openend.
+	* // checking if driver window is openend.
 	* vehicle.addEventListener("windows", windowHandler);
 	* function windowsHandler(windows){
 	*  if(windows.driver == 0){
