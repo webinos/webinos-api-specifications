@@ -453,16 +453,16 @@
 
 
 	/**
-	* \brief The interface defines TODO.
+	* \brief The interface defines the current setting of a given part of a seat.
 	*
 	*/ 
 	dictionary SeatSetting{
 		/**
-		* \brief TODO
+		* \brief relevant seat part
 		*/
 		SeatOption option;
 		/**
-		* \brief TODO
+		* \brief value of the specified seat part
 		*/
 		Long value; 
 	};
@@ -476,8 +476,8 @@
 		/**
 		* \brief Method sets the initial values of a vehicle status event.
 		*
-		* \param position TODO.
-		* \param settings TODO.
+		* \param position defines the position of the seat.
+		* \param settings defines the settings of the different seat parts.
 		*/
 		void initSeatData(SeatPosition position, SeatSetting[] settings);
 	};
@@ -623,5 +623,5 @@
 	* \brief Vehicle event types
 	* defines the possible vehicle data, which can be retrieved using the addEventListener or the get method.
 	*/
-	enum VehicleDataType {"gear","tripcomputer","parksensors-front", "parksensors-rear", "engineoil","wipers","tirepressure","doors", "windows", "climate-all", "climate-driver", "climate-behind-driver", "climate-passenger", "climate-behind-passenger", "light-fog-front", "light-fog-rear", "light-signal-left", "ligth-signal-right", "light-signal-warn", "light-parking", "light-hibeam", "light-head"};
+	enum VehicleDataType {"gear","tripcomputer","parksensors-front", "parksensors-rear", "engineoil","wipers","tirepressure","doors", "windows", "climate-all", "climate-driver", "climate-behind-driver", "climate-passenger", "climate-behind-passenger", "light-fog-front", "light-fog-rear", "light-signal-left", "ligth-signal-right", "light-signal-warn", "light-parking", "light-hibeam", "light-head", "seat-driver", "seat-passenger", "seat-behind-driver", "seat-behind-passenger"};
 	
