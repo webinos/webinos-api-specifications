@@ -7,10 +7,9 @@
  *  \n    screen backlight,
  *  \n    device Wallpaper.
  *
- * All the functionality of this module is accessed through the object deviceapis.deviceinteraction which is an instance of the DeviceInteractionManager interface. In case any functionality is not supported, a DOMException exception will be thrown with code NOT_SUPPORTED_ERR when the related method of the DeviceInteractionManager interface is invoked.
+ * All the functionality of this module is accessed through the object webinos.deviceinteraction which is an instance of the DeviceInteractionManager interface. In case any functionality is not supported, a DOMException exception will be thrown with code NOT_SUPPORTED_ERR when the related method of the DeviceInteractionManager interface is invoked.
  *   
- * http://wacapps.net/api/deviceinteraction
- * 
+ * \def-api-feature http://wacapps.net/api/deviceinteraction
  * Allows access to the device interaction module 
  *
  * \author WAC Device API Specifications 2.1, 30 April 2012
@@ -34,7 +33,7 @@ partial interface Webinos {
  *
  * Example
  * \code
- * var di = deviceapis.deviceinteraction;
+ * var di = webinos.deviceinteraction;
  * 
  * di.lightOn(function() {
  *      console.log("Lighting for 1 second");
@@ -87,7 +86,7 @@ interface DeviceInteractionManager {
  *  
  * \code
  * try {
- *      deviceapis.deviceinteraction.startNotify(function() {
+ *      webinos.deviceinteraction.startNotify(function() {
  *              console.log("Notifying indefinitely");
  *      },
  *      function(e) {
@@ -131,7 +130,7 @@ interface DeviceInteractionManager {
  * If the stopVibrate method is invoked before the specified vibration duration expires, any vibration MUST be stopped.
  * \code
  * try {
- *      deviceapis.deviceinteraction.startVibrate(function() {
+ *      webinos.deviceinteraction.startVibrate(function() {
  *              console.log("Vibrating...");
  *      },
  *      function(e) {
@@ -166,7 +165,7 @@ interface DeviceInteractionManager {
  * \n UNKNOWN_ERR in any other case.
  * \code
  *  try {
- *      deviceapis.deviceinteraction.lightOn(function() {
+ *      webinos.deviceinteraction.lightOn(function() {
  *              console.log("Lighting indefinitely");
  *      },
  *      function(e) {
@@ -200,7 +199,7 @@ interface DeviceInteractionManager {
  * If the errorCallback does not contain a valid function (e.g. null), or in the case of any of the above errors that should be returned in the errorCallback, the implementation MUST silently fail, the developer is not notified of the error and no further action is required.
  * \code
  * try {
- *      deviceapis.deviceinteraction.setWallpaper(function() {
+ *      webinos.deviceinteraction.setWallpaper(function() {
  *              alert("Set wallpaper to WAC logo");
  *      },
  *      function(e) {
@@ -227,7 +226,7 @@ interface DeviceInteractionManager {
  * 
  * If this functionality is not supported, or if any other error occurs when executing the request, it MUST return immediately without performing any action.
  * \code
- * deviceapis.deviceinteraction.stopNotify();
+ * webinos.deviceinteraction.stopNotify();
  * \endcode     
  */                             
     void stopNotify();
@@ -239,7 +238,7 @@ interface DeviceInteractionManager {
  * 
  * If this functionality is not supported, or if any other error occurs when executing the request it MUST return immediately without performing any action.
  * \code
- * deviceapis.deviceinteraction.stopVibrate();
+ * webinos.deviceinteraction.stopVibrate();
  * \endcode
  */
     void stopVibrate();
@@ -252,7 +251,7 @@ interface DeviceInteractionManager {
  * 
  * If this functionality is not supported, or if any other error occurs when executing the request it MUST return immediately without performing any action.
  * \code
- * deviceapis.deviceinteraction.lightOff();
+ * webinos.deviceinteraction.lightOff();
  * \endcode
  */
     void lightOff();
