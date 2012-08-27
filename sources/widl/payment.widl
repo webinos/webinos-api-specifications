@@ -17,9 +17,8 @@
  */
  
 /**
-* \brief Creates the application state synchronization namespace.
+* \brief Creates the webinos.payment namespace.
 *
-* Access to public constants and functions are available via the namespace webinos.sync.
 */
 partial interface Webinos {
      /**

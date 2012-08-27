@@ -43,9 +43,8 @@
 
 
 /**
-* \brief Creates the application state synchronization namespace.
+* \brief Creates the webinos.messaging namespace.
 *
-* Access to public constants and functions are available via the namespace webinos.sync.
 */
 partial interface Webinos {
    readonly attribute Messaging messaging;

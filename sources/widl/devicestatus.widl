@@ -110,9 +110,8 @@
  
  
 /**
-* \brief Creates the application state synchronization namespace.
+* \brief Creates the webinos.devicestatus namespace.
 *
-* Access to public constants and functions are available via the namespace webinos.sync.
 */
 partial interface Webinos {
        /**
@@ -158,7 +157,7 @@ interface DeviceStatusManager {
         * 
         * The steps to retrieve the components are given by the following algorithm. The algorithm returns an array of component names, which may be empty.
         * 
-	* <ol>
+        * <ol>
         * <li>  Run the general invocation checks algorithm. If no exceptions were generated, continue.</li>
         * <li>  Let components be an empty array.</li>
         * <li>  If the first argument (aspect) null, return components and terminate this algorithm.</li>
@@ -167,8 +166,8 @@ interface DeviceStatusManager {
         * <li>  If trimmed aspect exactly matches the name of a supported aspect:
         * \n      6a. For each component of the matching aspect, create a DOMString representation of the component name and add it to the components array.</li>
         * <li>   This offers methods to get information about the device status and subscribe to receive notifications of device status changes. To allow for asynchornous notification of changes to the various properties of components, the user agent keeps a list of active watch operations. Each entry in this list is identified by a number, which is unique within its list for the lifetime of the application.</li>
-	* </ol>
-	*
+        * </ol>
+        *
         *         Example
         * \code
 //displays contain, for example, ["screen1"] 
@@ -194,7 +193,7 @@ for (var i = 0; i < displays.length; i++) {
         * 
         * The steps to check if an aspect is supported are given by the following algorithm. The algorithm returns either true or false.
         * 
-	* <ol>
+        * <ol>
         * <li> Run the general invocation checks algorithm. If no exceptions were generated, continue.</li>
         * <li> Let trimmed aspect be the result of trimming all white space from the front and back of the first argument.</li>
         * <li> If the user agent does not supports aspect trimmed aspect, return false and terminate this algorithm.</li>
@@ -202,7 +201,7 @@ for (var i = 0; i < displays.length; i++) {
         * \n    4a. Let trimmed property be the result of of trimming all white space from the front and back of the second argument.
         * \n    4b. If trimmed property is a supported property of trimmed aspect, then return true and terminate this algorithm.</li>
         * <li> Return false.</li>
-	* </ol>
+        * </ol>
         * 
         * Example
         * \code
@@ -227,7 +226,7 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * 
         * The steps to get a property value are given by the following algorithm:
         * 
-	* <ol>
+        * <ol>
         * <li>  Run the general invocation checks algorithm. If no exceptions were generated, continue.</li>
         * <li>  If either the aspect member or the property member is not present in the third argument (query):
         * \n     2a.  If the second argument (errorCallback) is not an ECMAScript funtion, then terminate this algorithm skipping all steps below.
@@ -300,7 +299,7 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * The steps for watching property changes is given by the following algorithm:
         * 
         * 
-	* <ol>
+        * <ol>
         * <li>  Run the general invocation checks algorithm. If no exceptions were generated, continue.</li>
         * <li>  Let subscription id be a user-agent-defined (random or sequential) unique integer that will represent the looping action to be created by invoking this method.</li>
         * <li>  Add subscription id to the list of active watch operations.</li>
@@ -318,7 +317,7 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * <li>  Factor in the minChangePercent change value. Only queue the task when the change between the old value and new value is minChangePercent or greater.</li>
         * <li>  Queue the task task.</li>
         * <li>  Return to step labelled wait.</li>
-	* </ol>
+        * </ol>
         * 
         * Example
         * \code

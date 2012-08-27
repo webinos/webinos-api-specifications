@@ -27,9 +27,8 @@
  * \version 1.9
  */
         /**
-          * \brief Creates the application state synchronization namespace.
+          * \brief Creates the webinos.contacts namespace.
           *
-          * Access to public constants and functions are available via the namespace webinos.sync.
           */
          partial interface Webinos {
            /**
