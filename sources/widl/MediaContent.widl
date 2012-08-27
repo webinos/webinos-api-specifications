@@ -1,12 +1,14 @@
 /**<p>This api provides access to multimedia contents and relative informations.</p>
  * \name MediaContent API
- * \brief This API provides functionality to discover multimedia contents (such as images, videos, or music) that are available on the device. It is possible to search for specific media items using filters. The API also supports setting attributes of specific media items.
- * This API has been slighly changed by webinos to add a way to cancel asynchronous operations.
  *
- * \def-api-feature http://tizen.com/apimediacontent
+ * This API provides functionality to discover multimedia contents (such as images, videos, or music) that are available on the device.
+ * It is possible to search for specific media items using filters. The API also supports setting attributes of specific media items.
+ * This API has been slighly changed by webinos to add a method to cancel asynchronous operations.
+ *
+ * \def-api-feature http://tizen.com/api/mediacontent
  * Access to all features in this module
  *
- * \def-api-feature http://tizen.com/apimediacontent.read
+ * \def-api-feature http://tizen.com/api/mediacontent.read
  * Access to all features in this module except updateItem() and updateItemsBatch()
  *
  * \author Tizen Device API Specifications
@@ -98,7 +100,7 @@
 	   * var mediasource = tizen.mediaconent.getLocalMediaSource();
 	   * // Assume items is a MediaItem object vector as a result of findItems method.
 	   * // Check the playCount is editable, and then increase by 1.
-	   * for (i=0; i<items.length; i++) {
+	   * for (i=0; i &lt; items.length; i++) {
 	   *   if (items[i].editableAttributes.indexOf("playCount") >= 0) {
 	   *      items[i].playCount++;
 	   *   }
@@ -508,13 +510,13 @@
   [NoInterfaceObject] interface AbstractFilter {
   };
   
+  [Constructor(CompositeFilterType type, optional AbstractFilter[]? filters)]
 	/**
 	 * \brief CompositeFilter represents a set of filters.
 	 * The composite filters can be one of the 2 types:
-	 * The union - used to filter objects that matchs more than one filter it includes.
-	 * The intersection - used to filter objects that matchs all filters it includes.
+	 * The union - used to filter objects that matches more than one filter it includes.
+	 * The intersection - used to filter objects that matches all filters it includes.
 	 */
-  [Constructor(CompositeFilterType type, optional AbstractFilter[]? filters)]
   interface CompositeFilter : AbstractFilter {
 	/**
 	 * \brief The composite filter type.
@@ -527,11 +529,11 @@
     attribute AbstractFilter[] filters;
   };
   
+  [Constructor(DOMString attributeName, optional FilterMatchFlag? matchFlag, optional any matchValue)]
 	/**
 	 * \brief AttributeFilter represents a filter based on an object attribute.
 	 * If no matchValue is defined, the filter will match all objects that have the attribute defined (same as the "EXISTS" filter works), otherwise, it will only match objects whose attribute matches the given value.
 	 */
-  [Constructor(DOMString attributeName, optional FilterMatchFlag? matchFlag, optional any matchValue)]
   interface AttributeFilter : AbstractFilter {
 	/**
 	 * \brief The name of the object attribute used for filtering.
@@ -553,11 +555,11 @@
     attribute any matchValue;
   };
   
+  [Constructor(DOMString attributeName, optional any initialValue, optional any endValue)]
 	/**
 	 * \brief Filter which matches objects containing an attribute whose values are within a particular range.
 	 * Range filters where only one boundary is set MUST be supported.
 	 */
-  [Constructor(DOMString attributeName, optional any initialValue, optional any endValue)]
   interface AttributeRangeFilter : AbstractFilter {
 	/**
 	 * \brief The name of the object attribute used for filtering.
@@ -580,11 +582,11 @@
   };
   
   
+  [Constructor(DOMString attributeName, optional SortModeOrder? order)]
 	/**
 	 * \brief SortMode is a common interface used for sorting of queried data.
 	 * Note that the sorting result of list type attributes is not determined.
 	 */
-  [Constructor(DOMString attributeName, optional SortModeOrder? order)]
   interface SortMode {
 	/**
 	 * \brief The name of the object attribute used for sorting.
