@@ -279,7 +279,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         </xsl:if>
         <xsl:if test="DictionaryMember/descriptive">
             <div class="attributes">
-                <h4>Dictinary Members</h4>
+                <h4>Dictionary Members</h4>
                 <dl>
                   <xsl:apply-templates select="DictionaryMember"/>
                 </dl>
