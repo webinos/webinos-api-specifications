@@ -207,7 +207,7 @@
 		*      webinos.navigation.findDestination("BMW", destinationCB, errorCB);
 		*      function destinationCB(pois){
 		*	if(destinations.length > 0){
-		*      	webinos.navigation.requestGuidance(destinations, false, successCB, errorCB);            
+		*      	webinos.navigation.requestGuidance(destinations[0], false, successCB, errorCB);            
 		*	else{
 		*		console.log("No POI found");
 		*	}		
@@ -225,7 +225,7 @@
 		* \brief Provides the information if guidance is active or not.
 		*
 		* \code
-		* navigation.getStatus(function(data){alert(data.status)}); 
+		* webinos.navigation.getStatus(function(data){alert(data.status)}); 
 		* \endcode
 		*
 		* \param successHandler callback to handle the status of navigation system.
