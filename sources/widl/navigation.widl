@@ -194,7 +194,7 @@
 		* \param destination in form of an POI.
 		* \param intermediate if the provided POI is an intermediate or final destination.
 		*/
-		void requestGuidance(POI destination, optional boolean intermediate, optional NavigationSuccessCallback successCallback, optional NavigationErrorCallback errorCallback);
+		void requestGuidance(POI destination, optional boolean intermediate, optional NavigationCallback successCallback, optional NavigationErrorCallback errorCallback);
 
 		/**
 		* \brief Function to cancel the guidance to a Point-of-interest 
