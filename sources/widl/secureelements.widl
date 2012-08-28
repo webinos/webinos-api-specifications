@@ -4,7 +4,7 @@
  * This is an API for accessing functions on contact or contactless smart cards or similar devices using the Application Protocol Data Unit (APDU) 
  * command response protocol, as defined by ISO 7816-4. In essence, the command consists of a 4 byte header followed by up to 255 bytes of data. 
  * The response contains a 2 byte header followed by up to 256 bytes of data. The headers and data are specified in a suite of standards from ISO and 
- * others. It also possible to develop custom secure elements using Java cards from companies such as G&D and Gemalto.
+ * others. It also possible to develop custom secure elements using Java cards from companies such as G &amp; D and Gemalto.
  * 
  * The aim is to give system applications written in JavaScript, and executing on a web run-time, a lightweight means to send commands to secure 
  * elements and handle the responses using byte arrays (similar to the existing Java API). Applications would have access to the crypto APIs being 
