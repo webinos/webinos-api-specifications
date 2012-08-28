@@ -587,7 +587,7 @@ dictionary PropQuery {
         * </TR>
         * <TR>
         *    <TD>ParentalRating</TD><TD>scheme (*)</TD>
-        *    <TD>>The scheme property is a DOMString representing the guidance scheme URIs as defined in MPEG-7.</TD>
+        *    <TD>The scheme property is a DOMString representing the guidance scheme URIs as defined in MPEG-7.</TD>
         * </TR>
         * <TR>
         *    <TD>ParentalRating</TD><TD>region (*)</TD>
