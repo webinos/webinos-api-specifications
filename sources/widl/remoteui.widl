@@ -14,7 +14,8 @@
  */
 
         /**
-         * \brief The RemoteUI interface provides access to the remoteDOM method and can be bound as a service,
+         * \brief Creates the webinos.remoteUI namespace..
+         *
          *
          * On binding to the service, a window on the remote device is opened, which needs to be uniquely recognizeable as a window instantiated by a remote instance by having a specific frame and including information about which application on which device has opened it remotely. The purpose of this is to avoid remote programs being able to spoof the appearance of programs running locally on the device.
          * 
@@ -22,7 +23,7 @@
          * 
          * The opened window on the remote device contains as named elements a head element with the id "head" and a body element with the id 'body".
          */
-        [NoInterfaceObject] interface RemoteUI {
+         partial interface Webinos { 
              /**
               * \brief Sends a DOM manipulation command to the remote UI and evaluates (executes) it there.
               *
@@ -46,14 +47,13 @@
               * \param successCallback Callback issued when successfully remote command was handled successfully
               * \param errorCallback Callback issued if an error occurs during issuing a remote command
               * \param remoteComand The remore command to be evalated on the remote UI
-              * \return PendingOperation enabling the requester to cancel this request.
+              * \return void 
               */
-        PendingOperation remoteDOM(RemoteDOMSuccessCB? successCallback, RemoteDOMErrorCB? errorCallback, DOMstring remoteComand);
+        void remoteDOM(RemoteDOMSuccessCB? successCallback, RemoteDOMErrorCB? errorCallback, DOMstring remoteComand);
                 
         };
 
 
-        Webinos implements RemoteUI;
         
        /**
          * \brief Callback for successful DOM maniulation
@@ -67,20 +67,5 @@
          */
         callback RemoteDOMErrorCB  = void (DOMError error);
         
-    /**
-     * \brief The PendingOperation interface
-     *
-     * The PendingOperation interface describes objects that are returned by asynchronous methods that are cancellable. It makes it possible to bring 
-     * these operations to a stop if they haven't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.\n
-     *
-     */
-     [NoInterfaceObject] interface PendingOperation {
-    /**
-     * \brief Method Cancel
-     *
-     *  Cancel the pending asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return. No success or error callback for the pending operation will be invoked.
-     */
-        void cancel ();
-     };
 
         

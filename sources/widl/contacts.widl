@@ -27,10 +27,10 @@
  * \version 1.9
  */
         /**
-         * \brief The ServiceContacts interface is exposed on the Navigator object [NAVIGATOR]. Its goal is to provide an access point to the functionality in this specification. 
-         */
-        [NoInterfaceObject]
-        interface ServiceContacts {
+          * \brief Creates the webinos.contacts namespace.
+          *
+          */
+         partial interface Webinos {
            /**
            * \brief The object through which the contacts functionality can be accessed.
            * No exceptions.
@@ -123,10 +123,10 @@
                 * \param successCB Function to call when the asynchronous operation completes successfully.
                 * \param errorCB Function to call when the asynchronous operation fails.
                 * \param contact The contact to add to the contacts list.                                 
-                * \return A pending operation object making it possible to cancel the addContact operation 
+                * \return void
                 */
                 
-                PendingOp addContact(ContactAddSuccessCB successCB, ContactErrorCB? errorCB, Contact contact);                
+                void addContact(ContactAddSuccessCB successCB, ContactErrorCB? errorCB, Contact contact);                
 
                 /**
                 * \brief The updateContact() method asynchronously updates an existing contact in an address book.
@@ -182,9 +182,9 @@
                 * \param successCB Function to call when the asynchronous operation completes successfully.
                 * \param errorCB Function to call when the asynchronous operation fails.
                 * \param contact The contact to update in the contacts list.                                 
-                * \return A pending operation object making it possible to cancel the updateContact operation 
+                * \return void
                 */
-                PendingOp updateContact(ContactUpdateSuccessCB successCB, ContactErrorCB? errorCB, Contact contact);                
+                void updateContact(ContactUpdateSuccessCB successCB, ContactErrorCB? errorCB, Contact contact);                
 
                 /**
                 * \brief Deletes a contact from the address book asynchronously.
@@ -221,9 +221,9 @@
                 * \param successCB Function to call when the asynchronous operation completes successfully.
                 * \param errorCB Function to call when the asynchronous operation fails.
                 * \param id The id of the contact to delete from the contacts list.                                 
-                * \return A pending operation object making it possible to cancel the deleteontact operation 
+                * \return void
                 */
-                PendingOp deleteContact(ContactDeleteSuccessCB successCB, ContactErrorCB? errorCB, DOMString id);          
+                void deleteContact(ContactDeleteSuccessCB successCB, ContactErrorCB? errorCB, DOMString id);          
 
 
                  /**
@@ -273,12 +273,30 @@
                  * \return A pending operation object making it possible to cancel the findContacts operation 
                  */
                  
-                PendingOp findContacts(ContactFindSuccessCB successCB, optional ContactErrorCB? errorCB, optional ContactFilter? filter);
+                PendingContactFindOp findContacts(ContactFindSuccessCB successCB, optional ContactErrorCB? errorCB, optional ContactFilter? filter);
 
         
         };
   
- 
+     /**
+     * \brief The PendingContactFindOp interface
+     *
+     * The PendingContactFindOp interface describes the object that is returned by the asynchronous find contacts sensor method. It makes it possible to abort
+     * this operation to a stop if it hasn't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.
+     *
+     */
+     [NoInterfaceObject] interface PendingContactFindOp {
+
+    /**
+     * \brief Method Cancel
+     *
+     *  Cancel the pending find contacts asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
+     *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
+     *  name "AbortError" is issued.
+     */
+        void cancel ();
+     };
+
   
           /**
          * \brief ContactProps dictionary
@@ -815,23 +833,6 @@
         };
         
 
-
-    /**
-     * \brief The PendingOp interface
-     *
-     * The PendingOp interface describes objects that are returned by asynchronous methods that are cancellable. It makes it possible to bring 
-     * these operations to a stop if they haven't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.\n
-     *
-     */
-     [NoInterfaceObject] interface PendingOp {
-
-    /**
-     * \brief Method Cancel
-     *
-     *  Cancel the pending asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return. No success or error callback for the pending operation will be invoked.
-     */
-        void cancel ();
-     };
 
                  /**
                  * \brief Callback on success of a find() operation

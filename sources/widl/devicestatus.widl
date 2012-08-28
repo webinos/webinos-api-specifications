@@ -59,44 +59,46 @@
  *  
  *  The steps for processing a device status feature declaration is given by the following algorithm. Only the first feature declaration is respected by the user agent:
  *  
- * \n  1. Let declaration be the first device status feature declaration that was present in the configuration document, ignoring all others.
- * \n  2. Implement the DeviceapisDeviceStatusManager interface when the widget's start file is instantiated:
- * \n     2a. For each supported aspect, identify the components and assign each of them a component name, and, where there are more than one component, identify which is the default and track which components are active. It is recommended that the component name assigned by the user agent to a component be something that is "developer-friendly": i.e., that logically relates to the aspect the component represents (e.g., candidats include "screen_1", "battery2", "os", "hdd", "SD-Card").
- * \n  3. If required, disable any aspects as needed by the particular feature declaration (see each device status feature strings).
- * \n  4. ignore all other subsequent device status feature declarations.
- *  
- *  XML Example  
+ * <ol>
+ * <li>    Let declaration be the first device status feature declaration that was present in the configuration document, ignoring all others. </li>
+ * <li>    Implement the DeviceapisDeviceStatusManager interface when the widget's start file is instantiated:
+ * \n   2a. For each supported aspect, identify the components and assign each of them a component name, and, where there are more than one component, identify which is the default and track which components are active. It is recommended that the component name assigned by the user agent to a component be something that is "developer-friendly": i.e., that logically relates to the aspect the component represents (e.g., candidats include "screen_1", "battery2", "os", "hdd", "SD-Card"). </li>
+ * <li> If required, disable any aspects as needed by the particular feature declaration (see each device status feature strings). </li>
+ * <li> ignore all other subsequent device status feature declarations. </li>
+ * </ol> 
  *
- *  \<widget xmlns="http://www.w3.org/ns/widgets"> <br />
- *    \<feature name="http://wacapps.net/api/devicestatus"/> <br />
- *  \</widget> <br />
+ * \code
+ *  \<widget xmlns="http://www.w3.org/ns/widgets"> 
+ *    \<feature name="http://wacapps.net/api/devicestatus"/> 
+ *  \</widget> 
+ * \endcode
  *  
  *  The above example shows how a developer declares their intention to access all aspects of the Device Status API.
  *
- *  XML Example
- *  
- *  \<widget xmlns="http://www.w3.org/ns/widgets"> <br />
- *  \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/><br />
- *  \</widget><br />
+ * \code
+ *  \<widget xmlns="http://www.w3.org/ns/widgets"> 
+ *  \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/>
+ *  \</widget>
+ * \endcode 
  *
  *  The above example shows a developers intention to access the device information aspects of the Device Status API.
  *
- *  XML Example
- *  
- *  \<widget xmlns="http://www.w3.org/ns/widgets"> <br />
- *    \<feature name="http://wacapps.net/api/devicestatus.networkinfo"/> <br />
- *  \</widget> <br />
+ * \code
+ *  \<widget xmlns="http://www.w3.org/ns/widgets"> 
+ *    \<feature name="http://wacapps.net/api/devicestatus.networkinfo"/> 
+ *  \</widget> 
+ * \endcode 
  *  
  *  The above example shows a developers intention to access network information aspects the aspects of the Device Status API.
- *
- *  XML Example
  *  
- *  \<widget xmlns="http://www.w3.org/ns/widgets"> <br />
- *    \<feature name="http://wacapps.net/api/device.networkinfo"/> <br />
- *    \<!-- The rest are ignored --> <br />
- *    \<feature name="http://wacapps.net/api/devicestatus"/> <br />
- *    \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/> <br />
- *  \</widget>  <br />
+ * \code
+ *  \<widget xmlns="http://www.w3.org/ns/widgets">
+ *    \<feature name="http://wacapps.net/api/device.networkinfo"/>
+ *    \<!-- The rest are ignored --> 
+ *    \<feature name="http://wacapps.net/api/devicestatus"/> 
+ *    \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/> 
+ *  \</widget>  
+ * \endcode 
  *  
  *  In the above example, only the network information aspects would be made available.
  *   
@@ -107,12 +109,11 @@
  */
  
  
-        /**
-         * \brief When an device status feature declaration appears in the widget's configuration document, the user agent implements the DeviceapisDeviceStatusManager interface.
-                 */
-
- [NoInterfaceObject]
-interface DeviceapisDeviceStatusManager {
+/**
+* \brief Creates the webinos.devicestatus namespace.
+*
+*/
+partial interface Webinos {
        /**
         * \brief The devicestatus attribute provides access to Device Status API. 
         *         Example
@@ -156,14 +157,17 @@ interface DeviceStatusManager {
         * 
         * The steps to retrieve the components are given by the following algorithm. The algorithm returns an array of component names, which may be empty.
         * 
-        * \n  1. Run the general invocation checks algorithm. If no exceptions were generated, continue.
-        * \n  2. Let components be an empty array.
-        * \n  3. If the first argument (aspect) null, return components and terminate this algorithm.
-        * \n  4. Let trimmed aspect be the result of trimming any space characters from the front and back of aspect.
-        * \n  5. If trimmed aspect is an empty string or does not exactly match the name of a supported aspect, return null and terminate this algorithm.
-        * \n  6. If trimmed aspect exactly matches the name of a supported aspect:
-        * \n      6a. For each component of the matching aspect, create a DOMString representation of the component name and add it to the components array.
-        * \n  7.  This offers methods to get information about the device status and subscribe to receive notifications of device status changes. To allow for asynchornous notification of changes to the various properties of components, the user agent keeps a list of active watch operations. Each entry in this list is identified by a number, which is unique within its list for the lifetime of the application.
+        * <ol>
+        * <li>  Run the general invocation checks algorithm. If no exceptions were generated, continue.</li>
+        * <li>  Let components be an empty array.</li>
+        * <li>  If the first argument (aspect) null, return components and terminate this algorithm.</li>
+        * <li>  Let trimmed aspect be the result of trimming any space characters from the front and back of aspect.</li>
+        * <li>  If trimmed aspect is an empty string or does not exactly match the name of a supported aspect, return null and terminate this algorithm.</li>
+        * <li>  If trimmed aspect exactly matches the name of a supported aspect:
+        * \n      6a. For each component of the matching aspect, create a DOMString representation of the component name and add it to the components array.</li>
+        * <li>   This offers methods to get information about the device status and subscribe to receive notifications of device status changes. To allow for asynchornous notification of changes to the various properties of components, the user agent keeps a list of active watch operations. Each entry in this list is identified by a number, which is unique within its list for the lifetime of the application.</li>
+        * </ol>
+        *
         *         Example
         * \code
 //displays contain, for example, ["screen1"] 
@@ -189,13 +193,15 @@ for (var i = 0; i < displays.length; i++) {
         * 
         * The steps to check if an aspect is supported are given by the following algorithm. The algorithm returns either true or false.
         * 
-        * \n 1. Run the general invocation checks algorithm. If no exceptions were generated, continue.
-        * \n 2. Let trimmed aspect be the result of trimming all white space from the front and back of the first argument.
-        * \n 3. If the user agent does not supports aspect trimmed aspect, return false and terminate this algorithm.
-        * \n 4. If the second argument (property) was passed, and it's not null,
+        * <ol>
+        * <li> Run the general invocation checks algorithm. If no exceptions were generated, continue.</li>
+        * <li> Let trimmed aspect be the result of trimming all white space from the front and back of the first argument.</li>
+        * <li> If the user agent does not supports aspect trimmed aspect, return false and terminate this algorithm.</li>
+        * <li> If the second argument (property) was passed, and it's not null,
         * \n    4a. Let trimmed property be the result of of trimming all white space from the front and back of the second argument.
-        * \n    4b. If trimmed property is a supported property of trimmed aspect, then return true and terminate this algorithm.
-        * \n 5. Return false.
+        * \n    4b. If trimmed property is a supported property of trimmed aspect, then return true and terminate this algorithm.</li>
+        * <li> Return false.</li>
+        * </ol>
         * 
         * Example
         * \code
@@ -220,42 +226,44 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * 
         * The steps to get a property value are given by the following algorithm:
         * 
-        * \n  1. Run the general invocation checks algorithm. If no exceptions were generated, continue.
-        * \n  2. If either the aspect member or the property member is not present in the third argument (query):
+        * <ol>
+        * <li>  Run the general invocation checks algorithm. If no exceptions were generated, continue.</li>
+        * <li>  If either the aspect member or the property member is not present in the third argument (query):
         * \n     2a.  If the second argument (errorCallback) is not an ECMAScript funtion, then terminate this algorithm skipping all steps below.
         * \n     2b.  Let exception be a new DOMException of type "TypeMismatchError", with message "Required aspect or property was not passed." (or similar).
         * \n     2c.  Queue a task to invoke the errorCallback with exception as the argument.
-        * \n     2d.  Terminate this algorithm, skipping all steps below.
-        * \n  3. Let aspect name be the result of trimming the value of the aspect member from the third argument (query).
-        * \n  4. If aspect name does not match an enabled aspect:
+        * \n     2d.  Terminate this algorithm, skipping all steps below.</li>
+        * <li>  Let aspect name be the result of trimming the value of the aspect member from the third argument (query).</li>
+        * <li>  If aspect name does not match an enabled aspect:
         * \n     4a.  If the second argument (errorCallback) is not an ECMAScript function, then terminate this algorithm skipping all steps below.
         * \n     4b.  If aspect name is one found in all aspects, but was disabled by policy or via a feature string, then:
         * \n        4b1.   Let exception be a new DOMException of type "SecurityError", with message "Access to this component was blocked by policy." (or similar).
         * \n     4c.  If aspect name is not one found in the list of all aspects, then:
         * \n        4c1.   Let exception be a new DOMException of type "NotFoundError", with message "Aspect could not be found." (or similar).
         * \n     4d.  Queue a task to invoke the errorCallback with exception as the argument.
-        * \n     4e.  Terminate this algorithm, skipping all steps below.
-        * \n  5. Let prop name be the result of trimming the value of the property member from the third argument (query).
-        * \n  6. If the component member is present in query, let component name be the result of trimming component member.
-        * \n  7. If the component name is not component of the aspect aspect name (e.g., {aspect:"Battery", component: "screen1"}:
+        * \n     4e.  Terminate this algorithm, skipping all steps below.</li>
+        * <li>  Let prop name be the result of trimming the value of the property member from the third argument (query).</li>
+        * <li>  If the component member is present in query, let component name be the result of trimming component member.</li>
+        * <li>  If the component name is not component of the aspect aspect name (e.g., {aspect:"Battery", component: "screen1"}:
         * \n     7a.  If the second argument (errorCallback) is not an ECMAScript function, then terminate this algorithm skipping all steps below.
         * \n     7b.  Let exception be a new DOMException of type "InvalidAccessError", with message "Component is not an instance of aspect." (or similar).
         * \n     7c.  Queue a task to invoke the errorCallback with exception as the argument.
-        * \n     7d.  Terminate this algorithm, skipping all steps below.
-        * \n  8. If the component member is not present in query:
-        * \n     8a.  If the aspect aspect name has an active component, then let component name be "_active". Otherwise, let component name be "_default".
-        * \n  9. If the component component name does not have the property property name (e.g., {aspect:"Battery", component: "_active", "fooBar"):
+        * \n     7d.  Terminate this algorithm, skipping all steps below.</li>
+        * <li>  If the component member is not present in query:
+        * \n     8a.  If the aspect aspect name has an active component, then let component name be "_active". Otherwise, let component name be "_default".</li>
+        * <li>  If the component component name does not have the property property name (e.g., {aspect:"Battery", component: "_active", "fooBar"):
         * \n     9a.  If the second argument (errorCallback) is not an ECMAScript function, then terminate this algorithm skipping all steps below.
         * \n     9b.  Let exception be a new DOMException of type "NotFoundError", with message "Property not found in component." (or similar).
         * \n     9c.  Queue a task to invoke the errorCallback with exception as the argument.
-        * \n     9d.  Terminate this algorithm, skipping all steps below.
-        * \n 10. Let task be a task that does the following:
+        * \n     9d.  Terminate this algorithm, skipping all steps below.</li>
+        * <li>  Let task be a task that does the following:
         * \n    10a.  Let value be the value of property property name of the component component name.
-        * \n    10b.  Invoke the successCallback with value as the argument.
-        * \n 11. Let op be and object that implements the PendingOperation interface.
-        * \n 12. Associate task with op, so that if op's cancel() method is invoked, it attempts to remove task for the callbacks task queue.
-        * \n 13. Queue a task task.
-        * \n 14. Return op.
+        * \n    10b.  Invoke the successCallback with value as the argument.</li>
+        * <li>  Let op be and object that implements the PendingDeviceStatusOp interface.</li>
+        * <li>  Associate task with op, so that if op's cancel() method is invoked, it attempts to remove task for the callbacks task queue.</li>
+        * <li>  Queue a task task.</li>
+        * <li>  Return op.</li>
+        * </ol>
         * 
         * Example
         * \code
@@ -274,9 +282,9 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * \param successCallback Function to call on successfully retrieving a property value
         * \param errorCallback Function to call if property value could not be retrieved
         * \param query Property to retrieve
-        * \return PendingOperation enabling the requester to cancel this request.        
+        * \return PendingDeviceStatusOp enabling the requester to cancel this request.        
         */
-    PendingOperation getPropertyValue(Function  successCallback,
+    PendingDeviceStatusOp getPropertyValue(Function  successCallback,
                                       ErrorCB? errorCallback,
                                       PropQuery query);
 
@@ -290,23 +298,26 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * 
         * The steps for watching property changes is given by the following algorithm:
         * 
-        * \n  1. Run the general invocation checks algorithm. If no exceptions were generated, continue.
-        * \n  2. Let subscription id be a user-agent-defined (random or sequential) unique integer that will represent the looping action to be created by invoking this method.
-        * \n  3. Add subscription id to the list of active watch operations.
-        * \n  4. Return subscription id, and then continue running this algorithm asynchronously.
-        * \n  5. Let interval be the value 0.
-        * \n  6. If the fourth argument (options) is present:
+        * 
+        * <ol>
+        * <li>  Run the general invocation checks algorithm. If no exceptions were generated, continue.</li>
+        * <li>  Let subscription id be a user-agent-defined (random or sequential) unique integer that will represent the looping action to be created by invoking this method.</li>
+        * <li>  Add subscription id to the list of active watch operations.</li>
+        * <li>  Return subscription id, and then continue running this algorithm asynchronously.</li>
+        * <li>  Let interval be the value 0.</li>
+        * <li>  If the fourth argument (options) is present:
         * \n     6a.  If the minChangePercent member is present, and it is a number greater than 0, then let percent interval be the value of minChangePercent.
         * \n     6b.  If the minNotificationInterval member is present, and it is a number, then let interval be the value of minNotificationInterval.
-        * \n     6c.  If the maxNotificationInterval member is present, and it is a number, then let max interval be the value of minNotificationInterval.
-        * \n  7. If interval is less than a user-agent-defined value for a the smallest ammount of time between intevals (i.e., to protect the component from being flooded with requests or because it would drain too much battery, etc.), set interval to that user-agent-defined value.
-        * \n  8. If max interval is less than interval, discard max interval.
-        * \n  9. Let old value be the value 0.
-        * \n 10. Wait, at a minimum (optionally more time if needed), the amount of time indicated by the interval. If the max interval was not discarded, and the time waited exceeds the max interval, do this step again (i.e., wait).
-        * \n 11. If the entry for subscription id has been cleared from the list of active watch operations, terminate this algorithm. If subscription id has not been cleared from the list of active watch operations, create a task to run the getPropertyValue() method using successCallback as the first argument, and, if present, errorCallback as the second argument, and query dictionary as the third argument. Discard the resulting PendingOperation object.
-        * \n 12. TODO: Factor in the minChangePercent change value. Only queue the task when the change between the old value and new value is minChangePercent or greater.
-        * \n 13. Queue the task task.
-        * \n 14. Return to step labelled wait.
+        * \n     6c.  If the maxNotificationInterval member is present, and it is a number, then let max interval be the value of minNotificationInterval.</li>
+        * <li>  If interval is less than a user-agent-defined value for a the smallest ammount of time between intevals (i.e., to protect the component from being flooded with requests or because it would drain too much battery, etc.), set interval to that user-agent-defined value.</li>
+        * <li>  If max interval is less than interval, discard max interval.</li>
+        * <li>  Let old value be the value 0.</li>
+        * <li>  Wait, at a minimum (optionally more time if needed), the amount of time indicated by the interval. If the max interval was not discarded, and the time waited exceeds the max interval, do this step again (i.e., wait).</li>
+        * <li>  If the entry for subscription id has been cleared from the list of active watch operations, terminate this algorithm. If subscription id has not been cleared from the list of active watch operations, create a task to run the getPropertyValue() method using successCallback as the first argument, and, if present, errorCallback as the second argument, and query dictionary as the third argument. Discard the resulting PendingDeviceStatusOp object.</li>
+        * <li>  Factor in the minChangePercent change value. Only queue the task when the change between the old value and new value is minChangePercent or greater.</li>
+        * <li>  Queue the task task.</li>
+        * <li>  Return to step labelled wait.</li>
+        * </ol>
         * 
         * Example
         * \code
@@ -656,6 +667,27 @@ dictionary PropQuery {
 };  
 
 
+    /**
+     * \brief The PendingDeviceStatusOp interface
+     *
+     * The PendingSensorConfigOp interface describes the object that is returned by the asynchronous device status method. It makes it possible to abort
+     * this operation to a stop if it hasn't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.
+     *
+     */
+     [NoInterfaceObject] interface PendingDeviceStatusOp {
+
+    /**
+     * \brief Method Cancel
+     *
+     *  Cancel the pending device status asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
+     *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
+     *  name "AbortError" is issued.
+     */
+        void cancel ();
+     };
+
+
+
         /**
         * \brief Possible values for switch
         */
@@ -676,4 +708,3 @@ dictionary PropQuery {
         */
         enum NetworkStates {"connected", "available", "forbidden"};
 
-Deviceapis implements DeviceapisDeviceStatusManager;

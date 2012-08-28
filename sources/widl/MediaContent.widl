@@ -1,0 +1,604 @@
+/**<p>This api provides access to multimedia contents and relative informations.</p>
+ * \name MediaContent API
+ *
+ * This API provides functionality to discover multimedia contents (such as images, videos, or music) that are available on the device.
+ * It is possible to search for specific media items using filters. The API also supports setting attributes of specific media items.
+ * This API has been slighly changed by webinos to add a method to cancel asynchronous operations.
+ *
+ * \def-api-feature http://tizen.com/api/mediacontent
+ * Access to all features in this module
+ *
+ * \def-api-feature http://tizen.com/api/mediacontent.read
+ * Access to all features in this module except updateItem() and updateItemsBatch()
+ *
+ * \author Tizen Device API Specifications
+ * \author Normative:  <a href="https://developer.tizen.org/help/index.jsp?topic=%2Forg.tizen.help.web.api.device%2Ftizen%2Fmediacontent.html">Tizen MediaContent API </a>
+ * \author Edited for webinos by Stefano Vercelli &lt;stefano.vercelli@telecomitalia.it&gt;
+ */
+
+
+  /**
+   * \brief Defines whether a media folder is stored on internal or external storage (such as a removable memory card).
+   */
+  enum MediaFolderStorageType { "INTERNAL", "EXTERNAL", "UNKNOWN" };
+
+  /**
+   * \brief Defines a type of media item (image, video, or audio).
+   */
+  enum MediaItemType { "IMAGE", "VIDEO", "AUDIO", "UNKNOWN" };
+
+  /**
+   * \brief Defines whether a lyric supplied with the audio file is time-synchronized or not.
+   */
+  enum MediaLyricsType { "SYNCHRONIZED", "UNSYNCHRONIZED" };
+
+  /**
+   * \brief Defines orientation of a image. The meaning of available values is illustrated, for example, at http://www.imagemagick.org/Usage/warping/.
+   */
+  enum MediaImageOrientation { "NORMAL", "FLIP_HORIZONTAL", "ROTATE_180", "FLIP_VERTICAL", "TRANSPOSE", "ROTATE_90", "TRANSVERSE", "ROTATE_270" };
+
+  /**
+   * \brief Media item identifier.
+   */
+  typedef DOMString MediaItemId;
+  
+  /**
+   * \brief Media folder identifier.
+   */
+  typedef DOMString MediaFolderId;
+ 
+  /**
+   * \brief Defines what is instantiated in the tizen object.
+   * There will be a tizen.mediacontent object that allows accessing the functionality of the media content module.
+   */
+  [NoInterfaceObject] interface MediaSourceManagerObject {
+    readonly attribute MediaSourceManager mediacontent;
+  };
+  Tizen implements MediaSourceManagerObject;
+
+  /**
+   * \brief MediaSourceManager interface that provides access to the module functionality.
+   * This interface offers a method to retrieve the media source objects.
+   */
+  [NoInterfaceObject] interface MediaSourceManager {
+	  /**
+	   * \brief Gets the media source object that provides access to media items stored on the device.
+	   */
+    MediaSource getLocalMediaSource();
+  };
+
+  /**
+   * \brief Media source interface that provides operations to retrieve and manipulate media items.
+   */
+  [NoInterfaceObject] interface MediaSource {
+
+	  /**
+	   * \brief Changes attributes of a media item.
+	   * When an application has changed some attributes in a MediaItem, this method allows writing it back to the MediaSource.
+       * \param item with error type UnknownError in any other error case. with error type NotSupportedError, if this feature is not supported. with error type SecurityError, if this functionality is not allowed. with error type UnknownError in any other error case. with error type NotSupportedError, if this feature is not supported. with error type SecurityError, if the client does not have the permission to add alarms. with error type InvalidValuesError, if any of the input parameters contain an invalid value. with error type TypeMismatchError, if any input parameter is not compatible with the expected type for that parameter. The media item to update.
+	   */
+    void updateItem(MediaItem item);  
+
+	  /**
+	   * \brief Changes attributes of media items.
+	   * When an application has changed any attributes in MediaItems, this method allows writing them back to the MediaSource.
+	   * The errorCallback is launched with these error types:
+	   * InvalidValuesError: If any of the input parameters contain an invalid value.
+	   * UnknownError: In any other error case.
+	   *
+	   * \code
+	   * // The following example increases playCount of an item by 1
+	   *
+	   * function errorCB(err) {
+	   *    console.log( 'The following error occurred: ' +  err.name);
+	   * }
+	   *
+	   * function successCB() {
+	   *    console.log('Attributes set successfully');
+	   * }
+	   * 
+	   * var mediasource = tizen.mediaconent.getLocalMediaSource();
+	   * // Assume items is a MediaItem object vector as a result of findItems method.
+	   * // Check the playCount is editable, and then increase by 1.
+	   * for (i=0; i &lt; items.length; i++) {
+	   *   if (items[i].editableAttributes.indexOf("playCount") >= 0) {
+	   *      items[i].playCount++;
+	   *   }
+	   * }
+	   * mediasource.updateItemsBatch(items, successCB, errorCB);
+	   * \endcode
+	   *
+	   * \param items Media items to change.
+	   * \param successCallback Function called when attributes have been changed.
+	   * \param errorCallback with error type NotSupportedError, if this feature is not supported. with error type SecurityError, if this functionality is not allowed. with error type TypeMismatchError, if the input parameter is not compatible with the expected type for that parameter. Function called when an error has occurred.
+	   */
+    PendingOperation updateItemsBatch(MediaItem[] items,
+                                      SuccessCallback successCallback,
+                                      optional ErrorCallback? errorCallback);
+
+	  /**
+	   * \brief Gets a list of media folders.
+	   * This method returns (via callback) a list of media folder objects. To obtain a list of media items in a specific folder, use findItems() method with the folder ID.
+	   * The errorCallback is launched with these error types:
+	   * UnknownError: In any other error case.
+	   * \param successCallback Function called when media folders have been retrieved successfully.
+	   * \param errorCallback with error type NotSupportedError, if this feature is not supported. with error type SecurityError, if this functionality is not allowed. with error type TypeMismatchError, if the input parameter is not compatible with the expected type for that parameter. Function called when an error has occurred.
+	   */
+    PendingOperation getFolders(MediaFolderArraySuccessCallback successCallback,
+                     optional ErrorCallback? errorCallback);
+
+	  /**
+	   * \brief Finds media items. That is, satisfy conditions set in a filter.
+	   * This method allows searching based on a supplied filter. For more detail on AbstractFilter, refer to the Tizen module. The filter allows precise searching such as "return all songs by artist U2, ordered by name".
+	   * The errorCallback is launched with these error types:
+	   * InvalidValuesError: If any of the input parameters contain an invalid value.
+	   * UnknownError: In any other error case.
+	   *
+	   * \code
+	   * // The following example retrieves all songs from the album "The Joshua Tree", by artist "U2", ordered by the track number.
+	   *  var mediasource = tizen.mediacontent.getLocalMediaSource();
+	   *  var count = 100;
+	   *  var offset = 0;
+	   *  var sortMode = new tizen.SortMode("trackNumber", "ASC");
+	   *  var artistFilter = new tizen.AttributeFilter("artists", "EXACTLY", "U2");
+	   *  var albumFilter = new tizen.AttributeFilter("album", "EXACTLY", "The Joshua Tree");
+	   *  var filter = new tizen.CompositeFilter("INTERSECTION", [albumFilter, artistFilter]);
+	   *  mediasource.findItems(findItemsCB, errorCB, null, filter, sortMode, count, offset);
+	   *
+	   * function errorCB(err) {
+	   *     console.log( 'The following error occurred: ' +  err.name);
+	   * }
+	   *
+	   * function printMediaItem(item, index, items) {
+	   *     console.log('Track: ' + item.trackNumber + ' Title: ' + item.title + 'Duration: ' + item.duration + 'URL: ' + item.itemURI + 'MIME: ' + item.mimeType);
+	   * }
+	   *
+	   * function findItemsCB(items) {
+	   *     console.log('The Joshua Tree by U2:');
+	   *     items.forEach(printMediaItem);
+	   *     // Increase the offset as much as the count and then find items again.
+	   *     if (items.length == count) {
+	   *         offset += count;
+	   *         mediasource.findItems(findItemsCB, errorCB, null, filter, sortMode, count, offset);
+	   *     }
+	   * }
+	   *
+	   * \endcode
+	   *
+	   * \param successCallback Function called when media items have been retrieved. It's possible to call findItems again from that function to retrieve more items.
+	   * \param errorCallback Function called when an error has occurred.
+	   * \param folderId 
+	   * \param filter Filter that is used to select media items to retrieve.
+	   * \param sortMode Used to determine the sort order in which the media items are returned.
+	   * \param count Same as SQL LIMIT: maximum amount of items to return.
+	   * \param offset with error type NotSupportedError, if this feature is not supported. with error type SecurityError, if this functionality is not allowed. with error type TypeMismatchError, if the input parameter is not compatible with the expected type for that parameter. Same as SQL OFFSET: an offset of the result set.
+	   */
+    PendingOperation findItems(MediaItemArraySuccessCallback successCallback,
+                   optional ErrorCallback? errorCallback,
+                   optional MediaFolderId? folderId,
+                   optional AbstractFilter? filter,
+                   optional SortMode? sortMode,
+                   optional unsigned long? count,
+                   optional unsigned long? offset);
+
+};
+
+	  /**
+	   * \brief The callback function used to return a list of MediaItem objects.
+	   */
+  [Callback=FunctionOnly, NoInterfaceObject] interface MediaItemArraySuccessCallback {
+    void onsuccess(MediaItem[] items);
+  };
+
+	  /**
+	   * \brief The callback function used to return a list of MediaFolder objects.
+	   */
+  [Callback=FunctionOnly, NoInterfaceObject] interface MediaFolderArraySuccessCallback {
+    void onsuccess(MediaFolder[] folders);
+  };  
+
+	  /**
+	   * \brief The media folder interface that provides access to properties of a media folder.
+	   */
+  [NoInterfaceObject] interface MediaFolder {
+
+	  /**
+	   * \brief The opaque media folder ID, unique within a MediaSource.
+	   */
+    readonly attribute MediaFolderId id;
+
+	  /**
+	   * \brief The optional folder path on the device.
+	   */
+    readonly attribute DOMString? folderURI;
+
+	  /**
+	   * \brief The folder name.
+	   */
+    readonly attribute DOMString title;
+
+	  /**
+	   * \brief The type of a device storage.
+	   */
+    readonly attribute MediaFolderStorageType storageType;
+
+	  /**
+	   * \brief The folder modification date.
+	   */
+    readonly attribute Date? modifiedDate;
+
+   };
+
+	  /**
+	   * \brief The media item interface that provides access to properties of media items.
+	   */
+  [NoInterfaceObject] interface MediaItem {
+
+	  /**
+	   * \brief The list of attributes that can be written back to the local backend using updateItem or updateItemsBatch method.
+	   */
+    readonly attribute DOMString[] editableAttributes;
+
+	  /**
+	   * \brief The opaque media item ID, unique within a MediaSource.
+	   */
+    readonly attribute MediaItemId id;
+
+	  /**
+	   * \brief The media item type.
+	   */
+    readonly attribute MediaItemType type;
+
+	  /**
+	   * \brief The media item MIME type.
+	   */
+    readonly attribute DOMString mimeType;
+
+	  /**
+	   * \brief The item title.
+	   */
+    attribute DOMString title;
+
+	  /**
+	   * \brief The URI that can be used to access the media item.
+	   */
+    readonly attribute DOMString itemURI;
+
+	  /**
+	   * \brief The array of item thumbnails URIs.
+	   */
+    readonly attribute DOMString[]? thumbnailURIs;
+
+	  /**
+	   * \brief The date when a media item has been released to the public. If only the release year is known, then the day and month are set to January 1st.
+	   */
+    readonly attribute Date? releaseDate;
+
+	  /**
+	   * \brief The date when this item has last been modified.
+	   */
+    readonly attribute Date? modifiedDate;
+
+	  /**
+	   * \brief The file size of the item in bytes.
+	   */
+    readonly attribute unsigned long? size;
+
+	  /**
+	   * \brief The item description.
+	   */
+    attribute DOMString? description;
+
+	  /**
+	   * \brief The item rating (value varies from 0 to 10).
+	   */
+    attribute float? rating;
+  };
+
+	  /**
+	   * \brief The interface that extends a basic media item object with video-specific attributes.
+	   */
+  [NoInterfaceObject] interface MediaVideo : MediaItem {
+
+	  /**
+	   * \brief The geographical location where the video was made.
+	   */
+    attribute SimpleCoordinates? geolocation;
+
+	  /**
+	   * \brief The album name to which the video belongs.
+	   */
+    attribute DOMString? album;
+
+	  /**
+	   * \brief The list of artists that created the video.
+	   */
+    attribute DOMString[]? artists;
+
+	  /**
+	   * \brief The video duration in milliseconds.
+	   */
+    readonly attribute unsigned long duration;
+
+	  /**
+	   * \brief The width of the video in pixels.
+	   */
+    readonly attribute unsigned long width;  
+
+	  /**
+	   * \brief The height of the video in pixels.
+	   */
+    readonly attribute unsigned long height;      
+
+	  /**
+	   * \brief The timestamp that determines where the playback has been paused or stopped previously.
+	   * This allows the media player application to resume playback from that point.
+	   */
+    attribute unsigned long? playedTime;
+
+	  /**
+	   * \brief The number of times the video has been played.
+	   */
+    attribute unsigned long? playCount;
+  };
+
+
+	  /**
+	   * \brief The interface that provides lyrics for music.
+	   */
+  [NoInterfaceObject] interface MediaLyrics {
+  
+	  /**
+	   * \brief The type of lyrics: whether they are synchronized with the music or not.
+	   */
+    readonly attribute MediaLyricsType type;
+
+	  /**
+	   * \brief The array of timestamps in milliseconds for lyrics.
+	   * If the lyrics are not synchronized (if there is no time information for the lyrics) the array is undefined.
+	   */
+    readonly attribute unsigned long[] timestamps;
+    
+	  /**
+	   * \brief The array of lyric snippets.
+	   * If the lyrics are not synchronized, the array has only one member with full lyrics.
+	   */
+    readonly attribute DOMString[] texts;
+  };
+    
+	  /**
+	   * \brief The interface that extends a basic media item object with audio-specific attributes.
+	   */
+  [NoInterfaceObject] interface MediaAudio : MediaItem {
+
+	  /**
+	   * \brief The album name that the audio belongs to.
+	   */
+    attribute DOMString? album;
+
+	  /**
+	   * \brief The list of genres that the audio belongs to.
+	   */
+    attribute DOMString[]? genres;
+
+	  /**
+	   * \brief The list of artists that created the audio.
+	   */
+    attribute DOMString[]? artists;
+
+	  /**
+	   * \brief The list of composers for the music.
+	   */
+    attribute DOMString[]? composers;
+
+	  /**
+	   * \brief The lyrics to the song that is contained in the audio.
+	   */
+    readonly attribute MediaLyrics? lyrics;
+
+	  /**
+	   * \brief The copyright information.
+	   */
+    readonly attribute DOMString? copyright;
+
+	  /**
+	   * \brief The audio bitrate in bits per second.
+	   */
+    readonly attribute unsigned long? bitrate;
+
+	  /**
+	   * \brief The track number if the audio belongs to an album.
+	   */
+    attribute unsigned short? trackNumber;
+
+	  /**
+	   * \brief The audio duration in milliseconds.
+	   */
+    readonly attribute unsigned long duration;
+
+	  /**
+	   * \brief The timestamp that determines where the playback has been paused or stopped previously.
+	   * This allows a media player application to resume playback from that point.
+	   */
+    attribute unsigned long? playedTime;
+
+	  /**
+	   * \brief The number of times the audio has been played.
+	   */
+    attribute unsigned long? playCount;
+  };
+
+	  /**
+	   * \brief The interface that extends a basic media item object with image-specific attributes.
+	   */
+  [NoInterfaceObject] interface MediaImage : MediaItem {
+
+	  /**
+	   * \brief The geographical location where the image has been made.
+	   */
+    attribute SimpleCoordinates? geolocation;
+
+	  /**
+	   * \brief The width of the Image in pixels.
+	   */
+    readonly attribute unsigned long width;  
+
+	  /**
+	   * \brief The height of the Image in pixels.
+	   */
+    readonly attribute unsigned long height;      
+
+	  /**
+	   * \brief Information about image orientation.
+	   */
+    attribute MediaImageOrientation? orientation;
+
+  };
+
+    /**
+     * \brief The PendingOperation interface
+     *
+     * The PendingOperation interface describes operation of cancellable aynchronous methods.
+     * Cancellable asynchronous methods return PendingOperation objects exporting methods for
+     * cancelling the operation. 
+     *
+     */
+     [NoInterfaceObject] interface PendingOperation {
+
+    /**
+     * \brief Cancel method for cancelling asynchronous operation
+     *
+     *  Cancel ongoing asynchronous method call. Upon calling this method the runtime must immediately stop
+     *  the pending operation and return.
+     */
+        void cancel ();
+     };
+
+
+	/**
+	 * \brief Filter match flag.
+	 * The following values are supported:
+	 * "EXACTLY" - Indicates the attribute value should match exactly the given value (default). For strings, the match is case-sensitive.
+	 * "FULLSTRING" - String-based matching. Matches the whole string (case insensitive).
+	 * "CONTAINS" - Indicates the attribute value should contain the given string (strings only - case insensitive).
+	 * "STARTSWITH" - Indicates the attribute value should start with the given string (strings only - case insensitive).
+	 * "ENDSWITH" - Indicates the attribute value should end with the given string (strings only - case insensitive).
+	 * "EXISTS" - Indicates the filter should match if the attribute exists.
+	 */
+  enum FilterMatchFlag { "EXACTLY", "FULLSTRING", "CONTAINS", "STARTSWITH", "ENDSWITH", "EXISTS" };
+  
+	/**
+	 * \brief Sort order.
+	 * The following values are supported:
+	 * "ASC" - Indicates the sorting order is ascending
+	 * "DESC" - Indicates the sorting order is descending
+	 */
+  enum SortModeOrder { "ASC", "DESC" };
+  
+	/**
+	 * \brief Composite filter type.
+	 * The following values are supported:
+	 * "UNION" - A union of filters ("OR" operator)
+	 * "INTERSECTION" - An intersection of filters ("AND" operator)
+	 */
+  enum CompositeFilterType { "UNION", "INTERSECTION" };
+ 
+	/**
+	 * \brief AbstractFilter is a common interface used by different types of object filters.
+	 * Never use this base interface directly, instead use AbstractFilter subtypes, such as AttributeFilter, AttributeRangeFilter, and CompositeFilter.
+	 */
+  [NoInterfaceObject] interface AbstractFilter {
+  };
+  
+  [Constructor(CompositeFilterType type, optional AbstractFilter[]? filters)]
+	/**
+	 * \brief CompositeFilter represents a set of filters.
+	 * The composite filters can be one of the 2 types:
+	 * The union - used to filter objects that matches more than one filter it includes.
+	 * The intersection - used to filter objects that matches all filters it includes.
+	 */
+  interface CompositeFilter : AbstractFilter {
+	/**
+	 * \brief The composite filter type.
+	 */
+    attribute CompositeFilterType type;
+	
+	/**
+	 * \brief The list of filters in the composite filter.
+	 */
+    attribute AbstractFilter[] filters;
+  };
+  
+  [Constructor(DOMString attributeName, optional FilterMatchFlag? matchFlag, optional any matchValue)]
+	/**
+	 * \brief AttributeFilter represents a filter based on an object attribute.
+	 * If no matchValue is defined, the filter will match all objects that have the attribute defined (same as the "EXISTS" filter works), otherwise, it will only match objects whose attribute matches the given value.
+	 */
+  interface AttributeFilter : AbstractFilter {
+	/**
+	 * \brief The name of the object attribute used for filtering.
+	 * This is the name of the object attribute exactly as it is defined in the object's interface. For attributes of complex type, use fully-qualified names (such as 'organizations.role' to filter on a contact's role in an organization).
+	 * For attributes of array type, the filter will match if any value in the array matches.
+	 */
+    attribute DOMString attributeName;
+	
+	/**
+	 * \brief The match flag used for attribute-based filtering.
+	 */
+    attribute FilterMatchFlag matchFlag;
+	
+	/**
+	 * \brief The value used for matching.
+	 * The filter will match if the attribute value matches the given matchValue.
+	 * This value is not used if the matchFlag is set to "EXISTS". By default, this attribute is set to null.
+	 */
+    attribute any matchValue;
+  };
+  
+  [Constructor(DOMString attributeName, optional any initialValue, optional any endValue)]
+	/**
+	 * \brief Filter which matches objects containing an attribute whose values are within a particular range.
+	 * Range filters where only one boundary is set MUST be supported.
+	 */
+  interface AttributeRangeFilter : AbstractFilter {
+	/**
+	 * \brief The name of the object attribute used for filtering.
+	 * This is the name of the object attribute exactly as it is defined in the object's interface. For attributes of complex type, use fully-qualified names (such as 'organizations.role' to filter on a contact's role in an organization).
+	 * For attributes of array type, the filter will match if any value in the array matches.
+	 */
+    attribute DOMString attributeName;
+	
+	/**
+	 * \brief Objects whose attribute is greater than or equal to initialValue will match.
+	 * By default, this attribute is set to null.
+	 */
+    attribute any initialValue;
+	
+	/**
+	 * \brief Objects whose attribute is strictly lower than to endValue will match.
+	 * By default, this attribute is set to null.
+	 */
+    attribute any endValue;
+  };
+  
+  
+  [Constructor(DOMString attributeName, optional SortModeOrder? order)]
+	/**
+	 * \brief SortMode is a common interface used for sorting of queried data.
+	 * Note that the sorting result of list type attributes is not determined.
+	 */
+  interface SortMode {
+	/**
+	 * \brief The name of the object attribute used for sorting.
+	 */
+    attribute DOMString attributeName;
+	
+	/**
+	 * \brief The type of the sorting.
+	 * By default, this attribute is set to "ASC".
+	 */
+    attribute SortModeOrder order;
+  };
+	 
+	 
+	 
