@@ -126,6 +126,7 @@ partial interface Webinos {
         *         property: "model"
         * });
         * \endcode
+        *
         */
     readonly attribute  DeviceStatusManager devicestatus;
 };
@@ -143,6 +144,7 @@ partial interface Webinos {
         *         aspect: "Battery"
         * });
         * \endcode
+        *
         */
 
 [NoInterfaceObject]
@@ -177,6 +179,7 @@ for (var i = 0; i < displays.length; i++) {
         console.log("Display component " + i + ": " + displays[i]);
 }
         * \endcode
+        *
         * \param aspect for component to retrieve
         * \return components
         */
@@ -206,6 +209,7 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         console.log("batteryLevel property is not available");
 }
         * \endcode
+        *
         * \param aspect Aspect to check for
         * \param aspect Optional property to check for
         * \return whether aspect is supported
@@ -273,6 +277,7 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * },
         * null, options);
         * \endcode
+        *
         * \param successCallback Function to call on successfully retrieving a property value
         * \param errorCallback Function to call if property value could not be retrieved
         * \param query Property to retrieve
@@ -333,6 +338,7 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * },
         * null, options);
         * \endcode
+        *
         * \param successCallback Function to call on changing property value
         * \param errorCallback Function to call if an error occurs
         * \param query Property to watch
@@ -367,6 +373,7 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         *       aspect: "Battery"
         *   });
         * \endcode
+        *
         * \param watchid Id of watch property change subscription
         */
     void clearPropertyChange(long watchid);
