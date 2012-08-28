@@ -21,6 +21,9 @@
  * \def-api-feature http://webinos.org/api/sensors
  * Identifies all the sensor types. 
  *
+ * \def-api-feature http://webinos.org/api/sensors.read
+ * Enables access only to read methods of the api - access to configureSensor is forbidden
+ *
  * \def-api-feature http://webinos.org/api/sensors.light
  * Identifies the light sensor type. 
  *
@@ -42,9 +45,16 @@
  * \def-api-feature http://webinos.org/api/sensors.heartratemonitor
  * Identifies a heart rate monitor sensor type. 
  *
+ * \def-api-feature http://webinos.org/api/sensors.tilt
+ * Identifies a tilt sensor type. 
+ *
+ * \def-api-feature http://webinos.org/api/sensors.potentiometer
+ * Identifies a potentiometer sensor type. 
+ *
  * \author Claes Nilsson &lt;claes1.nilsson@sonyericsson.com&gt;
  * \author Updated to new WIDL by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
- * \version 1.98 
+ * \author Stefano Vercelli &lt;stefano.vercelli@telecomitalia.it&gt;
+ * \version 1.99 
  */
 
 
@@ -168,7 +178,6 @@
         */ 
         readonly attribute unsigned long?  version; 
 
-
        /**
         * \brief Configures a sensor.
         *
@@ -237,6 +246,35 @@
        * \brief The requested sensor event fire mode.
        */
        EventFireMode eventFireMode;
+
+     /**
+       * \brief The position of the sensor.
+	   * This value may be ignored by the sensor if it retrieves position in a different way (for example has a gps module onboard)
+       */
+       GeoPosition? position;
+
+     /**
+       * \brief Generic configurations string.
+	   * This string is in JSON format and can be used for additional sensors that need extra configuration parameters.
+	   * The format of the string must be specified by the sensor developer.
+       */
+       DOMString? config;
+	};
+
+  /**
+    * \brief GeoPosition interface definition
+    */
+    dictionary GeoPosition {
+
+      /**
+       * \brief Latitude. 
+       */
+       unsigned long latitude;
+
+      /**
+       * \brief Longitude.
+       */
+       unsigned long longitude;
      };
 
     /**
@@ -307,6 +345,12 @@
    *\n
    * http://webinos.org/api/sensors.heartratemonitor:\n
    * sensorValue[0] =  the measured heart rate as beats per minute (bpm). \n
+   *\n
+   * http://webinos.org/api/sensors.tilt:\n
+   * sensorValue[0] =  the return value states if the sensor is tilted (1) or not (0). \n
+   *\n
+   * http://webinos.org/api/sensors.potentiometer:\n
+   * sensorValue[0] =  the return value is the percentage of the maximum value of the potentiometer. \n
    *   
    */
     readonly attribute DOMString sensorType;
@@ -339,6 +383,12 @@
    */
     readonly attribute float[] sensorValues;
 
+    /**
+     * \brief Position of the sensor.
+     */ 
+     readonly attribute GeoPosition?  position;
+
+
   /**
    * \brief Method to set initial values of sensor event.  
    *
@@ -355,6 +405,7 @@
    * \param rate Rate of sensor data event
    * \param eventFireMode Mode of firing events
    * \param sensorValues Array of sensor values
+   * \param position Position of the sensor
    */
     void initSensorEvent(DOMString type,
                          boolean bubbles,
@@ -364,7 +415,8 @@
                          Accuracy accuracy,
                          Rate rate,
                          EventFireMode eventFireMode, 
-                         float[] sensorValues); 
+                         float[] sensorValues,
+                         GeoPosition position);
     };
 
 

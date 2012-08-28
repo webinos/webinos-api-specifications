@@ -66,11 +66,7 @@
 		* \brief Attribute defines the type NavigationEvent.
 		*/
 		readonly attribute NavigationEventType status;
-		/**
-		* \brief Attribute defines the creation time of the data object.
-		*/
-		readonly attribute Integer timestamp; 
-	};
+		};
 	/**
 	* \brief This dictionary defines the LatLng properties, which can be passed to the navigation system using the requestGuidance() function. The format is WGS84. 
 	* <em>Note: The <a href="http://dev.w3.org/geo/api/spec-source-v2.html#coordinates">coordinate</a> interface from the Geolocation API v2 includes attributes, which are not feasible for beeing handled by the navigation system (accurancy, alitude accurency, heading, speed). In some special cases (destination is on a bridge, which crosses another street) it might make sense to add the altitude to LatLng interface at a later stage.</em> 
@@ -115,17 +111,44 @@
 		*/		
 		LatLng? closeTo;
 		/**
-		* \brief reflects the maximum distance for a POI.
+		* \brief reflects the maximum distance for a POI in meters.
 		*/		
-		unsigned short? distance;
+		unsigned long? distance;
 	};
 
 
 	/**
-	* \brief callback for a success from requestGuidance.
+	* \brief callback interface for requestGuidance.
 	*
+	* 
 	*/
-	callback NavigationSuccessCallback = void ();
+	callback interface NavigationCallback {
+		/**
+		* \brief asynchronous success callback
+		* \param guidanceId a short containing the refer in order to be able to cancel the guidance using the cancelGuidance method
+		* \param destination defining the destination 
+		*/
+		void onRequest(long guidanceId, POI destination);
+
+		/**
+		* \brief asynchronous callback, when the guidance to the POI has been cancelled
+		* \param guidanceId a short containing the refer the POI
+		* \param destination defining the destination 
+		*/
+		void onCancel(long guidanceId, POI destination);
+		
+		/**
+		* \brief asynchronous callback, when the POI has been reached
+		* \param guidanceId a short containing the refer the POI
+		* \param destination defining the destination 
+		*/
+		void onReach(long guidanceId, POI destination);
+	};
+	
+	/**
+	* \brief callback interface for cancelGuidance.
+	*/
+	callback GuidanceCancelCallback = void();
 
 	/**
 	* \brief callback for a failure from requestGuidance, getStatus, or findDestination
@@ -146,25 +169,45 @@
 	[NoInterfaceObject]
 	interface NavigationInterface{
 		/**
-		* \brief TODO
+		* \brief Function is used to handover a point-of-interest to the navigation system 
 		* \code
-		*	TODO
+		*  var navigationHandler = {
+		*	onRequest:  function(id, poi){
+		*   	console.log('Guidance set to' + poi.name);
+		*   },
+		*   onReach: function(id, poi){
+		*   	console.log(poi.name + ' reached.');
+		*   },
+		*	onCancel: function(id, poi)
+		*  		console.log('Guidance to ' + poi.name + ' is cancelled.'); 
+		*	}
+		*  var destination = {name:"BMW Forschung und Technik", address:{street: "Hanauer Strasse", streetNumber: "46", postalCode: "80992", city: "MÜNCHEN", country: "DE"};
+		*  webinos.navigation.requestGuidance(destination, false, navigationHandler);
 		* \endcode
 
 		* \param successCallback callback, if the POIs are succesully transferred.
 		* \param errorCallback callback, if the address could not be transferred. 
-		* \param destinations in form of an POI array. The last POI in the array is the destination point. The other POIs are intermediate stops along the route.
+		* \param destination in form of an POI.
+		* \param intermediate if the provided POI is an intermediate or final destination.
 		*/
-		void requestGuidance(NavigationSuccessCallback successCallback, NavigationErrorCallback errorCallback, POI[] destinations);
+		void requestGuidance(POI destination, optional boolean intermediate, optional NavigationCallback successCallback, optional NavigationErrorCallback errorCallback);
+
+		/**
+		* \brief Function to cancel the guidance to a Point-of-interest 
+		* \param cancelCallback callback, if the guidance to a POI has been successfully cancelled.
+		* \param errorCallback callback, if the address could not be transferred. 
+		*/
+		void cancelGuidance(long guidanceId, optional NavigationCancelCallback cancelCallback, optional NavigationErrorCallback errorCallback);
+
 		/**
 		* \brief Queries the navigation system to retrieve POIs for a given search string.
 		*
 		* \code
 		*	var destinations =new Array();
-		*      webinos.vehicle.findDestination(destinationCB, errorCB,"BMW");
+		*      webinos.navigation.findDestination("BMW", destinationCB, errorCB);
 		*      function destinationCB(pois){
 		*	if(destinations.length > 0){
-		*      	webinos.requestGuidance(successCB, errorCB, destinations);            
+		*      	webinos.navigation.requestGuidance(destinations, false, successCB, errorCB);            
 		*	else{
 		*		console.log("No POI found");
 		*	}		
@@ -175,8 +218,9 @@
 		* \param destinationCallback callback to handle the results to the search string.
 		* \param errorCallback callback to handle errors.
 		* \param search search string for resolving a address.
+		* \param options options object to optimize search behavior.
 		*/
-		void findDestination(DestinationCallback destinationCallback, NavigationErrorCallback errorCallback, DOMString search, PoiSearchOptions? options);
+		void findDestination(DOMString search, DestinationCallback destinationCallback, optional NavigationErrorCallback errorCallback, optional PoiSearchOptions options);
 		/**
 		* \brief Provides the information if guidance is active or not.
 		*
@@ -187,7 +231,7 @@
 		* \param successHandler callback to handle the status of navigation system.
 		* \param errorHandler callback to handle if information cannot be retrieved.
 		*/
-		void getStatus(NavigationEventHandler successHandler, NavigationErrorCallback? errorHandler);
+		void getStatus(NavigationEventHandler successHandler, optional NavigationErrorCallback errorHandler);
 	};
 	
 	/**
@@ -210,5 +254,4 @@
 	* defines the possible status of the navigation system.
 	*/
 	enum NavigationEventType {"guidance-active", "guidance-inactive"};
-
 
