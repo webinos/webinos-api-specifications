@@ -27,6 +27,19 @@
  * \author WIDL version for webinos created by Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;
  * \version 0.9
  */
+ 
+	    /**
+	     * \brief The Notification interface describes the part of the Web Notification API accessible through the webinos object. 
+	     *
+	     */
+        partial interface Webinos {
+     	    /**
+             * \brief webinos.notification object.
+             */
+            readonly attribute NotificationManager notification;
+        };
+ 
+  
          /**
          * \brief The NotificationManager interface which is accessible by using the webinos service discovery API. 
          */
