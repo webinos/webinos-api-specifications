@@ -32,7 +32,7 @@
 	     * \brief The Notification interface describes the part of the Web Notification API accessible through the webinos object. 
 	     *
 	     */
- 		partial interface Webinos {
+        partial interface Webinos {
      	    /**
              * \brief webinos.notification object.
              */
