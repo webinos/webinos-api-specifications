@@ -1,9 +1,14 @@
 /**<p>The webinos Secure Elements API provides access to functions on contact or contactless smart cards or similar devices.</p>
  * \name Secure Elements API
  *
- * This is an API for accessing functions on contact or contactless smart cards or similar devices using the Application Protocol Data Unit (APDU) command response protocol, as defined by ISO 7816-4. In essence, the command consists of a 4 byte header followed by up to 255 bytes of data. The response contains a 2 byte header followed by up to 256 bytes of data. The headers and data are specified in a suite of standards from ISO and others. It also possible to develop custom secure elements using Java cards from companies such as G&D and Gemalto.
+ * This is an API for accessing functions on contact or contactless smart cards or similar devices using the Application Protocol Data Unit (APDU) 
+ * command response protocol, as defined by ISO 7816-4. In essence, the command consists of a 4 byte header followed by up to 255 bytes of data. 
+ * The response contains a 2 byte header followed by up to 256 bytes of data. The headers and data are specified in a suite of standards from ISO and 
+ * others. It also possible to develop custom secure elements using Java cards from companies such as G&D and Gemalto.
  * 
- * The aim is to give system applications written in JavaScript, and executing on a web run-time, a lightweight means to send commands to secure elements and handle the responses using byte arrays (similar to the existing Java API). Applications would have access to the crypto APIs being developed in the W3C Web Crypto WG.
+ * The aim is to give system applications written in JavaScript, and executing on a web run-time, a lightweight means to send commands to secure 
+ * elements and handle the responses using byte arrays (similar to the existing Java API). Applications would have access to the crypto APIs being 
+ * developed in the W3C Web Crypto WG.
  * 
  * A brief introduction to APDU can be found at:
  * http://en.wikipedia.org/wiki/Smart_card_application_protocol_data_unit
@@ -17,15 +22,19 @@
  * 
  * USB smart card reader for contact based cards
  * NFC based reader for contactless cards
- * Java Smart Card development kits are available, and this would involve interfacing Node with Java. The open source cross platform NFC library libnfc can be used to access smart cards over NFC, but involves a lot of low level details. A further idea is to use the Java SmartCard API on Android, see:
- * 
+ * Java Smart Card development kits are available, and this would involve interfacing Node with Java. The open source cross platform NFC library 
+ * libnfc can be used to access smart cards over NFC, but involves a lot of low level details. A further idea is to use the Java SmartCard API on 
+ * Android, see:
  * Secure Element Evaluation Kit for the Android platform
- * It appears that the Nexus S should work with that for UICC smart card development. However, the above page states that the minimum required SDK is API15 (Android 4.03) which is yet to be supported for the webinos Android build. However, it seems very promising as a basis for demo purposes. We would also need some sample smart cards with some interesting applets on them, although we could in principle develop our own applets.
+ *
+ * It appears that the Nexus S should work with that for UICC smart card development. However, the above page states that the minimum required SDK 
+ * is API15 (Android 4.03) which is yet to be supported for the webinos Android build. However, it seems very promising as a basis for demo purposes. 
+ * We would also need some sample smart cards with some interesting applets on them, although we could in principle develop our own applets.
  *
  * \def-api-feature http://webinos.org/api/secureelements
  * Identifies the Secure Elements API. 
  *
- * \author Dave Raggett (W3C) &lt;dsr@w3.org&gt;
+ * \author Dave Raggett/W3C &lt;dsr@w3.org&gt;
  * \version 0.1
  *
  */
@@ -120,6 +129,7 @@ partial interface Webinos {
 interface APDU {
   /**
   * \brief TODO Dave
+  *
   * \param listener TODO Dave
   * \param success TODO Dave
   * \param fail TODO Dave
@@ -130,6 +140,8 @@ interface APDU {
 
 /**
 * \brief Call back for list of available terminals
+*
+* \param terminals TODO Dave
 */
 callback ApduTerminalsCB = void (ApduTerminal[] terminals);
 
@@ -171,13 +183,14 @@ interface ApduTerminal {
   /**
   * \brief TODO Dave
   *
-  * \return TODO Dave
+  * \return ApduCommand TODO Dave
   */
   ApduCommand createCommand();
   
   
   /**
   * \brief TODO Dave
+  *
   * \param command TODO Dave
   * \param success TODO Dave
   * \param fail TODO Dave
@@ -188,6 +201,7 @@ interface ApduTerminal {
 
   /**
   * \brief TODO Dave
+  *
   * \param success TODO Dave
   * \param fail TODO Dave
   * 
@@ -238,6 +252,7 @@ interface ApduResponse {
 interface ApduCommand {
   /**
   * \brief TODO Dave
+  *
   * \param cla TODO Dave
   * \param ins TODO Dave 
   * \param p1 TODO Dave 
@@ -247,12 +262,14 @@ interface ApduCommand {
   
   /**
   * \brief TODO Dave
+  *
   * \param payload TODO Dave
   */  
   void setPayload(byte[] payload);
   
   /**
   * \brief TODO Dave
+  *
   * \param length TODO Dave  
   */  
   void setResponseLength(unsigned short length);
