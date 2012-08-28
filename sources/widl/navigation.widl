@@ -66,11 +66,7 @@
 		* \brief Attribute defines the type NavigationEvent.
 		*/
 		readonly attribute NavigationEventType status;
-		/**
-		* \brief Attribute defines the creation time of the data object.
-		*/
-		readonly attribute Integer timestamp; 
-	};
+		};
 	/**
 	* \brief This dictionary defines the LatLng properties, which can be passed to the navigation system using the requestGuidance() function. The format is WGS84. 
 	* <em>Note: The <a href="http://dev.w3.org/geo/api/spec-source-v2.html#coordinates">coordinate</a> interface from the Geolocation API v2 includes attributes, which are not feasible for beeing handled by the navigation system (accurancy, alitude accurency, heading, speed). In some special cases (destination is on a bridge, which crosses another street) it might make sense to add the altitude to LatLng interface at a later stage.</em> 
