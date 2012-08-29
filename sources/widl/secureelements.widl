@@ -1,0 +1,278 @@
+/**<p>The webinos Secure Elements API provides access to functions on contact or contactless smart cards or similar devices.</p>
+ * \name Secure Elements API
+ *
+ * This is an API for accessing functions on contact or contactless smart cards or similar devices using the Application Protocol Data Unit (APDU) 
+ * command response protocol, as defined by ISO 7816-4. In essence, the command consists of a 4 byte header followed by up to 255 bytes of data. 
+ * The response contains a 2 byte header followed by up to 256 bytes of data. The headers and data are specified in a suite of standards from ISO and 
+ * others. It also possible to develop custom secure elements using Java cards from companies such as G &amp; D and Gemalto.
+ * 
+ * The aim is to give system applications written in JavaScript, and executing on a web run-time, a lightweight means to send commands to secure 
+ * elements and handle the responses using byte arrays (similar to the existing Java API). Applications would have access to the crypto APIs being 
+ * developed in the W3C Web Crypto WG.
+ * 
+ * A brief introduction to APDU can be found at:
+ *
+ * - <a href="http://en.wikipedia.org/wiki/Smart_card_application_protocol_data_unit">Smart card application protocol data unit</a>
+ *
+ * The Java APDU API is described at:
+ *
+ * - <a href="http://docs.oracle.com/javase/6/docs/jre/api/security/smartcardio/spec/">Java Smart Card I/O API</a>
+ * 
+ * <b>Implementation:</b>
+ *
+ * There are two main hardware options:
+ * 
+ *  - USB smart card reader for contact based cards\n
+ *  - NFC based reader for contactless cards
+ * 
+ * Java Smart Card development kits are available, and this would involve interfacing Node with Java.
+ * The open source cross platform NFC library libnfc can be used to access smart cards over NFC, but
+ * involves a lot of low level details. For Linux, PC/SC, OpenSC and IFD provide a convenient open
+ * source framework together with libnfc and Node.js. A further idea is to use the Java SmartCard API
+ * on Android, see the <a href="http://code.google.com/p/seek-for-android/">Secure Element Evaluation Kit for the Android platform</a>
+ *
+ * It appears that the Nexus S should work with that for UICC smart card development, however, this
+ * involves reflashing the phone. Moreover, the above page states that the minimum required SDK 
+ * is API15 (Android 4.03) which is yet to be supported for the webinos Android build. However, it
+ * seems promising as a basis for demo purposes. We would also need some sample smart cards with
+ * some interesting applets on them, although we could in principle develop our own applets.
+ *
+ * \def-api-feature http://webinos.org/api/secureelements
+ * Identifies the Secure Elements API. 
+ *
+ * \author Dave Raggett/W3C &lt;dsr@w3.org&gt;
+ * \author Editing widl file Claes Nilsson &lt;claes1.nilsson@sonymobile.com&gt;
+ * \version 0.1
+ *
+ */
+ 
+ /*
+ *
+ * \code
+  
+  // The first step is to obtain a list of available APDU terminals:
+  
+  
+  Webinos.apdu.requestTerminals(listener, fail);
+
+  function fail (why)
+  {
+    console.log("Couldn't get list of APDU terminals: " + why);
+  }
+
+  function listen (terminals)
+  {
+    for (var i = 0; i < terminals.length; ++i)
+    {
+      var terminal = terminals[i];
+      console.log("found APDU terminal: " + terminal.name);
+    }
+  }
+
+  // Having picked a terminal and established that a card is present,
+  // you can now connect to the card:
+
+  terminal.connect(success, fail);
+
+  function success ()
+  {
+    console.log("connected to card");
+  }
+
+  // connect operation will fail if card isn't present
+  function fail (why)
+  {
+    console.log("couldn't connect to card: " + why);
+  }
+
+  // Once connected you can format a command, send it to the card, and process the response:
+ 
+  var command = terminal.createCommand();
+
+  // initialize header bytes
+  command.setHeaders(cla, ins, p1, p2);
+
+  // set payload from byte array
+  command.setPayload(payload);
+ 
+  // and send it to the card
+  terminal.transmit(command, success, fail);
+
+  // handle the response
+  function success (response)
+  {
+    console.log("response status: " + to_hex(response.status) +
+                " with " + response.payload.length + " bytes of data");
+
+    // when done, disconnect
+    terminal.disconnect();
+  }
+
+  // called if transmit failed
+  function fail (why)
+  {
+    console.log("couldn't transmit command to card: " + why);
+  }
+  
+ * \endcode
+ */   
+
+/**
+ * \brief The APDU interface is accessible through the webinos object.
+ * 
+ * You first need to find which terminals are available. Having found a suitable terminal, you can then test if a card is present, and connect to it, \n
+ * and then transmit a command and process the response, before closing the connection. Call backs are provided to signal when cards are inserted and removed.
+ */
+partial interface Webinos {
+  readonly attribute APDU apdu;
+};
+
+/**
+* \brief Interface to request list of APDU terminals
+*/
+interface APDU {
+  /**
+  * \brief asynchronous request for available APDU terminals
+  *
+  * \param listener - called with a list of discovered APDU terminals
+  * \param fail - called if the request was rejected
+  */
+  void requestTerminals(ApduTerminalsCB listener, FailCB fail);
+};
+
+/**
+* \brief Call back for list of available terminals
+*
+* \param terminals - a list of available APDU terminals
+*/
+callback ApduTerminalsCB = void (ApduTerminal[] terminals);
+
+/**
+* \brief call back if associated operation has succeeded
+*/
+callback SuccessCB = void ();
+
+/**
+* \brief call back if associated operation has failed
+*/
+callback FailCB = void (DOMString why);
+
+/**
+* \brief The properties and methods for terminals. The terminal status present property indicates whether a card is present, and you can also set handlers for call backs when the card is inserted or removed.
+*/
+interface ApduTerminal {
+  /**
+  * \brief each terminal has a name
+  */
+  readonly attribute DOMString name;
+
+  /**
+  * \brief whether a card is present in the reader
+  */
+  readonly attribute boolean present;  
+
+  /**
+  * \brief call back for card insertion
+  */
+  attribute ApduCardInsertedCB inserted;
+  
+  /**
+  * \brief call back for card insertion removal
+  */  
+  attribute ApduCardRemovedCB removed;
+
+
+  /**
+  * \brief creates an uninitialized APDU command
+  *
+  * \return ApduCommand - the new APDU command object
+  */
+  ApduCommand createCommand();
+  
+  
+  /**
+  * \brief transmit an initialized APDU command to a connected card
+  *
+  * \param command - the APDU command object
+  * \param success - called if the request was accepted
+  * \param fail - called if the request was rejected
+  * 
+  */
+  void transmit(ApduCommand command,
+                ApduResponseCB success, FailCB fail);
+
+  /**
+  * \brief establish connection with the current card
+  *
+  * \param success - called when the connection is established
+  * \param fail - called if the request was rejected
+  * 
+  */
+  void connect(SuccessCB success, FailCB fail);
+  
+  /**
+  * \brief terminate a connection with the card
+  * 
+  */ 
+  void disconnect();
+};
+
+/**
+* \brief Call back notifying when card is inserted. Will be called immediately if the card is already present.
+*/
+callback ApduCardInsertedCB = void ();
+
+/**
+* \brief Call back notifying when card is removed.
+*/
+callback ApduCardRemovedCB = void ();
+
+/**
+* \brief Call back for APDU response
+*/
+callback ApduResponseCB = void (ApduResponse response);
+
+/**
+* \brief This interface defines APDU response
+*/
+interface ApduResponse {
+
+  /**
+  * \brief the 2 status bytes
+  */
+  attribute unsigned short status; 
+  
+  /**
+  * \brief the response payload
+  */  
+  attribute byte[] payload;
+};
+
+/**
+* \brief support for initializing an APDU command
+*/
+interface ApduCommand {
+  /**
+  * \brief used to initialize an APDU command
+  *
+  * \param cla - the class of command
+  * \param ins - the specific command
+  * \param p1 - first parameter
+  * \param p2 - second parameter
+  */  
+  void setHeaders(byte cla, byte ins, byte p1, byte p2);
+  
+  /**
+  * \brief used to set the APDU command payload
+  *
+  * \param payload - the command payload
+  */  
+  void setPayload(byte[] payload);
+  
+  /**
+  * \brief set the maximum number of expected data bytes in a response APDU
+  *
+  * \param length - maximum number of expected data bytes 
+  */  
+  void setResponseLength(unsigned short length);
+};
