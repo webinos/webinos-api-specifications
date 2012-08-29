@@ -313,8 +313,9 @@
 		 
 	 	/**
 		 * \brief 	If remoteService is false the findServices method will limit the search for services that are  
-		 *		  	connected directly to the device or to the same local IP network. If remoteServices is true, the findServices  
-		 *		  	method will extend the search for services outside the local IP network. Default value is false. 
+		 *		  	connected directly to the device (including Bluetooth, NFC, etc if available) or to the same local IP network.
+		 *  		If remoteServices is true, the findServices method will extend the search for services outside the local IP network
+		 *  		(including other PZHs). Default value is false. 
 		 */
 		boolean remoteServices = false;
 
