@@ -144,7 +144,7 @@
                 /**
                 * \brief onSuccess The onSuccess method is called after the setValue succeeded.  
                 *
-                * \param Event The event object associated to the asynchronous operation setValue
+                * \param event The event object associated to the asynchronous operation setValue
                 */
                 callback ActuatorSuccessCB =  void (ActuatorEvent event); 
 
