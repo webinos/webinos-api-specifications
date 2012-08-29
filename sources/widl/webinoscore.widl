@@ -19,14 +19,14 @@
   /**
    * \brief Webinos interface
    *
-   * The is the Webinos root interface and is initially defined as an interface on which the various Webinos APIs that are defined elsewhere graft themselves.
+   * The Webinos root interface is defined as an interface on which the various Webinos APIs that are defined elsewhere graft themselves.
    * A user agent supporting the Webinos interface must do so according to the following <a href="http://www.w3.org/TR/2012/CR-WebIDL-20120419/">WebIDL</a> definition.
    */
   interface Webinos {
     /**
     * \brief Attribute provides the friendly name of the PZP, which has been given by the user. The main aim of this information is to differentiate the PZPs and used for display purpose to find under which PZP application is running.
     */
-    readonly attribute String   pzp_name;
+    readonly attribute DOMString   pzp_name;
     /**
     * \brief Attribute denotes the PZP status, should be used for checking if the PZP is currently connected to other devices or not. This attribute can be used before invoking any network related APIs.
     */
@@ -34,11 +34,11 @@
     /**
     * \brief Attribute denotes the PZH name, to identify in which personal zone PZP belongs. Useful to differentiate APPs when connected to multiple PZH.
     */
-    readonly attribute String  pzh_name;
+    readonly attribute DOMString  pzh_name;
     /**
     * \brief Attribute denotes the application identifier as assigned by the PZP. This should be unique and useful when communicating outside personal zone.
     */
-    readonly attribute String  app_id;
+    readonly attribute DOMString  app_id;
   };
 
   /**
