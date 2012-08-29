@@ -185,7 +185,7 @@
 
 
       /**
-       * \brief onSuccess The onSuccess method is called when configuration of a sensor succeeded.  
+       * \brief The ConfigureSensorCB method is called when configuration of a sensor succeeded.  
        *
        */
        callback ConfigureSensorCB = void();          
@@ -349,7 +349,8 @@
 
  
   /**
-   * \brief The rate of the sensor data
+   * \brief The rate of the sensor data.
+   * This value will be 0 if the rate is undefined or eventFireMode is set to valuechange.
    */
     readonly attribute unsigned long rate;
 
