@@ -46,12 +46,14 @@
  *
  */
  
- /*
+/**
+ * \brief The APDU interface is accessible through the webinos object.
+ * 
+ * You first need to find which terminals are available. Having found a suitable terminal, you can then test if a card is present, and connect to it, \n
+ * and then transmit a command and process the response, before closing the connection. Call backs are provided to signal when cards are inserted and removed.
  *
  * \code
-  
-  // The first step is to obtain a list of available APDU terminals:
-  
+  // The first step is to obtain a list of available APDU terminals
   
   Webinos.apdu.requestTerminals(listener, fail);
 
@@ -112,16 +114,8 @@
   function fail (why)
   {
     console.log("couldn't transmit command to card: " + why);
-  }
-  
+  } 
  * \endcode
- */   
-
-/**
- * \brief The APDU interface is accessible through the webinos object.
- * 
- * You first need to find which terminals are available. Having found a suitable terminal, you can then test if a card is present, and connect to it, \n
- * and then transmit a command and process the response, before closing the connection. Call backs are provided to signal when cards are inserted and removed.
  */
 partial interface Webinos {
   readonly attribute APDU apdu;
