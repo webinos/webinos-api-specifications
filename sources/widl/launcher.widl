@@ -1,15 +1,13 @@
 /**<p>Allows activation of webinos applications installed locally on the device.</p>
  * \name AppLauncher API
- * \brief The application execution API (AppLauncher) allows activation of webinos applications installed locally on the device. The API is modelled after BONDI v1.1 AppLauncher API.
+ * \brief The application execution API (AppLauncher) allows activation of webinos applications available on the device where the API is bound to.
  *
  *
  * Operation of the API is guided by application execution policies, which can be modified by user. 
  * The policies control the following aspects of API operation: \n
- *  - Enable/disable of activation of native applications \n
  *  - Enable/disable of activation of webinos installable applications \n
  *  - Enable/disable of notifications to users when a webinos application attempts to activate another application \n
  *  - Enable/disable of application ability to discover installed applications \n
- *  - Enable/disable of logging of operations performed using the API \n
  *
  * The application execution API provides mechanisms for webinos applications to check if specific webinos application is installed in the device. 
  *
@@ -25,12 +23,20 @@
  */
   
   /**
-   * \brief NOTE: \n
-   *  - applicationID type will be defined in webinoscore module. Each application will have a unique ID coming from its manifest file. applicationID is a string composed of ID from the app certificate and identifiers assigned by the maker of the app. For the purposes of phase 1 AppLauncher API, we can assume the ID is a string that will be known to the application that starts another application and is known to the runtime based on manifests of installed apps. \n
+   * \brief This is the main interface for the AppLauncher API.
+   * 
+   * The AppLauncherManager interface defines two functions for querying if an application is installed or not and for 
+   * starting applications. Applications are represented by an URI whereby the URI can be one of the following:
    *
-   * This is the main interface for the AppLauncher API.
+   * - a webinos application ID as defined in the config.xml of the application package\n
+   * - a web site using HTTP or HTTPs\n
+   * - "tel:" in order to initiate a call (if supported by the platform) as defined by RFC 3966 <a href="http://www.rfc-editor.org/rfc/rfc3966.txt">http://www.rfc-editor.org/rfc/rfc3966.txt</a>\n
+   * - "sms" in order to send a short message service (SMS) message (if supported by the platform) as defined by RFC 5724 <a href="http://www.rfc-editor.org/rfc/rfc5724.txt">http://www.rfc-editor.org/rfc/rfc5724.txt</a>\n
+   * - "mailto" in order to send an email message (if supported by the platform) as defined by RFC 6068 <a href="http://www.rfc-editor.org/rfc/rfc6068.txt">http://www.rfc-editor.org/rfc/rfc6068.txt</a>\n
    *
    * \code
+
+		appURI = "mailto:jon.doe@example.org";
 
         // Define the launchApplication success callback.
         function launchedCallback()   {
@@ -45,48 +51,40 @@
 
 
         // Activate webinos application, if the application is installed in the device.
-        var appinstalled = webinos.AppLauncher.AppInstalled(appID);
-
         webinosAppLauncher.appInstalled(
             function (result) {
                 if (result)  {
-                    webinos.AppLauncher.launchApplication(launchedCallback, errorCallback, appID, null);
+                    webinos.AppLauncher.launchApplication(launchedCallback, errorCallback, appURI, null);
                 }  
             },
-            null,
-            appID
+            errorCallback,
+            appURI
         );
    * \endcode
    */  
-  
-  
   [NoInterfaceObject] interface AppLauncherManager {
 
       /**
-       * \brief Starts a webinos applicaiton identified by appID. The method is asynchronous. If the app was started successfuly, successCallback is invoked. In case of error, errorCallback is called. Throws DOMException of type AppLauncherError when activation of the application was not successful.
+       * \brief Starts a webinos applicaiton identified by an appURI.
        *
        * \param successCallback Callback invoked when a requested webinos app was activated successfully. 
-       * \param errorCallback Callback invoked if activation of webinos app was not successful.
-       * \param applicationID  Identifies webinos application that needs to be activated.
-       * \param params Optional set of parameters for starting the application.
-       * \return A pending operation object
+       * \param errorCallback Callback invoked if activation of webinos app was not successful. "NotFoundError" if the application identified by appURI could not be found or "NotSupportedError" if the protocol of the app URI is not supported.
+       * \param appURI Identifies webinos application that needs to be activated.
        */
 
     void launchApplication(VoidFunction successCallback,
                                        ErrorCallback errorCallback,
-                                       DOMString applicationID ,
-                                       optional sequence<object> params);
+                                       DOMString appURI);
 
 
       /**
-       * \brief Reports if a specific webinos application is installed in the device. The method is synchronous.
+       * \brief Reports if a specific webinos application is installed in the device.
        *
        * \param callback AppInstalledCallback that is called when the result can be provided.
        * \param errorCallback Callback invoked if the request could not be executed successfully.
-       * \param appID Identifies webinos application presence of which needs to be tested.
-       * \return True if the application is installed, false if the application is not installed.
+       * \param appURI Identifies webinos application presence of which needs to be tested.
        */
-      void appInstalled(AppInstalledCallback callback, ErrorCallback errorCallback, applicationID appID);
+      void appInstalled(AppInstalledCallback callback, ErrorCallback errorCallback, DOMString appURI);
     };
     
     
@@ -98,16 +96,15 @@
     callback AppInstalledCallback = void (boolean result);
         
     /**
-    * \brief callback for a failed activation of asynchronous launchApplication method.
-    * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> containing information about the error ; in particular, NotFoundError if application does not exist, InvalidStateError if application already started, QuotaExceededError if no resources are available
+    * \brief callback for a failed activation of asynchronous launchApplication method and for failed appInstalled calls.
+    * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> containing information about the error ; in particular, NotFoundError if application does not exist, InvalidStateError if application already started, QuotaExceededError if no resources are available or or "NotSupportedError" if the protocol of the app URI is not supported.
     */
     callback ErrorCallback = void (DOMError error);
 
     
 	/**
-	 * \brief The WebinosLauncher interface describes the part of the App Execution
-	 *        API accessible through the webinos object.
+	 * \brief Creates the namespace webinos.launcher from where the AppLauncher is accessable.
 	 */
 	partial interface Webinos {
-  		readonly attribute WebinosEvents events;
+  		readonly attribute AppLauncherManager launcher;
 	};
