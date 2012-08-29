@@ -397,7 +397,7 @@ partial interface Webinos {
    *
    * This interface allows a web application to define the set of properties linked to a message previously created through the createMessage() method in the Messaging Interface.
    *
-   * Additionally, it also allows an application to retrieve the content of a message through the findMessages, onSMS, onMMS and onEmail methods. In those cases, the implementation MAY return in some situations only part of the body because of its size. In those situations the implementation MUST allow the developer to retrieve the remaining part of the message through the use of the sync method member of the Synchronisable interface implemented by Message.
+   * Additionally, it also allows an application to retrieve the content of a message through the findMessages, onSMS, onMMS and onEmail methods. In those cases, the implementation MAY return in some situations only part of the body because of its size. 
    *
    *
    * If the developer attempts to access an attribute not supported by the messaging technology (see attribute description or summary table in the sendMessage mehtod description), the implementation MUST ignore this attempt.
