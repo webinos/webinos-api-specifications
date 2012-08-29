@@ -297,11 +297,10 @@
 	 */
 	dictionary Filter {
 		/**
-		 * \brief 	Identities of personal zones that will be used to search for services in addition to 
-		 *			the person zone of the user logged into to the device and all personal zones that 
-		 *			has been defined via the personal zone management UI.  
+		 * \brief 	User friendly names of personal zones that will be used to search for services in addition to 
+		 *			the person zone of the user logged into to the device.
 		 */
-		DOMString[] zoneId;
+		DOMString[] zoneNames;
 		
 		/**
 		 * \brief 	If set service discovery will only return the service with the given identifier. This
