@@ -1,13 +1,13 @@
-/**<p> The Webinos Generic Actuator API provides applications with an API to control actuators.</p> 
+/**<p> The webinos Generic Actuator API provides applications with an API to control actuators.</p> 
  * \name The Generic Actuator API 
  * 
  *
  *
- * The Webinos Generic Actuator API provides applications with an API to control actuators in the device, 
+ * The webinos Generic Actuator API provides applications with an API to control actuators in the device, 
  * connected to the device or in another device.
  *
  * The API is agnostic to underlying low level methods for actuator discovery and communication with 
- * actuators. However, the Actuator API should be used in combination with the general Webinos service 
+ * actuators. However, the Actuator API should be used in combination with the general webinos service 
  * discovery methods findServices() and bind(). The actuator services can be located in the user's 
  * personal zone or be shared on the current network.
  *
@@ -58,85 +58,6 @@
  */
 
         /**
-        * \brief Defines the  error codes for this module
-        */
-        exception ActuatorException {
-
-                /**
-                * \brief Unknown error.
-                *
-                */
-                const unsigned short UNKNOWN_ERR = 0;
-
-                /**
-                * \brief An invalid parameter was provided when the requested method was invoked.
-                *
-                */
-                const unsigned short INVALID_ARGUMENT_ERR       = 1;
-
-                /**
-                * \brief Exception code
-                */
-                unsigned short code;
-
-                /**
-                * \brief Exception message
-                */
-                DOMString message;
-        };
-
-        /**
-        * \brief ActuatorError interface definition
-        */
-        [NoInterfaceObject] interface ActuatorError {
-
-                /**
-                * \brief Uknown error
-                */
-                const unsigned short UNKNOWN_ERROR = 0;
-
-                /**
-                * \brief Illegal actuator type
-                */
-                const unsigned short ILLEGAL_ACTUATOR_TYPE_ERROR = 2;
-
-                /**
-                * \brief actuator type not supported
-                */
-                const unsigned short ACTUATOR_TYPE_NOT_SUPPORTED_ERROR = 3;
-
-                /**
-                * \brief Illegal sensor id
-                */
-                const unsigned short ILLEGAL_ACTUATOR_ID_ERROR = 4;
-
-                /**
-                * \brief Other illegal input arguments
-                */
-                const unsigned short OTHER_ILLEGAL_INPUT_ARGUMENT_ERROR = 5;
-
-                /**
-                * \brief Actuator is already in use
-                */
-                const unsigned short ACTUATOR_IN_USE_ERROR = 6;
-
-                /**
-                * \brief Permission denied
-                */
-                const unsigned short PERMISSION_DENIED_ERROR = 50;
-
-                /**
-                * \brief Error code assigned when an error has occurred.
-                */
-                readonly attribute unsigned short code;
-
-                /**
-                * \brief Human readable message assigned when an error has occurred.
-                */
-                readonly attribute DOMString message;
-    };
-        
-        /**
         * \brief This interface defines an abstract class representing the range of the actuator values. 
         * The actuator range can be an interval (e.g. temperature is in interval [0&deg;C,27&deg;C]) or a set of 
         * valid values (e.g. a switch accepts only the values {0,1} representing the ON and OFF state). 
@@ -152,7 +73,7 @@
         * is not limited
         */
         [Constructor(float minValue), Constructor(float minValue,float maxValue)]
-        interface Interval: ActuatorRange {
+        interface IntervalRange: ActuatorRange {
                 /**
                 * \brief Min range of actuator in the actuator unit.
                 * undefined min value means that the lower bound is not limited
@@ -170,9 +91,9 @@
         * a valid value of the actuator must be one of the values array.
         */
         [Constructor(float[] validValues)]
-        interface Enum: Range {
+        interface ListRange: ActuatorRange {
                 /**
-                * \brief valid values in the actuator unit
+                * \brief Valid values in the actuator unit
                 */
                 attribute float[] validValues;
         };
@@ -186,34 +107,19 @@
         [NoInterfaceObject] interface Actuator : Service {
 
                 /**
-                * \brief the range of each actuator value.
-                * the size of the range array must be the same as the number of input pins of the actuator
+                * \brief The range of each actuator value.
+                * 
+                * The size of the range array must be the same as the number of input pins of the actuator
                 */
-                readonly attribute Range[] range;
+                readonly attribute ActuatorRange[] range;
  
                 /**
-                * \brief the unit of each actuator value.
-                * the unit array and the range array must have the same size, 
+                * \brief The unit of each actuator value.
+                * 
+                * The unit array and the range array must have the same size, 
                 * which represents the number of input pins of the actuator
                 */
                 readonly attribute DOMString[] unit;
-
-                /**
-                * \brief The type of the actuator. This is an URI defining the actuator type according to the defined actuator "feature" URI strings.\n
-                * e.g. the URI string http://webinos.org/api/actuators.switch represents all switch actuators. 
-                */
-                readonly attribute DOMString actuatorType;
-
-                /**
-                * \brief the id of the actuator.
-                * The identifier is in general an URI string
-                */
-                readonly attribute DOMString? actuatorId;
-
-                /**
-                * \brief the display name of the actuator.
-                */
-                readonly attribute DOMString? displayName;
 
                 /**
                 * \brief Vendor string of this actuator.
@@ -226,10 +132,8 @@
                 readonly attribute unsigned long?  version;
 
                 /**
-                * \brief set a new actuator value.
+                * \brief Set a new actuator value.
                 *
-                * Throws ActuatorException
-                * 
                 * \param value an array of new actuator values. The size of the value array is the same as the number of input pins of the actuator.
                 * \param successCB the success callback called with an ActuatorEvent object as input in case the setValue call succeeded.
                 * \param errorCB the error callback
@@ -240,17 +144,22 @@
                 /**
                 * \brief onSuccess The onSuccess method is called after the setValue succeeded.  
                 *
-                * \param event The event object associated to the asynchnonous operation setValue
+                * \param Event The event object associated to the asynchronous operation setValue
                 */
                 callback ActuatorSuccessCB =  void (ActuatorEvent event); 
 
 
-                /**
-                * \brief onError The onError method is called if an error occurs during the setValue() process.  
-                *
-                * \param error The error object of an unsuccessful setValue() asynchronous operation.
-                */
-                callback ActuatorErrorCB = void(ActuatorError error); 
+      /**
+       * \brief The ActuatorErrorCB method is called if an error occurs during the setValue() process.  
+       *
+       * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> object detailing what 
+       * went wrong in an unsuccessful setValue() asynchronous operation. The following error names could be issued:\n
+       * - "SyntaxError": Input parameters did not match the expected pattern or value is not in range.\n
+       * - "AbortError": Operation was aborted by the user.\n
+       * - "TimeoutError": The operation timed out.
+       */
+       callback ActuatorErrorCB = void (DOMError error);
+                
 
         /**
         * \brief The PendingOperation interface
