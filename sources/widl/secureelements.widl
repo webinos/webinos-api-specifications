@@ -11,25 +11,31 @@
  * developed in the W3C Web Crypto WG.
  * 
  * A brief introduction to APDU can be found at:
- * http://en.wikipedia.org/wiki/Smart_card_application_protocol_data_unit
- * The Java APDU API is described at:
- * http://docs.oracle.com/javase/6/docs/jre/api/security/smartcardio/spec/
- * Should consider alternative API design patterns, e.g. node error model
- * 
- * http://darobin.github.com/api-design-cookbook/
- * Implementation
- * There are two main options:
- * 
- * USB smart card reader for contact based cards
- * NFC based reader for contactless cards
- * Java Smart Card development kits are available, and this would involve interfacing Node with Java. The open source cross platform NFC library 
- * libnfc can be used to access smart cards over NFC, but involves a lot of low level details. A further idea is to use the Java SmartCard API on 
- * Android, see:
- * Secure Element Evaluation Kit for the Android platform
  *
- * It appears that the Nexus S should work with that for UICC smart card development. However, the above page states that the minimum required SDK 
- * is API15 (Android 4.03) which is yet to be supported for the webinos Android build. However, it seems very promising as a basis for demo purposes. 
- * We would also need some sample smart cards with some interesting applets on them, although we could in principle develop our own applets.
+ * - <a href="http://en.wikipedia.org/wiki/Smart_card_application_protocol_data_unit">Smart card application protocol data unit</a>
+ *
+ * The Java APDU API is described at:
+ *
+ * - <a href="hhttp://docs.oracle.com/javase/6/docs/jre/api/security/smartcardio/spec/">Java Smart Card I/O API</a>
+ * 
+ * Implementation
+ *
+ * There are two main hardware options:
+ * 
+ *  - USB smart card reader for contact based cards
+ *  - NFC based reader for contactless cards
+ * 
+ * Java Smart Card development kits are available, and this would involve interfacing Node with Java.
+ * The open source cross platform NFC library libnfc can be used to access smart cards over NFC, but
+ * involves a lot of low level details. For Linux, PC/SC, OpenSC and IFD provide a convenient open
+ * source framework together with libnfc and Node.js. A further idea is to use the Java SmartCard API
+ * on Android, see the <a href="http://code.google.com/p/seek-for-android/">Secure Element Evaluation Kit for the Android platform</a>
+ *
+ * It appears that the Nexus S should work with that for UICC smart card development, however, this
+ * involves reflashing the phone. Moreover, the above page states that the minimum required SDK 
+ * is API15 (Android 4.03) which is yet to be supported for the webinos Android build. However, it
+ * seems promising as a basis for demo purposes. We would also need some sample smart cards with
+ * some interesting applets on them, although we could in principle develop our own applets.
  *
  * \def-api-feature http://webinos.org/api/secureelements
  * Identifies the Secure Elements API. 
@@ -46,16 +52,11 @@
   // The first step is to obtain a list of available APDU terminals:
   
   
-  Webinos.apdu.requestTerminals(listener, success, fail);
-
-  function success ()
-  {
-    console.log("Request for APDU terminals succeeded");
-  }
+  Webinos.apdu.requestTerminals(listener, fail);
 
   function fail (why)
   {
-    console.log("Requested for APDU terminals failed: " + why);
+    console.log("Couldn't get list of APDU terminals: " + why);
   }
 
   function listen (terminals)
@@ -67,7 +68,8 @@
     }
   }
 
-  // Having picked a terminal you can now connect to the card: 
+  // Having picked a terminal and established that a card is present,
+  // you can now connect to the card:
 
   terminal.connect(success, fail);
 
@@ -76,6 +78,7 @@
     console.log("connected to card");
   }
 
+  // connect operation will fail if card isn't present
   function fail (why)
   {
     console.log("couldn't connect to card: " + why);
@@ -128,30 +131,28 @@ partial interface Webinos {
 */
 interface APDU {
   /**
-  * \brief TODO Dave
+  * \brief asynchronous request for available APDU terminals
   *
-  * \param listener TODO Dave
-  * \param success TODO Dave
-  * \param fail TODO Dave
+  * \param listener - called with a list of discovered APDU terminals
+  * \param fail - called if the request was rejected
   */
-  void requestTerminals(ApduTerminalsCB listener,
-                        SuccessCB success, FailCB fail);
+  void requestTerminals(ApduTerminalsCB listener, FailCB fail);
 };
 
 /**
 * \brief Call back for list of available terminals
 *
-* \param terminals TODO Dave
+* \param terminals - a list of available APDU terminals
 */
 callback ApduTerminalsCB = void (ApduTerminal[] terminals);
 
 /**
-* \brief call back if associated request has succeeded
+* \brief call back if associated operation has succeeded
 */
 callback SuccessCB = void ();
 
 /**
-* \brief call back if associated request has failed
+* \brief call back if associated operation has failed
 */
 callback FailCB = void (DOMString why);
 
@@ -181,35 +182,35 @@ interface ApduTerminal {
 
 
   /**
-  * \brief TODO Dave
+  * \brief creates an uninitialized APDU command
   *
-  * \return ApduCommand TODO Dave
+  * \return ApduCommand - the new APDU command object
   */
   ApduCommand createCommand();
   
   
   /**
-  * \brief TODO Dave
+  * \brief transmit an initialized APDU command to a connected card
   *
-  * \param command TODO Dave
-  * \param success TODO Dave
-  * \param fail TODO Dave
+  * \param command - the APDU command object
+  * \param success - called if the request was accepted
+  * \param fail - called if the request was rejected
   * 
   */
   void transmit(ApduCommand command,
                 ApduResponseCB success, FailCB fail);
 
   /**
-  * \brief TODO Dave
+  * \brief establish connection with the current card
   *
-  * \param success TODO Dave
-  * \param fail TODO Dave
+  * \param success - called when the connection is established
+  * \param fail - called if the request was rejected
   * 
   */
   void connect(SuccessCB success, FailCB fail);
   
   /**
-  * \brief TODO Dave
+  * \brief terminate a connection with the card
   * 
   */ 
   void disconnect();
@@ -231,7 +232,7 @@ callback ApduCardRemovedCB = void ();
 callback ApduResponseCB = void (ApduResponse response);
 
 /**
-* \brief This intferface defines ...TODO Dave
+* \brief This interface defines APDU response
 */
 interface ApduResponse {
 
@@ -241,36 +242,36 @@ interface ApduResponse {
   attribute unsigned short status; 
   
   /**
-  * \brief TODO Dave
+  * \brief the response payload
   */  
   attribute byte[] payload;
 };
 
 /**
-* \brief This intferface defines ...TODO Dave
+* \brief support for initializing an APDU command
 */
 interface ApduCommand {
   /**
-  * \brief TODO Dave
+  * \brief used to initialize an APDU command
   *
-  * \param cla TODO Dave
-  * \param ins TODO Dave 
-  * \param p1 TODO Dave 
-  * \param p2 TODO Dave    
+  * \param cla - the class of command
+  * \param ins - the specific command
+  * \param p1 - first parameter
+  * \param p2 - second parameter
   */  
   void setHeaders(byte cla, byte ins, byte p1, byte p2);
   
   /**
-  * \brief TODO Dave
+  * \brief used to set the APDU command payload
   *
-  * \param payload TODO Dave
+  * \param payload - the command payload
   */  
   void setPayload(byte[] payload);
   
   /**
-  * \brief TODO Dave
+  * \brief set the maximum number of expected data bytes in a response APDU
   *
-  * \param length TODO Dave  
+  * \param length - maximum number of expected data bytes 
   */  
   void setResponseLength(unsigned short length);
 };
