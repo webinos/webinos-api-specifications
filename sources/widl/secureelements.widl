@@ -16,13 +16,13 @@
  *
  * The Java APDU API is described at:
  *
- * - <a href="hhttp://docs.oracle.com/javase/6/docs/jre/api/security/smartcardio/spec/">Java Smart Card I/O API</a>
+ * - <a href="http://docs.oracle.com/javase/6/docs/jre/api/security/smartcardio/spec/">Java Smart Card I/O API</a>
  * 
- * Implementation
+ * <b>Implementation:</b>
  *
  * There are two main hardware options:
  * 
- *  - USB smart card reader for contact based cards
+ *  - USB smart card reader for contact based cards\n
  *  - NFC based reader for contactless cards
  * 
  * Java Smart Card development kits are available, and this would involve interfacing Node with Java.
@@ -41,6 +41,7 @@
  * Identifies the Secure Elements API. 
  *
  * \author Dave Raggett/W3C &lt;dsr@w3.org&gt;
+ * \author Editing widl file Claes Nilsson &lt;claes1.nilsson@sonymobile.com&gt;
  * \version 0.1
  *
  */
