@@ -90,7 +90,7 @@
                                            successHandler () {alert('Sensor ' + mySensor.displayName + ' with ID: ' + mySensor.id +
                                                                     ' is configured') },
                                            errorHandler (error) {alert('Sensor ' + mySensor.displayName + ' with ID: ' + mySensor.id +
-                                                                       ' configuration failed' + ' with error: ' + error.message)} );
+                                                                       ' configuration failed' + ' with error: ' + error.name)} );
 
                
                 // Start listening to sensor events and log values. 
@@ -180,29 +180,22 @@
         * \param errorCB Callback issued if sensor configuration fails.  
         * \return A pending operation object making it possible to cancel the configureSensor operation     
         */
-        PendingSensorConfigOp configureSensor (ConfigureSensorOptions options, ConfigureSensorCB successCB, optional SensorErrorCB errorCB);
+        PendingSensorConfigOp configureSensor (ConfigureSensorOptions options, VoidFunction successCB, optional SensorErrorCB errorCB);
      };
 
 
-      /**
-       * \brief The ConfigureSensorCB method is called when configuration of a sensor succeeded.  
-       *
-       */
-       callback ConfigureSensorCB = void();          
-
-
-      /**
-       * \brief The SensorErrorCB method is called if an error occurs during the configureSensor() process.  
-       *
-       * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> object detailing what 
-       * went wrong in an unsuccessful configureSensor() asynchronous operation. The following error names cold be issued:\n
-       * - "SyntaxError": Input parameters did not match the expected pattern.\n
-       * - "NotSupportedError": Sensor configuration not supported.\n
-       * - "InvalidModificationError": Sensor can not be configured in this way.\n
-       * - "AbortError": Operation was aborted by the user.\n
-       * - "TimeoutError": The operation timed out.
-       */
-       callback SensorErrorCB = void (DOMError error);
+   /**
+    * \brief The SensorErrorCB method is called if an error occurs during the configureSensor() process.  
+    *
+    * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> object detailing what 
+    * went wrong in an unsuccessful configureSensor() asynchronous operation. The following error names cold be issued:\n
+    * - "SyntaxError": Input parameters did not match the expected pattern.\n
+    * - "NotSupportedError": Sensor configuration not supported.\n
+    * - "InvalidModificationError": Sensor can not be configured in this way.\n
+    * - "AbortError": Operation was aborted by the user.\n
+    * - "TimeoutError": The operation timed out.
+    */
+    callback SensorErrorCB = void (DOMError error);
 
    /**
     * \brief Sensor event fire mode.\n
@@ -278,7 +271,8 @@
      *
      *  Cancel the pending configure sensor asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
      *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
-     *  name "AbortError".
+     *  name "AbortError". If the configuration is no longer under control of the calling process, the cancel function will be ignored and all neccessary 'housekeeping functions' 
+     *  required after starting the configuration process will be performed as if the cancel had never been issued.
      */
         void cancel ();
      };
