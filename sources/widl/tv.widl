@@ -58,7 +58,7 @@ interface TVManager {
 */
 interface TVDisplayManager : EventTarget {
   /**
-   * \brief The channel currently displayed; null if no channel is on
+   * \brief The channel currently displayed; null if no channel is tuned.
   */
    attribute Channel? currentChannel;
  
@@ -75,8 +75,8 @@ interface TVDisplayManager : EventTarget {
  * \brief Event that fires when the channel is changed.
  *
  * Changing channels could also be invoked by other parties, e.g. a hardware
- * remote control. A ChannelChange event will be fired any time the channel
- * being displayed is changed
+ * remote control. A channelchange event will be fired any time a channel
+ * is being changed.
  * \code
   \<p>Currently shown on TV: \<span id='tv'>Undetermined\</span>\</p>
   \<script>
@@ -164,7 +164,8 @@ callback TVManagerSuccessCB = void (TVSource[] sources);
 
 /**
 * \brief Error callback for errors when trying to get TV sources or setting a channel and something goes wrong.
-* \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#interface-domerror">DOMError</a> object is detailing what went wrong; e.g. "NotFoundError" as name attribute of the error object if channel is invalid. An error with "NetworkError" or "TimeoutError" as name attribute may occur if the service gets (temporarily) unreachable.
+* \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#interface-domerror">DOMError</a> object is detailing what went wrong; e.g. "NotFoundError" as name attribute of the error object if channel is invalid. An error with "NetworkError" or "TimeoutError" as value 
+* for the name attribute may occur if the service gets (temporarily) unreachable.
 */
 callback TVErrorCB = void (DOMError error);
 
@@ -207,7 +208,7 @@ dictionary Channel {
  /**
    * \brief The name of the channel.
    *
-   * The name of the channel will typically be the call sign of the station or 
+   * The name of the channel will typically be the call sign of the station. To be used in cases
    * if there is less space than needed for displaying the long name, e.g in horizontal lists 
    * or other compact channel list display modes. Thus, a name may be an acronym or abbreviation 
    * of the long name (longName attribute).
