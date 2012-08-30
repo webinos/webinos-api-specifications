@@ -58,7 +58,7 @@ interface TVManager {
 */
 interface TVDisplayManager : EventTarget {
   /**
-   * \brief The channel currently displayed; null if no channel is on
+   * \brief The channel currently displayed; null if no channel is tuned.
   */
    attribute Channel? currentChannel;
  
@@ -67,7 +67,7 @@ interface TVDisplayManager : EventTarget {
    *
    * \param channel The TV channel to switch to.
    * \param successCallback The callback to notify the caller that the channel change succeeded.
-   * \param errorCallback The callback called in case the channel could not be switched and an error occured.
+   * \param errorCallback The callback called in case the channel could not be switched or an error occured.
    */
   void setChannel(Channel channel, TVDisplaySuccessCB successCallback, optional TVErrorCB errorCallback);
 
@@ -75,8 +75,8 @@ interface TVDisplayManager : EventTarget {
  * \brief Event that fires when the channel is changed.
  *
  * Changing channels could also be invoked by other parties, e.g. a hardware
- * remote control. A ChannelChange event will be fired any time the channel
- * being displayed is changed
+ * remote control. A channelchange event will be fired any time a channel
+ * is being changed.
  * \code
   \<p>Currently shown on TV: \<span id='tv'>Undetermined\</span>\</p>
   \<script>
@@ -148,23 +148,24 @@ callback TVDisplaySuccessCB = void (Channel channel);
 */
 interface TVTunerManager {
   /**
-   * \brief Get a list of all available TV tuners.
+   * \brief Get a list of all available TV sources.
    *
-   * \param successCallback Callback that receives all available TV sources.
+   * \param successCallback Callback that receives all available TV sources, e.g. tuners.
    * \param errorCallback Callback called in case something goes wrong.
    */
-  void getTVSources(TVSuccessCB successCallback, optional TVErrorCB errorCallback);
+  void getTVSources(TVManagerSuccessCB successCallback, optional TVErrorCB errorCallback);
 };
 
 /**
-* \brief Callback for found TV tuners.
+* \brief Callback for found TV sources.
 * \param sources An array of TVSource objects representing available tuners.
 */
-callback TVSuccessCB = void (TVSource[] sources);
+callback TVManagerSuccessCB = void (TVSource[] sources);
 
 /**
-* \brief Error callback for errors when trying to get TV tuners.
-* \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> object detailing what went wrong; e.g. NotFoundError if channel is invalid.
+* \brief Error callback for errors when trying to get TV sources or setting a channel and something goes wrong.
+* \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#interface-domerror">DOMError</a> object is detailing what went wrong; e.g. "NotFoundError" as name attribute of the error object if channel is invalid. An error with "NetworkError" or "TimeoutError" as value 
+* for the name attribute may occur if the service gets (temporarily) unreachable.
 */
 callback TVErrorCB = void (DOMError error);
 
@@ -207,21 +208,24 @@ dictionary Channel {
  /**
    * \brief The name of the channel.
    *
-   * The name of the channel will typically be the call sign of the station.
+   * The name of the channel will typically be the call sign of the station. To be used in cases
+   * if there is less space than needed for displaying the long name, e.g in horizontal lists 
+   * or other compact channel list display modes. Thus, a name may be an acronym or abbreviation 
+   * of the long name (longName attribute).
    */
    DOMString name;
   
   /**
    * \brief The long name of the channel.
    *
-   * The long name of the channel if transmitted. Can be undefined if not available.
+   * The long name or fully spelt name of the channel if transmitted. Can be undefined if not available.
    */
-   DOMString longName;
+   DOMString? longName;
   
   /**
    * \brief The video stream.
    *
-   * This stream is a represents a valid source for a HTMLVideoElement.
+   * The stream attribute represents a valid source for a HTMLVideoElement.
    * The MediaStream object itself is defined by the W3C at
    * <a href="http://dev.w3.org/2011/webrtc/editor/getusermedia.html#mediastream">Media Capture and Streams API</a> 
    */

@@ -44,19 +44,9 @@ partial interface Webinos {
  * Optionally, the application which created the channel (i.e. the channel owner)
  * can authorize connect requests of other application instances that want to use
  * the channel using the App2AppChannelRequestCB callback.
+ *
  */
 interface App2AppMessaging {
-
-  /**
-   * \brief Create a new message.
-   *
-   * \param type The type of the message.
-   * \param payload The payload of the message.
-   */
-  App2AppMessage createMessage(
-    DOMString type,
-    [TreatUndefinedAs=Null] 
-      optional DOMString? payload);
 
   /**
    * \brief Create a new channel.
@@ -67,11 +57,32 @@ interface App2AppMessaging {
    * \param requestCB The callback called when an application wants to connect
    * to the channel. If the callback returns true the application is allowed to
    * connect, otherwise the connect attempt is rejected.
+   * \code
+   // create channel and ask user to accept connections
+   var channel = webinos.app2app.createChannel("urn:webinos:org:example", { channelOwner: "exampleApp", mode: "send-receive" },
+                                               requestHandler(request) { return confirm("Accept connect request from " + request.source) });
+   \endcode
    */
   App2AppChannel createChannel(
     DOMString namespace,
     App2AppChannelProperties properties,
     optional App2AppChannelRequestCB requestCB);
+
+  /**
+   * \brief Create a new message.
+   *
+   * \param type The type of the message.
+   * \param payload The payload of the message.
+   * \code
+   var channel; // previously created channel
+   var message = webinos.app2app.createMessage("status", '{"status": "ok"}');
+   channel.send(message, errorHandler(error) { alert("Oops, something went wrong.") });
+   \endcode
+   */
+  App2AppMessage createMessage(
+    DOMString type,
+    [TreatUndefinedAs=Null] 
+      optional DOMString? payload);
 
   /**
    * \brief Search for channels.
@@ -89,6 +100,11 @@ interface App2AppMessaging {
    * channels in addition the local personal zone.
    * \param searchCB The callback called when the search is complete.
    * \return PendingOperation interface to cancel the asynchronous call.
+   *
+   * \code
+   webinos.app2app.searchForChannels("urn:webinos:org:*", [],
+                                     resultHandler(channels) { alert("Found one or more channels.") });
+   \endcode
    */
   PendingOperation searchForChannels(
     DOMString namespace, 
@@ -159,6 +175,14 @@ interface App2AppChannel {
    * \param messageCB Callback called when receiving a message.
    * \param successCB Callback called when the connect was successful.
    * \param errorCB Callback called when an error occurred during connecting.
+   *
+   * \code
+   var channels; // previously (non-empty) array of found channels
+   channels[0].connect( { source: "exampleApp" },
+                        messageHandler(message) { alert("Got message with type: " + message.type) },
+                        successHandler() { alert("Successfully connected to channel.") },
+                        errorHandler() { alert("Oops, something went wrong.") });
+   \endcode
    */
   void connect(
     App2AppChannelRequest request,
@@ -171,6 +195,12 @@ interface App2AppChannel {
    *
    * \param message The message to send.
    * \param errorCB Callback called when an error occurred during sending.
+   *
+   * \code
+   var channel; // previously obtained and successfully connected channel
+   var message = webinos.app2app.createMessage("status", '{"status": "ok"}');
+   channel.send(message, errorHandler(error) { alert("Oops, something went wrong.") });
+   \endcode
    */
   void send(
     App2AppMessage message,
@@ -231,6 +261,11 @@ dictionary App2AppChannelRequest {
    */
   DOMString source;
 };
+
+/**
+ * \brief The message callback for receiving messages on the channel.
+ */
+callback App2AppMessageCB = void (App2AppMessage message);
 
 /**
  * \brief The request callback for authorizing channel connection attempts.

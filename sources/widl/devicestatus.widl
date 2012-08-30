@@ -1,9 +1,7 @@
 /**<p>The webinos Device Status API lets you get information about various "aspects" of a device.</p>
  * \name Device Status API 
  *
- * This API uses a kind of tree model to allow developers to get at the various bits of data about things on a device. The tree model is illustrated in figure 1: at the root you find aspects, which contain components, which contain properties - each of which is formally defined below.
- *
- * Aspects contain components, which contain properties The Device status tree model: at the root are the aspects, which contain one or more components, which themselves contain properties.
+ * This API uses a kind of tree model to allow developers to get at the various bits of data about things on a device. 
  * 
  * <b>Aspect</b>
  * \n  An aspect is an abstract namable thing (e.g., a "Device", "Battery", "Display", etc.) that the user agent knows about and can interact with. An aspect can contain one or more components.
@@ -12,7 +10,7 @@
  "battery2", "os", "hdd", "SDCard").
  * \n     This specification reserves two special components names ("_active" and "_default") which a user agent MUST NOT use when generating. 
  * \n \n <b>Property</b>
- * \n     A property of an component is something that can be queried to returns data (e.g., how much charge a battery has, if the WiFi is connected or not, the SSID of a WiFi network). 
+ * \n     A property of an component is something that can be queried to return data (e.g., how much charge a battery has, if the WiFi is connected or not, the SSID of a WiFi network). 
  * 
  * A user agent supports aspect X if the user agent can verify that the aspect (hardware or software) exists on the device and/or has not been disabled (either by policy or by a feature declaration).
  * 
@@ -93,7 +91,7 @@
  *  
  * \code
  *  \<widget xmlns="http://www.w3.org/ns/widgets">
- *    \<feature name="http://wacapps.net/api/device.networkinfo"/>
+ *    \<feature name="http://wacapps.net/api/devicestatus.networkinfo"/>
  *    \<!-- The rest are ignored --> 
  *    \<feature name="http://wacapps.net/api/devicestatus"/> 
  *    \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/> 
@@ -110,14 +108,13 @@
  
  
 /**
-* \brief Creates the application state synchronization namespace.
+* \brief Creates the webinos.devicestatus namespace.
 *
-* Access to public constants and functions are available via the namespace webinos.sync.
 */
 partial interface Webinos {
        /**
         * \brief The devicestatus attribute provides access to Device Status API. 
-        *         Example
+        *         
         * \code
         * var info = deviceapis.devicestatus;
         * info.getPropertyValue(
@@ -129,13 +126,14 @@ partial interface Webinos {
         *         property: "model"
         * });
         * \endcode
+        *
         */
     readonly attribute  DeviceStatusManager devicestatus;
 };
 
        /**
         * \brief This offers methods to get information about the device status and subscribe to receive notifications of device status changes. To allow for asynchornous notification of changes to the various properties of components, the user agent keeps a list of active watch operations. Each entry in this list is identified by a number, which is unique within its list for the lifetime of the application.
-        *         Example
+        *         
         * \code
         * deviceapis.devicestatus.getPropertyValue(
         * function(value) {
@@ -146,6 +144,7 @@ partial interface Webinos {
         *         aspect: "Battery"
         * });
         * \endcode
+        *
         */
 
 [NoInterfaceObject]
@@ -154,11 +153,10 @@ interface DeviceStatusManager {
         * \brief The getComponents() method provides means to get the components of an aspect.
         * 
         * When the getComponents() method is invoked, the user agent MUST run the steps to retrieve the components.
-        * steps to retrieve the components
         * 
         * The steps to retrieve the components are given by the following algorithm. The algorithm returns an array of component names, which may be empty.
         * 
-	* <ol>
+        * <ol>
         * <li>  Run the general invocation checks algorithm. If no exceptions were generated, continue.</li>
         * <li>  Let components be an empty array.</li>
         * <li>  If the first argument (aspect) null, return components and terminate this algorithm.</li>
@@ -167,9 +165,9 @@ interface DeviceStatusManager {
         * <li>  If trimmed aspect exactly matches the name of a supported aspect:
         * \n      6a. For each component of the matching aspect, create a DOMString representation of the component name and add it to the components array.</li>
         * <li>   This offers methods to get information about the device status and subscribe to receive notifications of device status changes. To allow for asynchornous notification of changes to the various properties of components, the user agent keeps a list of active watch operations. Each entry in this list is identified by a number, which is unique within its list for the lifetime of the application.</li>
-	* </ol>
-	*
-        *         Example
+        * </ol>
+        *
+        *        
         * \code
 //displays contain, for example, ["screen1"] 
 var displays = deviceapis.devicestatus.getComponents('Display');
@@ -181,6 +179,7 @@ for (var i = 0; i < displays.length; i++) {
         console.log("Display component " + i + ": " + displays[i]);
 }
         * \endcode
+        *
         * \param aspect for component to retrieve
         * \return components
         */
@@ -190,11 +189,10 @@ for (var i = 0; i < displays.length; i++) {
         * \brief The isSupported() method checks if an aspect is supported and, optionally, if a property that would correspond to a component of that aspect is supported (e.g., a Battery aspect's batteryLevel property).
         * 
         * When invoked, the user agent MUST run the steps to check if an aspect is supported.
-        * Steps to check if an aspect is supported
         * 
         * The steps to check if an aspect is supported are given by the following algorithm. The algorithm returns either true or false.
         * 
-	* <ol>
+        * <ol>
         * <li> Run the general invocation checks algorithm. If no exceptions were generated, continue.</li>
         * <li> Let trimmed aspect be the result of trimming all white space from the front and back of the first argument.</li>
         * <li> If the user agent does not supports aspect trimmed aspect, return false and terminate this algorithm.</li>
@@ -202,9 +200,8 @@ for (var i = 0; i < displays.length; i++) {
         * \n    4a. Let trimmed property be the result of of trimming all white space from the front and back of the second argument.
         * \n    4b. If trimmed property is a supported property of trimmed aspect, then return true and terminate this algorithm.</li>
         * <li> Return false.</li>
-	* </ol>
+        * </ol>
         * 
-        * Example
         * \code
 if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         console.log("batteryLevel property is available");
@@ -212,6 +209,7 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         console.log("batteryLevel property is not available");
 }
         * \endcode
+        *
         * \param aspect Aspect to check for
         * \param aspect Optional property to check for
         * \return whether aspect is supported
@@ -227,7 +225,7 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * 
         * The steps to get a property value are given by the following algorithm:
         * 
-	* <ol>
+        * <ol>
         * <li>  Run the general invocation checks algorithm. If no exceptions were generated, continue.</li>
         * <li>  If either the aspect member or the property member is not present in the third argument (query):
         * \n     2a.  If the second argument (errorCallback) is not an ECMAScript funtion, then terminate this algorithm skipping all steps below.
@@ -262,11 +260,10 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * \n    10b.  Invoke the successCallback with value as the argument.</li>
         * <li>  Let op be and object that implements the PendingDeviceStatusOp interface.</li>
         * <li>  Associate task with op, so that if op's cancel() method is invoked, it attempts to remove task for the callbacks task queue.</li>
-        * <li>  Queue a task task.</li>
+        * <li>  Queue a task.</li>
         * <li>  Return op.</li>
         * </ol>
         * 
-        * Example
         * \code
         * //The "_default" component is implied.
         * var options = {
@@ -280,6 +277,7 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * },
         * null, options);
         * \endcode
+        *
         * \param successCallback Function to call on successfully retrieving a property value
         * \param errorCallback Function to call if property value could not be retrieved
         * \param query Property to retrieve
@@ -293,14 +291,11 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
        /**
         * \brief The watchPropertyChange() method allows the developer to watch for changes to the properties of components.
         * 
-        * ACCEL-watch-acceleration: When the watchPropertyChange() method is invoked, the user agent MUST run the steps for watching property changes.
-        *         
-        * Steps for watching the acceleration
         * 
         * The steps for watching property changes is given by the following algorithm:
         * 
         * 
-	* <ol>
+        * <ol>
         * <li>  Run the general invocation checks algorithm. If no exceptions were generated, continue.</li>
         * <li>  Let subscription id be a user-agent-defined (random or sequential) unique integer that will represent the looping action to be created by invoking this method.</li>
         * <li>  Add subscription id to the list of active watch operations.</li>
@@ -316,11 +311,11 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * <li>  Wait, at a minimum (optionally more time if needed), the amount of time indicated by the interval. If the max interval was not discarded, and the time waited exceeds the max interval, do this step again (i.e., wait).</li>
         * <li>  If the entry for subscription id has been cleared from the list of active watch operations, terminate this algorithm. If subscription id has not been cleared from the list of active watch operations, create a task to run the getPropertyValue() method using successCallback as the first argument, and, if present, errorCallback as the second argument, and query dictionary as the third argument. Discard the resulting PendingDeviceStatusOp object.</li>
         * <li>  Factor in the minChangePercent change value. Only queue the task when the change between the old value and new value is minChangePercent or greater.</li>
-        * <li>  Queue the task task.</li>
+        * <li>  Queue the task.</li>
         * <li>  Return to step labelled wait.</li>
-	* </ol>
+        * </ol>
         * 
-        * Example
+        * 
         * \code
         * function propertyChange(value, ref) {
         *         console.log("New value for " + ref.property + " is " + value);
@@ -343,6 +338,7 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * },
         * null, options);
         * \endcode
+        *
         * \param successCallback Function to call on changing property value
         * \param errorCallback Function to call if an error occurs
         * \param query Property to watch
@@ -360,7 +356,7 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * 
         * 
         * If a valid watchid argument is passed that corresponds to a subscription already in place, then the watch process MUST immediately terminate and no further callbacks MUST be invoked. If the watchid argument does not correspond to a valid subscription, the method should return without any further action.
-        * Example
+        * 
         * \code
         * function propertyChange(value, ref) {
         *      console.log("New value for " + ref.property + " is " + value);
@@ -377,6 +373,7 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         *       aspect: "Battery"
         *   });
         * \endcode
+        *
         * \param watchid Id of watch property change subscription
         */
     void clearPropertyChange(long watchid);
@@ -513,7 +510,7 @@ dictionary PropQuery {
         * </TR>
         * <TR>
         *    <TD>Display</TD><TD>pixelAspectRatio </TD>
-        *    <TD>The pixelAspectRatio property is a float that represents pixel aspect ratio, for example 1.333333333 for a 4:3 aspect. It's always the value of the resolutionHeight devided by the resolutionWidth. </TD>
+        *    <TD>The pixelAspectRatio property is a float that represents pixel aspect ratio, for example 1.333333333 for a 4:3 aspect. It's always the value of the resolutionHeight divided by the resolutionWidth. </TD>
         * </TR>
         * <TR>
         *    <TD>Display</TD><TD>dpiY </TD>
@@ -597,7 +594,7 @@ dictionary PropQuery {
         * </TR>
         * <TR>
         *    <TD>ParentalRating</TD><TD>scheme (*)</TD>
-        *    <TD>>The scheme property is a DOMString representing the guidance scheme URIs as defined in MPEG-7.</TD>
+        *    <TD>The scheme property is a DOMString representing the guidance scheme URIs as defined in MPEG-7.</TD>
         * </TR>
         * <TR>
         *    <TD>ParentalRating</TD><TD>region (*)</TD>
@@ -609,15 +606,15 @@ dictionary PropQuery {
         * </TR>
         * <TR>
         *    <TD>WebRuntime</TD><TD>name</TD>
-        *    <TD>The name property is an DOMString representing the name assigned by the vendor to the runtime.</TD>
+        *    <TD>The name property is a DOMString representing the name assigned by the vendor to the runtime.</TD>
         * </TR>
         * <TR>
         *    <TD>WebRuntime</TD><TD>vendor</TD>
-        *    <TD>The vendor property is an DOMString representing the name of the vendor who sells or created the runtime. </TD>
+        *    <TD>The vendor property is a DOMString representing the name of the vendor who sells or created the runtime. </TD>
         * </TR>
         * <TR>
         *    <TD>WebRuntime</TD><TD>webinosVersion (*)</TD>
-        *    <TD>>The webinosVersion property is an DOMString indicating the version of the webinos specs supported.</TD>
+        *    <TD>>The webinosVersion property is a DOMString indicating the version of the webinos specs supported.</TD>
         * </TR>
         * <TR>
         *    <TD>WiFiHardware</TD><TD>status</TD>

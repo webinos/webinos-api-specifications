@@ -11,15 +11,18 @@
  * This list of sensor types supported in the API could easily be extended with additional sensor types.
  * 
  * Implementation notes:\n
- * - This is an experimental API and security and privacy issues are not specifically addressed in the specification. If access to security or privacy
- * sensitive sensors are provided the user agent must either acquire access permission through a user interface or control access through a prearranged
- * trust relationship with users.\n
+ * - From the security point of view an extensible set of features identifying the various sensor types is reported; this allows a granular control on 
+ * the type os sensor that can be accessed. Another feature (sensor.read) that does not allow access to configuration capabilities has been added.
+ * This model may be modified due to further studies that will follow during implementation.\n
  * - Consider a visual warning on the device when the sensor is accessed, to avoid eavesdropping / privacy invasion by a remote or local application.\n
  * - Consider roaming costs for accessing remote sensors through the mobile network. An implementation might provide 'roaming' and 'non-roaming' profiles.\n
  * - Avoid unnecessary high rates of sensor events. Consider battery drain.\n 
  *
  * \def-api-feature http://webinos.org/api/sensors
  * Identifies all the sensor types. 
+ *
+ * \def-api-feature http://webinos.org/api/sensors.read
+ * Enables access only to read methods of the api - access to configureSensor is forbidden
  *
  * \def-api-feature http://webinos.org/api/sensors.light
  * Identifies the light sensor type. 
@@ -42,9 +45,10 @@
  * \def-api-feature http://webinos.org/api/sensors.heartratemonitor
  * Identifies a heart rate monitor sensor type. 
  *
- * \author Claes Nilsson &lt;claes1.nilsson@sonyericsson.com&gt;
+ * \author Claes Nilsson &lt;claes1.nilsson@sonymobile.com&gt;
  * \author Updated to new WIDL by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
- * \version 1.98 
+ * \author Stefano Vercelli &lt;stefano.vercelli@telecomitalia.it&gt;
+ * \version 1.99 
  */
 
 
@@ -82,11 +86,11 @@
                
 
                 // Configure the sensor.
-                mySensor.configureSensor ( {timeout: 120, rate: "normal", eventFireMode: "valuechange"}, 
+                mySensor.configureSensor ( {timeout: 120, rate: 5000, eventFireMode: "valuechange"}, 
                                            successHandler () {alert('Sensor ' + mySensor.displayName + ' with ID: ' + mySensor.id +
                                                                     ' is configured') },
                                            errorHandler (error) {alert('Sensor ' + mySensor.displayName + ' with ID: ' + mySensor.id +
-                                                                       ' configuration failed' + ' with error: ' + error.message)} );
+                                                                       ' configuration failed' + ' with error: ' + error.name)} );
 
                
                 // Start listening to sensor events and log values. 
@@ -168,7 +172,6 @@
         */ 
         readonly attribute unsigned long?  version; 
 
-
        /**
         * \brief Configures a sensor.
         *
@@ -177,39 +180,23 @@
         * \param errorCB Callback issued if sensor configuration fails.  
         * \return A pending operation object making it possible to cancel the configureSensor operation     
         */
-        PendingSensorConfigOp configureSensor (ConfigureSensorOptions options, ConfigureSensorCB successCB, optional SensorErrorCB errorCB);
+        PendingSensorConfigOp configureSensor (ConfigureSensorOptions options, VoidFunction successCB, optional SensorErrorCB errorCB);
      };
 
 
-      /**
-       * \brief onSuccess The onSuccess method is called when configuration of a sensor succeeded.  
-       *
-       */
-       callback ConfigureSensorCB = void();          
-
-
-      /**
-       * \brief The SensorErrorCB method is called if an error occurs during the configureSensor() process.  
-       *
-       * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> object detailing what 
-       * went wrong in an unsuccessful configureSensor() asynchronous operation. The following error names cold be issued:\n
-       * - "SyntaxError": Input parameters did not match the expected pattern.\n
-       * - "NotSupportedError": Sensor configuration not supported.\n
-       * - "InvalidModificationError": Sensor can not be configured in this way.\n
-       * - "AbortError": Operation was aborted by the user.\n
-       * - "TimeoutError": The operation timed out.
-       */
-       callback SensorErrorCB = void (DOMError error);
-
    /**
-    * \brief Sensor event rate.\n
-    * - fastest = The sensor is reporting data as fast as possible.\n
-    * - game = The sensor is reporting data with a rate suitable for games.\n
-    * - ui = The sensor is reporting data with a rate suitable for user interface.\n
-    * - normal = The sensor is reporting data with a normal rate, e.g. suitable for screen orientation changes. This is the default value.
+    * \brief The SensorErrorCB method is called if an error occurs during the configureSensor() process.  
+    *
+    * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> object detailing what 
+    * went wrong in an unsuccessful configureSensor() asynchronous operation. The following error names cold be issued:\n
+    * - "SyntaxError": Input parameters did not match the expected pattern.\n
+    * - "NotSupportedError": Sensor configuration not supported.\n
+    * - "InvalidModificationError": Sensor can not be configured in this way.\n
+    * - "AbortError": Operation was aborted by the user.\n
+    * - "TimeoutError": The operation timed out.
     */
-    enum Rate { "fastest", "game", "ui", "normal"};
-    
+    callback SensorErrorCB = void (DOMError error);
+
    /**
     * \brief Sensor event fire mode.\n
     * - fixedinterval = Events fired with a fixed time interval.\n
@@ -230,13 +217,44 @@
 
       /**
        * \brief The requested rate of the sensor data.
+	   * It is the time interval before a new event is generated. The value is expressed in ms. If the interval is too small for the sensor
+	   * (that is it is unable to generate data at the selected rate) it shall use the maximum rate it can support.
        */
-       Rate rate;
+       unsigned long? rate;
        
      /**
        * \brief The requested sensor event fire mode.
        */
-       EventFireMode eventFireMode;
+       EventFireMode? eventFireMode;
+
+     /**
+       * \brief The position of the sensor.
+	   * This value may be ignored by the sensor if it retrieves position in a different way (for example has a gps module onboard)
+       */
+       GeoPosition? position;
+
+     /**
+       * \brief Generic configurations string.
+	   * This string is in JSON format and can be used for additional sensors that need extra configuration parameters.
+	   * The format of the string must be specified by the sensor developer.
+       */
+       DOMString? config;
+	};
+
+  /**
+    * \brief GeoPosition interface definition
+    */
+    dictionary GeoPosition {
+
+      /**
+       * \brief Latitude. 
+       */
+       unsigned long latitude;
+
+      /**
+       * \brief Longitude.
+       */
+       unsigned long longitude;
      };
 
     /**
@@ -253,7 +271,8 @@
      *
      *  Cancel the pending configure sensor asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
      *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
-     *  name "AbortError".
+     *  name "AbortError". If the configuration is no longer under control of the calling process, the cancel function will be ignored and all neccessary 'housekeeping functions' 
+     *  required after starting the configuration process will be performed as if the cancel had never been issued.
      */
         void cancel ();
      };
@@ -324,9 +343,10 @@
 
  
   /**
-   * \brief The rate of the sensor data
+   * \brief The rate of the sensor data.
+   * This value will be 0 if the rate is undefined or eventFireMode is set to valuechange.
    */
-    readonly attribute Rate rate;
+    readonly attribute unsigned long rate;
 
   /**
    *  \brief The event fire mode the sensor.
@@ -338,6 +358,12 @@
    * \brief Array of sensor values
    */
     readonly attribute float[] sensorValues;
+
+    /**
+     * \brief Position of the sensor.
+     */ 
+     readonly attribute GeoPosition?  position;
+
 
   /**
    * \brief Method to set initial values of sensor event.  
@@ -355,6 +381,7 @@
    * \param rate Rate of sensor data event
    * \param eventFireMode Mode of firing events
    * \param sensorValues Array of sensor values
+   * \param position Position of the sensor
    */
     void initSensorEvent(DOMString type,
                          boolean bubbles,
@@ -362,9 +389,10 @@
                          DOMString sensorType,
                          DOMString sensorId,
                          Accuracy accuracy,
-                         Rate rate,
+                         unsigned long rate,
                          EventFireMode eventFireMode, 
-                         float[] sensorValues); 
+                         float[] sensorValues,
+                         GeoPosition position);
     };
 
 

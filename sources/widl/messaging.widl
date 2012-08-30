@@ -43,9 +43,8 @@
 
 
 /**
-* \brief Creates the application state synchronization namespace.
+* \brief Creates the webinos.messaging namespace.
 *
-* Access to public constants and functions are available via the namespace webinos.sync.
 */
 partial interface Webinos {
    readonly attribute Messaging messaging;
@@ -73,12 +72,12 @@ partial interface Webinos {
  * }
  * 
  * // SMS sending example
- * var msg = deviceapis.messaging.createMessage(deviceapis.messaging.TYPE_SMS);
+ * var msg = window.webinos.messaging.createMessage(window.webinos.messaging.TYPE_SMS);
  * msg.body = "I will arrive in 10 minutes";
  * msg.to = ["+34666666666"];
  * 
  * // Send request
- * deviceapis.messaging.sendMessage(messageSent, messageFailed, msg);
+ * window.webinos.messaging.sendMessage(messageSent, messageFailed, msg);
  * \endcode
  */
    
@@ -120,8 +119,8 @@ partial interface Webinos {
    * \brief Create a message of a given type. 
    *
    * \code
-   * var msg = deviceapis.messaging.createMessage(deviceapis.messaging.TYPE_SMS);
-   * msg.body = "WAC first SMS message.";
+   * var msg = window.webinos.messaging.createMessage(window.webinos.messaging.TYPE_SMS);
+   * msg.body = "webinos first SMS message.";
    * \endcode
    *
    * Throws DeviceAPIError INVALID_VALUES_ERR if the input parameter contains an invalid value. 
@@ -178,12 +177,12 @@ partial interface Webinos {
    * }
    * 
    * // SMS sending example
-   * var msg = deviceapis.messaging.createMessage(deviceapis.messaging.TYPE_SMS);
+   * var msg = window.webinos.messaging.createMessage(window.webinos.messaging.TYPE_SMS);
    * msg.body = "I will arrive in 10 minutes";
    * msg.to = ["+34666666666", "+34888888888"];
    * 
    * // Send request
-   * deviceapis.messaging.sendMessage(messageSent, messageFailed, msg);
+   * window.webinos.messaging.sendMessage(messageSent, messageFailed, msg);
    * \endcode
    *
    * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
@@ -211,9 +210,9 @@ partial interface Webinos {
    * In any of the cases in which the errorCallback should be invoked, if the developer has not passed an ErrorCallback or it is null, no action is required (i.e. the error is not notified to the developer).
    *
    * \code
-   *    var msg = { type:[deviceapis.messaging.TYPE_SMS], body:"first messa%" };
+   *    var msg = { type:[window.webinos.messaging.TYPE_SMS], body:"first messa%" };
    *
-   * deviceapis.messaging.findMessages(
+   * window.webinos.messaging.findMessages(
    *    function (messages) {
    *      alert(messages.length + " message(s) found!");
    *      for (var i=0; i<messages.length; i++) {
@@ -251,11 +250,11 @@ partial interface Webinos {
    * 
    *    // The subscription is cancelled to prevent further notifications
    *    if (mySMSListener != null)
-   *      deviceapis.messaging.unsubscribe(mySMSListener);
+   *      window.webinos.messaging.unsubscribe(mySMSListener);
    *  }
    *   // Register listener for new SMS events
    *  var mySMSListener = null;
-   *  mySMSListener = deviceapis.messaging.onSMS(incomingSMS);
+   *  mySMSListener = window.webinos.messaging.onSMS(incomingSMS);
    * \endcode
    *
    * Throws DeviceAPIError SECURITY_ERR if this operation is not allowed. 
@@ -287,11 +286,11 @@ partial interface Webinos {
    *
    *   // The subscription is cancelled to prevent further notifications
    *   if (myMMSListener != null)
-   *     deviceapis.messaging.unsubscribe(myMMSListener);
+   *     window.webinos.messaging.unsubscribe(myMMSListener);
    * }
    *   // Register listener for new SMS events
    *  var myMMSListener = null;
-   *  my<MSListener = deviceapis.messaging.onMMS(incomingMMS);
+   *  my<MSListener = window.webinos.messaging.onMMS(incomingMMS);
    * \endcode
    *
    * Throws DeviceAPIError SECURITY_ERR if this operation is not allowed. 
@@ -322,12 +321,12 @@ partial interface Webinos {
    * 
    *    // The subscription is cancelled to prevent further notifications
    *    if (myEmailListener != null)
-   *      deviceapis.messaging.unsubscribe(myEmailListener);
+   *      window.webinos.messaging.unsubscribe(myEmailListener);
    *  }
    * 
    *  // Register listener for new Email events
    *  var myEmailListener = null;
-   *  myEmailListener = deviceapis.messaging.onEmail(incomingEmail);    
+   *  myEmailListener = window.webinos.messaging.onEmail(incomingEmail);    
    * \endcode
    *
    * Throws DeviceAPIError SECURITY_ERR if this operation is not allowed. 
@@ -359,12 +358,12 @@ partial interface Webinos {
    * 
    *    // The subscription is cancelled to prevent further notifications
    *    if (myIMListener != null)
-   *      deviceapis.messaging.unsubscribe(myIMistener);
+   *      window.webinos.messaging.unsubscribe(myIMistener);
    *  }
    * 
    *  // Register listener for new Instant Messaging events
    *  var myIMistener = null;
-   *  myIMistener = deviceapis.messaging.onIM(incomingIM);    
+   *  myIMistener = window.webinos.messaging.onIM(incomingIM);    
    * \endcode
    *
    * Throws DeviceAPIError SECURITY_ERR if this operation is not allowed. 
@@ -398,14 +397,14 @@ partial interface Webinos {
    *
    * This interface allows a web application to define the set of properties linked to a message previously created through the createMessage() method in the Messaging Interface.
    *
-   * Additionally, it also allows an application to retrieve the content of a message through the findMessages, onSMS, onMMS and onEmail methods. In those cases, the implementation MAY return in some situations only part of the body because of its size. In those situations the implementation MUST allow the developer to retrieve the remaining part of the message through the use of the sync method member of the Synchronisable interface implemented by Message.
+   * Additionally, it also allows an application to retrieve the content of a message through the findMessages, onSMS, onMMS and onEmail methods. In those cases, the implementation MAY return in some situations only part of the body because of its size. 
    *
    *
    * If the developer attempts to access an attribute not supported by the messaging technology (see attribute description or summary table in the sendMessage mehtod description), the implementation MUST ignore this attempt.
    *
    * \code
-   * var msg = deviceapis.messaging.createMessage(deviceapis.messaging.TYPE_SMS);
-   * msg.body = "WAC first SMS message.";
+   * var msg = window.webinos.messaging.createMessage(window.webinos.messaging.TYPE_SMS);
+   * msg.body = "webinos first SMS message.";
    * msg.to = ["+34666666666"];
    * \endcode
    */           
@@ -502,7 +501,7 @@ partial interface Webinos {
    * 
    * This method does not have effect on messages created through the createMessage method as they are not persistenly stored until the send action is invoked.
    * 
-   * For messages in the inbox (deviceapis.messaging.FOLDER_INBOX), outbox (deviceapis.messaging.FOLDER_OUTBOX) and sentbox (deviceapis.messaging.FOLDER_SENTBOX) the implementation MUST only change the isRead attribute of the Message object. For messages within the draft folder (deviceapis.messaging.FOLDER_DRAFTS) the implementation MAY update other attributes as well. However, this is up to the actual implementation and relies on the underlying system.
+   * For messages in the inbox (window.webinos.messaging.FOLDER_INBOX), outbox (window.webinos.messaging.FOLDER_OUTBOX) and sentbox (window.webinos.messaging.FOLDER_SENTBOX) the implementation MUST only change the isRead attribute of the Message object. For messages within the draft folder (window.webinos.messaging.FOLDER_DRAFTS) the implementation MAY update other attributes as well. However, this is up to the actual implementation and relies on the underlying system.
    * 
    * The implementation has to make sure that an updated Message object is provided in the success callback, which represents the current status of the message. The developer is expected to use this updated message for comparison with the former object to check which fields have or have not been transferred by the implementation.
    * 

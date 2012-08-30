@@ -17,9 +17,9 @@
  * The available functions on the Contacts are mostly taken from the WAC specification, since they
  * provide write functionality for contacts.
  * 
- * \def-api-feature http://www.w3.org/ns/api-perms/contacts.read 
+ * \def-api-feature http://webinos.org/api/contacts.read 
  * Read access to the address book.
- * \def-api-feature http://www.w3.org/ns/api-perms/contacts.write
+ * \def-api-feature http://www.w3.org/api/contacts.write
  * Write access to the address book.
  *
  * \author Based on W3C Editor's Draft 16 June 2011 with added contacts write functionality patterned after WAC
@@ -27,9 +27,8 @@
  * \version 1.9
  */
         /**
-          * \brief Creates the application state synchronization namespace.
+          * \brief Creates the webinos.contacts namespace.
           *
-          * Access to public constants and functions are available via the namespace webinos.sync.
           */
          partial interface Webinos {
            /**
@@ -76,7 +75,7 @@
                  *         The addContact method performs these tasks when invoked by the developer.                                    
                  *
                  * \code
-                 * var contact = contacts.createContact({
+                 * var contact = window.webinos.contacts.createContact({
                  *         name: "John Doe"
                  * });                        
                  * \endcode
@@ -105,11 +104,11 @@
                 *         above, if the developer has not passed a valid ErrorCallback (e.g. it is null 
                 *         or undefined), no action is required (i.e. the error is not notified to the developer). 
                 * \code
-                * var contact = contacts.createContact({
+                * var contact = window.webinos.contacts.createContact({
                 *         name: "John Doe"
                 * });
                 * 
-                * contacts.addContact(successwrite, error, contact);
+                * window.webinos.contacts.addContact(successwrite, error, contact);
                 * 
                 * 
                 * var successwrite = function(contact) {
@@ -155,7 +154,7 @@
                 *         or undefined), no action is required (i.e. he error is not notified 
                 *         to the developer). 
                 * \code
-                *  contacts.findContacts(toUpdate, errorCallback, {
+                *  window.webinos.contacts.findContacts(toUpdate, errorCallback, {
                 *                          name: "%John Doe%"
                 *                  });
                 *  
@@ -163,7 +162,7 @@
                 *          if (contactlist.length > 0) {
                 *                  for (i = 0; i < contactlist.length; i++) {
                 *                          contactlist[i].nickname = ["Jonny"];
-                *                          contacts.updateContact(contactUpdatedCB, errorCallback, contactlist[i]);
+                *                          window.webinos.contacts.updateContact(contactUpdatedCB, errorCallback, contactlist[i]);
                 *                  }
                 *          } else {
                 *                  alert("No contact with the name 'John Doe' could be found");
@@ -195,14 +194,14 @@
                 *         If the contact is successfully deleted, the SuccessCallback MUST be invoked.                
                 *
                 * \code
-                *  contacts.findContacts(toDelete, errorCallback, {
+                *  window.webinos.contacts.findContacts(toDelete, errorCallback, {
                 *                          name: "%John Doe%"
                 *                  });
                 *  
                 *  function toDelete(contactlist) {
                 *          if (contactlist.length > 0) {
                 *                  for (i = 0; i < contactlist.length; i++) {
-                *                          contacts.deleteContact(contactDeletedCB, errorCallback, contactlist[i].id);
+                *                          window.webinos.contacts.deleteContact(contactDeletedCB, errorCallback, contactlist[i].id);
                 *                  }
                 *          } else {
                 *                  alert("No contact with the name 'John Doe' could be found");
@@ -250,7 +249,7 @@
                  *    required and the developer is not notified of the error.    
                  *
                  * \code
-                 *  contacts.findContacts(findSuccess, errorCallback, {
+                 *  window.webinos.contacts.findContacts(findSuccess, errorCallback, {
                  *                          name: "%John Doe%"
                  *                  });
                  *  

@@ -6,9 +6,9 @@
  * to displaying notifications on the "desktop", it generally refers to some static display area outside the scope of the application, but may
  * take several forms, including:\n
  *
- * - A corner of the user's display.
- * - An area within the chrome of the user agent.
- * - The "home" screen of a mobile device.
+ * - A corner of the user's display.\n
+ * - An area within the chrome of the user agent.\n
+ * - The "home" screen of a mobile device.\n
  * 
  * This specification does not define exactly how the user agent should display the notification, and the API is designed to be flexible with
  * respect to presentation options. This specification is designed to be compatible with existing notification platforms as much as possible,
@@ -27,6 +27,19 @@
  * \author WIDL version for webinos created by Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;
  * \version 0.9
  */
+ 
+	    /**
+	     * \brief The Notification interface describes the part of the Web Notification API accessible through the webinos object. 
+	     *
+	     */
+        partial interface Webinos {
+     	    /**
+             * \brief webinos.notification object.
+             */
+            readonly attribute NotificationManager notification;
+        };
+ 
+  
          /**
          * \brief The NotificationManager interface which is accessible by using the webinos service discovery API. 
          */

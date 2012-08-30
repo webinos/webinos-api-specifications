@@ -7,10 +7,9 @@
  *  \n    screen backlight,
  *  \n    device Wallpaper.
  *
- * All the functionality of this module is accessed through the object deviceapis.deviceinteraction which is an instance of the DeviceInteractionManager interface. In case any functionality is not supported, a DOMException exception will be thrown with code NOT_SUPPORTED_ERR when the related method of the DeviceInteractionManager interface is invoked.
+ * All the functionality of this module is accessed through the object webinos.deviceinteraction which is an instance of the DeviceInteractionManager interface. In case any functionality is not supported, a DOMException exception will be thrown with code NOT_SUPPORTED_ERR when the related method of the DeviceInteractionManager interface is invoked.
  *   
- * http://wacapps.net/api/deviceinteraction
- * 
+ * \def-api-feature http://wacapps.net/api/deviceinteraction
  * Allows access to the device interaction module 
  *
  * \author WAC Device API Specifications 2.1, 30 April 2012
@@ -21,9 +20,8 @@
  
  
 /**
-* \brief Creates the application state synchronization namespace.
+* \brief Creates the webinos.deviceinteraction namespace.
 *
-* Access to public constants and functions are available via the namespace webinos.sync.
 */
 partial interface Webinos {
     readonly attribute DeviceInteractionManager deviceinteraction;
@@ -35,7 +33,7 @@ partial interface Webinos {
  *
  * Example
  * \code
- * var di = deviceapis.deviceinteraction;
+ * var di = webinos.deviceinteraction;
  * 
  * di.lightOn(function() {
  *      console.log("Lighting for 1 second");
@@ -88,7 +86,7 @@ interface DeviceInteractionManager {
  *  
  * \code
  * try {
- *      deviceapis.deviceinteraction.startNotify(function() {
+ *      webinos.deviceinteraction.startNotify(function() {
  *              console.log("Notifying indefinitely");
  *      },
  *      function(e) {
@@ -104,7 +102,7 @@ interface DeviceInteractionManager {
  * \param duration Duration of notification
  */
     void startNotify(Function successCallback,
-                                      optional ErrorCB? errorCallback,
+                                      optional DeviceInteractionErrorCB? errorCallback,
                                       long duration) ;
 /**
  * \brief  Switch on device vibration for a specified duration and to an optional pattern.
@@ -132,7 +130,7 @@ interface DeviceInteractionManager {
  * If the stopVibrate method is invoked before the specified vibration duration expires, any vibration MUST be stopped.
  * \code
  * try {
- *      deviceapis.deviceinteraction.startVibrate(function() {
+ *      webinos.deviceinteraction.startVibrate(function() {
  *              console.log("Vibrating...");
  *      },
  *      function(e) {
@@ -149,7 +147,7 @@ interface DeviceInteractionManager {
  * \param pattern Pattern of short and long vibrations
  */
     void startVibrate(Function successCallback,
-                                  optional ErrorCB? errorCallback,
+                                  optional DeviceInteractionErrorCB? errorCallback,
                                   optional unsigned long duration,
                                   optional DOMString pattern);
 
@@ -167,7 +165,7 @@ interface DeviceInteractionManager {
  * \n UNKNOWN_ERR in any other case.
  * \code
  *  try {
- *      deviceapis.deviceinteraction.lightOn(function() {
+ *      webinos.deviceinteraction.lightOn(function() {
  *              console.log("Lighting indefinitely");
  *      },
  *      function(e) {
@@ -183,7 +181,7 @@ interface DeviceInteractionManager {
  * \param duration How long the light should be on
  */
     void lightOn(Function successCallback,
-                          optional ErrorCB? errorCallback,
+                          optional DeviceInteractionErrorCB? errorCallback,
                           long duration);
 /**
  * \brief   Sets the Wallpaper of the device to the specified image file.
@@ -201,7 +199,7 @@ interface DeviceInteractionManager {
  * If the errorCallback does not contain a valid function (e.g. null), or in the case of any of the above errors that should be returned in the errorCallback, the implementation MUST silently fail, the developer is not notified of the error and no further action is required.
  * \code
  * try {
- *      deviceapis.deviceinteraction.setWallpaper(function() {
+ *      webinos.deviceinteraction.setWallpaper(function() {
  *              alert("Set wallpaper to WAC logo");
  *      },
  *      function(e) {
@@ -217,7 +215,7 @@ interface DeviceInteractionManager {
  * \param fileName The image to be set as the wallpaper
  */
     void setWallpaper(Function successCallback,
-                                  optional ErrorCB? errorCallback,
+                                  optional DeviceInteractionErrorCB? errorCallback,
                                   DOMString fileName);
 /**
  * \brief  Terminates an ongoing notification alert.
@@ -228,7 +226,7 @@ interface DeviceInteractionManager {
  * 
  * If this functionality is not supported, or if any other error occurs when executing the request, it MUST return immediately without performing any action.
  * \code
- * deviceapis.deviceinteraction.stopNotify();
+ * webinos.deviceinteraction.stopNotify();
  * \endcode     
  */                             
     void stopNotify();
@@ -240,7 +238,7 @@ interface DeviceInteractionManager {
  * 
  * If this functionality is not supported, or if any other error occurs when executing the request it MUST return immediately without performing any action.
  * \code
- * deviceapis.deviceinteraction.stopVibrate();
+ * webinos.deviceinteraction.stopVibrate();
  * \endcode
  */
     void stopVibrate();
@@ -253,8 +251,14 @@ interface DeviceInteractionManager {
  * 
  * If this functionality is not supported, or if any other error occurs when executing the request it MUST return immediately without performing any action.
  * \code
- * deviceapis.deviceinteraction.lightOff();
+ * webinos.deviceinteraction.lightOff();
  * \endcode
  */
     void lightOff();
 };
+
+/**
+* \brief Callback for errors during device interaction related functions
+* \param error The Device Interaction API related error object of an unsuccessful asynchronous operation. 
+*/
+callback DeviceInteractionErrorCB = void (DOMError error);

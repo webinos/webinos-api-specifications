@@ -10,13 +10,12 @@
  * \def-api-feature http://webinos.org/api/remoteUI
  *
  * \author Christian Fuhrhop &lt;christian.fuhrhop@@fokus.fraunhofer.de&gt;
- * \version 0.7
+ * \version 1.0
  */
 
         /**
-         * \brief Creates the application state synchronization namespace.
+         * \brief Creates the webinos.remoteUI namespace..
          *
-         * Access to public constants and functions are available via the namespace webinos.sync.
          *
          * On binding to the service, a window on the remote device is opened, which needs to be uniquely recognizeable as a window instantiated by a remote instance by having a specific frame and including information about which application on which device has opened it remotely. The purpose of this is to avoid remote programs being able to spoof the appearance of programs running locally on the device.
          * 
@@ -36,7 +35,7 @@
               * All remote DOM commands need to be individually and directly executable on the remote 'document' element.
               *
               * \code
-              * webinos.discovery.findServices(new ServiceType('http://webinos.org/api/remoteui'), 
+              * webinos.discovery.findServices(new ServiceType{api:'http://webinos.org/api/remoteUI'}, 
               *   {onFound: function (service) {
               *   remote_doc = service;   
               *  }});          
