@@ -10,7 +10,7 @@
  * \def-api-feature http://webinos.org/api/remoteUI
  *
  * \author Christian Fuhrhop &lt;christian.fuhrhop@@fokus.fraunhofer.de&gt;
- * \version 0.7
+ * \version 1.0
  */
 
         /**
@@ -35,7 +35,7 @@
               * All remote DOM commands need to be individually and directly executable on the remote 'document' element.
               *
               * \code
-              * webinos.discovery.findServices(new ServiceType('http://webinos.org/api/remoteui'), 
+              * webinos.discovery.findServices(new ServiceType{api:'http://webinos.org/api/remoteUI'}, 
               *   {onFound: function (service) {
               *   remote_doc = service;   
               *  }});          
