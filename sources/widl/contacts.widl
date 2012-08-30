@@ -19,7 +19,7 @@
  * 
  * \def-api-feature http://webinos.org/api/contacts.read 
  * Read access to the address book.
- * \def-api-feature http://www.w3.org/api/contacts.write
+ * \def-api-feature http://webinos.org/api/contacts.write
  * Write access to the address book.
  *
  * \author Based on W3C Editor's Draft 16 June 2011 with added contacts write functionality patterned after WAC

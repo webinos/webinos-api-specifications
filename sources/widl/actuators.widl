@@ -66,13 +66,16 @@
                 //this interface is abstract and therefore it dosent consist any attribute.
         };
 
+       /**
+        *
+        */
+        [Constructor(float minValue), Constructor(float minValue,float maxValue)]
         /**
         * \brief This interface defines an interval as a sub class of the actuator range. 
         * all valid values of the associated actuator must be between the min and max value.
         * if the min/max value is undefined means that the lower/upper bound of actuator values 
         * is not limited
         */
-        [Constructor(float minValue), Constructor(float minValue,float maxValue)]
         interface IntervalRange: ActuatorRange {
                 /**
                 * \brief Min range of actuator in the actuator unit.
@@ -86,11 +89,14 @@
                 attribute float maxValue;
         };
 
+       /**
+        *
+        */
+        [Constructor(float[] validValues)]       
         /**
         * \brief This interface defines a set of valid values as a sub class of the actuator range.
         * a valid value of the actuator must be one of the values array.
         */
-        [Constructor(float[] validValues)]
         interface ListRange: ActuatorRange {
                 /**
                 * \brief Valid values in the actuator unit
