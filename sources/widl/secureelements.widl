@@ -205,11 +205,11 @@
      * <li> unknown: In any other error case. </li>
      * </ul>
      *
-     * \param aid The AID of the application to be selected on this channel, as a ByteArray.
+     * \param aid The AID of the application to be selected on this channel, as a ByteArray; if null it will select the default application.
      * \param successCallback To be invoked in case of successful establishment of the Channel
 	 * \param errorCallback To be invoked in case of error
      */
-    PendingSEChannelOp openBasicChannel(ByteArray aid, ChannelCallback successCallback, optional ErrorCallback errorCallback);
+    PendingSEChannelOp openBasicChannel(Byte[]? aid, ChannelCallback successCallback, optional ErrorCallback errorCallback);
 
     /**
      * \brief Open a channel with the secure element, selecting the application represented by the given AID.
@@ -239,11 +239,11 @@
      * <li> unknown: In any other error case. </li>
      * </ul>
      *
-     * \param aid The AID of the application to be selected on this channel, as a ByteArray.
+     * \param aid The AID of the application to be selected on this channel, as a ByteArray; if null it will select the default application.
      * \param successCallback To be invoked in case of successful establishment of the Channel
 	 * \param errorCallback To be invoked in case of error
      */
-    PendingSEChannelOp openLogicalChannel(ByteArray aid, ChannelCallback successCallback, optional ErrorCallback errorCallback);
+    PendingSEChannelOp openLogicalChannel(Byte[]? aid, ChannelCallback successCallback, optional ErrorCallback errorCallback);
 
     /**
      * \brief Get the Answer to Reset of this secure element.
