@@ -4,7 +4,7 @@
  * This API uses a kind of tree model to allow developers to get at the various bits of data about things on a device. 
  * 
  * <b>Aspect</b>
- * \n  An aspect is an abstract namable thing (e.g., a "Device", "Battery", "Display", etc.) that the user agent knows about and can interact with. An aspect can contain one or more components.
+ * \n  An aspect is an abstract nameable thing (e.g., a "Device", "Battery", "Display", etc.) that the user agent knows about and can interact with. An aspect can contain one or more components.
  * \n \n <b>Component</b>
  * \n  A component is a concrete instance of an aspect (e.g., a real battery in the device, the real screens of the device). As devices can contain more than one instance of the thing being referred to by an aspect (e.g. two screens, three batteries, two SIM cards), each real instance of an aspect is referred to as a component. Each component has its own unique component name, which is assigned by the user agent and serves as the component's identifier for the life of the application (e.g., "screen_1", 
  "battery2", "os", "hdd", "SDCard").
@@ -22,7 +22,7 @@
  * \n     The component that is the default component for a given aspect, which may or may not be the active component. 
  * \n     In ECMAScript, a developer uses the string "_default" to refer to the default component. 
  * \n \n <b>Active component</b>
- * \n     The component that is the acitve component for a given aspect, which may or may not be the default component. 
+ * \n     The component that is the active component for a given aspect, which may or may not be the default component. 
  * \n     In ECMAScript, a developer uses the string "_active" to refer to the active component. 
  *
  *   
@@ -60,14 +60,14 @@
  * <ol>
  * <li>    Let declaration be the first device status feature declaration that was present in the configuration document, ignoring all others. </li>
  * <li>    Implement the DeviceapisDeviceStatusManager interface when the widget's start file is instantiated:
- * \n   2a. For each supported aspect, identify the components and assign each of them a component name, and, where there are more than one component, identify which is the default and track which components are active. It is recommended that the component name assigned by the user agent to a component be something that is "developer-friendly": i.e., that logically relates to the aspect the component represents (e.g., candidats include "screen_1", "battery2", "os", "hdd", "SD-Card"). </li>
+ * \n   2a. For each supported aspect, identify the components and assign each of them a component name, and, where there are more than one component, identify which is the default and track which components are active. It is recommended that the component name assigned by the user agent to a component be something that is "developer-friendly": i.e., that logically relates to the aspect the component represents (e.g., candidates include "screen_1", "battery2", "os", "hdd", "SD-Card"). </li>
  * <li> If required, disable any aspects as needed by the particular feature declaration (see each device status feature strings). </li>
  * <li> ignore all other subsequent device status feature declarations. </li>
  * </ol> 
  *
  * \code
  *  \<widget xmlns="http://www.w3.org/ns/widgets"> 
- *    \<feature name="http://wacapps.net/api/devicestatus"/> 
+ *  \<feature name="http://wacapps.net/api/devicestatus"/> 
  *  \</widget> 
  * \endcode
  *  
@@ -87,7 +87,7 @@
  *  \</widget> 
  * \endcode 
  *  
- *  The above example shows a developers intention to access network information aspects the aspects of the Device Status API.
+ *  The above example shows a developers intention to access network information aspects of the Device Status API.
  *  
  * \code
  *  \<widget xmlns="http://www.w3.org/ns/widgets">
@@ -132,7 +132,7 @@ partial interface Webinos {
 };
 
        /**
-        * \brief This offers methods to get information about the device status and subscribe to receive notifications of device status changes. To allow for asynchornous notification of changes to the various properties of components, the user agent keeps a list of active watch operations. Each entry in this list is identified by a number, which is unique within its list for the lifetime of the application.
+        * \brief This offers methods to get information about the device status and subscribe to receive notifications of device status changes. To allow for asynchronous of changes to the various properties of components, the user agent keeps a list of active watch operations. Each entry in this list is identified by a number, which is unique within its list for the lifetime of the application.
         *         
         * \code
         * deviceapis.devicestatus.getPropertyValue(
@@ -164,7 +164,7 @@ interface DeviceStatusManager {
         * <li>  If trimmed aspect is an empty string or does not exactly match the name of a supported aspect, return null and terminate this algorithm.</li>
         * <li>  If trimmed aspect exactly matches the name of a supported aspect:
         * \n      6a. For each component of the matching aspect, create a DOMString representation of the component name and add it to the components array.</li>
-        * <li>   This offers methods to get information about the device status and subscribe to receive notifications of device status changes. To allow for asynchornous notification of changes to the various properties of components, the user agent keeps a list of active watch operations. Each entry in this list is identified by a number, which is unique within its list for the lifetime of the application.</li>
+        * <li>   This offers methods to get information about the device status and subscribe to receive notifications of device status changes. To allow for asynchronous notification of changes to the various properties of components, the user agent keeps a list of active watch operations. Each entry in this list is identified by a number, which is unique within its list for the lifetime of the application.</li>
         * </ol>
         *
         *        
@@ -220,7 +220,7 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
                optional DOMString? property);
 
        /**
-        * \brief The getPropertyValue() method asyncrhonously attemps to read the value of a given component. However, if no component is given, the user agent will befault to the active component or the default component of a given aspect.
+        * \brief The getPropertyValue() method asyncrhonously attemps to read the value of a given component. However, if no component is given, the user agent will default to the active component or the default component of a given aspect.
         * 
         * 
         * The steps to get a property value are given by the following algorithm:
@@ -228,7 +228,7 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * <ol>
         * <li>  Run the general invocation checks algorithm. If no exceptions were generated, continue.</li>
         * <li>  If either the aspect member or the property member is not present in the third argument (query):
-        * \n     2a.  If the second argument (errorCallback) is not an ECMAScript funtion, then terminate this algorithm skipping all steps below.
+        * \n     2a.  If the second argument (errorCallback) is not an ECMAScript function, then terminate this algorithm skipping all steps below.
         * \n     2b.  Let exception be a new DOMException of type "TypeMismatchError", with message "Required aspect or property was not passed." (or similar).
         * \n     2c.  Queue a task to invoke the errorCallback with exception as the argument.
         * \n     2d.  Terminate this algorithm, skipping all steps below.</li>
@@ -305,7 +305,7 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * \n     6a.  If the minChangePercent member is present, and it is a number greater than 0, then let percent interval be the value of minChangePercent.
         * \n     6b.  If the minNotificationInterval member is present, and it is a number, then let interval be the value of minNotificationInterval.
         * \n     6c.  If the maxNotificationInterval member is present, and it is a number, then let max interval be the value of minNotificationInterval.</li>
-        * <li>  If interval is less than a user-agent-defined value for a the smallest ammount of time between intevals (i.e., to protect the component from being flooded with requests or because it would drain too much battery, etc.), set interval to that user-agent-defined value.</li>
+        * <li>  If interval is less than a user-agent-defined value for a the smallest amount of time between intervals (i.e., to protect the component from being flooded with requests or because it would drain too much battery, etc.), set interval to that user-agent-defined value.</li>
         * <li>  If max interval is less than interval, discard max interval.</li>
         * <li>  Let old value be the value 0.</li>
         * <li>  Wait, at a minimum (optionally more time if needed), the amount of time indicated by the interval. If the max interval was not discarded, and the time waited exceeds the max interval, do this step again (i.e., wait).</li>
@@ -342,7 +342,7 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         * \param successCallback Function to call on changing property value
         * \param errorCallback Function to call if an error occurs
         * \param query Property to watch
-        * \param options Additonal options for property watch, such as the minimum range of change
+        * \param options Additional options for property watch, such as the minimum range of change
         * \return Subscription ID
         */
 
@@ -482,7 +482,7 @@ dictionary PropQuery {
         * </TR>
         * <TR>
         *    <TD>CPU aspect</TD><TD>currentLoad (*)</TD>
-        *    <TD>This property indicates the current load of the CPU as a percentage. In case of multi processor CPU, it reports the average. The currentLoad is an unsigned short,</TD>
+        *    <TD>This property indicates the current load of the CPU as a percentage. In case of multi processor CPU, it reports the average. The currentLoad is an unsigned short.</TD>
         * </TR>
         * <TR>
         *    <TD>Device</TD><TD>imei</TD>
@@ -569,7 +569,7 @@ dictionary PropQuery {
         *    <TD>The availableSize property is an unsigned long representing the available size of the memory component in bytes. </TD>
         * </TR>
         * <TR>
-        *    <TD>MemoryUnit</TD><TD>volantile (**)</TD>
+        *    <TD>MemoryUnit</TD><TD>volatile (**)</TD>
         *    <TD>This boolean property indicates if a memory unit is volatile. </TD>
         * </TR>
         * <TR>
@@ -618,7 +618,7 @@ dictionary PropQuery {
         * </TR>
         * <TR>
         *    <TD>WiFiHardware</TD><TD>status</TD>
-        *    <TD>The status property is a DOMString represented as a SwitchType that indicates if the WiFi Harware is switched on or off. </TD>
+        *    <TD>The status property is a DOMString represented as a SwitchType that indicates if the WiFi Hardware is switched on or off. </TD>
         * </TR>
         * <TR>
         *    <TD>WiFiNetwork</TD><TD>ssid</TD>
