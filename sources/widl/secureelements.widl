@@ -1,272 +1,477 @@
-/**<p>The webinos Secure Elements API provides access to functions on contact or contactless smart cards or similar devices.</p>
- * \name Secure Elements API
+/**<p> The Webinos Secure Element API provides web applications with an API to access secure elements.</p> 
+ * \name Secure Element API 
  *
- * This is an API for accessing functions on contact or contactless smart cards or similar devices using the Application Protocol Data Unit (APDU) 
- * command response protocol, as defined by ISO 7816-4. In essence, the command consists of a 4 byte header followed by up to 255 bytes of data. 
- * The response contains a 2 byte header followed by up to 256 bytes of data. The headers and data are specified in a suite of standards from ISO and 
- * others. It also possible to develop custom secure elements using Java cards from companies such as G &amp; D and Gemalto.
+ * This module allows the communication between web application and a smart card or other
+ * secure element by using the Application Protocol Data Units (APDUs).
+ * An APDU is a short message represented by bytes. APDU messages are either
+ * commands or responses.
+ *
+ * APDU protocol is defined by ISO 7816-4
+ *
+ * This specification is based on proposal from Gemalto to W3C SysApp WG (http://lists.w3.org/Archives/Public/public-sysapps/2012Jun/0058.html).
  * 
- * The aim is to give system applications written in JavaScript, and executing on a web run-time, a lightweight means to send commands to secure 
- * elements and handle the responses using byte arrays (similar to the existing Java API). Applications would have access to the crypto APIs being 
- * developed in the W3C Web Crypto WG.
- * 
- * A brief introduction to APDU can be found at:
+ * \def-api-feature http://webinos.org/api/secureelement
+ * Access to all api methods. 
  *
- * - <a href="http://en.wikipedia.org/wiki/Smart_card_application_protocol_data_unit">Smart card application protocol data unit</a>
- *
- * The Java APDU API is described at:
- *
- * - <a href="http://docs.oracle.com/javase/6/docs/jre/api/security/smartcardio/spec/">Java Smart Card I/O API</a>
- * 
- * <b>Implementation:</b>
- *
- * There are two main hardware options:
- * 
- *  - USB smart card reader for contact based cards\n
- *  - NFC based reader for contactless cards
- * 
- * Java Smart Card development kits are available, and this would involve interfacing Node with Java.
- * The open source cross platform NFC library libnfc can be used to access smart cards over NFC, but
- * involves a lot of low level details. For Linux, PC/SC, OpenSC and IFD provide a convenient open
- * source framework together with libnfc and Node.js. A further idea is to use the Java SmartCard API
- * on Android, see the <a href="http://code.google.com/p/seek-for-android/">Secure Element Evaluation Kit for the Android platform</a>
- *
- * It appears that the Nexus S should work with that for UICC smart card development, however, this
- * involves reflashing the phone. Moreover, the above page states that the minimum required SDK 
- * is API15 (Android 4.03) which is yet to be supported for the webinos Android build. However, it
- * seems promising as a basis for demo purposes. We would also need some sample smart cards with
- * some interesting applets on them, although we could in principle develop our own applets.
- *
- * \def-api-feature http://webinos.org/api/secureelements
- * Identifies the Secure Elements API. 
- *
+ * \author Stefano Vercelli &lt;stefano.vercelli@telecomitalia.it&gt;
  * \author Dave Raggett/W3C &lt;dsr@w3.org&gt;
- * \author Editing widl file Claes Nilsson &lt;claes1.nilsson@sonymobile.com&gt;
- * \version 0.1
- *
+ * \version 1.0 
  */
- 
+
 /**
- * \brief The APDU interface is accessible through the webinos object.
  * 
- * You first need to find which terminals are available. Having found a suitable terminal, you can then test if a card is present, and connect to it, \n
- * and then transmit a command and process the response, before closing the connection. Call backs are provided to signal when cards are inserted and removed.
- *
  * \code
-  // The first step is to obtain a list of available APDU terminals
-  
-  Webinos.apdu.requestTerminals(listener, fail);
-
-  function fail (why)
-  {
-    console.log("Couldn't get list of APDU terminals: " + why);
-  }
-
-  function listen (terminals)
-  {
-    for (var i = 0; i < terminals.length; ++i)
-    {
-      var terminal = terminals[i];
-      console.log("found APDU terminal: " + terminal.name);
-    }
-  }
-
-  // Having picked a terminal and established that a card is present,
-  // you can now connect to the card:
-
-  terminal.connect(success, fail);
-
-  function success ()
-  {
-    console.log("connected to card");
-  }
-
-  // connect operation will fail if card isn't present
-  function fail (why)
-  {
-    console.log("couldn't connect to card: " + why);
-  }
-
-  // Once connected you can format a command, send it to the card, and process the response:
- 
-  var command = terminal.createCommand();
-
-  // initialize header bytes
-  command.setHeaders(cla, ins, p1, p2);
-
-  // set payload from byte array
-  command.setPayload(payload);
- 
-  // and send it to the card
-  terminal.transmit(command, success, fail);
-
-  // handle the response
-  function success (response)
-  {
-    console.log("response status: " + to_hex(response.status) +
-                " with " + response.payload.length + " bytes of data");
-
-    // when done, disconnect
-    terminal.disconnect();
-  }
-
-  // called if transmit failed
-  function fail (why)
-  {
-    console.log("couldn't transmit command to card: " + why);
-  } 
+ * webinos.SEservice.getReaders(readercbk);
+ *
+ * function readercbk(readers) {
+ *   //if a secure element is present open a session
+ *   if (readers[0].isPresent)
+ *     readers[0].openSession(sessioncbk);
+ * }
+ *
+ * function sessioncbk(session) {
+ *   var aid=...; //put applet id here
+ *   // Open a channel to the applet
+ *   session.openBasicChannel(aid, channelcbk);
+ * }
+ *
+ * function channelcbk(channel) {
+ *   var command = ...; //commands for the applet
+ *   // exchange data with the applet
+ *   channel.transmit(command, transmitcbk);
+ * }
+ *
+ * function transmitcbk(response) {
+ *   alert("response received: "+response);
+ * }
+ *
  * \endcode
  */
-partial interface Webinos {
-  readonly attribute APDU apdu;
-};
-
+   
+   
 /**
-* \brief Interface to request list of APDU terminals
-*/
-interface APDU {
-  /**
-  * \brief asynchronous request for available APDU terminals
-  *
-  * \param listener - called with a list of discovered APDU terminals
-  * \param fail - called if the request was rejected
-  */
-  void requestTerminals(ApduTerminalsCB listener, FailCB fail);
-};
-
-/**
-* \brief Call back for list of available terminals
-*
-* \param terminals - a list of available APDU terminals
-*/
-callback ApduTerminalsCB = void (ApduTerminal[] terminals);
-
-/**
-* \brief call back if associated operation has succeeded
-*/
-callback SuccessCB = void ();
-
-/**
-* \brief call back if associated operation has failed
-*/
-callback FailCB = void (DOMString why);
-
-/**
-* \brief The properties and methods for terminals. The terminal status present property indicates whether a card is present, and you can also set handlers for call backs when the card is inserted or removed.
-*/
-interface ApduTerminal {
-  /**
-  * \brief each terminal has a name
-  */
-  readonly attribute DOMString name;
-
-  /**
-  * \brief whether a card is present in the reader
-  */
-  readonly attribute boolean present;  
-
-  /**
-  * \brief call back for card insertion
-  */
-  attribute ApduCardInsertedCB inserted;
-  
-  /**
-  * \brief call back for card insertion removal
-  */  
-  attribute ApduCardRemovedCB removed;
+ * \brief Creates the webinos.seService namespace.
+ *
+ */
+ partial interface Webinos {
+   readonly attribute SEService seService;
+ };
+   
 
 
   /**
-  * \brief creates an uninitialized APDU command
-  *
-  * \return ApduCommand - the new APDU command object
-  */
-  ApduCommand createCommand();
-  
-  
-  /**
-  * \brief transmit an initialized APDU command to a connected card
-  *
-  * \param command - the APDU command object
-  * \param success - called if the request was accepted
-  * \param fail - called if the request was rejected
-  * 
-  */
-  void transmit(ApduCommand command,
-                ApduResponseCB success, FailCB fail);
+   * \brief The SEService realizes the communication to available Secure Elements on the device.
+   *
+   * This is the entry point of this API. It is used to connect to the infrastructure and get access
+   * to a list of Secure Element Readers
+   */
+  [NoInterfaceObject] interface SEService
+  {
+
+    /**
+     * \brief Obtain the list available secure element readers.
+     *
+     * When executed, it MUST obtain the set of Readers currently enabled on
+     * this device. If the list is obtained successfully, the onSuccess method of the 
+     * callback object MUST be invoked with the ReaderArray of Readers.
+     *
+     * If the attempt fails, the callback onError operation MUST be invoked
+     * with the relevant error code:
+     *
+     * <ul>
+     * <li> security: If the operation is not allowed. </li>
+     * <li> unknwon: In any other error case. </li>
+     * </ul>
+     *
+     * \param successCallback To be invoked to notify success or error while retrieving the Readers array
+	 * \param errorCallback To be invoked in case of error
+     */
+    PendingSEReaderOp getReaders(ReaderArrayCallback successCallback, optional ErrorCallback errorCallback);
+
+    /**
+     * \brief Registers a listener for SE availability events
+	 * \param listener The listener
+	 * \return An identifier of the listener
+     */
+    unsigned long registerSEListener(SEListener listener);
+
+    /**
+     * \brief Unregisters a listener previously registered with registerSEListener operation
+	 * \param id The identifier of the listener to remove
+     */
+    void unregisterSEListener(unsigned long id);
+
+    /**
+     * \brief Releases all Secure Elements resources allocated by this SEService.
+     *
+     * It is recommended to call this method in the termination method of
+     * the calling application (or part of this application) which is bound to this SEService.
+     */
+    void shutdown();
+
+  };
+
 
   /**
-  * \brief establish connection with the current card
-  *
-  * \param success - called when the connection is established
-  * \param fail - called if the request was rejected
-  * 
-  */
-  void connect(SuccessCB success, FailCB fail);
-  
-  /**
-  * \brief terminate a connection with the card
-  * 
-  */ 
-  void disconnect();
-};
+   * \brief A specific SecureElement Reader
+   *
+   * Instances of this interface represent Secure Element Readers connected
+   * to this device. These Readers can be physical devices or virtual devices.
+   * They can be removable or not. They can contain Secure Element that can or
+   * cannot be removed.
+   */
+  [NoInterfaceObject] interface Reader
+  {
 
-/**
-* \brief Call back notifying when card is inserted. Will be called immediately if the card is already present.
-*/
-callback ApduCardInsertedCB = void ();
+    /**
+     * \brief Check if a Secure Element is present in this reader.
+     */
+    readonly attribute boolean isPresent;
 
-/**
-* \brief Call back notifying when card is removed.
-*/
-callback ApduCardRemovedCB = void ();
+    /**
+     * \brief Return the user-friendly name of this reader.
+     */
+    DOMString getName();
 
-/**
-* \brief Call back for APDU response
-*/
-callback ApduResponseCB = void (ApduResponse response);
+    /**
+     * \brief Connects to a secure element in the specified reader.
+     *
+     * When executed, it MUST attempt to open a Session with the SecureElement in
+     * this Reader. If the Session is established successfully, the callback
+     * MUST be invoked with the resulting Session.
+     *
+     * If the attempt fails, the callback onError operation MUST be invoked
+     * with the relevant error code:
+     *
+     * <ul>
+     * <li> security: If the operation is not allowed. </li>
+     * <li> invalid_state: If there is no SecureElement in this reader. </li>
+     * <li> io: If there was a problem communicating with the SecureElement in this reader. </li>
+     * <li> unknown: In any other error case. </li>
+     * </ul>
+     *
+     * \param successCallback To be invoked in case of successful establishment of the Session
+	 * \param errorCallback To be invoked in case of error
+     */
+    PendingSESessionOp openSession(SessionCallback successCallback, optional ErrorCallback errorCallback);
 
-/**
-* \brief This interface defines APDU response
-*/
-interface ApduResponse {
+    /**
+     * Closes the session opened on this reader.
+     * All the channels opened by the session will be closed.
+     */
+    void closeSession();
+
+  };
+
 
   /**
-  * \brief the 2 status bytes
-  */
-  attribute unsigned short status; 
-  
-  /**
-  * \brief the response payload
-  */  
-  attribute byte[] payload;
-};
+   * \brief An open Session with a SecureElement
+   *
+   * Instances of this interface represent a connection session to one of
+   * the secure elements available on the device. These objects can be
+   * used to get a communication channel with an application in the secure
+   * element. This channel can be the basic channel or a logical channel.
+   *
+   */
+  [NoInterfaceObject] interface Session
+  {
 
-/**
-* \brief support for initializing an APDU command
-*/
-interface ApduCommand {
+    /**
+     * \brief Tells if this session is closed.
+     */
+    readonly attribute boolean isClosed;
+
+    /**
+     * \brief Get an access to the basic channel (opened by default, with id equal to 0).
+     *
+     * When executed, this operation MUST attempt to open a logical
+     * channel in the current Session. If successful, the callback MUST
+     * be invoked with the obtained instance of the Channel class.
+     * Once this channel has been opened and given to an
+     * application, it is considered as "locked" by this application, and
+     * other calls to this method will fail, until it is closed by
+     * calling the close method. Some secure elements (like the UICC)
+     * might always refuse to open basic channel.
+     *
+     * If the attempt fails, the callback onError operation MUST be invoked
+     * with the relevant error code:
+     *
+     * <ul>
+     * <li> security: If the operation is not allowed. </li>
+     * <li> invalid_state: If there is no SecureElement in this reader. </li>
+     * <li> io: If there was a problem communicating with the SecureElement in this reader. </li>
+     * <li> invalid_value: If the aid's length is not within 5 to 16 (inclusive). </li>
+     * <li> no_channel: If basic channel is not available. </li>
+     * <li> unknown: In any other error case. </li>
+     * </ul>
+     *
+     * \param aid The AID of the application to be selected on this channel, as a ByteArray.
+     * \param successCallback To be invoked in case of successful establishment of the Channel
+	 * \param errorCallback To be invoked in case of error
+     */
+    PendingSEChannelOp openBasicChannel(ByteArray aid, ChannelCallback successCallback, optional ErrorCallback errorCallback);
+
+    /**
+     * \brief Open a channel with the secure element, selecting the application represented by the given AID.
+     *
+     * When executed, this operation MUST attempt to open a logical
+     * channel in the current Session. If successful, the callback MUST
+     * be invoked with the obtained instance of the Channel class.
+     *
+     * The AID can be omitted, which means no application is to be selected 
+     * on this channel, the default application is used.
+     * It's up to the secure element to choose which logical channel
+     * will be used. If no channel is available to communicate with the secure
+     * element, an attempt to use the basic channel is made, and if it succeed
+     * an instance mapped to the basic channel is returned. The application
+     * can tell if the returned channel is the basic channel by using the
+     * isBasicChannel method.
+     *
+     * If the attempt fails, the callback onError operation MUST be invoked
+     * with the relevant error code:
+     *
+     * <ul>
+     * <li> security: If the operation is not allowed. </li>
+     * <li> invalid_state: If there is no SecureElement in this reader. </li>
+     * <li> io: If there was a problem communicating with the SecureElement in this reader. </li>
+     * <li> invalid_value: If the aid's length is not within 5 to 16 (inclusive). </li>
+     * <li> no_channel: If no channel is available. </li>
+     * <li> unknown: In any other error case. </li>
+     * </ul>
+     *
+     * \param aid The AID of the application to be selected on this channel, as a ByteArray.
+     * \param successCallback To be invoked in case of successful establishment of the Channel
+	 * \param errorCallback To be invoked in case of error
+     */
+    PendingSEChannelOp openLogicalChannel(ByteArray aid, ChannelCallback successCallback, optional ErrorCallback errorCallback);
+
+    /**
+     * \brief Get the Answer to Reset of this secure element.
+     *
+     * The returned byte array can be null, which means the reader
+     * cannot provide the ATR for this Secure Element.
+     *
+     */
+    Byte[] getATR();
+
+    /**
+     * \brief Close the connection with the secure element.
+     *
+     * This will close any channel opened by this application with
+     * this secure element.
+     *
+     */
+    void close();
+
+    /**
+     * \brief Close any channel opened on this session
+     */
+    void closeChannels();
+
+  };
+
+
   /**
-  * \brief used to initialize an APDU command
-  *
-  * \param cla - the class of command
-  * \param ins - the specific command
-  * \param p1 - first parameter
-  * \param p2 - second parameter
-  */  
-  void setHeaders(byte cla, byte ins, byte p1, byte p2);
-  
+   * \brief A channel opened with a specific applet
+   *
+   */
+  [NoInterfaceObject] interface Channel {
+
+   /**
+    * \brief Close this channel to the secure element.
+    */
+    void close();
+
+    /**
+     * \brief Indicates whether or not this channel is the basic channel.
+     */
+    readonly attribute boolean isBasicChannel;
+
+    /**
+     * \brief Transmit an APDU command to the secure element and communicate
+     * the response when available.
+     *
+     * The command parameter should be formatted as if send of over basic channel. The transmit 
+     * operation will update the ByteArray to include the channel identifier.
+     *
+     * The transmit operation will filter out some commands:
+     * <ul>
+     * <li>MANAGE_CHANNEL commands are not allowed. </li>
+     * <li>SELECT by DF Name (p1=04) are not allowed. </li>
+     * <li>CLA bytes with channel numbers are de-masked. </li>
+     * </ul>
+     *
+     * When executed, this operation MUST initiate an asynchronous operation that
+     * attempts to send a command over this Channel and wait for a response.
+     * If successful, the callback MUST be invoked with the received
+     * response as a ByteArray.
+     *
+     * If the attempt fails, the callback onError operation MUST be invoked
+     * with the relevant error code:
+     *
+     * <ul>
+     * <li> security: If the operation is not allowed. </li>
+     * <li> invalid_state: If there is no SecureElement in this reader. </li>
+     * <li> io: If there was a problem communicating with the SecureElement in this reader. </li>
+     * <li> invalid_value: If the command is determined to be invalid in some way. </li>
+     * <li> unknown: In any other error case. </li>
+     * </ul>
+     *
+     * \param command The command to be sent on this channel, as a ByteArray.
+     * \param successCallback To be invoked in case of successful completion of the command
+     * \param errorCallback To be invoked in case of error
+     */
+    PendingSEtransmitOp transmit(Byte[] command, TransmitCallback successCallback, optional ErrorCallback errorCallback);
+  };
+
+
   /**
-  * \brief used to set the APDU command payload
-  *
-  * \param payload - the command payload
-  */  
-  void setPayload(byte[] payload);
-  
+   * \brief Callback interface to process SE availability events
+   */
+  callback interface SEListener {
+
+    /**
+     * \brief operation called when a new SE in detected in a reader
+     */
+    void onSEReady(Reader reader);
+
+    /**
+     * \brief operation called when a SE is not available anymore in a reader
+     */
+     void onSENotReady(Reader reader);
+
+  };
+
+
+  /**                       
+   * \brief Method invoked when a messaging function returns an error
+   *
+   * \param error The error message received 
+   * \return void
+   */         
+    callback ErrorCallback = void (DOMError error);
+
+	 
   /**
-  * \brief set the maximum number of expected data bytes in a response APDU
-  *
-  * \param length - maximum number of expected data bytes 
-  */  
-  void setResponseLength(unsigned short length);
-};
+   * \brief ReaderArray specific success callback.
+   *
+   * This callback interface specifies a success callback with a function
+   * taking an Reader array as input argument. It is used to signify successful
+   * asynchronous completion of SecureElementManager.getReaders()
+   */
+    callback ReaderArrayCallback = void (Reader[] readers);
+
+
+  /**
+   * \brief Session specific success callback.
+   *
+   * This callback interface specifies a success callback with a function
+   * taking an Session as input argument. It is used to signify successful
+   * asynchronous completion of Reader.openSession()
+   */
+    callback SessionCallback = void (Session session);
+
+	
+  /**
+   * \brief Channel specific success callback.
+   *
+   * This callback interface specifies a success callback with a function
+   * taking an Channel as input argument. It is used to signify successful
+   * asynchronous completion of Session.openChannel()
+   */
+    callback ChannelCallback = void (Channel channel);
+
+	
+  /**
+   * \brief transmit specific success callback.
+   *
+   * This callback interface specifies a success callback with a function
+   * taking an ByteArray as input argument. It is used to signify successful
+   * asynchronous completion of, and the response to, an APDU command sent on
+   * a channel with Channel.transmit()
+   */
+    callback TransmitCallback = void (Byte[] response);
+
+	
+    /**
+     * \brief The PendingSEReaderOp interface
+     *
+     * The PendingSEReaderOp interface describes the object that is returned by the asynchronous getReaders() method. It makes it possible to abort
+     * this operation to a stop if it hasn't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.
+     *
+     */
+     interface PendingSEReaderOp {
+
+    /**
+     * \brief Method Cancel
+     *
+     *  Cancel the pending getReaders asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
+     *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
+     *  name "AbortError".
+     */
+        void cancel ();
+     };
+
+	 
+    /**
+     * \brief The PendingSESessionOp interface
+     *
+     * The PendingSESessionOp interface describes the object that is returned by the asynchronous openSession() method. It makes it possible to abort
+     * this operation to a stop if it hasn't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.
+     *
+     */
+     interface PendingSESessionOp {
+
+    /**
+     * \brief Method Cancel
+     *
+     *  Cancel the pending openSession asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
+     *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
+     *  name "AbortError".
+     */
+        void cancel ();
+     };
+	 
+
+    /**
+     * \brief The PendingSEChannelOp interface
+     *
+     * The PendingSEChannelOp interface describes the object that is returned by the asynchronous openBasicChannel() or openLogicalChannel() methods. It makes it possible to abort
+     * this operation to a stop if it hasn't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.
+     *
+     */
+     interface PendingSEChannelOp {
+
+    /**
+     * \brief Method Cancel
+     *
+     *  Cancel the pending openBasicChannel() or openLogicalChannel() asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
+     *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
+     *  name "AbortError".
+     */
+        void cancel ();
+     };
+	 
+
+    /**
+     * \brief The PendingSEtransmitOp interface
+     *
+     * The PendingSEtransmitOp interface describes the object that is returned by the asynchronous transmit() method. It makes it possible to abort
+     * this operation to a stop if it hasn't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.
+     *
+     */
+     interface PendingSEtransmitOp {
+
+    /**
+     * \brief Method Cancel
+     *
+     *  Cancel the pending transmit() asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
+     *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
+     *  name "AbortError".
+     */
+        void cancel ();
+     };
+	 
+	 
+	 
+	 
