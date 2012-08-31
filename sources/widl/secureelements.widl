@@ -21,7 +21,7 @@
 /**
  * 
  * \code
- * webinos.SEservice.getReaders(readercbk);
+ * webinos.seService.getReaders(readercbk);
  *
  * function readercbk(readers) {
  *   //if a secure element is present open a session
