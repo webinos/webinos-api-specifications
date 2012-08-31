@@ -4,6 +4,9 @@
  * This specification defines the common widget interface. The webinos application packaging
  * is based on <a href="http://www.w3.org/TR/widgets/">W3C Widget Specifications</a>, and this API completes the <a href="http://www.w3.org/TR/widgets-apis/">W3C Widget Interface</a>.
  *
+ * \def-api-feature http://webinos.org/api/widget
+ * Identifies the whole Widget API to be used for remote deploy requests.
+ * 
  * \def-api-feature http://webinos.org/api/widget.deploy
  * Identifies access to the deploy function and whether an application is allowed to trigger deployment of child applications or not. 
  *
@@ -197,6 +200,12 @@
      * file on another device. If local = false or not specified the WRT has to provide a list of available
      * devices to the user where the application should be installed on, if local = true the WRT has to
      * install the selected child on the same device as the API is bound to.
+     *
+     * To install a child on a selected remote device the webinos device discovery API can be used to find
+     * available Widget API services on other devices where deployChild can be used remotely. Remote instances
+     * of the widget API will also provide Widget details of the running application and nothing about any
+     * application on remote devices. Thus, the only difference in using the Widget API directly or via a
+     * remote service is that deployChild will be targeted on another device. 
      *
      * \code
      *
