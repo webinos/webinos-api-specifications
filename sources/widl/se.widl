@@ -1,5 +1,5 @@
 /**<p> The Webinos Secure Element API provides web applications with an API to access secure elements.</p> 
- * \name SE API 
+ * \name Secure Element API 
  *
  * This module allows the communication between web application and a smart card or other
  * secure element by using the Application Protocol Data Units (APDUs).
@@ -8,6 +8,8 @@
  *
  * APDU protocol is defined by ISO 7816-4
  *
+ * This specification is based on proposal from Gemalto to W3C SysApp WG (http://lists.w3.org/Archives/Public/public-sysapps/2012Jun/0058.html).
+ * 
  * \def-api-feature http://webinos.org/api/secureelement
  * Access to all api methods. 
  *
@@ -22,7 +24,7 @@
  *
  * function readercbk(readers) {
  *   //if a secure element is present open a session
- *   if (readers[0].isSecureElementPresent)
+ *   if (readers[0].isPresent)
  *     readers[0].openSession(sessioncbk);
  * }
  *
@@ -66,11 +68,6 @@
   {
 
     /**
-     * \brief Tells whether or not the service is connected
-     */
-    readonly attribute boolean isConnected;
-
-    /**
      * \brief Obtain the list available secure element readers.
      *
      * When executed, it MUST obtain the set of Readers currently enabled on
@@ -86,18 +83,22 @@
      * </ul>
      *
      * \param successCallback To be invoked to notify success or error while retrieving the Readers array
+	 * \param errorCallback To be invoked in case of error
      */
-    void getReaders(ReaderArrayCallback successCallback, ErrorCallback errorCallback);
+    PendingSEReaderOp getReaders(ReaderArrayCallback successCallback, optional ErrorCallback errorCallback);
 
     /**
      * \brief Registers a listener for SE availability events
+	 * \param listener The listener
+	 * \return An identifier of the listener
      */
-    void registerSEListener(SEListener listener);
+    unsigned long registerSEListener(SEListener listener);
 
     /**
      * \brief Unregisters a listener previously registered with registerSEListener operation
+	 * \param id The identifier of the listener to remove
      */
-    void unregisterSEListener(SEListener listener);
+    void unregisterSEListener(unsigned long id);
 
     /**
      * \brief Releases all Secure Elements resources allocated by this SEService.
@@ -122,9 +123,9 @@
   {
 
     /**
-     * \brief Check if a SecureElement is present in this reader.
+     * \brief Check if a Secure Element is present in this reader.
      */
-    readonly attribute boolean isSecureElementPresent;
+    readonly attribute boolean isPresent;
 
     /**
      * \brief Return the user-friendly name of this reader.
@@ -149,8 +150,9 @@
      * </ul>
      *
      * \param successCallback To be invoked in case of successful establishment of the Session
+	 * \param errorCallback To be invoked in case of error
      */
-    void openSession(SessionCallback successCallback, ErrorCallback errorCallback);
+    PendingSESessionOp openSession(SessionCallback successCallback, optional ErrorCallback errorCallback);
 
     /**
      * Closes all the sessions opened on this reader.
@@ -172,10 +174,6 @@
    */
   [NoInterfaceObject] interface Session
   {
-    /**
-     * \brief The reader which this secure element is connected to.
-     */
-    readonly attribute Reader reader;
 
     /**
      * \brief Tells if this session is closed.
@@ -208,8 +206,9 @@
      *
      * \param aid The AID of the application to be selected on this channel, as a ByteArray.
      * \param successCallback To be invoked in case of successful establishment of the Channel
+	 * \param errorCallback To be invoked in case of error
      */
-    void openBasicChannel(ByteArray aid, ChannelCallback successCallback, ErrorCallback errorCallback);
+    PendingSEChannelOp openBasicChannel(ByteArray aid, ChannelCallback successCallback, optional ErrorCallback errorCallback);
 
     /**
      * \brief Open a channel with the secure element, selecting the application represented by the given AID.
@@ -241,8 +240,9 @@
      *
      * \param aid The AID of the application to be selected on this channel, as a ByteArray.
      * \param successCallback To be invoked in case of successful establishment of the Channel
+	 * \param errorCallback To be invoked in case of error
      */
-    void openLogicalChannel(ByteArray aid, ChannelCallback successCallback, ErrorCallback errorCallback);
+    PendingSEChannelOp openLogicalChannel(ByteArray aid, ChannelCallback successCallback, optional ErrorCallback errorCallback);
 
     /**
      * \brief Get the Answer to Reset of this secure element.
@@ -251,7 +251,7 @@
      * cannot provide the ATR for this Secure Element.
      *
      */
-    ByteArray getATR();
+    Byte[] getATR();
 
     /**
      * \brief Close the connection with the secure element.
@@ -280,11 +280,6 @@
     * \brief Close this channel to the secure element.
     */
     void close();
-
-    /**
-     * \brief The session on which this channel is linked.
-     */
-    readonly attribute Session session;
 
     /**
      * \brief Indicates whether or not this channel is the basic channel.
@@ -325,7 +320,7 @@
      * \param successCallback To be invoked in case of successful completion of the command
      * \param errorCallback To be invoked in case of error
      */
-    void transmit(Byte[] command, TransmitCallback successCallback, ErrorCallback errorCallback);
+    PendingSEtransmitOp transmit(Byte[] command, TransmitCallback successCallback, optional ErrorCallback errorCallback);
   };
 
 
@@ -396,3 +391,86 @@
    */
     callback TransmitCallback = void (Byte[] response);
 
+	
+    /**
+     * \brief The PendingSEReaderOp interface
+     *
+     * The PendingSEReaderOp interface describes the object that is returned by the asynchronous getReaders() method. It makes it possible to abort
+     * this operation to a stop if it hasn't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.
+     *
+     */
+     interface PendingSEReaderOp {
+
+    /**
+     * \brief Method Cancel
+     *
+     *  Cancel the pending getReaders asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
+     *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
+     *  name "AbortError".
+     */
+        void cancel ();
+     };
+
+	 
+    /**
+     * \brief The PendingSESessionOp interface
+     *
+     * The PendingSESessionOp interface describes the object that is returned by the asynchronous openSession() method. It makes it possible to abort
+     * this operation to a stop if it hasn't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.
+     *
+     */
+     interface PendingSESessionOp {
+
+    /**
+     * \brief Method Cancel
+     *
+     *  Cancel the pending openSession asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
+     *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
+     *  name "AbortError".
+     */
+        void cancel ();
+     };
+	 
+
+    /**
+     * \brief The PendingSEChannelOp interface
+     *
+     * The PendingSEChannelOp interface describes the object that is returned by the asynchronous openBasicChannel() or openLogicalChannel() methods. It makes it possible to abort
+     * this operation to a stop if it hasn't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.
+     *
+     */
+     interface PendingSEChannelOp {
+
+    /**
+     * \brief Method Cancel
+     *
+     *  Cancel the pending openBasicChannel() or openLogicalChannel() asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
+     *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
+     *  name "AbortError".
+     */
+        void cancel ();
+     };
+	 
+
+    /**
+     * \brief The PendingSEtransmitOp interface
+     *
+     * The PendingSEtransmitOp interface describes the object that is returned by the asynchronous transmit() method. It makes it possible to abort
+     * this operation to a stop if it hasn't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.
+     *
+     */
+     interface PendingSEtransmitOp {
+
+    /**
+     * \brief Method Cancel
+     *
+     *  Cancel the pending transmit() asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
+     *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
+     *  name "AbortError".
+     */
+        void cancel ();
+     };
+	 
+	 
+	 
+	 
