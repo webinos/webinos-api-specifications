@@ -4,6 +4,9 @@
  * This specification defines the common widget interface. The webinos application packaging
  * is based on <a href="http://www.w3.org/TR/widgets/">W3C Widget Specifications</a>, and this API completes the <a href="http://www.w3.org/TR/widgets-apis/">W3C Widget Interface</a>.
  *
+ * \def-api-feature http://webinos.org/api/widget.deploy
+ * Identifies access to the deploy function and whether an application is allowed to trigger deployment of child applications or not. 
+ *
  * \author Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;
   * \version 0.9 
  */
