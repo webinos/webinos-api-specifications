@@ -31,7 +31,7 @@
  *
  * \author Christos Botsikas (NTUA) &lt;cbot@epu.ntua.gr&gt;
  * \author Christos Ntanos (NTUA) &lt;cntanos@epu.ntua.gr&gt;
- * \author Dimitrios Sdrallis(NTUA) &lt;sdrallis@epu.ntua.gr&gt;
+ * \author Dimitrios Sdrallis (NTUA) &lt;sdrallis@epu.ntua.gr&gt;
  *
  * \version 0.6 
  */
@@ -168,7 +168,7 @@ callback SchemaIsDefinedCB = void (DOMString? version);
  * \brief This is the entry point for the Application ContextObject management. 
  *
  * Application developers may register their own ContextObject data by defining a schema. The application may save this kind of ContextObject which will be shared among applications and devices for later processing.
- * The end user will be able to give access to these data based on policy manager rules.
+ * The end user will be able to give access to these data based on policy manager rules. The main concept is that although the application is able to store data, the data are not owned by the application rather the user. So the user can share this kind of data either with another user or another application. 
  *
  * \code
  * TODO
@@ -493,14 +493,14 @@ callback ContextRuleEventHandler = void (ContextRuleEvent event);
 
  
 /**
- * \brief The unique URI that represents a ContextRule.
+ * \brief The unique URI that represents a ContextRule eg. "http://epu.ntua.gr/context/rules/homeLocation".
  */
 typedef DOMString ContextRuleURI;
 
 /**
  * \brief This is the entry point for the Scheduled API calls management. 
  *
- * Application developers may request a scheduled API call on Interval in order to force update of the context database.
+ * Application developers may request a scheduled API call on Interval in order to force update of the context database. Scheduled API calls may not return fresh information if the implementation of an API imposes its own rate limits.
  *
  * \code
  * TODO
