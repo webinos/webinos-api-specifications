@@ -57,6 +57,84 @@
  * \version 2.0
  */
 
+
+  /**
+   * 
+   * \code
+
+        // Handle that can be used to cancel the ongoing asynchronous discovery process.
+        var findHandle = 0;
+
+        // Handle from service.bind.
+        var actuatorHandle = 0;
+
+        // Array of found switch actuators object.
+        var availableSwitchActuators = {};
+                 
+        // Callback method that displays a list of found actuators in a selection list
+        // The selection list is dynamically extended every time a new actuator is discovered.
+        function actuatorFoundCB(actuator) {
+
+                var selectlist = document.getElementById('actuatorlist');
+                var option = document.createElement('option');
+                option.value = actuator.id;
+                option.appendChild(document.createTextNode(actuator.displayName));
+                availableSwitchActuators [actuator.id] = actuator;
+                selectlist.appendChild(option);
+
+        }
+                      
+ 
+       // Callback when bind has been successfully executed on the service object. The Actuator is authorized and ready to use
+        function bindCB(myActuator) {
+                alert('Actuator ' + myActuator.displayName + ' with ID: ' + myActuator.id + ' selected');
+				var ON = 1.0;
+				var OFF = 0.0;
+				var successCB = function(evt){
+					alert('Switch Actuator ' + myActuator.displayName + ' is now '+ (evt.actualValue[0] == ON? 'ON': 'OFF'));
+					if(evt.actualValue[0] == ON){
+						// turn OFF after 5 Seconds 
+						setTimeout(function(){
+							myActuator.setValue([OFF],successCB,errorCB);
+						},5000);
+					}	
+				};
+				var errorCB = function(err){
+					alert('Error on change the state of the Switch Actuator ' + myActuator.displayName);
+				};
+				// Turn Switch ON
+				myActuator.setValue([ON],successCB,errorCB);
+        }
+
+
+       // Callback method that is invoked when user selects an option in the actuator selection list 
+        function actuatorSelected(actuator) {
+
+                // Stops the findServices operation
+                findHandle.cancel();
+
+                // Binds to the actuator API to initiate an authorized objects used to
+                // invoke services.  
+                actuatorHandle = actuator.bind({onBind:bindCB});                               
+                
+        }
+        
+        // Get list of switch actuators registered in the device through the Service Discovery findServices() method
+        findHandle  = window.webinos.discovery.findServices({api:'http://webinos.org/api/actuators.switch'}, {onFound:actuatorFoundCB});
+ 
+       // Handle user selection of actuator
+        var actuatorlist = document.getElementById('actuatorlist');
+        actuatorlist.addEventListener("change", function (e) {
+                                var actuator = availableSwitchActuators[e.target.value];
+                                if (actuator) {
+                                    actuatorSelected(actuator);
+                                }
+        }, false);
+
+
+   * \endcode
+   */
+
         /**
         * \brief This interface defines an abstract class representing the range of the actuator values. 
         * The actuator range can be an interval (e.g. temperature is in interval [0&deg;C,27&deg;C]) or a set of 
@@ -66,16 +144,13 @@
                 //this interface is abstract and therefore it dosent consist any attribute.
         };
 
-       /**
-        *
-        */
-        [Constructor(float minValue), Constructor(float minValue,float maxValue)]
         /**
         * \brief This interface defines an interval as a sub class of the actuator range. 
         * all valid values of the associated actuator must be between the min and max value.
         * if the min/max value is undefined means that the lower/upper bound of actuator values 
         * is not limited
         */
+        [Constructor(float minValue), Constructor(float minValue,float maxValue)]
         interface IntervalRange: ActuatorRange {
                 /**
                 * \brief Min range of actuator in the actuator unit.
@@ -89,14 +164,11 @@
                 attribute float maxValue;
         };
 
-       /**
-        *
-        */
-        [Constructor(float[] validValues)]       
         /**
         * \brief This interface defines a set of valid values as a sub class of the actuator range.
         * a valid value of the actuator must be one of the values array.
         */
+        [Constructor(float[] validValues)]
         interface ListRange: ActuatorRange {
                 /**
                 * \brief Valid values in the actuator unit
