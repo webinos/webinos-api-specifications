@@ -7,9 +7,12 @@
  * - The core Webinos interface,  part of the window global object.\n
  * - The personal zone information such as the connected status, pzh name, pzp friendly name and application identifier. \n
  *
+ * \def-api-feature http://webinos.org/api/corePZinformation
+ * Identifies the webinos core Personal Zone Information service. 
+ *
  * \author Claes Nilsson &lt;claes1.nilsson@sonymobile.com&gt;
  * \author Habib Virji &lt;habib.virji@samsung.com&gt;
- * \version 0.3
+ * \version 0.4
  */
 
   partial interface Window {
