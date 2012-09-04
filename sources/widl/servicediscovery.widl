@@ -73,7 +73,7 @@
 	
 		// Binds to the service to initiate an authorized object used to
 		// invoke services.  
-		serviceHandle = service.bind({onBind:bindCB});
+		service.bind({onBind:bindCB});
 	}
 	
 	if (serviceId) {
