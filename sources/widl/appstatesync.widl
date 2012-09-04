@@ -1,5 +1,5 @@
-/**<p>Interface to enable and manage application synchronization.</p>
-* \name AppState Synchronization API
+/**<p>Interface to enable and manage application synchronisation.</p>
+* \name AppState Synchronisation API
 * 
 * The interface provides a set of operations for the management of shared synchronised objects. 
 * It abstracts from the runtime application data exchange mechanisms and eases the
@@ -9,9 +9,9 @@
 * <a href="http://www.json.org">JSON</a> data exchange format 
 * and registration and deregistration for state changes.
 *
-* Changes to objects created by this interface will be detected and synchronized among 
+* Changes to objects created by this interface will be detected and synchronised among 
 * all participating peers automatically, e.g. setting properties or changing 
-* their values will affect all object copies. The synchronization mode may be 
+* their values will affect all object copies. The synchronisation mode may be 
 * configured so that the participating peers may be distinct instances of the 
 * same application running on user's different devices (e.g. 
 * distributed cross-device application). 
@@ -20,7 +20,7 @@
 * collaboration components).
 *
 * The following example illustrates how a simple shopping-list component
-* can be realized utilizing the AppState Synchronization API. 
+* can be realized utilizing the AppState Synchronisation API. 
 * This component may be used by different applications and users 
 * while cooperatively operating on the same data.
 *
@@ -49,13 +49,10 @@ var shoppingListController = {
 			if(item.length \&\& item[0]===itemName){
 				sharedShopping.itemsBought.push(itemName);
 				sharedShopping.totalSpent+=price;
-			}else{
-				//adds wrongly sliced item back to the tobuy list
-// [HABIB]: not sure as you are not removing from itemstobuy why add back. Plus if item name is not in shopping items, this will be endless loop
-				sharedShopping.itemsToBuy.push(item[0]);
-				shoppingListController.moveItemToBoughtList(itemName,price);
 			}
 		}
+		//synchronisation of shared object is invoked after object access
+		//e.g. elements removed and added to arrays 
 	},
 	updateShoppingStatus:function(){
 		uiHandler("mark-shopping-as",
@@ -72,11 +69,11 @@ var shoppingListController = {
 //The functions shoppingListController.addItemToList(itemName) and shoppingListController.moveItemToBoughtList(itemName,price) 
 //are used in user interface event handlers and/or the sharedShopping object
 //is altered anywhere within the application.
-//The following initializes the applications state synchronization.
+//The following initializes the applications state synchronisation.
 
 //success callback function that is called if an operation is completed successfully
 var scb = function(syncObject){
-	//update reference to synchronized object
+	//update reference to synchronised object
 	sharedShopping = syncObject.data;
 
 	//add event handlers if necessary
@@ -87,7 +84,6 @@ var scb = function(syncObject){
 	//watch certain properties for changes
 	syncObject.watch("itemsToBuy.length",shoppingListController.updateShoppingStatus);
 	syncObject.watch("itemsBought.length",shoppingListController.updateShoppingStatus);
-// [HABIB]: should itemsToBuy be sharedShopping.itemsToBuy
 	shoppingListController.initializeList();
 };
 
@@ -98,20 +94,20 @@ var ecb = function(e){
 
 //specifies set up options for sync object creation that differ from defaults
 var options = {
-	//allow synchronization across different applications
+	//allow synchronisation across different applications
 	crossAppSync:true,
-	//allow synchronization with other users
+	//allow synchronisation with other users
 	crossUserSync:true,
 	//remain state even if all participants get temporarily disconnected
 	maintainTimeoutMinutes:120;
-	//specify a reference object to be synchronized
+	//specify a reference object to be synchronised
 	referenceObject:shoppingList;
 };
 
 //application state sync identifier
 var syncSessionName = "after-work-bbq-shopping-list";
 
-//searches for the shared and synchronized object that an other participant may have created already
+//searches for the shared and synchronised object that an other participant may have created already and joins this synchronisation session
 webinos.sync.find(syncSessionName, scb,
  function(e){
  	if(e.name==="NotFoundError"){
@@ -123,21 +119,20 @@ webinos.sync.find(syncSessionName, scb,
  }
 ); 
 
-// [HABIB]Does the sync.create similar to the join in the app status spec?
 
   \endcode
 *
-* The AppState Synchronization API is made available under the webinos namespace, i.e.
+* The AppState Synchronisation API is made available under the webinos namespace, i.e.
 * webinos.sync.
 *
 * \def-api-feature http://webinos.org/api/sync
-* Identifies the application state synchronization service.
+* Identifies the application state synchronisation service.
 *
 * \author Fraunhofer FOKUS, Martin Lasak &lt;martin.lasak@fokus.fraunhofer.de&gt;
 */
 
 /**
-* \brief Creates the application state synchronization namespace.
+* \brief Creates the application state synchronisation namespace.
 *
 * Access to public constants and functions are available via the namespace webinos.sync.
 */
@@ -145,34 +140,32 @@ partial interface Webinos {
   /**
    * \brief Partial interface that creates the webinos.sync namespace.
    */
-  //[HABIB] why partial?
   readonly attribute SyncManager sync;
 };
 
 /**
-* \brief Interface for management of the application state synchronization. Covers three of the CRUD operations (create, read and delete) 
-* as an implicit object update is provided by the synchronization mechanism if changes occur.
+* \brief Interface for management of the application state synchronisation. Covers three of the CRUD operations (create, read and delete) 
+* as an implicit object update is provided by the synchronisation mechanism if changes occur.
 */
 interface SyncManager {
 
   /**
-   * \brief Creates a synchronized object that may be used for application synchronization.
+   * \brief Creates a synchronised object that may be used for application synchronisation.
    *
-   * \param syncObjectIdentifier An identifier or name as a logical reference to the synchronized object. 
+   * \param syncObjectIdentifier An identifier or name as a logical reference to the synchronised object. 
    * \param successCallback The callback function to be called to notify the caller that the create 
    * operation was completed successfully,
    * \param errorCallback The callback function to be used to notify the caller that the create 
    * operation could not be completed successfully
-   * \param options For the creation of a synchronized object options may be specified. 
+   * \param options For the creation of a synchronised object options can be specified. 
    * If no options are specified then default values will be taken.
    */
-//[HABIB] Why may be?
   void create(DOMString syncObjectIdentifier, SyncObjectSuccessCB successCallback, optional AppSyncErrorCB? errorCallback, optional SyncOptions? options);
 
   /**
-   * \brief Finds a previously created synchronized object.
+   * \brief Finds a previously created synchronised object.
    *
-   * \param syncObjectIdentifier An identifier, name or key as a logical reference to the synchronized object. 
+   * \param syncObjectIdentifier An identifier, name or key as a logical reference to the synchronised object. 
    * \param successCallback The callback function to be called to notify the caller that the find 
    * operation was completed successfully,
    * \param errorCallback The callback function to be used to notify the caller that the find 
@@ -181,129 +174,99 @@ interface SyncManager {
   void find(DOMString syncObjectIdentifier, SyncObjectSuccessCB successCallback, optional AppSyncErrorCB? errorCallback);
 
   /**
-   * \brief Detach a previously created synchronized object from the synchronization. 
+   * \brief Detach a previously created synchronised object from the synchronisation. 
    *
-   * Permanently deactivates the synchronization of a previously created synchronized object.  
-   * Subsequent changes to the object will not be synchronized with remote peers
-   * and remote changes will not be reflected in local copy.
+   * Permanently deactivates the synchronisation of a previously created synchronised object.  
+   * Subsequent changes to the object will not be synchronised with remote peers
+   * and remote changes will not be reflected in local copy. The session will stay active
+   * as long as peers are attached to the session and the maintenance timeout has not 
+   * exceeded.
    * 
-   * \param syncObjectIdentifier An identifier, name or key as a logical reference to the synchronized object. 
+   * \param syncObjectIdentifier An identifier, name or key as a logical reference to the synchronised object. 
    * \param successCallback The callback function to be called to notify the caller that the detach 
    * operation was completed successfully,
    * \param errorCallback The callback function to be used to notify the caller that the detach 
    * operation could not be completed successfully
    */
   void detach(DOMString syncObjectIdentifier, SyncObjectSuccessCB successCallback, optional AppSyncErrorCB? errorCallback);
-//[HABIB] Does this imply if three devices are syncing same object, one detaching if it same as the one that create sync object, will sync between two devices will still work?
+
   /**
-   * \brief Purge a previously created synchronized object. 
+   * \brief Removes a previously created synchronised object. 
    *
-   * Permanently purge the synchronization of a previously created synchronized object.  
+   * Permanently removes the synchronisation of a previously created synchronised object.  
    * Subsequent changes to the object will not be possible at any peer.
-   * Only the creator may purge an synchronized object.
+   * Only the creator can remove an synchronised object.
    * 
-   * \param syncObjectIdentifier An identifier, name or key as a logical reference to the synchronized object. 
-   * \param successCallback The callback function to be called to notify the caller that the purge 
+   * \param syncObjectIdentifier An identifier, name or key as a logical reference to the synchronised object. 
+   * \param successCallback The callback function to be called to notify the caller that the remove 
    * operation was completed successfully,
-   * \param errorCallback The callback function to be used to notify the caller that the purge 
+   * \param errorCallback The callback function to be used to notify the caller that the remove 
    * operation could not be completed successfully
    */
-  void purge(DOMString syncObjectIdentifier, SyncObjectSuccessCB successCallback, optional AppSyncErrorCB? errorCallback);
-//[HABIB]: should we change name from purge to remove or clean 
+  void remove(DOMString syncObjectIdentifier, SyncObjectSuccessCB successCallback, optional AppSyncErrorCB? errorCallback); 
 }; 
 
 /**
- * \brief Callback function that is called if an operation on synchronization is completed
+ * \brief Callback function that is called if an operation on synchronisation is completed
  * successfully.
- * \param syncObject Holds the reference to the object to be synchronized as well as 
+ * \param syncObject Holds the reference to the object to be synchronised as well as 
  * information about its status. 
 */
 callback SyncObjectSuccessCB = void (SyncObject syncObject);
 
 /**
- * \brief The SyncObject Interface to access the synchronized object, its metadata and event handlers.
+ * \brief The SyncObject Interface to access the synchronised object, its metadata and event handlers.
  *
- * The SyncObject interface provides access to the object to be synchronized and its metadata 
+ * The SyncObject interface provides access to the object to be synchronised and its metadata 
  * as well as event handlers refering to the object.
  */
-
-//[HABIB] not sure if it should be eventtarget or app2app event?
 
 [NoInterfaceObject]
 interface SyncObject : EventTarget {
 
   /**
-   * \brief The root of the object to be synchronized.
+   * \brief The root of the object to be synchronised.
    *
-   * Changes to properties of this object will be synchronized among all connected peers.
+   * Changes to properties of this object will be synchronised among all connected peers.
    */
   attribute Object data;
 
   /**
-   * \brief Metadata about the object to be synchronized.
+   * \brief Metadata about the object to be synchronised.
    *
-   * The status of the synchronized object may be accesses via properties of this object. 
+   * The status of the synchronised object may be accesses via properties of this object. 
    */
   attribute SyncObjectStatus status;
 
-//[HABIB] todo part still not completed. Is update going to be related to each round?
-
 /**
- * \brief Event that fires when a synchronization update occured.
+ * \brief Event that fires when a synchronisation update occured.
  *
- * A synchronization message may contain multiple updates, for each update a separate 
+ * A synchronisation message may contain multiple updates, for each update a separate 
  * event is fired. This concerns all type of updates.
  * 
- * \code
-  \<p>ui: \<span id='sync'>\</span>\</p>
-  \<script>
-  //todo
-  \</script>
- \endcode
  */
   [TreatNonCallableAsNull] attribute EventHandler? onsync;
 
-//[HABIB]: todo part not completed yet.
 /**
  * \brief Event that fires whenever a fatal error occurs. 
  *
  * In particular, the fired event notifies applications in case of a connection loss.
  *
- * \code
-  \<p>ui: \<span id='sync'>\</span>\</p>
-  \<script>
-  //todo
-  \</script>
- \endcode
  */
   [TreatNonCallableAsNull] attribute EventHandler? onfail;  
 
-//[HABIB] who receives the detach event, as it is local sync that detaches so why is detach event sent across devices?
 /**
- * \brief Event that fires when the object has been detached from synchronization. 
+ * \brief Event that fires when the object has been detached from synchronisation. 
  *
- * \code
-  \<p>ui: \<span id='sync'>\</span>\</p>
-  \<script>
-  //todo
-  \</script>
- \endcode
  */
   [TreatNonCallableAsNull] attribute EventHandler? ondetach;
 
-//[HABIB] if changing to remove/clean an update may be required here
 /**
- * \brief Event that fires when the object has been purged by its creator. 
+ * \brief Event that fires when the object has been removed by its creator. 
  *
- * \code
-  \<p>ui: \<span id='sync'>\</span>\</p>
-  \<script>
-  //todo
-  \</script>
- \endcode
  */
-  [TreatNonCallableAsNull] attribute EventHandler? onpurge;    
-//[HABIB] not sure what's difference between propertyPath and  syncobjectpath. When to use create and find and when to use watch
+  [TreatNonCallableAsNull] attribute EventHandler? onremove;    
+
   /**
    * \brief Watch a property, e.g. primitive attribute or sub-object, for changes. 
    *
@@ -350,7 +313,7 @@ callback PropertyChangedSuccessCB = void (SyncProperty syncProperty);
  * <b>NotFoundError</b> if object or property cannot be found, 
  * <b>InvalidModificationError</b> if operation on the object or property cannot be done this way,
  * <b>TimeoutError</b> if an operation could not be completed within 
- * the duration of one synchronizations round.
+ * the duration of one synchronisations round.
 */
 callback AppSyncErrorCB = void (DOMError error);
 
@@ -376,8 +339,7 @@ dictionary SyncProperty {
    * \brief Holds a reference to the watched property after the last update, its current state.
    */
    Any? currentValue;
-};
-// [HABIB] Should "any" be of type object as it is object that will change. 
+}; 
 
 /**
  * \brief The SyncOptions Interface
@@ -385,32 +347,31 @@ dictionary SyncProperty {
  * For the creation of a sync object options may be specified.
  */
 dictionary SyncOptions {
-// [HABIB] how this corelates to webinos policies..
   /**
-   * \brief Specifies if the object should be synchronized across different applicaion.
+   * \brief Specifies if the object should be synchronised across different applicaion.
    *
-   * If this property is set to true then the synchronization mechanism will 
+   * If this property is set to true then the synchronisation mechanism will 
    * take care of sharing the state across different applications.
-   * The default value is false, thus limiting the synchronization to peers using 
+   * The default value is false, thus limiting the synchronisation to peers using 
    * the same application.
    */
    Boolean crossAppSync = false;
-// [HABIB] how this corelates to webinos policies..
+
   /**
-   * \brief Specifies if the object should be synchronized across different users.
+   * \brief Specifies if the object should be synchronised across different users.
    *
-   * If this property is set to true then the synchronization mechanism will 
+   * If this property is set to true then the synchronisation mechanism will 
    * take care of sharing the state across different personal zones.
-   * The default value is false, thus limiting the synchronization to a single 
+   * The default value is false, thus limiting the synchronisation to a single 
    * person only.
    */
    Boolean crossUserSync = false;
 
   /**
-   * \brief Specifies if the synchronized object should be maintained for a certain 
+   * \brief Specifies if the synchronised object should be maintained for a certain 
    * amount of time (in minutes) if all peers get disconnected.
    *
-   * If this property is set to a value higher then 0 then the synchronization mechanism will 
+   * If this property is set to a value higher then 0 then the synchronisation mechanism will 
    * take care of maintaining the object in case of all peers gets disconnected.
    * The default value is 0, thus the object will be garbage collected immediatelly
    * if no peer is connected.
@@ -421,9 +382,9 @@ dictionary SyncOptions {
    * \brief This object is used as a template to set up the initial state.
    *
    * If this property is set then it will be taken as blueprint for the
-   * creation of the synchronization object. The state of the reference object
+   * creation of the synchronisation object. The state of the reference object
    * will be taken as initial state. If the reference object is not specified
-   * then an empty new synchronization object will be created.
+   * then an empty new synchronisation object will be created.
    */
    Object referenceObject = null;
 
@@ -433,7 +394,7 @@ dictionary SyncOptions {
    * Three access modes are distinguished to restrict access on objects.
    * In the no-access mode ("na") only the creator may access the object,
    * in read-only ("ro") mode only the creator
-   * may change the state of the synchronized object and
+   * may change the state of the synchronised object and
    * a in full access ("rw") mode all peers may read and write the object.
    * Default value is "rw".
    */
@@ -441,40 +402,40 @@ dictionary SyncOptions {
 };
 
 /**
- * \brief State type of a synchronized object.
+ * \brief State type of a synchronised object.
 */
 enum AccessMode { "na", "ro", "rw" };
 
 
 /**
- * \brief Interface to access the status refering a synchronized object.
+ * \brief Interface to access the status refering a synchronised object.
  *
 */
 dictionary SyncObjectStatus {
 
   /**
-   * \brief The options that were used to create the synchronized object.
+   * \brief The options that were used to create the synchronised object.
    */	
    SyncOptions options;
 
   /**
-   * \brief The current state of the synchronized object.
+   * \brief The current state of the synchronised object.
    */
    StateType state;
 
   /**
-   * \brief Time information about when the last synchronization was performed.
+   * \brief Time information about when the last synchronisation was performed.
    */
    Date lastUpdate;
 
   /**
-   * \brief Flag indicating if ownership of the synchronized object.
+   * \brief Flag indicating if ownership of the synchronised object.
    */
    Boolean isOwner;
 };
 
 /**
- * \brief State type of a synchronized object.
+ * \brief State type of a shared object.
 */
-enum StateType { "inited", "synced", "detached", "purged", "not_found" };
-//[HABIB] inited ?? perhaps initiated
+enum StateType { "initiated", "synchronised", "detached", "removed", "not_found" };
+
