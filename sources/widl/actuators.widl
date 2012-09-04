@@ -247,13 +247,15 @@
         */
         [NoInterfaceObject] interface PendingOperation {
 
-                /**
-                * \brief Method Cancel
-                *
-                *  Cancel the pending asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return. 
-                *  No success or error callback for the pending operation will be invoked.
-                */
-                void cancel ();
+          /**
+          * \brief Method Cancel
+         *
+         *  Cancels the pending setValue() asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
+         *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
+         *  name "AbortError". If the set value operation is no longer under control of the calling process, the cancel function will be ignored and all neccessary 'housekeeping functions' 
+         *  required after starting the set value process will be performed as if the cancel had never been issued.
+         */
+            void cancel ();
         };
 
 
