@@ -26,7 +26,7 @@
  * \n     In ECMAScript, a developer uses the string "_active" to refer to the active component. 
  *
  *   
- * \def-api-feature http://wacapps.net/api/devicestatus.deviceinfo
+ * \def-api-feature http://webinos.org/api/devicestatus.deviceinfo
  * 
  *     Only the following device-information aspects are available to the application (all others are disabled):
  * \n         Battery
@@ -37,7 +37,7 @@
  * \n         WebRuntime
   * \n        Input controls
  * 
-* \def-api-feature http://wacapps.net/api/devicestatus.networkinfo
+* \def-api-feature http://webinos.org/api/devicestatus.networkinfo
  * 
  *     Only the following network-information aspects are available to the application (all others are disabled):
  * \n         CellularHardware
@@ -45,7 +45,7 @@
  * \n         WiFiHardware
  * \n         WiFiNetwork
  * 
-* \def-api-feature http://wacapps.net/api/devicestatus
+* \def-api-feature http://webinos.org/api/devicestatus
  * 
  *     All aspects (the union of the network information aspects and device-information aspects) are enabled and available to the application.
  * 
@@ -67,7 +67,7 @@
  *
  * \code
  *  \<widget xmlns="http://www.w3.org/ns/widgets"> 
- *  \<feature name="http://wacapps.net/api/devicestatus"/> 
+ *  \<feature name="http://webinos.org/api/devicestatus"/> 
  *  \</widget> 
  * \endcode
  *  
@@ -75,7 +75,7 @@
  *
  * \code
  *  \<widget xmlns="http://www.w3.org/ns/widgets"> 
- *  \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/>
+ *  \<feature name="http://webinos.org/api/devicestatus.deviceinfo"/>
  *  \</widget>
  * \endcode 
  *
@@ -83,7 +83,7 @@
  *
  * \code
  *  \<widget xmlns="http://www.w3.org/ns/widgets"> 
- *    \<feature name="http://wacapps.net/api/devicestatus.networkinfo"/> 
+ *    \<feature name="http://webinos.org/api/devicestatus.networkinfo"/> 
  *  \</widget> 
  * \endcode 
  *  
@@ -91,17 +91,16 @@
  *  
  * \code
  *  \<widget xmlns="http://www.w3.org/ns/widgets">
- *    \<feature name="http://wacapps.net/api/devicestatus.networkinfo"/>
+ *    \<feature name="http://webinos.org/api/devicestatus.networkinfo"/>
  *    \<!-- The rest are ignored --> 
- *    \<feature name="http://wacapps.net/api/devicestatus"/> 
- *    \<feature name="http://wacapps.net/api/devicestatus.deviceinfo"/> 
+ *    \<feature name="http://webinos.org/api/devicestatus"/> 
+ *    \<feature name="http://webinos.org/api/devicestatus.deviceinfo"/> 
  *  \</widget>  
  * \endcode 
  *  
  *  In the above example, only the network information aspects would be made available.
  *   
- * \author WAC Device API Specifications 2.1, 30 April 2012
- * \author Normative: <a href="http://specs.wacapps.net/devicestatus/index.html">WAC Devicestatus API </a>
+ * \author Based on  WAC Device API Specifications 2.1, 30 April 2012
  * \author WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
  * \version 2.1
  */
