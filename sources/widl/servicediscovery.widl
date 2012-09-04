@@ -170,7 +170,11 @@
 		 void onError(DOMError error);
 		  		 
 	};
-
+	
+ /**
+  * \brief Service state.\n
+  * 
+  */
 	enum ServiceState {"initiating", "available", "unavailable"};
 	
 	/**
@@ -236,7 +240,7 @@
 		 * \param bindCallBack Asynchrounous callback to report the states of the bind operation and the availability of the service.  
 		 * \param serviceId Unique id of the binding to the particular service. If no serviceId is provided as an in parameter, the id attribute in the Service interface will be used to bind the service.
 		 */
-		PendingOperation bind(BindCallBack bindCallBack, optional DOMString serviceId);
+		void bind(BindCallBack bindCallBack, optional DOMString serviceId);
 		
 		/**
 		 * \brief unbind Releases all resources and connections allocated by the service object.  
@@ -354,7 +358,11 @@
 	 */
 	[NoInterfaceObject] interface PendingOperation {
 		/**
-		 * \brief Cancels the pending asynchronous operation and allocated resources are released.  
+		 * \brief Method Cancel
+		 *
+		 * Cancels the pending asynchronous discovery operation. When this method is called, the user agent must immediately bring the 
+		 * operation to a stop and return. Allocated resources should be released and any ongoing related network operations should be 
+		 * terminated. An error callback is issued with the DOMError name "AbortError".
 		 */
 		void cancel();
 	};
