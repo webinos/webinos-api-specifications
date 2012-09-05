@@ -96,7 +96,7 @@
 	else {
 		// Initiate a search query for a service of the type geolocation
 		findHandle = window.webinos.discovery.findServices(
-			{api:'http://www.w3.org/ns/api-perms/geolocation'}, 
+			{api:'http://webinos.org/api/w3c/geolocation'}, 
 			{onFound:serviceFoundCB, onLost:serviceLostCB});
 	
 		var selectlist = document.getElementById('servicelist');
@@ -139,10 +139,9 @@
 	dictionary ServiceType {
 		/**
 	 	 * \brief 	URI used to identify which type of API that is requested. The URI could either be:\n\n 
-	 	 *			1. W3C DAP API URI as defined in http://www.w3.org/TR/2010/WD-api-perms-20101005/, for example http://www.w3.org/ns/api-perms/geolocation,\n 
-	 	 *			2. Webinos Feature URI that is defined for each API by Webinos, for example http://webinos.org/api/sensors.temperature,\n
-	 	 *			3. WAC Feature URI that is defined for each API by WAC, for example http://waclists.org/api/camera,\n
-	 	 *			4. an unique URI identifying an API exposed by a web application. The URI shall be the same URI as exposed by the web application manifest in the api-name attribute of the webinos:shared-api element.\n  
+	 	 *			1. webinos Feature URI that is defined for each API by Webinos, for example http://webinos.org/api/sensors.temperature,\n
+	 	 *      2. webinos Feature URI for referred unchanged API specifications, for example http://webinos.org/api/w3c/geolocation,\n
+	 	 *			3. an unique URI identifying an API exposed by a web application. The URI shall be the same URI as exposed by the web application manifest in the api-name attribute of the webinos:shared-api element.\n  
 		 */
 		DOMString api;
 	};
