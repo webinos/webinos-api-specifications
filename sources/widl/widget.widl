@@ -4,17 +4,23 @@
  * This specification defines the common widget interface. The webinos application packaging
  * is based on <a href="http://www.w3.org/TR/widgets/">W3C Widget Specifications</a>, and this API completes the <a href="http://www.w3.org/TR/widgets-apis/">W3C Widget Interface</a>.
  *
+ * \def-api-feature http://webinos.org/api/widget
+ * Identifies the whole Widget API to be used for remote deploy requests.
+ * 
+ * \def-api-feature http://webinos.org/api/widget.deploy
+ * Identifies access to the deploy function and whether an application is allowed to trigger deployment of child applications or not. 
+ *
  * \author Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;
   * \version 0.9 
  */
    /**
     * \brief Callback for successfully send the Widget to background
-   */
+    */
    callback HideSuccessCallback = void ();
    
    /**
     * \brief Callback called in case sending the Widget to background was not possible
-   */
+    */
    callback HideErrorCallback = void ();
   
    /**
@@ -35,14 +41,20 @@
 
 
   /**
-   * \brief webinos Widget Interface which extends the W3C Widget API
+   * \brief The webinos Widget Interface which extends the W3C Widget API with webinos specific extensions.
    * 
+   * This API mainly introduces some more meta data attributes based on the webinos application packaging.
+   * In addition this API provide a number of life cycle APIs comparable to native applications in order to
+   * let an application know if it is in foreground or background.
+   *
+   * Also this API allows to ask for installing webinos child applications to other devices in order to allow
+   * distributed applications to deploy their components on diffrent involved devices.
    *
   */
   partial interface Widget {
     
     /**
-     * \brief An distributor attribute that represents people or an organization that distributed the widget.
+     * \brief A distributor attribute that represents people or an organization that distributed the widget.
     */
     readonly attribute DOMString     distributor;
     
@@ -72,6 +84,21 @@
      * \brief The validUntil attributed defines a date and time until the application is valid and can be used.
     */
     readonly attribute Date validUntil;
+    
+    /**
+     * \brief The copyRestricted attributed defines if it is allowed to copy the application to other devices.
+     *
+     * If true its not allowed, if false it is allowed.
+    */   
+    readonly attribute boolean copyRestricted;
+
+    /**
+     * \brief The restrictedTo attributed defines copy restrictions.
+     *
+     * If the value is "personal-zone" it is allowed to copy the application to other devices with the personal
+     * zone of the user even if copyRestricted is true
+    */
+    readonly attribute DOMString restrictedTo;
 
     /**
      * \brief Gives information about the visibility status of the Widget.
@@ -109,8 +136,9 @@
     /**
      * \brief Hide the running application.
      *
-     * Sends the application to background if possible so that it is not visible to the user anymore
-     * if possible by the platform the application execution goes on
+     * Sends the application to background if possible so that it is not visible to the user anymore.
+     * If possible by the platform the application execution goes on even when the application is not
+     * visible anymore.
      *
      * \code
      * 
@@ -135,7 +163,7 @@
     attribute Function? ondestroy;
 
     /**
-     * \brief Event handler indicating that the application is gone to background. 
+     * \brief Event handler indicating that the application has been sent to background. 
      *
      *  called after the application was put to background, e.g., another application
      * goes to foreground and the application is not visible any more. After calling onBackground the application
@@ -154,7 +182,7 @@
     /**
      * \brief EventHandler indicating that application execution is going to be stopped. 
      *
-     * Application execution is stopped aftern returning out of this function.
+     * Application execution is stopped after returning from this function.
     */
     attribute Function? onstop;
 
@@ -172,6 +200,12 @@
      * file on another device. If local = false or not specified the WRT has to provide a list of available
      * devices to the user where the application should be installed on, if local = true the WRT has to
      * install the selected child on the same device as the API is bound to.
+     *
+     * To install a child on a selected remote device the webinos device discovery API can be used to find
+     * available Widget API services on other devices where deployChild can be used remotely. Remote instances
+     * of the widget API will also provide Widget details of the running application and nothing about any
+     * application on remote devices. Thus, the only difference in using the Widget API directly or via a
+     * remote service is that deployChild will be targeted on another device. 
      *
      * \code
      *

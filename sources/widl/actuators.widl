@@ -1,13 +1,13 @@
-/**<p> The Webinos Generic Actuator API provides applications with an API to control actuators.</p> 
+/**<p> The webinos Generic Actuator API provides applications with an API to control actuators.</p> 
  * \name The Generic Actuator API 
  * 
  *
  *
- * The Webinos Generic Actuator API provides applications with an API to control actuators in the device, 
+ * The webinos Generic Actuator API provides applications with an API to control actuators in the device, 
  * connected to the device or in another device.
  *
  * The API is agnostic to underlying low level methods for actuator discovery and communication with 
- * actuators. However, the Actuator API should be used in combination with the general Webinos service 
+ * actuators. However, the Actuator API should be used in combination with the general webinos service 
  * discovery methods findServices() and bind(). The actuator services can be located in the user's 
  * personal zone or be shared on the current network.
  *
@@ -57,85 +57,84 @@
  * \version 2.0
  */
 
-        /**
-        * \brief Defines the  error codes for this module
-        */
-        exception ActuatorException {
 
-                /**
-                * \brief Unknown error.
-                *
-                */
-                const unsigned short UNKNOWN_ERR = 0;
+  /**
+   * 
+   * \code
 
-                /**
-                * \brief An invalid parameter was provided when the requested method was invoked.
-                *
-                */
-                const unsigned short INVALID_ARGUMENT_ERR       = 1;
+        // Handle that can be used to cancel the ongoing asynchronous discovery process.
+        var findHandle = 0;
 
-                /**
-                * \brief Exception code
-                */
-                unsigned short code;
+        // Handle from service.bind.
+        var actuatorHandle = 0;
 
-                /**
-                * \brief Exception message
-                */
-                DOMString message;
-        };
+        // Array of found switch actuators object.
+        var availableSwitchActuators = {};
+                 
+        // Callback method that displays a list of found actuators in a selection list
+        // The selection list is dynamically extended every time a new actuator is discovered.
+        function actuatorFoundCB(actuator) {
 
-        /**
-        * \brief ActuatorError interface definition
-        */
-        [NoInterfaceObject] interface ActuatorError {
+                var selectlist = document.getElementById('actuatorlist');
+                var option = document.createElement('option');
+                option.value = actuator.id;
+                option.appendChild(document.createTextNode(actuator.displayName));
+                availableSwitchActuators [actuator.id] = actuator;
+                selectlist.appendChild(option);
 
-                /**
-                * \brief Uknown error
-                */
-                const unsigned short UNKNOWN_ERROR = 0;
+        }
+                      
+ 
+       // Callback when bind has been successfully executed on the service object. The Actuator is authorized and ready to use
+        function bindCB(myActuator) {
+                alert('Actuator ' + myActuator.displayName + ' with ID: ' + myActuator.id + ' selected');
+				var ON = 1.0;
+				var OFF = 0.0;
+				var successCB = function(evt){
+					alert('Switch Actuator ' + myActuator.displayName + ' is now '+ (evt.actualValue[0] == ON? 'ON': 'OFF'));
+					if(evt.actualValue[0] == ON){
+						// turn OFF after 5 Seconds 
+						setTimeout(function(){
+							myActuator.setValue([OFF],successCB,errorCB);
+						},5000);
+					}	
+				};
+				var errorCB = function(err){
+					alert('Error on change the state of the Switch Actuator ' + myActuator.displayName);
+				};
+				// Turn Switch ON
+				myActuator.setValue([ON],successCB,errorCB);
+        }
 
-                /**
-                * \brief Illegal actuator type
-                */
-                const unsigned short ILLEGAL_ACTUATOR_TYPE_ERROR = 2;
 
-                /**
-                * \brief actuator type not supported
-                */
-                const unsigned short ACTUATOR_TYPE_NOT_SUPPORTED_ERROR = 3;
+       // Callback method that is invoked when user selects an option in the actuator selection list 
+        function actuatorSelected(actuator) {
 
-                /**
-                * \brief Illegal sensor id
-                */
-                const unsigned short ILLEGAL_ACTUATOR_ID_ERROR = 4;
+                // Stops the findServices operation
+                findHandle.cancel();
 
-                /**
-                * \brief Other illegal input arguments
-                */
-                const unsigned short OTHER_ILLEGAL_INPUT_ARGUMENT_ERROR = 5;
-
-                /**
-                * \brief Actuator is already in use
-                */
-                const unsigned short ACTUATOR_IN_USE_ERROR = 6;
-
-                /**
-                * \brief Permission denied
-                */
-                const unsigned short PERMISSION_DENIED_ERROR = 50;
-
-                /**
-                * \brief Error code assigned when an error has occurred.
-                */
-                readonly attribute unsigned short code;
-
-                /**
-                * \brief Human readable message assigned when an error has occurred.
-                */
-                readonly attribute DOMString message;
-    };
+                // Binds to the actuator API to initiate an authorized objects used to
+                // invoke services.  
+                actuatorHandle = actuator.bind({onBind:bindCB});                               
+                
+        }
         
+        // Get list of switch actuators registered in the device through the Service Discovery findServices() method
+        findHandle  = window.webinos.discovery.findServices({api:'http://webinos.org/api/actuators.switch'}, {onFound:actuatorFoundCB});
+ 
+       // Handle user selection of actuator
+        var actuatorlist = document.getElementById('actuatorlist');
+        actuatorlist.addEventListener("change", function (e) {
+                                var actuator = availableSwitchActuators[e.target.value];
+                                if (actuator) {
+                                    actuatorSelected(actuator);
+                                }
+        }, false);
+
+
+   * \endcode
+   */
+
         /**
         * \brief This interface defines an abstract class representing the range of the actuator values. 
         * The actuator range can be an interval (e.g. temperature is in interval [0&deg;C,27&deg;C]) or a set of 
@@ -152,7 +151,7 @@
         * is not limited
         */
         [Constructor(float minValue), Constructor(float minValue,float maxValue)]
-        interface Interval: ActuatorRange {
+        interface IntervalRange: ActuatorRange {
                 /**
                 * \brief Min range of actuator in the actuator unit.
                 * undefined min value means that the lower bound is not limited
@@ -170,9 +169,9 @@
         * a valid value of the actuator must be one of the values array.
         */
         [Constructor(float[] validValues)]
-        interface Enum: Range {
+        interface ListRange: ActuatorRange {
                 /**
-                * \brief valid values in the actuator unit
+                * \brief Valid values in the actuator unit
                 */
                 attribute float[] validValues;
         };
@@ -186,34 +185,19 @@
         [NoInterfaceObject] interface Actuator : Service {
 
                 /**
-                * \brief the range of each actuator value.
-                * the size of the range array must be the same as the number of input pins of the actuator
+                * \brief The range of each actuator value.
+                * 
+                * The size of the range array must be the same as the number of input pins of the actuator
                 */
-                readonly attribute Range[] range;
+                readonly attribute ActuatorRange[] range;
  
                 /**
-                * \brief the unit of each actuator value.
-                * the unit array and the range array must have the same size, 
+                * \brief The unit of each actuator value.
+                * 
+                * The unit array and the range array must have the same size, 
                 * which represents the number of input pins of the actuator
                 */
                 readonly attribute DOMString[] unit;
-
-                /**
-                * \brief The type of the actuator. This is an URI defining the actuator type according to the defined actuator "feature" URI strings.\n
-                * e.g. the URI string http://webinos.org/api/actuators.switch represents all switch actuators. 
-                */
-                readonly attribute DOMString actuatorType;
-
-                /**
-                * \brief the id of the actuator.
-                * The identifier is in general an URI string
-                */
-                readonly attribute DOMString? actuatorId;
-
-                /**
-                * \brief the display name of the actuator.
-                */
-                readonly attribute DOMString? displayName;
 
                 /**
                 * \brief Vendor string of this actuator.
@@ -226,10 +210,8 @@
                 readonly attribute unsigned long?  version;
 
                 /**
-                * \brief set a new actuator value.
+                * \brief Set a new actuator value.
                 *
-                * Throws ActuatorException
-                * 
                 * \param value an array of new actuator values. The size of the value array is the same as the number of input pins of the actuator.
                 * \param successCB the success callback called with an ActuatorEvent object as input in case the setValue call succeeded.
                 * \param errorCB the error callback
@@ -240,17 +222,22 @@
                 /**
                 * \brief onSuccess The onSuccess method is called after the setValue succeeded.  
                 *
-                * \param event The event object associated to the asynchnonous operation setValue
+                * \param event The event object associated to the asynchronous operation setValue
                 */
                 callback ActuatorSuccessCB =  void (ActuatorEvent event); 
 
 
-                /**
-                * \brief onError The onError method is called if an error occurs during the setValue() process.  
-                *
-                * \param error The error object of an unsuccessful setValue() asynchronous operation.
-                */
-                callback ActuatorErrorCB = void(ActuatorError error); 
+      /**
+       * \brief The ActuatorErrorCB method is called if an error occurs during the setValue() process.  
+       *
+       * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> object detailing what 
+       * went wrong in an unsuccessful setValue() asynchronous operation. The following error names could be issued:\n
+       * - "SyntaxError": Input parameters did not match the expected pattern or value is not in range.\n
+       * - "AbortError": Operation was aborted by the user.\n
+       * - "TimeoutError": The operation timed out.
+       */
+       callback ActuatorErrorCB = void (DOMError error);
+                
 
         /**
         * \brief The PendingOperation interface
@@ -260,13 +247,15 @@
         */
         [NoInterfaceObject] interface PendingOperation {
 
-                /**
-                * \brief Method Cancel
-                *
-                *  Cancel the pending asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return. 
-                *  No success or error callback for the pending operation will be invoked.
-                */
-                void cancel ();
+          /**
+          * \brief Method Cancel
+         *
+         *  Cancels the pending setValue() asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
+         *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
+         *  name "AbortError". If the set value operation is no longer under control of the calling process, the cancel function will be ignored and all neccessary 'housekeeping functions' 
+         *  required after starting the set value process will be performed as if the cancel had never been issued.
+         */
+            void cancel ();
         };
 
 

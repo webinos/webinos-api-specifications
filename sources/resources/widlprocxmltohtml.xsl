@@ -362,7 +362,6 @@ XSLT stylesheet to convert widlprocxml into html documentation.
             </div>
         </xsl:if>
         <xsl:apply-templates select="webidl"/>
-        <xsl:apply-templates select="descriptive/Code"/>
     </dd>
 </xsl:template>
 
@@ -443,7 +442,6 @@ XSLT stylesheet to convert widlprocxml into html documentation.
                 </dl>
             </div>
         </xsl:if>
-        <xsl:apply-templates select="descriptive/Code"/>
     </dd>
 </xsl:template>
 

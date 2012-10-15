@@ -14,12 +14,26 @@
  * \def-api-feature http://webinos.org/api/context
  * Acccess to all the module. This feature provides access to the whole API.
  * Security and Privacy enforcement may depend on the query or subscription requested by the developer.
- * 
+ * \def-api-feature http://webinos.org/api/context.query
+ * Access to the query mechanism.
+ * \def-api-feature http://webinos.org/api/context.app
+ * Access to the Application context manager. Enables to create new Application ContextObject and retrieve ContextObjects created by the application
+ * \def-api-feature http://webinos.org/api/context.app.read
+ * Access to read Application ContextObject from othe applications
+ * \def-api-feature http://webinos.org/api/context.schedule.read
+ * Access to the scheduling API calls api to query for existing schedules
+ * \def-api-feature http://webinos.org/api/context.schedule.create
+ * Enables the application to schedule a new API call
+ * \def-api-feature http://webinos.org/api/context.rules.read
+ * Read rules and execute them
+ * \def-api-feature http://webinos.org/api/context.rules.create
+ * Allows the application to create rules.
+ *
  * \author Christos Botsikas (NTUA) &lt;cbot@epu.ntua.gr&gt;
  * \author Christos Ntanos (NTUA) &lt;cntanos@epu.ntua.gr&gt;
- * \author Andreas Botsikas (NTUA) &lt;abot@epu.ntua.gr&gt;
+ * \author Dimitrios Sdrallis (NTUA) &lt;sdrallis@epu.ntua.gr&gt;
  *
- * \version 0.5 
+ * \version 0.6 
  */
  
 /**
@@ -154,7 +168,7 @@ callback SchemaIsDefinedCB = void (DOMString? version);
  * \brief This is the entry point for the Application ContextObject management. 
  *
  * Application developers may register their own ContextObject data by defining a schema. The application may save this kind of ContextObject which will be shared among applications and devices for later processing.
- * The end user will be able to give access to these data based on policy manager rules.
+ * The end user will be able to give access to these data based on policy manager rules. The main concept is that although the application is able to store data, the data are not owned by the application rather the user. So the user can share this kind of data either with another user or another application. 
  *
  * \code
  * TODO
@@ -479,14 +493,14 @@ callback ContextRuleEventHandler = void (ContextRuleEvent event);
 
  
 /**
- * \brief The unique URI that represents a ContextRule.
+ * \brief The unique URI that represents a ContextRule eg. "http://epu.ntua.gr/context/rules/homeLocation".
  */
 typedef DOMString ContextRuleURI;
 
 /**
  * \brief This is the entry point for the Scheduled API calls management. 
  *
- * Application developers may request a scheduled API call on Interval in order to force update of the context database.
+ * Application developers may request a scheduled API call on Interval in order to force update of the context database. Scheduled API calls may not return fresh information if the implementation of an API imposes its own rate limits.
  *
  * \code
  * TODO

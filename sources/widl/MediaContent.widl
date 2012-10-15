@@ -5,10 +5,10 @@
  * It is possible to search for specific media items using filters. The API also supports setting attributes of specific media items.
  * This API has been slighly changed by webinos to add a method to cancel asynchronous operations.
  *
- * \def-api-feature http://tizen.com/api/mediacontent
+ * \def-api-feature http://webinos.org/api/mediacontent
  * Access to all features in this module
  *
- * \def-api-feature http://tizen.com/api/mediacontent.read
+ * \def-api-feature http://webinos.org/api/mediacontent.read
  * Access to all features in this module except updateItem() and updateItemsBatch()
  *
  * \author Tizen Device API Specifications
@@ -46,16 +46,16 @@
    * \brief Media folder identifier.
    */
   typedef DOMString MediaFolderId;
- 
-  /**
-   * \brief Defines what is instantiated in the tizen object.
-   * There will be a tizen.mediacontent object that allows accessing the functionality of the media content module.
-   */
-  [NoInterfaceObject] interface MediaSourceManagerObject {
-    readonly attribute MediaSourceManager mediacontent;
-  };
-  Tizen implements MediaSourceManagerObject;
 
+	/**
+	 * \brief The MediaContent interface is accessible through the webinos object.
+	 * 
+	 */
+	partial interface Webinos {
+	  readonly attribute MediaSourceManager mediacontent;
+	};
+
+  
   /**
    * \brief MediaSourceManager interface that provides access to the module functionality.
    * This interface offers a method to retrieve the media source objects.
@@ -97,7 +97,7 @@
 	   *    console.log('Attributes set successfully');
 	   * }
 	   * 
-	   * var mediasource = tizen.mediaconent.getLocalMediaSource();
+	   * var mediasource = webinos.mediaconent.getLocalMediaSource();
 	   * // Assume items is a MediaItem object vector as a result of findItems method.
 	   * // Check the playCount is editable, and then increase by 1.
 	   * for (i=0; i &lt; items.length; i++) {
@@ -112,7 +112,7 @@
 	   * \param successCallback Function called when attributes have been changed.
 	   * \param errorCallback with error type NotSupportedError, if this feature is not supported. with error type SecurityError, if this functionality is not allowed. with error type TypeMismatchError, if the input parameter is not compatible with the expected type for that parameter. Function called when an error has occurred.
 	   */
-    PendingOperation updateItemsBatch(MediaItem[] items,
+    PendingUpdateOperation updateItemsBatch(MediaItem[] items,
                                       SuccessCallback successCallback,
                                       optional ErrorCallback? errorCallback);
 
@@ -124,7 +124,7 @@
 	   * \param successCallback Function called when media folders have been retrieved successfully.
 	   * \param errorCallback with error type NotSupportedError, if this feature is not supported. with error type SecurityError, if this functionality is not allowed. with error type TypeMismatchError, if the input parameter is not compatible with the expected type for that parameter. Function called when an error has occurred.
 	   */
-    PendingOperation getFolders(MediaFolderArraySuccessCallback successCallback,
+    PendingGetOperation getFolders(MediaFolderArraySuccessCallback successCallback,
                      optional ErrorCallback? errorCallback);
 
 	  /**
@@ -136,13 +136,13 @@
 	   *
 	   * \code
 	   * // The following example retrieves all songs from the album "The Joshua Tree", by artist "U2", ordered by the track number.
-	   *  var mediasource = tizen.mediacontent.getLocalMediaSource();
+	   *  var mediasource = webinos.mediacontent.getLocalMediaSource();
 	   *  var count = 100;
 	   *  var offset = 0;
-	   *  var sortMode = new tizen.SortMode("trackNumber", "ASC");
-	   *  var artistFilter = new tizen.AttributeFilter("artists", "EXACTLY", "U2");
-	   *  var albumFilter = new tizen.AttributeFilter("album", "EXACTLY", "The Joshua Tree");
-	   *  var filter = new tizen.CompositeFilter("INTERSECTION", [albumFilter, artistFilter]);
+	   *  var sortMode = new webinos.SortMode("trackNumber", "ASC");
+	   *  var artistFilter = new webinos.AttributeFilter("artists", "EXACTLY", "U2");
+	   *  var albumFilter = new webinos.AttributeFilter("album", "EXACTLY", "The Joshua Tree");
+	   *  var filter = new webinos.CompositeFilter("INTERSECTION", [albumFilter, artistFilter]);
 	   *  mediasource.findItems(findItemsCB, errorCB, null, filter, sortMode, count, offset);
 	   *
 	   * function errorCB(err) {
@@ -173,7 +173,7 @@
 	   * \param count Same as SQL LIMIT: maximum amount of items to return.
 	   * \param offset with error type NotSupportedError, if this feature is not supported. with error type SecurityError, if this functionality is not allowed. with error type TypeMismatchError, if the input parameter is not compatible with the expected type for that parameter. Same as SQL OFFSET: an offset of the result set.
 	   */
-    PendingOperation findItems(MediaItemArraySuccessCallback successCallback,
+    PendingFindOperation findItems(MediaItemArraySuccessCallback successCallback,
                    optional ErrorCallback? errorCallback,
                    optional MediaFolderId? folderId,
                    optional AbstractFilter? filter,
@@ -456,22 +456,59 @@
   };
 
     /**
-     * \brief The PendingOperation interface
+     * \brief The PendingUpdateOperation interface
      *
-     * The PendingOperation interface describes operation of cancellable aynchronous methods.
-     * Cancellable asynchronous methods return PendingOperation objects exporting methods for
-     * cancelling the operation. 
+     * The PendingUpdateOperation interface describes the object that is returned by the asynchronous updateItemsBatch method. It makes it possible to stop
+     * this operation if it hasn't produced a result within a desired time. Most likely a part of items will be already updated.
      *
      */
-     [NoInterfaceObject] interface PendingOperation {
+     [NoInterfaceObject] interface PendingUpdateOperation {
+
+		/**
+		 * \brief Cancel method for cancelling asynchronous updateItemsBatch operation
+		 *
+		 * Cancel the pending updateItemsBatch asynchronous operation. When this method is called, the user agent must stop; all items must be or completely updated or
+		 * left untouched (no item should be partially updated). Allocated resources should be released. An error callback is issued with the DOMError name "AbortError".
+		 */
+		void cancel ();
+     };
+
 
     /**
-     * \brief Cancel method for cancelling asynchronous operation
+     * \brief The PendingGetOperation interface
      *
-     *  Cancel ongoing asynchronous method call. Upon calling this method the runtime must immediately stop
-     *  the pending operation and return.
+     * The PendingGetOperation interface describes the object that is returned by the asynchronous getFolders method. It makes it possible to stop
+     * this operation if it hasn't produced a result within a desired time.
+     *
      */
-        void cancel ();
+     [NoInterfaceObject] interface PendingGetOperation {
+
+		/**
+		 * \brief Cancel method for cancelling asynchronous getFolders operation
+		 *
+		 * Cancel the pending getFolders asynchronous operation. When this method is called, the user agent must stop and allocated resources should be released.
+		 * An error callback is issued with the DOMError name "AbortError".
+		 */
+		void cancel ();
+     };
+
+	 
+    /**
+     * \brief The PendingFindOperation interface
+     *
+     * The PendingFindOperation interface describes the object that is returned by the asynchronous findItems method. It makes it possible to stop
+     * this operation if it hasn't produced a result within a desired time.
+     *
+     */
+     [NoInterfaceObject] interface PendingFindOperation {
+
+		/**
+		 * \brief Cancel method for cancelling asynchronous getFolders operation
+		 *
+		 * Cancel the pending findItems asynchronous operation. When this method is called, the user agent must stop and allocated resources should be released.
+		 * An error callback is issued with the DOMError name "AbortError".
+		 */
+		void cancel ();
      };
 
 

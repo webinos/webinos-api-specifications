@@ -9,11 +9,10 @@
  *
  * All the functionality of this module is accessed through the object webinos.deviceinteraction which is an instance of the DeviceInteractionManager interface. In case any functionality is not supported, a DOMException exception will be thrown with code NOT_SUPPORTED_ERR when the related method of the DeviceInteractionManager interface is invoked.
  *   
- * \def-api-feature http://wacapps.net/api/deviceinteraction
+ * \def-api-feature http://webinos.org/api/deviceinteraction
  * Allows access to the device interaction module 
  *
- * \author WAC Device API Specifications 2.1, 30 April 2012
- * \author Normative: <a href="http://specs.wacapps.net/deviceinteraction/index.html">WAC Device Interaction API </a>
+ * \author Based on WAC Device API Specifications 2.1, 30 April 2012
  * \author WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
  * \version 2.1
  */

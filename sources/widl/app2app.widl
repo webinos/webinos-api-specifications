@@ -1,4 +1,4 @@
-/**<p>Interface for exchanging messages between applications, both locally or remotely.</p>
+/**<p>Interface for exchanging messages between applications, locally and/or remotely.</p>
  * \name App2App Messaging API
  *
  * The Webinos App2App Messaging specification defines interfaces
@@ -41,7 +41,7 @@ partial interface Webinos {
  * wildcard). A channel sits between (two or more) applications such that
  * applications do not address each other directly.
  *
- * Optionally, the application which created the channel (i.e. the channel owner)
+ * The application which created the channel (i.e. the channel owner)
  * can authorize connect requests of other application instances that want to use
  * the channel using the App2AppChannelRequestCB callback.
  *
@@ -52,11 +52,11 @@ interface App2AppMessaging {
    * \brief Create a new channel.
    *
    * \param namespace The namespace of the channel (must be unique within the
-   * personal zone.
+   * personal zone).
    * \param properties The properties of the channel.
    * \param requestCB The callback called when an application wants to connect
    * to the channel. If the callback returns true the application is allowed to
-   * connect, otherwise the connect attempt is rejected.
+   * connect, otherwise the connect attempt is rejected. 
    * \code
    // create channel and ask user to accept connections
    var channel = webinos.app2app.createChannel("urn:webinos:org:example", { channelOwner: "exampleApp", mode: "send-receive" },
@@ -66,7 +66,7 @@ interface App2AppMessaging {
   App2AppChannel createChannel(
     DOMString namespace,
     App2AppChannelProperties properties,
-    optional App2AppChannelRequestCB requestCB);
+    App2AppChannelRequestCB requestCB);
 
   /**
    * \brief Create a new message.
@@ -98,12 +98,13 @@ interface App2AppMessaging {
    * is allowed for the namespace-specific string.
    * \param zoneIds The identifiers of the personal zones to search for
    * channels in addition the local personal zone.
-   * \param searchCB The callback called when the search is complete.
+   * \param searchCB The callback called when a channel is found. Can be called 
+   * multiple times if multiple channels are found.
    * \return PendingOperation interface to cancel the asynchronous call.
    *
    * \code
    webinos.app2app.searchForChannels("urn:webinos:org:*", [],
-                                     resultHandler(channels) { alert("Found one or more channels.") });
+                                     resultHandler(channel) { alert("Found a channel.") });
    \endcode
    */
   PendingOperation searchForChannels(
@@ -209,7 +210,7 @@ interface App2AppChannel {
   /**
    * \brief Close the channel.
    *
-   * There is no correspoing open function as this is implicit in the
+   * There is no corresponding open function as this is implicit in the
    * creation of the channel.
    */
   void close();
@@ -244,12 +245,9 @@ dictionary App2AppChannelProperties {
  *   <li>receive-only: connected applications can only receive on the channel
  *     (the channel owner can both send and receive). This is effectively a
  *     one-to-many communication scheme.</li>
- *   <li>p2p: at most two applications can connect to the channel which 
- *     uses peer-to-peer routing (i.e. without involving a PZH for
- *     routing messages).</li>
  * </ul>
  */
-enum ChannelMode { "send-receive", "receive-only", "p2p" };
+enum ChannelMode { "send-receive", "receive-only" };
 
 /**
  * \brief Interface for channel connect requests.
@@ -276,6 +274,16 @@ callback App2AppChannelRequestCB = boolean (App2AppChannelRequest request);
  * \brief Pending operation interface for cancelling asynchronous calls.
  */
 [NoInterfaceObject] interface PendingOperation {
+
+  /**
+   * \brief Cancel method for cancelling asynchronous find channel operation.
+   *
+   * Cancel the pending channel search operation. When this method is called, the 
+   * user agent must immediately bring the operation to stop and return.
+   * Allocated resources should be released and any ongoing related network
+   * operations should be terminated. An error callback is issued with the DOMError
+   * name "AbortError".
+   */
   void cancel();
 };
 
@@ -292,5 +300,5 @@ callback App2AppErrorCB = void (DOMError error);
 /**
  * \brief The channel search callback.
  */
-callback App2AppChannelSearchCB = void (App2AppChannel[] channels);
+callback App2AppChannelSearchCB = void (App2AppChannel channel);
 
