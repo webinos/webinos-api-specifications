@@ -387,7 +387,7 @@
 		*
 		* \param gear defines the value of the current gear. 
 		*/
-		void initGearEvent(Gear gear);		
+		void initGearData(Gear gear);		
 	};
 	
 
@@ -441,7 +441,7 @@
 		*
 		* \param level defines the level of the oil in the engine.
 		*/
-		void initEngineOilEvent(EngineOilLevel level);	
+		void initEngineOilData(EngineOilLevel level);	
 	};
 	
 	/**
@@ -523,7 +523,7 @@
 		* \param rearRight defines the tire pressure of tire at the rear right side of the vehicle.
 
 		*/
-		void initTirePressureEvent(Short frontLeft, Short frontRight,Short rearRight,Short rearLeft);
+		void initTirePressureData(Short frontLeft, Short frontRight,Short rearRight,Short rearLeft);
 	};
 	
 	/**
@@ -570,7 +570,7 @@
 		* \param behindPassenger defines status of door behind front passenger.
 		* \param trunkDeck defines status of trunk deck.
 		*/
-		void initDoorEvent(boolean driver, boolean frontPassenger,boolean behindDriver,boolean behindPassenger,boolean trunkDeck);
+		void initDoorData(boolean driver, boolean frontPassenger,boolean behindDriver,boolean behindPassenger,boolean trunkDeck);
 	};
 	
 		/**
@@ -615,7 +615,7 @@
 		* \param behindDriver defines position of the .
 		* \param behindPassenger defines the position of the window behind the front passenger.
 		*/
-		void initDoorEvent(boolean driver, boolean frontPassenger,short behindDriver,short behindPassenger);
+		void initWindowData(boolean driver, boolean frontPassenger,short behindDriver,short behindPassenger);
 	};
 	
 	
