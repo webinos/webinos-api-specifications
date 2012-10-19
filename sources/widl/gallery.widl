@@ -1,6 +1,5 @@
-
-/**
- * \brief W3C based Gallery API interface.
+/**<p> This specification defines an API that provides access to the media items stored in the device gallery.</p> 
+ * \name W3C based Gallery API interface.
  *
  * This specification provides a wrapper that mandates the use of the
  * <a href="http://dev.w3.org/2009/dap/gallery/">W3C Gallery API </a> (Editor's draft 4 November 2010) that  provides access to media gallery located on the device. 
@@ -9,11 +8,10 @@
  * *
  * \author W3C Editor's Draft 04 November 2010
  * \author WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
+ * \author Update to new WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
  * \version 1.0
  * 
  */
- 
-module gallery {
 
 /**
  * \code
@@ -140,7 +138,7 @@ module gallery {
    *
    * No exceptions.
    */    
-    caller PendingOp find (DOMString[] fields, GalleryFindCB successCB, optional GalleryErrorCB errorCB, optional GalleryFindOptions options);
+     PendingOp find (DOMString[] fields, GalleryFindCB successCB, optional GalleryErrorCB errorCB, optional GalleryFindOptions options);
    /**
    * \brief Retrieve all galleries from available sources(e.g. device local memory, external memory and even Fliker, Facebook, etc.) according to the retrieve process detailed below.
    * 
@@ -158,7 +156,7 @@ module gallery {
    *
    * No exceptions.
    */     
-   caller PendingOp getGalleries (GalleryInfoCB successCB, optional GalleryErrorCB errorCB);
+    PendingOp getGalleries (GalleryInfoCB successCB, optional GalleryErrorCB errorCB);
 };
 
  /**
@@ -434,11 +432,6 @@ module gallery {
     attribute Date?           endDate;
 };
 
- /**                       
-  * \brief find specific success callback. 
-  *
-  */    
-[Callback=FunctionOnly, NoInterfaceObject] interface GalleryFindCB : PendingOp {
    /**
    * \brief Method invoked when the asynchronous call completes successfully 
    * 
@@ -447,14 +440,8 @@ module gallery {
    *
    * No exceptions.
    */   
-       void onSuccess (MediaObject[] mediaObjectObjs);
-};
+       callback GalleryFindCB = void (MediaObject[] mediaObjectObjs);
 
- /**                       
-  * \brief  getGalleries specific success callback. 
-  *
-  */    
-[Callback=FunctionOnly, NoInterfaceObject] interface GalleryInfoCB : PendingOp {
    /**
    * \brief Method invoked when the asynchronous call completes successfully 
    * 
@@ -463,13 +450,9 @@ module gallery {
    *
    * No exceptions.
    */   
-    void onSuccess (GalleryInfo[] galleryInfoObjs);
-};
- /**                       
-  * \brief  Gallery API specific error callback.
-  *
-  */    
-[Callback=FunctionOnly, NoInterfaceObject] interface GalleryErrorCB : PendingOp {
+    callback GalleryInfoCB = void(GalleryInfo[] galleryInfoObjs);
+
+
    /**
    * \brief Method invoked when the asynchronous call completes unsuccessfully 
    * 
@@ -478,8 +461,8 @@ module gallery {
    *
    * No exceptions.
    */   
-    void onError (GalleryError error);
-};
+    callback GalleryErrorCB = void(GalleryError error);
+
 
  /**                       
   * \brief  The GalleryError interface encapsulates all errors in the Gallery API.
@@ -522,4 +505,3 @@ module gallery {
     readonly attribute unsigned short code;
 };
 
-};

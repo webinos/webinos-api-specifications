@@ -1,0 +1,257 @@
+/**<p>The webinos Navigation API provides mechanism to interact with on-board navigation software.</p>
+ * It is a spin-off of the Vehicle API. The API expose the functionality to interact with a satelite navigation service. It provides a method for handing over an point-of-interest to the service, querying the service for POI and monitoring if the navigation service is active.
+ * \name Navigation API
+ *
+ * 
+ *
+ *
+ * \def-api-feature http://webinos.org/api/navigation
+ * Identifies the static information about the vehicle 
+ *
+ * 
+ * \author Simon Isenberg (BMW Forschung \& Technik) &lt;Simon.Isenberg@bmw.de&gt;
+ * \version 0.1
+ */
+
+	/**
+	* \brief This interface defines the address properties, which can be passed to the navigation system using the requestGuidance() function.   The <a href="http://dev.w3.org/geo/api/spec-source-v2.html#address_interface" target="_blank">Address interface</a> defined in the v2 of the W3C Geolocation API is used for this purpose.
+	*
+	*/ 
+	dictionary Address{
+		/**
+		* \brief Attribute is specified by using the two-letter [ISO 3166-1] code.
+		*/
+		DOMString country;
+		/**
+		* \brief Attribute denotes the name of a country subdivision (e.g. the state name in the US).
+		*/		
+		DOMString? region;
+		/**
+		* \brief Attribute denotes the name of a land area within a larger region.
+		*/		
+		DOMString? county;
+		/**
+		* \brief Attribute reflects the name of the city.
+		*/		
+		DOMString city;
+		/**
+		* \brief Attribute reflects the name of the street.
+		*/		
+		DOMString street;
+		/**
+		* \brief Attribute describes the location's street number.
+		*/		
+		 DOMString streetNumber;
+		/**
+		* \brief Attribute denotes the details of the premises, such as a building name, block of flats, etc.
+		*/		
+		DOMString? premises;
+		/**
+		* \brief Attribute contains other address details that are not captured by the rest of the attributes in this interface. Examples include a floor number in a building, an apartment number, the name of an office occupant, etc..
+		*/		
+		DOMString additionalInformation;
+		/**
+		* \brief Attribute reflects the postal code of the location (e.g. the zip code in the US).
+		*/		
+		DOMString postalCode;
+	};
+	
+	/**
+	* \brief The interface defines a generic data object for navigation specific data.
+	*
+	*/ 
+	[NoInterfaceObject]
+	interface NavigationEvent : Event{
+		/**
+		* \brief Attribute defines the type NavigationEvent.
+		*/
+		readonly attribute NavigationEventType status;
+		};
+	/**
+	* \brief This dictionary defines the LatLng properties, which can be passed to the navigation system using the requestGuidance() function. The format is WGS84. 
+	* <em>Note: The <a href="http://dev.w3.org/geo/api/spec-source-v2.html#coordinates">coordinate</a> interface from the Geolocation API v2 includes attributes, which are not feasible for beeing handled by the navigation system (accurancy, alitude accurency, heading, speed). In some special cases (destination is on a bridge, which crosses another street) it might make sense to add the altitude to LatLng interface at a later stage.</em> 
+	* 
+	*
+	*/ 
+	dictionary LatLng{
+		/**
+		* \brief Attribute reflect the latitude of a geolocation in WGS84.
+		*/
+		double latitude;
+		/**
+		* \brief Attribute reflect the Longitude of a geolocation in WGS84.
+		*/			
+		double longitude;
+	};
+	/**
+	* \brief This dictionary defines a Point of Interest (POI). 
+	*  The dictionary contains the name of a POI and its address and/or geolocation as a LatLng object. <em> Note: The <a href="http://www.w3.org/2010/POI/" target="_blank">W3C POI WG</a> has published a <a href="http://www.w3.org/TR/2011/WD-poi-core-20110512/" target="_blank">first working draft</a> for the POI handling. The draft focuses on a XML representation of a POI and does not seem handy for beeing handled by a navigation system.</em>
+	*/ 
+	dictionary POI{
+		/**
+		* \brief Attribute denotes the name of the POI.
+		*/		
+		DOMString? name;
+		/**
+		* \brief Attribute reflects the geolocation of the POI as LatLng object.
+		*/		
+		LatLng? position;
+		/**
+		* \brief Attribute denotes the address of the POI.
+		*/		
+		Address address;
+	};
+
+	/**
+	* \brief This dictionary defines the search options for a POI. 
+	*/ 
+	dictionary PoiSearchOptions{
+		/**
+		* \brief denotes the position for which the search is performed .
+		*/		
+		LatLng? closeTo;
+		/**
+		* \brief reflects the maximum distance for a POI in meters.
+		*/		
+		unsigned long? distance;
+	};
+
+
+	/**
+	* \brief callback interface for requestGuidance.
+	*
+	* 
+	*/
+	callback interface NavigationCallback {
+		/**
+		* \brief asynchronous success callback
+		* \param guidanceId a short containing the refer in order to be able to cancel the guidance using the cancelGuidance method
+		* \param destination defining the destination 
+		*/
+		void onRequest(long guidanceId, POI destination);
+
+		/**
+		* \brief asynchronous callback, when the guidance to the POI has been cancelled
+		* \param guidanceId a short containing the refer the POI
+		* \param destination defining the destination 
+		*/
+		void onCancel(long guidanceId, POI destination);
+		
+		/**
+		* \brief asynchronous callback, when the POI has been reached
+		* \param guidanceId a short containing the refer the POI
+		* \param destination defining the destination 
+		*/
+		void onReach(long guidanceId, POI destination);
+	};
+	
+	/**
+	* \brief callback interface for cancelGuidance.
+	*/
+	callback GuidanceCancelCallback = void();
+
+	/**
+	* \brief callback for a failure from requestGuidance, getStatus, or findDestination
+	* \param error a <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> containing information about the error (e.g. SecurityError if permission is denied).
+	*
+	*/
+	callback NavigationErrorCallback = void (DOMError error);
+	
+	/**
+	* \brief callback method to receive vehicle data in a non-recurring and asynchronous way.
+	*/ 	
+	callback NavigationEventHandler = void (NavigationEvent data);
+	
+	/**
+	* \brief The interface defines general information about the vehicle and is the object, where the event listener for vehicle related data can be registered. The interface is accessible through the webinos.vehicle object. 
+	* 
+	*/
+	[NoInterfaceObject]
+	interface NavigationInterface{
+		/**
+		* \brief Function is used to handover a point-of-interest to the navigation system 
+		* \code
+		*  var navigationHandler = {
+		*	onRequest:  function(id, poi){
+		*   	console.log('Guidance set to' + poi.name);
+		*   },
+		*   onReach: function(id, poi){
+		*   	console.log(poi.name + ' reached.');
+		*   },
+		*	onCancel: function(id, poi)
+		*  		console.log('Guidance to ' + poi.name + ' is cancelled.'); 
+		*	}
+		*  var destination = {name:"BMW Forschung und Technik", address:{street: "Hanauer Strasse", streetNumber: "46", postalCode: "80992", city: "MÜNCHEN", country: "DE"};
+		*  webinos.navigation.requestGuidance(destination, false, navigationHandler);
+		* \endcode
+
+		* \param successCallback callback, if the POIs are succesully transferred.
+		* \param errorCallback callback, if the address could not be transferred. 
+		* \param destination in form of an POI.
+		* \param intermediate if the provided POI is an intermediate or final destination.
+		*/
+		void requestGuidance(POI destination, optional boolean intermediate, optional NavigationCallback successCallback, optional NavigationErrorCallback errorCallback);
+
+		/**
+		* \brief Function to cancel the guidance to a Point-of-interest 
+		* \param cancelCallback callback, if the guidance to a POI has been successfully cancelled.
+		* \param errorCallback callback, if the address could not be transferred. 
+		*/
+		void cancelGuidance(long guidanceId, optional NavigationCancelCallback cancelCallback, optional NavigationErrorCallback errorCallback);
+
+		/**
+		* \brief Queries the navigation system to retrieve POIs for a given search string.
+		*
+		* \code
+		*	var destinations =new Array();
+		*      webinos.navigation.findDestination("BMW", destinationCB, errorCB);
+		*      function destinationCB(pois){
+		*	if(destinations.length > 0){
+		*      	webinos.navigation.requestGuidance(destinations[0], false, successCB, errorCB);            
+		*	else{
+		*		console.log("No POI found");
+		*	}		
+		*}
+		* 
+		* \endcode
+		*
+		* \param destinationCallback callback to handle the results to the search string.
+		* \param errorCallback callback to handle errors.
+		* \param search search string for resolving a address.
+		* \param options options object to optimize search behavior.
+		*/
+		void findDestination(DOMString search, DestinationCallback destinationCallback, optional NavigationErrorCallback errorCallback, optional PoiSearchOptions options);
+		/**
+		* \brief Provides the information if guidance is active or not.
+		*
+		* \code
+		* webinos.navigation.getStatus(function(data){alert(data.status)}); 
+		* \endcode
+		*
+		* \param successHandler callback to handle the status of navigation system.
+		* \param errorHandler callback to handle if information cannot be retrieved.
+		*/
+		void getStatus(NavigationEventHandler successHandler, optional NavigationErrorCallback errorHandler);
+	};
+	
+	/**
+	* \brief The Vehicle interface describes the part of the Vehicle API accessible through the webinos object. 
+	*
+	*/
+	partial interface Webinos {
+	  readonly attribute NavigationInterface navigation;
+	 };
+	 
+	/**
+	* \brief callback for the asynchronous findDestination method.
+	* \param pois Parameter provides an array of POIs.
+	*/
+ 	callback DestinationCallback = void (POI[] pois);
+ 	
+ 	
+ 	/**
+	* \brief Navigation Event type
+	* defines the possible status of the navigation system.
+	*/
+	enum NavigationEventType {"guidance-active", "guidance-inactive"};
+

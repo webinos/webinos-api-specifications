@@ -1,217 +1,591 @@
-/**
- * \brief The Context API 
+/**<p>Context API client side reference.</p>
+ * \name Context API 
  *
- * The Context API defines the high-level interfaces required to obtain access to a user's context data. The API supports two basic ways of accessing context data:
+ * The Context API defines the high-level interfaces required to obtain access to a user's context data. User must enable Context Manager on his device in order to keep track of his context objects. 
+ * The API supports two basic ways of accessing context data:
  * 
  * 1. executing a query against the context data storage and retrieving context data through the query results.
+ * 2. subscribing to receive real time context data updates as soon as a context related event happens (via the ContextRuleManager).
  * 
- * 2. subscribing to receive real time context data updates as soon as a context related event happens.
- * 
+ * The API also offers the ability to schedule API calls in order to update the context data store even if the application is not running.
  *
+ *
+ * \def-instantiated 
  * \def-api-feature http://webinos.org/api/context
  * Acccess to all the module. This feature provides access to the whole API.
  * Security and Privacy enforcement may depend on the query or subscription requested by the developer.
+ * \def-api-feature http://webinos.org/api/context.query
+ * Access to the query mechanism.
+ * \def-api-feature http://webinos.org/api/context.app
+ * Access to the Application context manager. Enables to create new Application ContextObject and retrieve ContextObjects created by the application
+ * \def-api-feature http://webinos.org/api/context.app.read
+ * Access to read Application ContextObject from othe applications
+ * \def-api-feature http://webinos.org/api/context.schedule.read
+ * Access to the scheduling API calls api to query for existing schedules
+ * \def-api-feature http://webinos.org/api/context.schedule.create
+ * Enables the application to schedule a new API call
+ * \def-api-feature http://webinos.org/api/context.rules.read
+ * Read rules and execute them
+ * \def-api-feature http://webinos.org/api/context.rules.create
+ * Allows the application to create rules.
  *
- * \author Heiko Desruelle &lt;heiko.desruelle@intec.ugent.be&gt;
- * \author Dieter Blomme &lt;dieter.blomme@intec.ugent.be&gt;
- * \author George Gionis &lt;gionis@epu.ntua.gr&gt;
- * \version 0.1 
+ * \author Christos Botsikas (NTUA) &lt;cbot@epu.ntua.gr&gt;
+ * \author Christos Ntanos (NTUA) &lt;cntanos@epu.ntua.gr&gt;
+ * \author Dimitrios Sdrallis (NTUA) &lt;sdrallis@epu.ntua.gr&gt;
+ *
+ * \version 0.6 
  */
-module context {
-
-  /**
-   * \brief Defines what is instantiated in initialization. 
-   * 
-   * There will be a webinos.context object that allows accessing the    * functionality of this module.
-   * 
-   * \def-instantiated 
-   * \api-feature http://webinos.org/api/context
-   */
-  [NoInterfaceObject] interface ContextManagerHook {
-    readonly attribute ContextManager context; 
-  };
-  webinos implements ContextManager;
-
-  /**
-   * \brief This is the entry point for the context API. The interface provides the two basic methods to access the User's context data, i.e. query or subscribe to updates. 
-   *
-   * TODO: Long description
-   *
-   * \code
-   * TODO
-   * \endcode
-   */
-  [NoInterfaceObject] interface ContextManager {
-
-    /**
-     * \brief Performs a context query against the context storage.
-     *
-     * When this method is invoked it executes the provided query against the context storage. The context storage is a collection context objects, each one with specific attributes, which hold context data that have been acquired over time by identifying a number of context related events. The Query parameter that this method uses specifies what context data (i.e. from which context objects) should be retrieved. 
-	 *
-	 * Mediation by policy and security: this method, as it provides application with data (context) about the user, is expected to have privacy considerations. Therefore the system is able to ignore the request of an app to receive context data if the User Privacy Policy dictates so (i.e. the user has not authorized the app to access the context data it ask for in the Query parameter).
-     *
-     * \code
-	 * TODO
-     * \endcode
-     *
-     * \param successCallback Function to be invoked if the asynchronous query operation completes successfully.
-     * \param errorCallback Function to be invoked if the asynchronous query operation results in errors.
-     * \param query The Query object describing the query to be executed against the context storage.
-     * \return void call
-     * \throw ContextError with error code TYPE_MISMATCH_ERR if 
-     * the input parameter is not compatible with the expected type for 
-     * that parameter.
-     */
-    void executeQuery(QuerySuccessCallback successCallback,
-                      QueryErrorCallback? errorCallback,
-                      Query query)
-         raises(ContextError);
-  
-  /**
-     * \brief Registers the function to be notifies when a context related event occurs.
-     *
-     * When this method is invoked, the implementation must register the (app) function that is passed in the eventHandler argument as the hander function that will be notified when the context related event, which in turn is identified in the eventIdentifier, happens. This function will be invoked every time the indicated event occurs until the unsubscribe method is invoked to cancel the subscription. 
-	 *
-	 * If the subscription is successfully created, an identifier for the handler is created and returned in subscriptionSuccessCallback so that it is possible to cancel the subscription. If the subscription cannot be created, the subscriptionErrorCallback contains an error code that describes the reason for the error. 
-	 *
-	 * Mediation by policy and security: this method, as it can provide an application with real-time data (context) about the user, is expected to have privacy considerations. Therefore the system is able to ignore the request of an app to receive context data if the User Privacy Policy dictates so (i.e. the user has not authorized the app to access the context data of the dictated event).
-     *
-     * \code
-	 * TODO
-     * \endcode
-     *
-     * \param subscribeSuccessCallback Function to be invoked if the asynchronous subscribe request completes successfully.
-     * \param subscribeErrorCallback Function to be invoked if the asynchronous subscribe request results in errors.
-     * \param eventHandler The function to be invoked when the dictated event occurs.
-	 * \param eventIdentifier The event identifier, for example "UserProfileUpdate", "ShoppingBasketCheckout".
-     * \return void call
-     * \throw ContextError with error code TYPE_MISMATCH_ERR if 
-     * the input parameter is not compatible with the expected type for 
-     * that parameter.
-     */
-    void subscribeContextEvent(SubscribeSuccessCallback subscribeSuccessCallback,
-                      SubscribeErrorCallback? subscribeErrorCallback,
-                      OccuringEvent eventHandler,
-					  in DOMString eventIdentifier)
-         raises(ContextError);
-  
-  /**
-     * \brief Cancels a subscription to a context related event.
-     *
-     * If the subscriptionIdentifier argument is valid and corresponds to a subscription already in place the subscription process MUST be effectivelly stoped. If the subscriptionHandler argument does not correspond to a valid subscription, the method should return without any further action.
-     *
-     * \code
-	 * TODO
-     * \endcode
-     *
-     * \param subscriptionIdentifier The identifier of the subscription, returned by subscribeContextEvent().
-     * \return void call
-     * \throw ContextError with error code TYPE_MISMATCH_ERR if 
-     * the input parameter is not compatible with the expected type for 
-     * that parameter.
-     */
-    void unsubscribe(unsigned long subscriptionIdentifier)
-         raises(ContextError);
-  };
-
-  /**
-   * \brief Query interface,
-   *
-   * TODO: Detail if this the right content for the query 
-   */
-   [Callback, NoInterfaceObject] interface Query {
-
-    /**
-     * \brief query content in xml format
-     *
-     * <a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL query language for RDF</a>
-     */
-    attribute SPARQLquery xmlQuery;
-  };
-  
-  /**
-   * \brief Defines the  error codes for this module
-   */
-  [NoInterfaceObject] interface ContextError {
-    /**
-     * \brief Security Error 
-     */
-     const unsigned short SECURITY_ERR = 1;
-
-    /**
-     * \brief invalid query 
-     */
-     const unsigned short INVALID_QUERY_ERR = 2;
-
-    /**
-     * \brief invalid query 
-     */
-     const unsigned short TYPE_MISMATCH_ERR = 3;
-   };
-
-  /**
-   * \brief Interface for callbacks indicating success of executeQuery() operation. 
-   *
-   */         
-  [Callback=FunctionOnly, NoInterfaceObject] interface QuerySuccessCallback {        
-    /**
-     * \brief Callback on success of a executeQuery() operation
-     * \param queryResult Result of the query operation serialized as a json string, see <a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL query language for RDF</a>. 
-     * \return void                 
-     */
-    void onsuccess (SPARQLquery queryResult);
-  };
-        
-  /**
-   * \brief Interface for callbacks indicating error of executeQuery() operation. 
-   */         
-  [Callback=FunctionOnly, NoInterfaceObject] interface QueryErrorCallback  {        
-    /**
-     * \brief Callback on failure of a executeQuery() operation
-     * \param error The ContextError object capturing the type of the error.
-     * \return void                 
-     */
-    void onerror (ContextError error);
-  };
-  
-   /**
-   * \brief Interface for callbacks indicating success of subscribeContextEvent() operation. 
-   *
-   */         
-  [Callback=FunctionOnly, NoInterfaceObject] interface SubscribeSuccessCallback {        
-    /**
-     * \brief Callback on success of a subscribeContextEvent() operation
-     * \param subscriptionIdentifier A subscription handler that can be later used to cancel the subscription. 
-     * \return void                 
-     */
-    void onsuccess (unsigned long subscriptionIdentifier);
-  };
-  
-  /**
-   * \brief Interface for callbacks indicating error of subscribeContextEvent() operation. 
-   */         
-  [Callback=FunctionOnly, NoInterfaceObject] interface SubscribeErrorCallback  {        
-    /**
-     * \brief Callback on failure of a subscribeContextEvent() operation
-     * \param error The ContextError object capturing the type of the error.
-     * \return void                 
-     */
-    void onerror (ContextError error);
-  };
-  
-   /**
-   * \brief Interface for specifying the method called when a new context related event occurs. 
-   *
-   * This interface specifies a function that provides a serialized json string of the context data retrieved from the happening of a context related event.
-   */         
-  [Callback=FunctionOnly, NoInterfaceObject] interface OccuringEvent {        
-    /**
-     * \brief Method invoked when the context related event occurs.
-     * \param eventContextData The context data acquired by the event. 
-     * \return void                 
-     */
-    void onContextEvent (DOMString eventContextData);
-  };
-        
+ 
+/**
+ * \brief The ContextManager interface is exposed through the webinos object.
+ */
+partial interface webinos {
+	/**
+	 * \brief webinos.context object.
+	 */
+	readonly attribute ContextManager context;
 };
 
+/**
+ * \brief ContextObjectField definition. This is the definition of a field in the ContextObject
+ *
+ */
+interface ContextObjectField{
+	/**
+	 * \brief The name of the property
+	 */
+	readonly attribute DOMString ValueName;
+	/**
+	 * \brief An description of the type of Value
+	 *
+	 * The developer will be able to cast the Value based on this attribute. Example of possible values are:
+	 * <ul>
+	 * <li>
+	 * double: The value can contain decimals seperated by a dot</li>
+	 * <li>
+	 * short, long, number: The value is an integer with the specified precision</li>
+	 * <li>
+	 * DOMString: The value is a DOMString</li>
+	 * <li>
+	 *DOMTimeStamp: The value is a DOMTimeStamp</li>
+	 * <li>
+	 * boolean: The value is boolean (true, false)</li>
+	 * <li>
+	 * Object: The value is a JSON object</li>
+	 * <li>
+	 * array: The value is a JSON array</li>
+	 * </ul>
+	 */
+	readonly attribute DOMString ValueType;
+};
+
+/**
+ * \brief Array of ContextObjectField.
+ */
+typedef ContextObjectField[] ContextObjectFieldArray;
+ 
+/**
+ * \brief Array of ContextObjectValue.
+ */
+typedef ContextObjectValue[] ContextObjectValueArray;
+ 
+/**
+ * \brief ContextObjectValue definition. This is the value of a specific ContextObjectField.
+ *
+ */
+interface ContextObjectValue:ContextObjectField {
+	/**
+	 * \brief The value of the specific property
+	 */
+	readonly attribute DOMString Value;
+};
+ 
+/**
+ * \brief ContextObject definition.
+ *
+ */
+interface ContextObject{
+	/**
+	* \brief If this ContextObject was extracted from a webinos API, this is the webinos API URI, otherwise (in the case of application ContextObject) this is null.
+	*/
+	readonly attribute DOMString? API;
+	/**
+	 * \brief The device id that initiated the request for this ContextObject
+	 */
+	readonly attribute DOMString Device;
+	/**
+	 * \brief If this ContextObject was requested from an application, this is the application id. Otherwise null.
+	 */
+	readonly attribute DOMString? Application;
+	/**
+	 * \brief The session id from which this ContextObject was extracted
+	 */
+	readonly attribute DOMString Session;
+	/**
+	 * \brief The allias of the ContextObject. This is a short description of the contained information. For webinos APIs an indicative list is the following:
+	 *<ul>
+	 *<li>MyContacts</li>
+	 *<li>MyPositions</li>
+	 *<li>MyTVChannels</li>
+	 *<li>MyClimates</li>
+	 *</ul>
+	 *
+	 * Each ContextObjectName is unique and agregates the same data from various APIs. An example of this is the MyPositions which is a ContextObjectName that aggregates the location data from both the Geolocation API and the Vehicle API.
+	 */
+	readonly attribute DOMString ContextObjectName;
+	/**
+	 * \brief The timestamp of the specific ContextObject
+	 */
+	readonly attribute DOMTimeStamp Timestamp;
+	/**
+	 * \brief The results of the query
+	 */
+	readonly attribute ContextObjectValueArray Values;
+};
+ 
+/**
+ * \brief Generic callback function when a function completed successfully.
+ *
+ */
+callback SuccessCB = void ();
+
+/**
+ * \brief Generic callback function when a function fails.
+ *
+ * \param error A DOMError that described the error occured
+ */
+callback ErrorCB = void (DOMError error);
+ 
+ 
+/**
+ * \brief Callback function when the ApplicationContexManager calls the schemaIsDefined() function.
+ *
+ * \param version A DOMString with the currently registered version of the Application ContextObject. Returns null if the schema is not defined.
+ */
+callback SchemaIsDefinedCB = void (DOMString? version);
+ 
+/**
+ * \brief This is the entry point for the Application ContextObject management. 
+ *
+ * Application developers may register their own ContextObject data by defining a schema. The application may save this kind of ContextObject which will be shared among applications and devices for later processing.
+ * The end user will be able to give access to these data based on policy manager rules. The main concept is that although the application is able to store data, the data are not owned by the application rather the user. So the user can share this kind of data either with another user or another application. 
+ *
+ * \code
+ * TODO
+ * \endcode
+ */
+interface ApplicationContextManager{
+	/**
+	 * \brief Check if the schema of an Application ContextObject is defined
+	 * 
+	 * \param application The unique identifier of the Application. This will not be required when this information will be available through the Session.
+	 * \param contextObjectName The alias of the Application ContextObject that will be checked if it is already defined.
+	 * \param callback The callback function that returns the version DOMString or null if the schema is not defined.
+	 */ 
+	void schemaIsDefined(DOMString application, DOMString contextObjectName, SchemaIsDefinedCB callback);
+
+	/**
+	 * \brief Register the schema of an Application ContextObject that will be available for the application to store its contextual information
+	 *
+	 * This function updates or creates the schema of the Application ContextObject. If the schema is already defined, then it overrides it with the given one. Note that the current implemetation doesn't do any version checking.
+	 *
+	 * \param application The unique identifier of the Application. This will not be required when this information will be available through the Session.
+	 * \param contextObjectName The alias of the ContextObject in order to be able to retrieve it and insert it later on.
+	 * \param version The version of the Application ContextObject schema. It is adviced to use the Semantic Versioning (http://semver.org/) schema (e.g. 0.5.1) although currently this is not taken into account.
+	 * \param fields The array of ContextObjectField that describe the data that will be stored and retrieved
+	 * \param successCallback Function to be invoked if the asynchronous registration operation completes successfully.
+	 * \param errorCallback Function to be invoked if the asynchronous registrationoperation results in errors.
+	 */
+	void registerSchema(DOMString application, DOMString contextObjectName, DOMString version, ContextObjectFieldArray fields, SuccessCB? successCallback, ErrorCB? errorCallback);
+
+	/**
+	 * \brief Insert an Application ContextObject in the Context database.
+	 *
+	 * An error may occur if the data that are being inserted does not match the register Application ContextObject schema.
+	 *
+	 * \param application The unique identifier of the Application. This will not be required when this information will be available through the Session.
+	 * \param contextObjectName The alias of the ContextObject in order to be able to retrieve it later on.
+	 * \param values The array of ContextObjectValue that contains the data that will be stored
+	 * \param successCallback Function to be invoked if the asynchronous insert operation completes successfully.
+	 * \param errorCallback Function to be invoked if the asynchronous insert operation results in errors.
+	 */
+	void addData(DOMString application, DOMString contextObjectName,ContextObjectValueArray values, SuccessCB? successCallback, ErrorCB? errorCallback);
+};
+ 
+
+/**
+ * \brief This is the main interface for querying data stored in the context database. 
+ *
+ * Context manager is available through the webinos.context object.
+ *
+ * \code
+ * TODO
+ * \endcode
+ */
+interface ContextManager {
+	/**
+	 * \brief The entry point for the Application ContextObject management.
+	 */
+	readonly attribute ApplicationContextManager app;
+	
+	/**
+	 * \brief The entry point for the ContextRule management.
+	 */
+	readonly attribute ContextRuleManager rules;
+	
+	/**
+	 * \brief The entry point for the Scheduled API calls management.
+	 */
+	readonly attribute ScheduleManager schedule;
+
+	/**
+	 * \brief Performs a ContextQuery against the context database.
+	 *
+	 * When this method is invoked it executes the provided query against the context storage. The context storage is a collection of context objects, each one with specific attributes, which hold context data that have been acquired over time by identifying a number of context related events. The Query parameter that this method uses specifies what context data (i.e. from which context objects) should be retrieved. 
+	 *
+	 * Mediation by policy and security: this method, as it provides application with data (context) about the user, is expected to have privacy considerations. Therefore the system is able to ignore the request of an app to receive context data if the User Privacy Policy dictates so (i.e. the user has not authorized the app to access the context data it ask for in the Query parameter).
+	 *
+	 * \param query The ContextQuery to execute.
+	 * \param successCallback Function to be invoked if the asynchronous query operation completes successfully.
+	 * \param errorCallback Function to be invoked if the asynchronous query operation results in errors.
+	 */
+	void executeQuery(ContextQuery query,ContextQuerySuccessCB successCallback, ContextQueryErrorCB? errorCallback);
+
+	/**
+	 * \brief Register an event listener for a specific ContextRule
+	 * \param contextRuleURI The URI or the ContextRule to monitor.
+	 * \param onEvent The callback function to process the incoming data when the ContextRule has been triggered.
+	 * \param successCallback Function to be invoked if the asynchronous registration operation completes successfully.
+	 * \param errorCallback Function to be invoked if the asynchronous registration operation results in errors.
+	 */
+	void addEventListener(ContextRuleURI contextRuleURI, ContextRuleEventHandler onEvent, SuccessCB? successCallback, ErrorCB? errorCallback);
+	
+	/**
+	 * \brief Unregister an event listener for a specific ContextRule
+	 * \param contextRuleURI The URI or the ContextRule to monitor.
+	 * \param successCallback Function to be invoked if the asynchronous deregistration operation completes successfully.
+	 * \param errorCallback Function to be invoked if the asynchronous deregistration operation results in errors.
+	 */
+	void removeEventListener(ContextRuleURI contextRuleURI, SuccessCB? successCallback, ErrorCB? errorCallback);
+};
+
+/**
+ * \brief Callback function when an error occurs while ContextQuery is being executed.
+ * 
+ * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#interface-domerror">DOMError</a> object detailing what went wrong; e.g. SecurityError if a security error originating from Policy Manager, NotFoundError if the requested Context Object is not found in Context DB, SyntaxError if the query was not well formed and can not be parsed,InsuficientData if aggregated Context Object can not be created due to insuficient data,TimeoutError if context manager did not respond in time,
+ */
+callback ContextQueryErrorCB = void (DOMError error);
+
+/**
+ * \brief Array of ContextObject.
+ */
+typedef ContextObject[] ContextData;
+
+
+/**
+ * \brief Callback function when ContextQuery executes successfully.
+ *
+ * \param data An array of ContextObject that contains the results of the Context Query
+ */
+callback ContextQuerySuccessCB = void (ContextData data);
+
+
+/**
+ * \brief The query structure of the Context Manager. 
+ *
+ * \code
+ * TODO
+ * \endcode
+ */
+interface ContextQuery{
+	/**
+	 * \brief The current implementation support only * as the select DOMString in order to bring all ContextObjectField.
+	 * 
+	 * Later on the user will be able to select specific ContextObjectField and map them to other ContextObjectField.
+	 */
+	readonly attribute DOMString select;
+	/**
+	 * \brief An array of WhereClause to limit the result set
+	 */
+	readonly attribute WhereClause[]? where;
+};
+
+/**
+ * \brief A where clause to limit the result set
+ */
+interface WhereClause{
+	/**
+	 * \brief Defines if this clause is appended with an "and" or an "or" with the previous clause. If not defined, "or" is used
+	 */
+	readonly attribute WhereClauseType? type;
+	/** 
+	 * \brief Defines the field which will be used in the WhereClause.
+	 * 
+	 * The field is a DOMString formated in the following manner:
+	 * \<contextObjectName>.\<ContextObjectField ValueName>@\<API URI>
+	 * Where contextObjectName and API URI are optional but you have to write the dot (.) before the ContextObjectField ValueName even if contextObjectName is missing.
+	 * Examples of such formated DOMString are the following:
+	 * <ul>
+	 * <li>MyPositions.altitude@http://webinos.org/api/navigation</li>
+	 * <li>MyPositions.altitude</li>
+	 * <li>.altitude</li>
+	 * </ul>
+	 */
+	readonly attribute DOMString field;
+	/** 
+	 * \brief Defines the operator between the field and the given value.
+	 */
+	readonly attribute WhereClauseOperator op;
+	/** 
+	 * \brief The given value. This is either a DOMString or a DOMString[] if "in" operator is used.
+	 */
+	readonly attribute object value;
+	/** 
+	 * \brief An array of sub WhereClause to limit the current WhereClause.
+	 */
+	readonly attribute WhereClause[]? sub;
+};
+
+/**
+ * \brief Type of WhereClause
+ */
+enum WhereClauseType { "and", "or"};
+
+/**
+ * \brief Operator of WhereClause
+ * The following operators are currently supported:
+ * <ul>
+ * <li>eq: Equals</li>
+ * <li>lt: Less than</li>
+ * <li>le: Less or equal than</li>
+ * <li>gt: Greater than</li>
+ * <li>ge: Greater or equal than</li>
+ * <li>starts: Starts with</li>
+ * <li>ends: Ends with</li>
+ * <li>in: In the given list. The value must be and array.</li>
+ * <li>contains: Value contains the given value, only applicable to DOMString</li>
+ * </ul>
+ */
+enum WhereClauseOperator { "eq", "lt", "gt", "le", "ge", "starts", "ends", "in", "contains"};
+
+/**
+ * \brief This is the entry point for the ContextRule management. 
+ *
+ * Application developers may create new ContextRule in order to trigger events based on those rules. 
+ * If a ContextRule is not used in a perion more than a month, then it is automatically deleted. In order to renew the Rule, the application must call the renew() function of the ContextRule
+ *
+ * \code
+ * TODO
+ * \endcode
+ */
+interface ContextRuleManager{
+	/**
+	 * \brief Retrieve the ContextRule with the specific ContextRuleURI
+	 * 
+	 * \param contextRuleURI The unique identifier of the Rule. 
+	 * \param results Function to parse the results of the search operation. This will be either one result or null.
+	 * \param errorCallback Function to be invoked if the asynchronous search operation results in errors.
+	 */ 
+	void getRule(ContextRuleURI contextRuleURI, ContextRuleSearchCB results, ErrorCB? errorCallback);
+
+	/**
+	 * \brief Retrieve the ContextRule with the specific ContextRuleURI
+	 * 
+	 * \param contains The word contained in the ContextRule description to search for. 
+	 * \param results Function to parse the results of the search operation.
+	 * \param errorCallback Function to be invoked if the asynchronous search operation results in errors.
+	 */ 
+	void searchRules(DOMString contains, ContextRuleSearchCB results, ErrorCB? errorCallback);
+	
+	/**
+	 * \brief Insert or update a ContextRule.
+	 *
+	 * \param rule The new rule to insert. If the rule already exists and the owner application is the same as the caller, the rule gets updated. Otherwise an error occurs.
+	 * \param successCallback Function to be invoked if the asynchronous insert operation completes successfully.
+	 * \param errorCallback Function to be invoked if the asynchronous insert operation results in errors.
+	 */
+	void saveRule(ContextRule rule, SuccessCB? successCallback, ErrorCB? errorCallback);
+	
+	/**
+	 * \brief Remove a ContextRule.
+	 *
+	 * \param contextRuleURI The unique identifier of the ContextRule to delete. The rule must exists and the owner application must be the same as the caller, otherwise an error occurs.
+	 * \param successCallback Function to be invoked if the asynchronous delete operation completes successfully.
+	 * \param errorCallback Function to be invoked if the asynchronous delete operation results in errors.
+	 */
+	void removeRule(ContextRuleURI contextRuleURI, SuccessCB? successCallback, ErrorCB? errorCallback);
+};
+
+/**
+ * \brief Callback function when a search for ContextRule executes successfully.
+ *
+ * \param rules An array of ContextRule that contains the results of the search
+ */
+callback ContextRuleSearchCB = void (ContextRule[] rules);
+
+/**
+ * \brief This is the definition of a ContextRule object
+ */
+interface ContextRule{
+	/**
+	 * \brief The URI of the ContextRule that was triggered
+	 */
+	readonly attribute ContextRuleURI contextRuleURI;
+	
+	/**
+	 * \brief The application id that is the owner of this ContextRule.
+	 */
+	readonly attribute DOMString application;
+	
+	/**
+	 * \brief A description of the ContextRule
+	 */
+	attribute DOMString description;
+	
+	/**
+	 * \brief The query that when data are retrieved, the ContextRule is being triggered
+	 */
+	attribute ContextQuery ruleQuery;
+	
+	/**
+	 * \brief The Interval between each ContextRule evaluation
+	 */
+	attribute Interval interval;
+	
+	/**
+	 * \brief The timestamp until when this ContextRule is available. After that it will be removed. This is automatically set for new ContextRule to a month after the creation date.
+	 */
+	readonly attribute DOMTimeStamp ValidUntil;
+	
+	/**
+	 * \brief Extends the ValidUntil DOMTimeStamp for a month
+	 */
+	void renew();
+	
+};
+
+/**
+ * \brief Intervals on which the ContextRule is being evaluated
+ */
+enum Interval { "5m", "10m", "15m", "20m", "30m", "60m"};
+
+/**
+ * \brief The event that is fired when a ContextRule has been triggered
+ *
+ * The application may register to listen ContextRuleEvent via the ContextManager.addEventListener() function
+ */
+interface ContextRuleEvent: DOMEvent {
+	/**
+	 * \brief The URI of the ContextRule that was triggered
+	 */
+	readonly attribute ContextRuleURI contextRuleURI;
+	/** 
+	 * \brief The possible resulting array of ContextObject that may occur from the ContextRule
+	 */
+	readonly attribute ContextData? result;
+};
+
+/**
+ * \brief Callback function when a ContextRule has been triggered.
+ *
+ */
+callback ContextRuleEventHandler = void (ContextRuleEvent event);
+
+ 
+/**
+ * \brief The unique URI that represents a ContextRule eg. "http://epu.ntua.gr/context/rules/homeLocation".
+ */
+typedef DOMString ContextRuleURI;
+
+/**
+ * \brief This is the entry point for the Scheduled API calls management. 
+ *
+ * Application developers may request a scheduled API call on Interval in order to force update of the context database. Scheduled API calls may not return fresh information if the implementation of an API imposes its own rate limits.
+ *
+ * \code
+ * TODO
+ * \endcode
+ */
+interface ScheduleManager{
+	/**
+	 * \brief Search for ScheduledAPICall
+	 * 
+	 * \param API The API Uri to search for. Will be ignored if null.
+	 * \param interval Get the ones that are scheduled in the specific Interval. Will be ignored if null.
+	 * \param onlyOwnSchedule If true will return only the ScheduledAPICall that are owned by this application.
+	 * \param results Function to parse the results of the search operation.
+	 * \param errorCallback Function to be invoked if the asynchronous search operation results in errors.
+	 */ 
+	void searchScheduledAPICall(DOMString? API, Interval? interval, boolean onlyOwnSchedule, ScheduledAPICallSearchCB results, ErrorCB? errorCallback);
+	
+	/**
+	 * \brief Insert or update a ScheduledAPICall. 
+	 *
+	 * \param apiCall The new ScheduledAPICall to insert. If the ScheduledAPICall already exists and the owner application is the same as the caller, the ScheduledAPICall gets updated. Otherwise an error occurs.
+	 * \param successCallback Function to be invoked if the asynchronous insert operation completes successfully.
+	 * \param errorCallback Function to be invoked if the asynchronous insert operation results in errors.
+	 */
+	void saveScheduledAPICall(ScheduledAPICall apiCall, SuccessCB? successCallback, ErrorCB? errorCallback);
+	
+	/**
+	 * \brief Remove a ScheduledAPICall.
+	 *
+	 * \param apiCall The ScheduledAPICall to delete. The ScheduledAPICall must exists and the owner application must be the same as the caller, otherwise an error occurs.
+	 * \param successCallback Function to be invoked if the asynchronous delete operation completes successfully.
+	 * \param errorCallback Function to be invoked if the asynchronous delete operation results in errors.
+	 */
+	void removeScheduledAPICall(ScheduledAPICall apiCall, SuccessCB? successCallback, ErrorCB? errorCallback);
+};
+
+/**
+ * \brief Callback function when a search for ScheduledAPICall executes successfully.
+ *
+ * \param scheduledApiCalls An array of ScheduledAPICall that contains the results of the search
+ */
+callback ScheduledAPICallSearchCB = void (ScheduledAPICall[] scheduledApiCalls);
+
+/**
+ * \brief This is the definition of a ScheduledAPICall object
+ */
+interface ScheduledAPICall{
+	
+	/**
+	 * \brief The application id that is the owner of this ScheduledAPICall.
+	 */
+	readonly attribute DOMString application;
+	
+	/**
+	 * \brief The webinos API URI to call
+	 */
+	readonly attribute DOMString API;
+	
+	/**
+	 * \brief The webinos API method to call. The dev will be allowed to add only a specific list of methods and will not be allowed to add methods like the addEventListener.
+	 */
+	readonly attribute DOMString Method;
+	
+	/**
+	 * \brief The parameters to pass to the API
+	 */
+	attribute object[] Params;
+	
+	/**
+	 * \brief The device id where the API call will occur.
+	 */
+	attribute DOMString Device;
+	
+	/**
+	 * \brief The Interval between each API call
+	 */
+	attribute Interval interval;
+	
+	/**
+	 * \brief The timestamp until when this ScheduledAPICall is valid. After that it will be removed. This is automatically set for new ScheduledAPICall to a month after the creation date.
+	 */
+	readonly attribute DOMTimeStamp ValidUntil;
+	
+	/**
+	 * \brief Extends the ValidUntil DOMTimeStamp for a month
+	 */
+	void renew();
+};

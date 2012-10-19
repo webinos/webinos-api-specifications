@@ -1,5 +1,5 @@
-/**
- * \brief WAC based Messaging interface.
+/**<p> This API provides SMS, MMS, Email and InstantMessaging sending, receiving and searching functionality.</p> 
+ * \name Messaging API
  *
  * The messaging API provides access to the following capabilities:
  *  Sending messages through different technologies: SMS, MMS, Email and Instant Messages.
@@ -29,7 +29,6 @@
  * \version 1.0
  */
  
-module messaging {
 
  /**
    * \brief Sequence of Message objects
@@ -44,14 +43,12 @@ module messaging {
 
 
 /**
- * \brief Defines what is instantiated in the deviceapis object 
- *
- * When the messaging feature is instantiated, the messaging object is available in the deviceapis object. 
- */
-  [NoInterfaceObject] interface DeviceapisMessaging {
-    readonly attribute Messaging messaging;
+* \brief Creates the webinos.messaging namespace.
+*
+*/
+partial interface Webinos {
+   readonly attribute Messaging messaging;
   };
-  Deviceapis implements DeviceapisMessaging;
   
  /**
  * \brief Messaging creation, sending and reading capabilities 
@@ -75,12 +72,12 @@ module messaging {
  * }
  * 
  * // SMS sending example
- * var msg = deviceapis.messaging.createMessage(deviceapis.messaging.TYPE_SMS);
+ * var msg = window.webinos.messaging.createMessage(window.webinos.messaging.TYPE_SMS);
  * msg.body = "I will arrive in 10 minutes";
  * msg.to = ["+34666666666"];
  * 
  * // Send request
- * deviceapis.messaging.sendMessage(messageSent, messageFailed, msg);
+ * window.webinos.messaging.sendMessage(messageSent, messageFailed, msg);
  * \endcode
  */
    
@@ -100,7 +97,7 @@ module messaging {
    /**
     * \brief Identifier for messages of type IM. 
     */      
-    const short TYPE_IM = 3;
+    const short TYPE_IM = 4;
    /**
     * \brief Identifier for the message inbox.
     */  
@@ -122,22 +119,24 @@ module messaging {
    * \brief Create a message of a given type. 
    *
    * \code
-   * var msg = deviceapis.messaging.createMessage(deviceapis.messaging.TYPE_SMS);
-   * msg.body = "WAC first SMS message.";
+   * var msg = window.webinos.messaging.createMessage(window.webinos.messaging.TYPE_SMS);
+   * msg.body = "webinos first SMS message.";
    * \endcode
+   *
+   * Throws DeviceAPIError INVALID_VALUES_ERR if the input parameter contains an invalid value. 
+   *
+   * Throws DeviceAPIError TYPE_MISMATCH_ERR if the input parameter is not compatible with the expected type for that parameter. 
    *
    * \param type The type of message that is created. The possible values are: TYPE_SMS, TYPE_MMS, TYPE_EMAIL and TYPE_IM. 
    * \return A Message object of the given type or null if there is any problem during the message creation. 
-   * \throw DeviceAPIError INVALID_VALUES_ERR if the input parameter contains an invalid value. 
-   * \throw DeviceAPIError TYPE_MISMATCH_ERR if the input parameter is not compatible with the expected type for that parameter. 
    */
-    Message createMessage(short type)
-                          raises(DeviceAPIError);
+    Message createMessage(short type);
+                         
 
    /**
    * \brief Attempt to send the specified message. 
    *
-   * If the message type is set to email and the user has multiple email accounts set up, the runtime SHOULD use the default e-mail account. If no account has been set up, the runtime MAY either provide respective mechanisms to create a new one or throw the given ErrorCallback back to the requesting widget.
+   * If the message type is set to email and the user has multiple email accounts set up, the runtime SHOULD use the default e-mail account. If no account has been set up, the runtime MAY either provide respective mechanisms to create a new one or throw the given MessagingErrorCallback back to the requesting widget.
    *
    * Only the parameters supported by a specific technology and that can be set up by the developer (see Message interface attribute definition) are sent as specified in the following table (the rest are ignored):
    *
@@ -152,7 +151,7 @@ module messaging {
    *    <tr><td>priority        </td><td>No      </td><td>No      </td><td>Yes     </td><td>No</td></tr>
    * </table>
    *
-   * When a message has been successfully or unsuccessfully sent, it will be stored in the relevant folder (e.g. sent folder if successfully sent). Please not that some platforms may store multiple copies of the message if multiple recipients were included.
+   * When a message has been successfully or unsuccessfully sent, it will be stored in the relevant folder (e.g. sent folder if successfully sent). Please note that some platforms may store multiple copies of the message if multiple recipients were included.
    * 
    * When the operation is fully completed (i.e. the implementation knows the result of the send operation to all the recipients), the onsuccess method of the successCallback will be invoked if the message is successfully sent to all the recipients.
    * 
@@ -160,15 +159,11 @@ module messaging {
    *
    * If the operation fails for any other reason, the errorCallback will be invoked with an appropriate error code amongst the following:
    * 
-   * INVALID_VALUES_ERR: If any of the input paramters contains an invalid value. E.g. successCallback or message is null, message contains invalid values in any of its attributes... Please note that in order to allow developer ignore errors errorCallback accepts null as a valid value.
-   *
    * NOT_SUPPORTED_ERR: If the specified messaging technology is not supported.
    *
    * SECURITY_ERR: If the operation is not allowed.
    *
    * UNKNOWN_ERR: In any other error case.
-   *
-   * If the errorCallback does not contain a valid function (e.g. null), case of any error that should be returned in the errorCallback (see above), the implementation MUST silently fail and no further action is required (i.e. the error is not notified to the developer).
    *
    * \code
    * // Define the success callback
@@ -182,115 +177,31 @@ module messaging {
    * }
    * 
    * // SMS sending example
-   * var msg = deviceapis.messaging.createMessage(deviceapis.messaging.TYPE_SMS);
+   * var msg = window.webinos.messaging.createMessage(window.webinos.messaging.TYPE_SMS);
    * msg.body = "I will arrive in 10 minutes";
    * msg.to = ["+34666666666", "+34888888888"];
    * 
    * // Send request
-   * deviceapis.messaging.sendMessage(messageSent, messageFailed, msg);
+   * window.webinos.messaging.sendMessage(messageSent, messageFailed, msg);
    * \endcode
+   *
+   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    *
    * \param successCallback To be invoked if the message is successfully sent. 
    * \param errorCallback To be invoked in case the sending request fails. 
    * \param message The message to be sent. 
-   * \return PendingOperation to cancel the asynchronous call 
-   * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
+   * \return PendingSendMessageOperation to cancel the asynchronous call 
    */                          
-    PendingOperation sendMessage(SuccessCallback successCallback, 
-                                 ErrorCallback errorCallback, 
-                                 Message message)
-                                 raises(DeviceAPIError);
+    PendingSendMessageOperation sendMessage(MessagingSuccessCallback successCallback, 
+                                 MessagingErrorCallback? errorCallback, 
+                                 Message message);
  
-   /**
-   * \brief Attempt to send the specified message with per-recipient notification 
-   *
-   * If the message type is set to email and the user has multiple email accounts set up, the runtime SHOULD use the default e-mail account. If no account has been set up, the runtime MAY either provide respective mechanisms to create a new one or throw the given ErrorCallback back to the requesting widget.
-   *
-   * Only the parameters supported by a specific technology and that can be set up by the developer (see Message interface attribute definition) are sent as specified in the following table (the rest are ignored):
-   *
-   * <table>
-   * <tr><td>Attribute</td><td>SMS</td><td>MMS</td><td>Email</td><td>IM</td></tr>
-   *    <tr><td>to              </td><td>Yes     </td><td>Yes     </td><td>Yes     </td><td>Yes</td></tr>
-   *    <tr><td>body            </td><td>Yes     </td><td>Yes     </td><td>Yes     </td><td>Yes</td></tr>
-   *    <tr><td>subject        </td><td>No      </td><td>Yes     </td><td>Yes     </td><td>No</td></tr>
-   *    <tr><td>attachments     </td><td>No      </td><td>Yes     </td><td>Yes     </td><td>No</td></tr>
-   *    <tr><td>cc              </td><td>No      </td><td>No      </td><td>Yes     </td><td>Yes</td></tr>
-   *    <tr><td>bcc             </td><td>No      </td><td>No      </td><td>Yes     </td><td>Yes</td></tr>
-   *    <tr><td>priority        </td><td>No      </td><td>No      </td><td>Yes     </td><td>No</td></tr>
-   * </table>
-   *
-   * When a message has been successfully or unsuccessfully sent, it will be stored in the relevant folder (e.g. sent folder if successfully sent). Please not that some platforms may store multiple copies of the message if multiple recipients were included.
-   * 
-   * For every individual recipient in the destination list, when the message is successfully sent to it the method onmessagesendsuccess of the successCallback argument MUST be invoked. If the message cannot be sent to that recipient, the onmessagesenderror of the successCallback argument MUST be invoked with the recipient and the error code as input parameters. The following error codes may be passed depending on the the error conditions: 
-   *
-   * INVALID_VALUES_ERR: If any of the input paramters contains an invalid value. E.g. successCallback or message is null, message contains invalid values in any of its attributes... Please note that in order to allow developer ignore errors errorCallback accepts null as a valid value.
-   *
-   * NOT_SUPPORTED_ERR: If the specified messaging technology is not supported.
-   *
-   * SECURITY_ERR: If the operation is not allowed.
-   *
-   * UNKNOWN_ERR: In any other error case.
-   *  
-   * When the operation is fully completed (i.e. the implementation knows the result of the send operation to all the recipients), the onsuccess method of the successCallback will be invoked if the message is successfully sent to all the recipients.  
-   * 
-   * In case of any error different to a TYPE_MISMATCH_ERR, the errorCallback will be invoked with an appropriate error code amongst the following: 
-   *
-   * INVALID_VALUES_ERR: If any of the input paramters contains an invalid value. E.g. successCallback or message is null, message contains invalid values in any of its attributes... Please note that in order to allow developer ignore errors errorCallback accepts null as a valid value.
-   *
-   * NOT_SUPPORTED_ERR: If the specified messaging technology is not supported.
-   *
-   * SECURITY_ERR: If the operation is not allowed.
-   *
-   * UNKNOWN_ERR: In any other error case.
-   *
-   * If the errorCallback does not contain a valid function (e.g. null), case of any error that should be returned in the errorCallback (see above), the implementation MUST silently fail and no further action is required (i.e. the error is not notified to the developer).
-   *
-   * \code
-   *  // Define the send callback
-   *  var messageSendCallback = {
-   *        onsuccess: function() {
-   *          alert("The SMS has been sent to all the recipients");},
-   *        onmessagesendsuccess: function(recipient) {
-   *          alert("The SMS has been sent to " + recipient);},
-   *        onmessagesenderror: function(error, recipient) {
-   *          alert("The SMS has not been sent to " + recipient + 
-   *                " error " + error);}
-   *  };
-   *  
-   *  // Define the error callback
-   *  function messageFailed(error) {
-   *  alert("The SMS could not be sent " + error.message);
-   *  }
-   *  
-   *  // SMS sending example
-   *  var msg = deviceapis.messaging.createMessage(deviceapis.messaging.TYPE_SMS);
-   *  msg.body = "I will arrive in 10 minutes";
-   *  msg.to = ["+34666666666", "+34888888888"];
-   *  
-   *  // Send request
-   *  deviceapis.messaging.sendMessage(messageSendCallback, messageFailed, msg);
-   * \endcode
-   *
-   * \param successCallback Contains the methods for individual notifications. 
-   * \param errorCallback To be invoked in case the sending request fails. 
-   * \param message The message to be sent. 
-   * \return PendingOperation to cancel the asynchronous call 
-   * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
-   */                          
-
-    PendingOperation sendMessage(MessageSendCallback successCallback, 
-                                 ErrorCallback errorCallback, 
-                                 Message message)
-                                 raises(DeviceAPIError);
                                  
    /**
    * \brief Gets an array of messages from the message folders matching the selected filter. 
    *
-   * If any of the input parameters is not compatible with the expected type for that parameter a DeviceAPIError with code TYPE_MISMATCH_ERR MUST be synchronously thrown.
+   * If this feature is not supported, a DeviceAPIError with code NOT_SUPPORTED_ERR MUST be returned in the errorCallback. If this functionality is not allowed the errorCallback MUST be invoked with a DeviceAPIError with code SECURITY_ERR.
    *
-   * If the this feature is not supported, a DeviceAPIError with code NOT_SUPPORTED_ERR MUST be returned in the errorCallback. If this functionality is not allowed the errorCallback MUST be invoked with a DeviceAPIError with code SECURITY_ERR.
-   *
-   * If the successCallback does not contain a Function (i.e. it is null), a DeviceAPIError with code INVALID_VALUES_ERR MUST be returned.
    *
    * If the filter is passed and contains valid values, only those values in the message lists that matches the filter criteria as specified in the MessageFilter interface will be returned in the successCallback. If no filter is passed, it is null or undefined, or contains any invalid value, the implementation MUST return the full list of messages in the successCallback. If no messages are available in the lists or no one matches the filter criteria, the successCallback will be invoked with an empty array.
    *
@@ -299,9 +210,9 @@ module messaging {
    * In any of the cases in which the errorCallback should be invoked, if the developer has not passed an ErrorCallback or it is null, no action is required (i.e. the error is not notified to the developer).
    *
    * \code
-   *    var msg = { type:[deviceapis.messaging.TYPE_SMS], body:"first messa%" };
+   *    var msg = { type:[window.webinos.messaging.TYPE_SMS], body:"first messa%" };
    *
-   * deviceapis.messaging.findMessages(
+   * window.webinos.messaging.findMessages(
    *    function (messages) {
    *      alert(messages.length + " message(s) found!");
    *      for (var i=0; i<messages.length; i++) {
@@ -312,17 +223,17 @@ module messaging {
    *   msg);
    * \endcode
    *
+   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
+   * 
    * \param successCallback function called when the invocation ends successfully. 
    * \param errorCallback function called when an error occurs 
    * \param filter message data to be used when filtering 
-   * \return PendingOperation to cancel the asynchronous call 
-   * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
+   * \return PendingFindMessagesOperation to cancel the asynchronous call 
    */                          
 
-    PendingOperation findMessages(FindMessagesSuccessCallback successCallback, 
-                                  optional ErrorCallback errorCallback,
-                                  optional MessageFilter filter)
-                                  raises(DeviceAPIError);                          
+    PendingFindMessagesOperation findMessages(FindMessagesSuccessCallback successCallback, 
+                                  optional MessagingErrorCallback? errorCallback,
+                                  optional MessageFilter filter);
   
    /**
    * \brief Registers the function to be notified on incoming new SMSs 
@@ -339,19 +250,26 @@ module messaging {
    * 
    *    // The subscription is cancelled to prevent further notifications
    *    if (mySMSListener != null)
-   *      deviceapis.messaging.unsubscribe(mySMSListener);
+   *      window.webinos.messaging.unsubscribe(mySMSListener);
    *  }
+   *   // Register listener for new SMS events
+   *  var mySMSListener = null;
+   *  mySMSListener = window.webinos.messaging.onSMS(incomingSMS);
    * \endcode
+   *
+   * Throws DeviceAPIError SECURITY_ERR if this operation is not allowed. 
+   *
+   * Throws DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
+   *
+   * Throws DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
+   *
+   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    *
    * \param messageHandler The function to be invoked on incoming SMSs 
    * \return Subscription identifier 
-   * \throw DeviceAPIError SECURITY_ERR if this operation is not allowed. 
-   * \throw DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
-   * \throw DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
-   * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */                          
-    unsigned long onSMS(OnIncomingMessage messageHandler)
-                        raises(DeviceAPIError);
+    unsigned long onSMS(OnIncomingMessage messageHandler);
+                     
 
    /**
    * \brief Registers the function to be notified on incoming new MMSs 
@@ -368,19 +286,25 @@ module messaging {
    *
    *   // The subscription is cancelled to prevent further notifications
    *   if (myMMSListener != null)
-   *     deviceapis.messaging.unsubscribe(myMMSListener);
+   *     window.webinos.messaging.unsubscribe(myMMSListener);
    * }
+   *   // Register listener for new SMS events
+   *  var myMMSListener = null;
+   *  my<MSListener = window.webinos.messaging.onMMS(incomingMMS);
    * \endcode
+   *
+   * Throws DeviceAPIError SECURITY_ERR if this operation is not allowed. 
+   *
+   * Throws DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
+   *
+   * Throws DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
+   *
+   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    *
    * \param messageHandler The function to be invoked on incoming MMSs 
    * \return Subscription identifier 
-   * \throw DeviceAPIError SECURITY_ERR if this operation is not allowed. 
-   * \throw DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
-   * \throw DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
-   * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */                          
-    unsigned long onMMS(OnIncomingMessage messageHandler) 
-                        raises(DeviceAPIError);
+    unsigned long onMMS(OnIncomingMessage messageHandler) ;
 
    /**
    * \brief Registers the function to be notified on incoming new Email
@@ -397,23 +321,27 @@ module messaging {
    * 
    *    // The subscription is cancelled to prevent further notifications
    *    if (myEmailListener != null)
-   *      deviceapis.messaging.unsubscribe(myEmailListener);
+   *      window.webinos.messaging.unsubscribe(myEmailListener);
    *  }
    * 
    *  // Register listener for new Email events
    *  var myEmailListener = null;
-   *  myEmailListener = deviceapis.messaging.onEmail(incomingEmail);    
+   *  myEmailListener = window.webinos.messaging.onEmail(incomingEmail);    
    * \endcode
+   *
+   * Throws DeviceAPIError SECURITY_ERR if this operation is not allowed. 
+   *
+   * Throws DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
+   *
+   * Throws DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
+   *
+   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    *
    * \param messageHandler he function to be invoked on incoming emails 
    * \return Subscription identifier 
-   * \throw DeviceAPIError SECURITY_ERR if this operation is not allowed. 
-   * \throw DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
-   * \throw DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
-   * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */                          
-    unsigned long onEmail(OnIncomingMessage messageHandler) 
-                          raises(DeviceAPIError);
+    unsigned long onEmail(OnIncomingMessage messageHandler) ;
+                        
    
    /**                       
    * \brief Registers the function to be notified on incoming new Instant Message
@@ -430,36 +358,38 @@ module messaging {
    * 
    *    // The subscription is cancelled to prevent further notifications
    *    if (myIMListener != null)
-   *      deviceapis.messaging.unsubscribe(myIMistener);
+   *      window.webinos.messaging.unsubscribe(myIMistener);
    *  }
    * 
    *  // Register listener for new Instant Messaging events
    *  var myIMistener = null;
-   *  myIMistener = deviceapis.messaging.onIM(incomingIM);    
+   *  myIMistener = window.webinos.messaging.onIM(incomingIM);    
    * \endcode
+   *
+   * Throws DeviceAPIError SECURITY_ERR if this operation is not allowed. 
+   *
+   * Throws DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
+   *
+   * Throws DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
+   *
+   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    *
    * \param messageHandler he function to be invoked on incoming instant message 
    * \return Subscription identifier 
-   * \throw DeviceAPIError SECURITY_ERR if this operation is not allowed. 
-   * \throw DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
-   * \throw DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
-   * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */         
-    unsigned long onIM(OnIncomingMessage messageHandler) 
-                          raises(DeviceAPIError);
+    unsigned long onIM(OnIncomingMessage messageHandler) ;
 
    /**                       
    * \brief Cancels a messaging subscription 
    *
    * If the subscriptionHandler argument is valid and corresponds to a subscription already in place the subscription process MUST immediately stop and no further message notifications MUST be invoked. If the subscriptionHandler argument does not correspond to a valid subscription, the method should return without any further action. 
    *
+   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
+   *
    * \param subscriptionHandler identifier of the subscription returned by the onSMS(), onMMS(), onEmail() or onIM() methods. 
    * \return void
-   * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    */         
-    void unsubscribe(unsigned long subscriptionHandler)
-                     raises(DeviceAPIError);
-
+    void unsubscribe(unsigned long subscriptionHandler);                   
   };
 
    /**                       
@@ -467,15 +397,14 @@ module messaging {
    *
    * This interface allows a web application to define the set of properties linked to a message previously created through the createMessage() method in the Messaging Interface.
    *
-   * Additionally, it also allows an application to retrieve the content of a message through the findMessages, onSMS, onMMS and onEmail methods. In those cases, the implementation MAY return in some situations only part of the body because of its size. In those situations the implementation MUST allow the developer to retrieve the remaining part of the message through the use of the sync method member of the Synchronisable interface implemented by Message.
+   * Additionally, it also allows an application to retrieve the content of a message through the findMessages, onSMS, onMMS and onEmail methods. In those cases, the implementation MAY return in some situations only part of the body because of its size. 
    *
-   * Additionally, for the same reason, the implementation MAY decide to provide only the attachment information but not the attachment content. This is achieved by returning in the attachments attribute not a sequence of Files but a sequence of MessageAttachments (that implement the Synchronisable interface).
    *
    * If the developer attempts to access an attribute not supported by the messaging technology (see attribute description or summary table in the sendMessage mehtod description), the implementation MUST ignore this attempt.
    *
    * \code
-   * var msg = deviceapis.messaging.createMessage(deviceapis.messaging.TYPE_SMS);
-   * msg.body = "WAC first SMS message.";
+   * var msg = window.webinos.messaging.createMessage(window.webinos.messaging.TYPE_SMS);
+   * msg.body = "webinos first SMS message.";
    * msg.to = ["+34666666666"];
    * \endcode
    */           
@@ -572,7 +501,7 @@ module messaging {
    * 
    * This method does not have effect on messages created through the createMessage method as they are not persistenly stored until the send action is invoked.
    * 
-   * For messages in the inbox (deviceapis.messaging.FOLDER_INBOX), outbox (deviceapis.messaging.FOLDER_OUTBOX) and sentbox (deviceapis.messaging.FOLDER_SENTBOX) the implementation MUST only change the isRead attribute of the Message object. For messages within the draft folder (deviceapis.messaging.FOLDER_DRAFTS) the implementation MAY update other attributes as well. However, this is up to the actual implementation and relies on the underlying system.
+   * For messages in the inbox (window.webinos.messaging.FOLDER_INBOX), outbox (window.webinos.messaging.FOLDER_OUTBOX) and sentbox (window.webinos.messaging.FOLDER_SENTBOX) the implementation MUST only change the isRead attribute of the Message object. For messages within the draft folder (window.webinos.messaging.FOLDER_DRAFTS) the implementation MAY update other attributes as well. However, this is up to the actual implementation and relies on the underlying system.
    * 
    * The implementation has to make sure that an updated Message object is provided in the success callback, which represents the current status of the message. The developer is expected to use this updated message for comparison with the former object to check which fields have or have not been transferred by the implementation.
    * 
@@ -586,19 +515,17 @@ module messaging {
    * 
    * If the errorCallback does not contain a valid function (e.g. null), case of any error that should be returned in the errorCallback (see above), the implementation MUST silently fail and no further action is required (i.e. the error is not notified to the developer).
    *
+   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    *
    * \param successCallback Function to call on successful update
    * \param errorCallback Function to call on unsuccessful update
-   * \return PendingOperation to cancel the asynchronous call 
-   * \throw DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
+   * \return void
    */         
     
-    PendingOperation update(UpdateMessageSuccessCallback successCallback, 
-                            optional ErrorCallback errorCallback)
-                            raises(DeviceAPIError);
+    void update(UpdateMessageSuccessCallback successCallback, 
+                            optional MessagingErrorCallback errorCallback);
   };
-  Message implements Synchronisable;
-
+  
    /**                       
    * \brief Filter to restrict the items returned by the findMessages method 
    *
@@ -717,7 +644,7 @@ module messaging {
    /**                       
    * \brief Describes a message attachement 
    *
-   * This attribute extends the File interface (from W3C File reader (http://dev.w3.org/2006/webapi/FileAPI/#file)) by concurrently implementing the synchronizable interface. It allows attachments to be downloaded only if the user requests them by the use of the sync method specified in the Synchronizable interface. 
+   * This attribute extends the File interface (from W3C File reader (http://dev.w3.org/2006/webapi/FileAPI/#file)) by MIMEtype
    *
    */           
   
@@ -727,56 +654,51 @@ module messaging {
     *
     */  
     readonly attribute DOMString MIMEType; 
+    
   };
   
-  
-   /**                       
-   * \brief findMessages specific success callback. 
-   *
-   * This callback interface specifies a success callback with a function taking a list of messages as input argument. It is used in the findMessages asynchronous operation. 
-   *
-   */           
-  [Callback=FunctionOnly, NoInterfaceObject] interface FindMessagesSuccessCallback {
+
    /**                       
    * \brief Method invoked when the asynchronous call completes successfully 
    *
    * \param messages The list of messages that correspond to the find criteria 
    * \return void
    */         
-    void onsuccess(MessageArray messages);
-  };
-  
-   /**                       
-   * \brief update specific success callback. 
-   *
-   * This callback interface specifies a success callback with a function that will provide a message object that is meant to represent the actual status of a message after an update has been triggered. It is used in the update asynchronous operation on the Message interface. 
-   *
-   */           
-  [Callback=FunctionOnly, NoInterfaceObject] interface UpdateMessageSuccessCallback {
+    callback FindMessagesSuccessCallback = void (MessageArray messages);
+
+
    /**                       
    * \brief Method invoked when the asynchronous call completes successfully 
    *
    * \param message The new message representing the actual updated status 
    * \return void
    */         
-    void onsuccess(Message message);
-  };
+    callback UpdateMessageSuccessCallback =  void (Message message);
 
-   /**                       
-   * \brief Interface for specifying the method called on new incoming message events. 
-   *
-   * This interface specifies a function that will provide a message object that represents the received message. It is used in the onSMS(), onMMS(), onEmail() method invocation. 
-   *
-   */           
-  [Callback=FunctionOnly, NoInterfaceObject] interface OnIncomingMessage {
+
    /**                       
    * \brief Method invoked when an incoming message is received 
    *
    * \param message The message received 
    * \return void
    */         
-     void onevent (Message message);
-  };
+     callback OnIncomingMessage = void (Message message);
+     
+   /**                       
+   * \brief Generic method invoked when a parameterless success callback is performed needed.
+   *
+   * \return void
+   */          
+      callback MessagingSuccessCallback =  void();
+
+   /**                       
+   * \brief Method invoked when a messaging function returns an error
+   *
+   * \param error The error message received 
+   * \return void
+   */         
+     callback MessagingErrorCallback =   void (DeviceAPIError error);
+
 
    /**                       
    * \brief Interface for specifying the methods to be called for message send results for each recipient. 
@@ -784,7 +706,7 @@ module messaging {
    * This interface specifies a set of functions that will be invoked every time the result of the send operation to a recipient is obtained or when the message is successfully sent to all the recipients. 
    *
    */           
-  [Callback, NoInterfaceObject] interface MessageSendCallback {
+ callback  interface MessageSendCallback {
    /**                       
    * \brief Method invoked when the message is successfully sent to all the recipients 
    *
@@ -811,21 +733,43 @@ module messaging {
   };
   
       /**
-     * \brief The PendingOperation interface
+     * \brief The PendingFindMessagesOperation interface
      *
-     * The PendingOperation interface describes operation of cancellable aynchronous methods.
-     * Cancellable asynchronous methods return PendingOperation objects exporting methods for
-     * cancelling the operation. 
+     * The PendingFindMessagesOperation interface describes the object that is returned by the asynchronous find messages method. It makes it possible to abort
+     * this operation to a stop if it hasn't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.
      *
      */
-     [NoInterfaceObject] interface PendingOperation {
+     [NoInterfaceObject] interface PendingFindMessagesOperation {
 
     /**
-     * \brief Cancel method for cancelling asynchronous operation
+     * \brief Cancel method for cancelling asynchronous find messages operation
      *
-     *  Cancel ongoing asynchronous method call. Upon calling this method the runtime must immediately stop
-     *  the pending operation and return.
+     *  Cancel the pending find messages asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
+     *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
+     *  name "AbortError" is issued.
      */
         void cancel ();
      };
-};
+
+      /**
+     * \brief The PendingSendMessageOperation interface
+     *
+     * The PendingSendMessageOperation interface describes the object that is returned by the asynchronous send message method. It makes it possible to abort
+     * this operation to a stop if it hasn't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.
+     *
+     */
+     [NoInterfaceObject] interface PendingSendMessageOperation {
+
+    /**
+     * \brief Cancel method for cancelling asynchronous send message method operation
+     *
+     *  Cancel the pending send message method asynchronous operation if the message has not already been irrevokeably sent. 
+     *  When this method is called, and the message is not yet sent the user agent must immediately bring the operation to a stop and return.
+     *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
+     *  name "AbortError" is issued. If the message has already been sent out and is no longer under control of the calling process,
+     *  the cancel function will be ignored and all neccessary 'housekeeping functions' required after the sending of a message will be performed
+     *  as if the cancel had never been issued.
+     */
+        void cancel ();
+     };
+

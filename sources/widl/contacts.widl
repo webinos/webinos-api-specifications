@@ -1,81 +1,41 @@
-
-/**
- * \brief W3C based Contacts interface. 
+/**<p>This API provides access to a user unified address book.</p> 
+ * \name Contacts API
  *
- * This specification provides a wrapper that mandates the use of the 
- * <a href="http://www.w3.org/TR/2011/WD-contacts-api-20110616/">W3C Contacts API </a> (Editor's draft 16th June).
  *
- * The Contacts API defines the high-level interfaces required to obtain read access to a user's unified address book.
+ * The Contacts API defines the high-level interfaces required to obtain access to a user's unified address book.
  *
  * This API includes the following key interfaces:
  *
  *    A Contacts interface, which provides the method needed to access a user's unified address book.
  *    A Contact interface, which captures the individual contact information that can be returned following a successful read operation.
  *
- * Note that while the W3C version, on which this specification is based on, provides only the ServiceContacts
- * to retrieve contacts, webinos contacts can also be retrieved using the findServices method of the
- * Service Discovery API.
+ * The webinos Contacts API combines features from the WAC and the W3C contact APIs.
  * 
- * \def-api-feature http://www.w3.org/ns/api-perms/contacts.read 
- * Read access to the address book.
+ * The format of an individual contact is mostly taken from W3C, since it contains more information
+ * than the WAC version.
  *
- * \author W3C Editor's Draft 16 June 2011
- * \author Normative: <a href="http://www.w3.org/TR/2011/WD-contacts-api-20110616/">W3C Contacts API </a> 
+ * The available functions on the Contacts are mostly taken from the WAC specification, since they
+ * provide write functionality for contacts.
+ * 
+ * \def-api-feature http://webinos.org/api/contacts.read 
+ * Read access to the address book.
+ * \def-api-feature http://webinos.org/api/contacts.write
+ * Write access to the address book.
+ *
+ * \author Based on W3C Editor's Draft 16 June 2011 with added contacts write functionality patterned after WAC
  * \author WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
- * \version 1.0
+ * \version 1.9
  */
-module ContactsWrapper {
         /**
-         * \brief Contacts specific errors.
-         */
-         [NoInterfaceObject]
-        interface ContactError {
-           /**
-           * \brief An unknown error occurred.
-           */
-            const unsigned short UNKNOWN_ERROR = 0;
-           /**
-           * \brief An invalid parameter was provided when the requested method was invoked.
-           */
-            const unsigned short INVALID_ARGUMENT_ERROR = 1;
-           /**
-           * \brief The requested method timed out before it could be completed.
-           */
-            const unsigned short TIMEOUT_ERROR = 2;
-           /**
-           * \brief There is already a task in the device task source.
-           */
-            const unsigned short PENDING_OPERATION_ERROR = 3;
-           /**
-           * \brief An error occurred in communication with the underlying implementation that meant the requested method could not complete.
-           */
-            const unsigned short IO_ERROR = 4;
-           /**
-           * \brief The requested method is not supported by the current implementation.
-           */
-            const unsigned short NOT_SUPPORTED_ERROR = 5;
-           /**
-           * \brief Access to the requested information was denied by the implementation or by the user.
-           */
-            const unsigned short PERMISSION_DENIED_ERROR = 20;
-           /**
-           * \brief An error code assigned by an implementation when an error has occurred in Contacts API processing.
-           * No exceptions.
-           */
-            readonly attribute unsigned short code;
-        };
-        
-        
-        /**
-         * \brief The ServiceContacts interface is exposed on the Navigator object [NAVIGATOR]. Its goal is to provide an access point to the functionality in this specification. 
-         */
-        [NoInterfaceObject]
-        interface ServiceContacts {
+          * \brief Creates the webinos.contacts namespace.
+          *
+          */
+         partial interface Webinos {
            /**
            * \brief The object through which the contacts functionality can be accessed.
            * No exceptions.
            */
-                    readonly attribute Contacts contacts;
+                     attribute Contacts contacts;
         };  
         
         /**
@@ -92,45 +52,482 @@ module ContactsWrapper {
         
         [NoInterfaceObject]
         interface Contacts {
+        
                  /**
-                 * \brief Find contacts in the address book according to the find contacts process detailed below. 
+                 * \brief The createContact() method creates an object that implements the Contact interface. 
                  *
-                 *                 This method takes two, three or four arguments. When called, it starts the following find contacts process:
+                 *         When the optional contactProps are passed as an argument, the newly created contact 
+                 *         is prepopulated with the supplied values.
                  *
-                 *    Let successCallback be the callback indicated by the method's second argument.
+                 *         If the contactProps attribute is omitted, the implementation 
+                 *         MUST assign the default values to all contact attributes and 
+                 *         attempt to create the instance of the Contact Interface. If 
+                 *         the contactProps attribute passed as the input parameter contains 
+                 *         only a subset of the ContactProps attributes with valid values, 
+                 *         the implementation MUST assign the default values to the other 
+                 *         attributes and attempt to create an instance of the Contact 
+                 *         Interface. If the contact passed as input parameter contains 
+                 *         valid values for all the contactProps attributes, the 
+                 *         implementation MUST try to create the instance of Contact Interface.
+                 *         
+                 *         This operation does not add the created contact to the Address Book, 
+                 *         and an identifier (id attribute) is not assigned to the contact. 
+                 *         The addContact method performs these tasks when invoked by the developer.                                    
                  *
-                 *    Let errorCallback be the callback indicated by the method's third argument, if any, or null otherwise.
+                 * \code
+                 * var contact = window.webinos.contacts.createContact({
+                 *         name: "John Doe"
+                 * });                        
+                 * \endcode
                  *
-                 *    If successCallback is null, then throw a TypeError (as defined in [WEBIDL]).
+                 * \param contactProps The property to initially apply to the created contact
+                 * \return  Contact The contact that was created
+                 */
+             
+             Contact createContact(optional ContactProps? contactProps);
+
+                /**
+                * \brief The addContact() method asynchronously adds a contact to the contacts.
+                *         
+                *         If any of the input parameters contain an invalid value, such as a null or undefined 
+                *         successCallback, the contact has any invalid value or the address book has some restrictions 
+                *         that cause the attempted insertion of the contact item to fail (e.g. limitations in the size 
+                *         of text attributes), the implementation MUST reject the request and invoke the errorCallback 
+                *         with a DOMException and code INVALID_VALUES_ERROR. Please note that in order to allow developer 
+                *         ignore errors errorCallback accepts null as a valid value.
+                *         
+                *         If the contact is successfully added to the Address Book, the successCallback
+                *         MUST be invoked. The successCallback includes a Contact element that describes
+                *         the Contact that has been added and includes the assigned id attribute.
+                *         
+                *         In any of the above cases where the errorCallback should be invoked as specified 
+                *         above, if the developer has not passed a valid ErrorCallback (e.g. it is null 
+                *         or undefined), no action is required (i.e. the error is not notified to the developer). 
+                * \code
+                * var contact = window.webinos.contacts.createContact({
+                *         name: "John Doe"
+                * });
+                * 
+                * window.webinos.contacts.addContact(successwrite, error, contact);
+                * 
+                * 
+                * var successwrite = function(contact) {
+                *         alert("Wrote " + contact.id);
+                * };
+                * 
+                * var error = function(e) {
+                *         alert("Error: " + e);
+                * };                
+                * \endcode
+                *
+                * \param successCB Function to call when the asynchronous operation completes successfully.
+                * \param errorCB Function to call when the asynchronous operation fails.
+                * \param contact The contact to add to the contacts list.                                 
+                * \return void
+                */
+                
+                void addContact(ContactAddSuccessCB successCB, ContactErrorCB? errorCB, Contact contact);                
+
+                /**
+                * \brief The updateContact() method asynchronously updates an existing contact in an address book.
+                *         
+                *         If any of the input parameters contain an invalid value, such as a null or undefined 
+                *         successCallback, the contact has any invalid value or the address book has some restrictions 
+                *         that cause the attempted insertion of the contact item to fail (e.g. limitations in the size 
+                *         of text attributes), the implementation MUST reject the request and invoke the errorCallback 
+                *         with a DOMException and code INVALID_VALUES_ERROR. Please note that in order to allow developer 
+                *         ignore errors errorCallback accepts null as a valid value.
+                *         
+                *         If the id attribute does not correspond to the id attribute of any contact in the address book, 
+                *         (e.g. there is not an existing contact to update matching the id) a DOMException with code 
+                *         NOT_FOUND_ERR MUST be returned.
+                *
+                *         If all the attributes are valid and the id attribute corresponds to 
+                *         an existing contact in the address book, the implementation MUST 
+                *         attempt to update the contact that corresponds to that identifier 
+                *         with the updated attributes.
+                *         
+                *         If the contact is successfully updated, the SuccessCallback MUST be invoked.
+                *         
+                *         In any of the above cases where the errorCallback should be invoked, 
+                *         if the developer has not passed a valid ErrorCallback (e.g. it is null 
+                *         or undefined), no action is required (i.e. he error is not notified 
+                *         to the developer). 
+                * \code
+                *  window.webinos.contacts.findContacts(toUpdate, errorCallback, {
+                *                          name: "%John Doe%"
+                *                  });
+                *  
+                *  function toUpdate(contactlist) {
+                *          if (contactlist.length > 0) {
+                *                  for (i = 0; i < contactlist.length; i++) {
+                *                          contactlist[i].nickname = ["Jonny"];
+                *                          window.webinos.contacts.updateContact(contactUpdatedCB, errorCallback, contactlist[i]);
+                *                  }
+                *          } else {
+                *                  alert("No contact with the name 'John Doe' could be found");
+                *          }
+                *  }
+                *  
+                *  function contactUpdatedCB() {
+                *          // The contact has been successfully updated
+                *          alert("Contact 'John Doe' successfully updated");
+                *  }
+                *  
+                *  function errorCallback(response) {
+                *          alert("The following error occurred: " + response.code);
+                *  }
+                * \endcode
+                *   
+                * \param successCB Function to call when the asynchronous operation completes successfully.
+                * \param errorCB Function to call when the asynchronous operation fails.
+                * \param contact The contact to update in the contacts list.                                 
+                * \return void
+                */
+                void updateContact(ContactUpdateSuccessCB successCB, ContactErrorCB? errorCB, Contact contact);                
+
+                /**
+                * \brief Deletes a contact from the address book asynchronously.
+                *         
+                *         The implementation MUST attempt to delete the contact that corresponds to that identifier.
+                *
+                *         If the contact is successfully deleted, the SuccessCallback MUST be invoked.                
+                *
+                * \code
+                *  window.webinos.contacts.findContacts(toDelete, errorCallback, {
+                *                          name: "%John Doe%"
+                *                  });
+                *  
+                *  function toDelete(contactlist) {
+                *          if (contactlist.length > 0) {
+                *                  for (i = 0; i < contactlist.length; i++) {
+                *                          window.webinos.contacts.deleteContact(contactDeletedCB, errorCallback, contactlist[i].id);
+                *                  }
+                *          } else {
+                *                  alert("No contact with the name 'John Doe' could be found");
+                *          }
+                *  }
+                *  
+                *  function contactDeletedCB() {
+                *          // The contact has been successfully deleted
+                *          alert("Contact 'John Doe' deleted");
+                *  }
+                *  
+                *  function errorCallback(response) {
+                *          alert("The following error occurred: " + response.code);
+                *  }
+                * \endcode
+                *
+                * \param successCB Function to call when the asynchronous operation completes successfully.
+                * \param errorCB Function to call when the asynchronous operation fails.
+                * \param id The id of the contact to delete from the contacts list.                                 
+                * \return void
+                */
+                void deleteContact(ContactDeleteSuccessCB successCB, ContactErrorCB? errorCB, DOMString id);          
+
+
+                 /**
+                 * \brief The findContacts() method returns an array of all Contacts that match the optionally supplied filter.
+                 *    
+                 *    If the filter is passed and contains valid values, only those values  
+                 *    that match the filter criteria as specified in the ContactFilter 
+                 *    interface will be returned in the successCallback. If no filter is 
+                 *    passed, the filter contains any invalid values, the filter is null 
+                 *    or undefined, then the implementation MUST return the full list of 
+                 *    contact items in the successCallback. 
+                 *    
+                 *    If no contacts are available or no contact matches the filter criteria, 
+                 *    the successCallback will be invoked with an empty array.
+                 *    
+                 *    If any other error occurs while trying to retrieve the contacts, 
+                 *    the errorCallback function that was passed in the invocation MUST 
+                 *    be called, passing a DOMException object with code UNKNOWN_ERROR.
+                 *    
+                 *    In any of the above cases where the errorCallback should be invoked, 
+                 *    as specified above, if the developer has not passed a valid
+                 *    ErrorCallback (e.g. it is null or undefined), no action is 
+                 *    required and the developer is not notified of the error.    
                  *
-                 *    If there is a task from the device task source in one of the task queues (e.g. an existing find() operation is still pending a response), run these substeps:
+                 * \code
+                 *  window.webinos.contacts.findContacts(findSuccess, errorCallback, {
+                 *                          name: "%John Doe%"
+                 *                  });
+                 *  
+                 *  function findSuccess(contactlist) {
+                 *          if (contactlist.length > 0) {
+                 *                     alert(contactlist.length+" contacts with the name 'John Doe' found");
+                 *                  }
+                 *          } else {
+                 *                  alert("No contact with the name 'John Doe' could be found");
+                 *          }
+                 *  }
+                 *  
+                 *  function errorCallback(response) {
+                 *          alert("The following error occurred: " + response.code);
+                 *  }
+                 * \endcode
                  *
-                 *        If errorCallback is not null, let error be a ContactError object whose code attribute has the value PENDING_OPERATION_ERROR and queue a task to invoke errorCallback with error as its argument.
-                 *
-                 *        Abort this operation.
-                 *
-                 *    Return, and run the remaining steps asynchronously.
-                 *
-                 *    Let results be the array of Contact objects obtained by searching contacts in the address book according to the rules defined in Contact Search Processing, or null if the search has failed.
-                 *
-                 *    If results is null, run these substeps:
-                 *
-                 *        If errorCallback is not null, let error be a ContactError object whose code attribute has its value set according to the type of failure that occurred and queue a task to invoke errorCallback with error as its argument.
-                 *
-                 *        Abort this operation.
-                 *
-                 *    Queue a task to invoke successCallback with results as its argument.
-                 *
-                 * \param fields The search qualifier.
                  * \param successCB Function to call when the asynchronous operation completes successfully.
                  * \param errorCB Function to call when the asynchronous operation fails.
-                 * \param options The options to apply to the output of this method.                                 
-                 * \return caller void                 
+                 * \param filter The search qualifier.                         
+                 * \return A pending operation object making it possible to cancel the findContacts operation 
                  */
+                 
+                PendingContactFindOp findContacts(ContactFindSuccessCB successCB, optional ContactErrorCB? errorCB, optional ContactFilter? filter);
 
-            caller void find (DOMString[] fields, ContactFindCB successCB, optional ContactErrorCB errorCB, optional ContactFindOptions options);
+        
         };
   
+     /**
+     * \brief The PendingContactFindOp interface
+     *
+     * The PendingContactFindOp interface describes the object that is returned by the asynchronous find contacts sensor method. It makes it possible to abort
+     * this operation to a stop if it hasn't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.
+     *
+     */
+     [NoInterfaceObject] interface PendingContactFindOp {
+
+    /**
+     * \brief Method Cancel
+     *
+     *  Cancel the pending find contacts asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
+     *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
+     *  name "AbortError" is issued.
+     */
+        void cancel ();
+     };
+
+  
+          /**
+         * \brief ContactProps dictionary
+         *  
+         *        This interface is intended to be used to input parameters when contacts are 
+         *        created using the createContact method.
+         *
+         *        All the attributes are optional and by default are undefined unless
+         *        otherwise stated in the parameter description. 
+         */
+        dictionary ContactProps {
+           /**
+           * \brief This attribute represents the full name of this Contact indicated by the name components associated with the ContactName object.
+           */        
+                ContactName? name         = "";
+           /**
+           * \brief This attribute contains the nickname (or a casual name) for this Contact. 
+           */
+                DOMString? nickname     = "";
+           /**
+           * \brief This attribute contains the name of this Contact in a form that is suitable for display to the user.
+           */
+                DOMString?  displayName = "";
+           /**
+           * \brief This attribute represents one or more physical addresses associated with this Contact. 
+           */
+                ContactAddress[]? addresses;
+           /**
+           * \brief This attribute represents one or more photos associated with this Contact.
+           */
+                ContactField[]? photos; 
+           /**
+           * \brief This attribute captures one or more phone numbers associated with this Contact. 
+           */
+                ContactField[]? phoneNumbers;
+           /**
+           * \brief This attribute represents one or more email addresses associated with this Contact. 
+           */
+                ContactField[]? emails;
+           /**
+           * \brief This attribute represents one or more instant messaging identifiers associated with this Contact. 
+           */
+              ContactField[]?        ims;
+           /**
+           * \brief This attribute represents one or more organizations associated with this Contact. 
+           */
+              ContactOrganization[]? organizations;
+           /**
+           * \brief     This attribute contains birthday of this Contact.
+           */
+              Date?                  birthday;
+           /**
+           * \brief This attribute contains the gender of this Contact. This attribute should have one of the following values:
+           */
+              DOMString?             gender;
+           /**
+           * \brief This attribute contains the personal notes (free-text) for this Contact that is managed by the user of the address book. 
+           */
+              DOMString?             note;
+           /**
+           * \brief This attribute contains one or more user-defined categories/tags/labels associated with this Contact. e.g. "family", "favourite", "cryptozoologists". 
+          */
+              DOMString[]?           categories;
+           /**
+           * \brief This attribute represents one or more URLs associated with this Contact e.g. personal web page, blog.
+           */
+              ContactField[]?        urls;
+           /**
+           * \brief This attribute represents the time zone of this Contact.
+          */
+              DOMString?             timezone;
+        };
+
+          /**
+         * \brief ContactFilter dictionary
+         *  
+         *        When this filter is supplied to the findContacts method, the 
+         *        result-set of that method MUST only contain the contact entries 
+         *        in the address book that match the filter values.
+         *        
+         *        A contact matches the filter, if the attributes of the contact 
+         *        match all the attributes of the filter. If the filter contains 
+         *        values that are undefined or null, these MUST be ignored. 
+         *        I.e. the search is performed in a similar manner to a SQL "AND" operation.
+         *        
+         *        An attribute of the contact matches the filter value according to
+         *        to the following rule:
+         *        
+         *            For filter attributes of type DOMString, an entry matches 
+         *            this value if its corresponding attribute is exactly the 
+         *            same as the filter attribute. However, if the filter contains 
+         *            U+0025 'PERCENT SIGN' wildcard character(s), the filter behavior 
+         *            is similar to the LIKE condition in SQL ('%' matches any string 
+         *            of any length - including zero length). In order to specify that 
+         *            a 'PERCENT SIGN' character is to be considered literally instead 
+         *            of interpreting it as a wildcard, developers may escape it with 
+         *            the backslash character. The matching is not case sensitive, 
+         *            e.g. "FOO" matches a "foo" or an "f%" filter.
+         */
+        dictionary ContactFilter {
+           /**
+           * \brief Used for filtering the Contact id attribute.
+           *
+           * Contacts with id attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+                DOMString? id  ;
+           /**
+           * \brief Used for filtering the Contact name attribute.
+           *
+           * Contacts with name attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+                DOMString? name  ;
+           /**
+           * \brief Used for filtering the Contact nickname attribute.
+           *
+           * Contacts with nickname attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+                DOMString? nickname ;
+           /**
+           * \brief Used for filtering the Contact displayName attribute.
+           *
+           * Contacts with displayName attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+                DOMString?  displayName;
+           /**
+           * \brief Used for filtering the Contact addresses attribute.
+           *
+           * Contacts with at least one address in the addresses array matching 
+           * all the specified address attributes in the supplied address object 
+           * (either exactly or with the specified wildcards) match the filtering 
+           * criteria. If the supplied address object includes null or undefined values 
+           * for some attributes, these can be ignored.
+           */        
+                ContactAddress[]? addresses;
+           /**
+           * \brief Used for filtering the Contact photos attribute.
+           *
+           * Contacts with photos attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+               DOMString?   photos; 
+           /**
+           * \brief Used for filtering the Contact phoneNumbers attribute.
+           *
+           * Contacts with phoneNumbers attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+               DOMString?   phoneNumbers;
+           /**
+           * \brief Used for filtering the Contact emails attribute.
+           *
+           * Contacts with emails attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+                DOMString? emails;
+           /**
+           * \brief Used for filtering the Contact ims attribute.
+           *
+           * Contacts with ims attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+             DOMString?        ims;
+           /**
+           * \brief Used for filtering the Contact organizations attribute.
+           *
+           * Contacts with organizations attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+              DOMString?  organizations;
+           /**
+           * \brief Used for filtering the Contact birthday attribute.
+           *
+           * Contacts with birthday attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+              Date?                  birthday;
+           /**
+           * \brief Used for filtering the Contact gender attribute.
+           *
+           * Contacts with gender attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+              DOMString?             gender;
+           /**
+           * \brief Used for filtering the Contact note attribute.
+           *
+           * Contacts with note attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+              DOMString?             note;
+           /**
+           * \brief Used for filtering the Contact categories attribute.
+           *
+           * Contacts with categories attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+               DOMString?           categories;
+           /**
+           * \brief Used for filtering the Contact urls attribute.
+           *
+           * Contacts with urls attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+               DOMString?          urls;
+           /**
+           * \brief Used for filtering the Contact timezone attribute.
+           *
+           * Contacts with timezone attribute that match this supplied attribute (either
+           * exactly or with the specified wildcards) match the filtering criteria. 
+           */        
+              DOMString?             timezone;
+            /**
+           * \brief A boolean value to indicate whether multiple Contact objects are wanted as part of the Contacts find() operation. By default this option is set to false. 
+           *
+           * No exceptions.
+           */            
+             boolean?   multiple;
+            /**
+           * \brief Return only contact records that have been updated on or after the given time, specified as an ECMAScript Date object.
+           *
+           * This filter is applied to the revision field as defined in Contact. 
+           *
+           * No exceptions.
+           */            
+             Date      updatedSince;
+              
+        };
 
       /**
          * \brief The Contact interface captures the properties of a contact object. 
@@ -274,74 +671,72 @@ module ContactsWrapper {
         };
         
         /**
-         * \brief The ContactName interface describes a contact's name. 
+         * \brief The ContactName dictionary describes a contact's name. 
          *
          */        
-      [NoInterfaceObject]
-        interface ContactName {
+        dictionary ContactName {
            /**
            * \brief This attribute contains the full name, including all the individual components such as givenName, middleName, familyName, prefix, suffix as appropriate for the user's culture, and formatted for display (e.g. Mr. Joe Smith Jr). 
            *
            * No exceptions.
            */            
-            attribute DOMString? formatted;
+             DOMString? formatted;
            /**
            * \brief This attribute contains the family name (also referred to as the last name) of this Contact. 
            *
            * No exceptions.
            */            
-            attribute DOMString? familyName;
+             DOMString? familyName;
            /**
            * \brief This attribute contains the given name (also referred to as the first name) of this Contact. 
            *
            * No exceptions.
            */            
-            attribute DOMString? givenName;
+             DOMString? givenName;
            /**
            * \brief This attribute contains the middle name of this Contact. 
            *
            * No exceptions.
            */            
-            attribute DOMString? middleName;
+            DOMString? middleName;
            /**
            * \brief This attribute contains the honorific prefix (or title) of this Contact. E.g. Mr., Dr., Ms., Mrs. 
            *
            * No exceptions.
            */            
-            attribute DOMString? honorificPrefix;
+            DOMString? honorificPrefix;
            /**
            * \brief This attribute contains the honorific suffix of this Contact. E.g. Jr, III, Sr. 
            *
            * No exceptions.
            */            
-            attribute DOMString? honorificSuffix;
+            DOMString? honorificSuffix;
         };
 
         
         /**
-         * \brief The ContactField interface is a reusable component that is used to capture contact fields of the Contact interface that have some modicum of structure. 
+         * \brief The ContactField dictionary is a reusable component that is used to capture contact fields of the Contact interface that have some modicum of structure. 
          *
          */ 
-        [NoInterfaceObject]
-        interface ContactField {
+        dictionary ContactField {
            /**
            * \brief This attribute contains the type information for this ContactField and its content varies subject to the contact property this ContactField is representing. For example, if the ContactField is representing a phoneNumber property, the type attribute can be set to home, mobile; if the ContactField is representing the ims property, the type attribute could be set to xmpp, irc, bbm, etc. 
            *
            * No exceptions.
            */            
-            attribute DOMString  type;
+             DOMString  type;
            /**
            * \brief This attribute contains the value for this ContactField and its content varies subject to the contact property this ContactField is representing. For example, if the ContactField is representing an email, the value attribute could be set to JoeSmith@example.com, and if the ContactField is representing a url, the value attribute can be set to http://www.example.org/joesmith, etc. 
            *
            * No exceptions.
            */            
-            attribute DOMString? value;
+             DOMString? value;
            /**
            * \brief This attribute indicates whether this instance of the ContactField is the preferred, or primary, value for the contact property this ContactField is representing in the Contact interface. By default, the value is false. 
            *
            * No exceptions.
            */            
-            attribute boolean    pref;
+             boolean    pref;
         };
         
         
@@ -349,150 +744,136 @@ module ContactsWrapper {
          * \brief The ContactAddress interface is a reusable component that is used to capture addresses within the Contact interface. 
          *
          */ 
-        [NoInterfaceObject]
-        interface ContactAddress {
+        dictionary ContactAddress {
            /**
            * \brief This attribute indicates whether this instance of the ContactAddress is the preferred, or primary, value for the contact. By default, the value is false. 
            *
            * No exceptions.
            */            
-            attribute boolean    pref;
+             boolean    pref;
            /**
            * \brief This attribute contains the type of address this object is representing (e.g. work, home, premises, etc). 
            *
            * No exceptions.
            */            
-            attribute DOMString? type;
+             DOMString? type;
            /**
            * \brief This attribute contains the full physical address including street, locality, region, postalCode, and country as appropriate, and formatted for display. 
            *
            * No exceptions.
            */            
-            attribute DOMString? formatted;
+             DOMString? formatted;
            /**
            * \brief This attribute contains the street address corresponding to this ContactAddress. 
            *
            * No exceptions.
            */            
-            attribute DOMString? streetAddress;
+             DOMString? streetAddress;
            /**
            * \brief This attribute contains the locality (or city) name corresponding to this ContactAddress. 
            *
            * No exceptions.
            */            
-            attribute DOMString? locality;
+             DOMString? locality;
            /**
            * \brief This attribute contains the region (or state/province) name corresponding to this ContactAddress. 
            *
            * No exceptions.
            */            
-            attribute DOMString? region;
+             DOMString? region;
            /**
            * \brief This attribute contains the postal code (or zip) corresponding to this ContactAddress. 
            *
            * No exceptions.
            */            
-            attribute DOMString? postalCode;
+             DOMString? postalCode;
            /**
            * \brief This attribute contains the country name corresponding to this ContactAddress. 
            *
            * No exceptions.
            */            
-            attribute DOMString? country;
+             DOMString? country;
         };
      
         /**
-         * \brief The ContactOrganization interface is a reusable component that is used to support contact organisations within the Contact interface. 
+         * \brief The ContactOrganization dictionary is a reusable component that is used to support contact organisations within the Contact interface. 
          *
          */ 
-     [NoInterfaceObject]
-        interface ContactOrganization {
+     dictionary ContactOrganization {
            /**
            * \brief This attribute indicates whether this instance of the ContactOrganization is the preferred, or primary, value for the contact. By default, the value is false. 
            *
            * No exceptions.
            */            
-            attribute boolean    pref;
+             boolean    pref;
            /**
            * \brief This attribute contains the type of organization this object is representing. 
            *
            * No exceptions.
            */            
-            attribute DOMString? type;
+             DOMString? type;
            /**
            * \brief The name of the organisation. 
            *
            * No exceptions.
            */            
-            attribute DOMString? name;
+             DOMString? name;
            /**
            * \brief The department within which this Contact works. 
            *
            * No exceptions.
            */            
-            attribute DOMString? department;
+             DOMString? department;
            /**
            * \brief The job title that the Contact holds inside this organisation. 
            *
            * No exceptions.
            */            
-            attribute DOMString? title;
+             DOMString? title;
         };
         
-       /**
-         * \brief The ContactFindOptions interface describes the options that can be applied to contact searching. When a ContactFindOptions parameter is provided to the Contacts find() operation, it should be processed according to the provisions detailed in Options Processing. 
-         *
-         */ 
-        [NoInterfaceObject]
-        interface ContactFindOptions {
-           /**
-           * \brief A string-based search filter which provides a hint to the user agent to facilitate contacts selection by the user. 
-           *
-           * No exceptions.
-           */            
-            attribute DOMString? filter;
-            /**
-           * \brief A boolean value to indicate whether multiple Contact objects are wanted as part of the Contacts find() operation. By default this option is set to false. 
-           *
-           * No exceptions.
-           */            
-            attribute boolean?   multiple;
-            /**
-           * \brief Return only contact records that have been updated on or after the given time, specified as an ECMAScript Date object.
-           *
-           * This filter is applied to the revision field as defined in Contact. 
-           *
-           * No exceptions.
-           */            
-            attribute Date      updatedSince;
-        };
 
-         /**
-         * \brief This is the wrapper interface for callbacks indicating success of the find() operation. 
-         *
-         */         
-        [Callback=FunctionOnly, NoInterfaceObject]
-        interface ContactFindCB {        
+
                  /**
                  * \brief Callback on success of a find() operation
                  * \param contactObjs An array of Contact objects resulting from the given Contacts find() operation. 
                  * \return void                 
                  */
-            void onsuccess (Contact[] contactObjs);
-        };
-        
-         /**
-         * \brief This is the wrapper interface for callbacks indicating failure  of the find() operation. 
-         *
-         */         
-        [Callback=FunctionOnly, NoInterfaceObject]
-        interface ContactErrorCB  {        
+             callback ContactFindSuccessCB = void  (Contact[] contactObjs);
+            
+
+ 
                  /**
-                 * \brief Callback on failure  of a find() operation
-                 * \param error The ContactError object capturing the type of the error.
+                 * \brief Callback on success of a addContact() operation
+                 * \param contact The contact that just has been added, including the contact id                 
                  * \return void                 
                  */
-              void onerror (ContactError error);
-        };
-        
-};
+            callback ContactAddSuccessCB = void (Contact contact);
+
+
+      
+                 /**
+                 * \brief Callback on success of a updateContact() operation               
+                 * \return void                 
+                 */
+           callback ContactUpdateSuccessCB = void ();
+
+
+    
+         
+                 /**
+                 * \brief Callback on success of a deleteContact() operation               
+                 * \return void                 
+                 */
+                callback ContactDeleteSuccessCB = void ();
+
+   
+       
+                 /**
+                 * \brief Callback on failure  of a find(), addContact(), updateContact(), deleteContact()  operations
+                 * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> object capturing the type of the error
+                 * \return void                 
+                 */
+                 callback ContactErrorCB = void (DOMError error);
+             
+

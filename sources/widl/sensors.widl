@@ -1,9 +1,5 @@
-/**
- * \brief The Generic Sensor API 
- *
- *
- *
- * The Webinos Generic Sensor API provides web applications with an API to access data from sensors in the device, connected to the device or in another device.
+/**<p> The Webinos Generic Sensor API provides web applications with an API to access data from sensors in the device or in another device.</p> 
+ * \name The Generic Sensor API 
  *
  * The API is agnostic to underlying low level methods for sensor discovery and communication with sensors. However, the sensor API should be used
  * in combination with the general Webinos service discovery methods findServices() and bind(). The sensors services can be located in the user's personal zone or be shared on the current network.
@@ -12,15 +8,21 @@
  * - A sensor interface that provides attributes for the sensors and a method to configure a selected sensor.\n
  * - A DOM level 3 event that provides sensor data.\n
  *
- * Currently 5 different sensor types are defined but the API could easily be extended with additional sensor types.
+ * This list of sensor types supported in the API could easily be extended with additional sensor types.
  * 
- * This is an experimental API and security and privacy issues are not specifically addressed in the specification. If access to security or privacy
- * sensitive sensors are provided the user agent must either acquire access permission through a user interface or control access through a prearranged
- * trust relationship with users. 
- *
+ * Implementation notes:\n
+ * - From the security point of view an extensible set of features identifying the various sensor types is reported; this allows a granular control on 
+ * the type os sensor that can be accessed. Another feature (sensor.read) that does not allow access to configuration capabilities has been added.
+ * This model may be modified due to further studies that will follow during implementation.\n
+ * - Consider a visual warning on the device when the sensor is accessed, to avoid eavesdropping / privacy invasion by a remote or local application.\n
+ * - Consider roaming costs for accessing remote sensors through the mobile network. An implementation might provide 'roaming' and 'non-roaming' profiles.\n
+ * - Avoid unnecessary high rates of sensor events. Consider battery drain.\n 
  *
  * \def-api-feature http://webinos.org/api/sensors
  * Identifies all the sensor types. 
+ *
+ * \def-api-feature http://webinos.org/api/sensors.read
+ * Enables access only to read methods of the api - access to configureSensor is forbidden
  *
  * \def-api-feature http://webinos.org/api/sensors.light
  * Identifies the light sensor type. 
@@ -34,38 +36,23 @@
  * \def-api-feature http://webinos.org/api/sensors.pressure
  * Identifies the pressure sensor type. 
  *
- * \author Claes Nilsson &lt;claes1.nilsson@sonyericsson.com&gt;
- * \version 0.9 
+ * \def-api-feature http://webinos.org/api/sensors.proximity
+ * Identifies the proximity sensor type. 
+ *
+ * \def-api-feature http://webinos.org/api/sensors.humidity
+ * Identifies the relative humidity sensor type. 
+ *
+ * \def-api-feature http://webinos.org/api/sensors.heartratemonitor
+ * Identifies a heart rate monitor sensor type. 
+ *
+ * \author Claes Nilsson &lt;claes1.nilsson@sonymobile.com&gt;
+ * \author Updated to new WIDL by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
+ * \author Stefano Vercelli &lt;stefano.vercelli@telecomitalia.it&gt;
+ * \version 1.99 
  */
-
-module sensors {
 
 
   /**
-   * \brief Defines the  error codes for this module
-   */
-   exception SensorException {
-
-     /**
-       * \brief Illegal sensor id
-       */
-       const unsigned short INVALID_INPUT_ARGUMENT = 0; 
-
-     /**
-       * \brief Exception code
-       */
-       unsigned short code;
-
-
-     /**
-       * \brief Exception message
-       */
-       DOMString message;
-
-   };
-
-  
-   /**
    * 
    * \code
 
@@ -86,7 +73,7 @@ module sensors {
                 var option = document.createElement('option');
                 option.value = sensor.id;
                 option.appendChild(document.createTextNode(sensor.displayName));
-	        availableTempSensors [sensor.id] = sensor;
+                availableTempSensors [sensor.id] = sensor;
                 selectlist.appendChild(option);
 
         }
@@ -99,11 +86,11 @@ module sensors {
                
 
                 // Configure the sensor.
-                mySensor.configureSensor ( {timeout: 120, rate: SENSOR_DELAY_NORMAL, interrupt: False}, 
+                mySensor.configureSensor ( {timeout: 120, rate: 5000, eventFireMode: "valuechange"}, 
                                            successHandler () {alert('Sensor ' + mySensor.displayName + ' with ID: ' + mySensor.id +
                                                                     ' is configured') },
                                            errorHandler (error) {alert('Sensor ' + mySensor.displayName + ' with ID: ' + mySensor.id +
-                                                                       ' configuration failed' + ' with error: ' + error.message)} );
+                                                                       ' configuration failed' + ' with error: ' + error.name)} );
 
                
                 // Start listening to sensor events and log values. 
@@ -137,10 +124,10 @@ module sensors {
        // Handle user selection of sensor
         var sensorlist = document.getElementById('sensorlist');
         sensorlist.addEventListener("change", function (e) {
-				var sensor = availableTempSensors[e.target.value];
-				if (sensor) {
-				    sensorSelected(sensor);
-				}
+                                var sensor = availableTempSensors[e.target.value];
+                                if (sensor) {
+                                    sensorSelected(sensor);
+                                }
         }, false);
 
 
@@ -153,260 +140,166 @@ module sensors {
     * The added attributes correspond to Android sensor API attributes.
     */ 
  
-    [NoInterfaceObject] interface Sensor : Service {
+    interface Sensor : Service {
  
        /**
-	* \brief Max range of sensor in the sensors unit.
-	*/
-    	readonly attribute float?          maximumRange;
+        * \brief Max range of sensor in the sensors unit.
+        */
+        readonly attribute float?          maximumRange;
 
        /**
-	* \brief Min delay of sensor allowed between two events in microsecond or zero if this sensor only returns a value when the data it's measuring changes.
-	*/
-   	readonly attribute unsigned long?   minDelay;
+        * \brief Min delay of sensor allowed between two events in microsecond or zero if this sensor only returns a value when the data it's measuring changes.
+        */
+        readonly attribute unsigned long?   minDelay;
 
        /**
-	* \brief Power consumption of sensor in mA used by this sensor while in use. 
-	*/
-   	readonly attribute float?	  power;
+        * \brief Power consumption of sensor in mA used by this sensor while in use. 
+        */
+        readonly attribute float?         power;
 
        /**
-	* \brief Resolution of the sensor in the sensors unit.
-	*/
-	readonly attribute float?	  resolution;
+        * \brief Resolution of the sensor in the sensors unit.
+        */
+        readonly attribute float?         resolution;
 
        /**
-	* \brief Vendor string of this sensor.
-	*/
-	readonly attribute DOMString?      vendor;  
+        * \brief Vendor string of this sensor.
+        */
+        readonly attribute DOMString?      vendor;  
 
        /**
-	* \brief Version of the sensors module.
-	*/ 
-   	readonly attribute unsigned long?  version; 
-
+        * \brief Version of the sensors module.
+        */ 
+        readonly attribute unsigned long?  version; 
 
        /**
         * \brief Configures a sensor.
-        *
-        * Question: Do we need the ability to specify high and low thresholds? This is for example not supported by Android sensor API.
         *
         * \param options Sensor configuration options. 
         * \param successCB Callback issued when sensor configuration succeeded.
         * \param errorCB Callback issued if sensor configuration fails.  
         * \return A pending operation object making it possible to cancel the configureSensor operation     
-        * \throw SensorException with appropriate error code.
         */
-        PendingOp configureSensor (ConfigureSensorOptions options, ConfigureSensorCB successCB, optional SensorErrorCB errorCB)
-            raises (SensorException);
-
-
+        PendingSensorConfigOp configureSensor (ConfigureSensorOptions options, VoidFunction successCB, optional SensorErrorCB errorCB);
      };
 
 
    /**
-    * \brief ConfigureSensorCB interface definition
+    * \brief The SensorErrorCB method is called if an error occurs during the configureSensor() process.  
     *
+    * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> object detailing what 
+    * went wrong in an unsuccessful configureSensor() asynchronous operation. The following error names cold be issued:\n
+    * - "SyntaxError": Input parameters did not match the expected pattern.\n
+    * - "NotSupportedError": Sensor configuration not supported.\n
+    * - "InvalidModificationError": Sensor can not be configured in this way.\n
+    * - "AbortError": Operation was aborted by the user.\n
+    * - "TimeoutError": The operation timed out.
     */
-    [Callback=FunctionOnly, NoInterfaceObject] interface ConfigureSensorCB {
-
-      /**
-       * \brief onSuccess The onSuccess method is called when configuration of a sensor succeeded.  
-       *
-       */
-       void onSuccess();	  
-    };
-
+    callback SensorErrorCB = void (DOMError error);
 
    /**
-    * \brief SensorErrorCB interface definition
-    *
+    * \brief Sensor event fire mode.\n
+    * - fixedinterval = Events fired with a fixed time interval.\n
+    * - valuechange = Events fired when value changes. This is the default value.
     */
-    [Callback=FunctionOnly, NoInterfaceObject] interface SensorErrorCB {
-
-      /**
-       * \brief onError The onError method is called if an error occurs during the configureSensor() process.  
-       *
-       *
-       * \param error The error object of an unsuccessful configureSensor() asynchronous operation.
-       *
-       */
-       void onErrror(SensorCBError error); 
-    };
-
-   /**
-    * \brief SensorCBError interface definition
-    *
-    */
-    [NoInterfaceObject] interface SensorCBError {
-
-      /**
-       * \brief Uknown error
-       */
-       const unsigned short UNKNOWN_ERROR = 0;
-
-      /**
-       * \brief No success callback within timeout period.
-       */
-       const unsigned short TIMEOUT_ERROR = 1;
-
-      /**
-       * \brief Illegal sensor type
-       */
-       const unsigned short ILLEGAL_SENSOR_TYPE_ERROR = 2;
-
-      /**
-       * \brief Illegal sensor type
-       */
-       const unsigned short SENSOR_TYPE_NOT_SUPPORTED_ERROR = 3;
-
-      /**
-       * \brief Illegal sensor id
-       */
-       const unsigned short ILLEGAL_SENSOR_ID_ERROR = 4;
-
-      /**
-       * \brief Other illegal input arguments
-       */
-       const unsigned short OTHER_ILLEGAL_INPUT_ARGUMENT_ERROR = 5;
-
-      /**
-       * \brief Sensor rate requested through configureSensor() not supported
-       */
-       const unsigned short REQUESTED_RATE_NOT_SUPPORTED_ERROR = 6;
-
-     /**
-       * \brief Interrupt mode requested through configureSensor() not supported
-       */
-       const unsigned short REQUESTED_INTERRUPTMODE_NOT_SUPPORTED_ERROR = 7;
-
-     /**
-       * \brief Permission denied
-       */
-       const unsigned short PERMISSION_DENIED_ERROR = 50;
-
-
-      /**
-       * \brief Error code assigned when an error has occurred in configureSensor() processing.
-       */
-       readonly attribute unsigned short code;
-
-
-     /**
-       * \brief Human readable message assigned when an error has occurred in configureSensor() processing.
-       */
-       readonly attribute DOMString message;
-
-    };    
-
+    enum EventFireMode { "fixedinterval", "valuechange"};
 
   /**
     * \brief ConfigureSensorOptions interface definition
     */
-    [NoInterfaceObject] interface ConfigureSensorOptions {
+    dictionary ConfigureSensorOptions {
+
 
       /**
-       * \brief INFINITE Timeout Value
-       *
+       * \brief A timeout value for when configureSensor() is canceled in seconds between 0-65535. Default value is 120 seconds. 0 means infinite. 
        */
-       const unsigned short INFINITE = 0;
-
-      /**
-       * \brief The sensor is reporting data as fast as possible (rate attribute).
-       */
-       const unsigned short SENSOR_DELAY_FASTEST = 0;
-
-      /**
-       * \brief The sensor is reporting data with a rate suitable for games (rate attribute).
-       */
-       const unsigned short SENSOR_DELAY_GAME = 1;
-
-      /**
-       * \brief The sensor is reporting data with a rate suitable for user interface (rate attribute).
-       */
-       const unsigned short SENSOR_DELAY_UI = 2;
-
-      /**
-       * \brief The sensor is reporting data with a normal rate, e.g. suitable for screen orientation changes (rate attribute).
-       */
-       const unsigned short SENSOR_DELAY_NORMAL = 3;
-
-      /**
-       * \brief A timeout value for when configureSensor() is canceled in seconds between 0-65535. Default value is 120 seconds. 
-       */
-       attribute unsigned short timeout;
+       unsigned short timeout;
 
       /**
        * \brief The requested rate of the sensor data.
+	   * It is the time interval before a new event is generated. The value is expressed in ms. If the interval is too small for the sensor
+	   * (that is it is unable to generate data at the selected rate) it shall use the maximum rate it can support.
        */
-       attribute unsigned short rate;
+       unsigned long? rate;
+       
+     /**
+       * \brief The requested sensor event fire mode.
+       */
+       EventFireMode? eventFireMode;
+
+     /**
+       * \brief The position of the sensor.
+	   * This value may be ignored by the sensor if it retrieves position in a different way (for example has a gps module onboard)
+       */
+       GeoPosition? position;
+
+     /**
+       * \brief Generic configurations string.
+	   * This string is in JSON format and can be used for additional sensors that need extra configuration parameters.
+	   * The format of the string must be specified by the sensor developer.
+       */
+       DOMString? config;
+	};
+
+  /**
+    * \brief GeoPosition interface definition
+    */
+    dictionary GeoPosition {
 
       /**
-       * \brief The requested Interrupt mode of the sensor.\n
-       * False = INTERRUPT_DISABLED (events fired with a fixed time interval) \n
-       * True = INTERRUPT_ENABLED (events fired when value changes)
+       * \brief Latitude. 
        */
-       attribute boolean interrupt;
+       unsigned long latitude;
+
+      /**
+       * \brief Longitude.
+       */
+       unsigned long longitude;
      };
 
     /**
-     * \brief The PendingOp interface
+     * \brief The PendingSensorConfigOp interface
      *
-     * The PendingOp interface describes objects that are returned by asynchronous methods that are cancellable. It makes it possible to bring 
-     * these operations to a stop if they haven't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.\n
-     * TBD: Elaborate on cancel of ongoing configureSensor() operation...
+     * The PendingSensorConfigOp interface describes the object that is returned by the asynchronous configure sensor method. It makes it possible to abort
+     * this operation to a stop if it hasn't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.
      *
      */
-     [NoInterfaceObject] interface PendingOp {
+     interface PendingSensorConfigOp {
 
     /**
      * \brief Method Cancel
      *
-     *  Cancel the pending asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return. No success or error callback for the pending operation will be invoked.
+     *  Cancel the pending configure sensor asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
+     *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
+     *  name "AbortError". If the configuration is no longer under control of the calling process, the cancel function will be ignored and all neccessary 'housekeeping functions' 
+     *  required after starting the configuration process will be performed as if the cancel had never been issued.
      */
         void cancel ();
      };
 
 
   /**
+   * \brief Sensor event accuracy.\n
+   * high = The sensor is reporting data with maximum accuracy\n
+   * medium = The sensor is reporting data with an average level of accuracy, calibrating with the environment may improve the reading.\n
+   * low = The sensor is reporting with low accuracy, calibrating with the environment is needed.\n
+   * unreliable = The sensor data cannot be trusted, calibrating is needed or the environment does not allow reading.\n
+   * unavailable = The sensor is not available and no sensor data can be provided. This accuracy attribute will for example take this value when contact is lost with a sensor using Bluetooth communication.
+   */
+   enum Accuracy { "high", "medium", "low", "unreliable", "unavailable"};
+
+
+  /**
    * \brief This interface defines the "genericsensor" event type.
    *
-   *  Registration for generic sensor events is achieved by calling addEventListener instantiated on the selected sensor object with event type set to "sensor" (see code example in the beginning of this specification)
+   *  Registration for generic sensor events is achieved by calling addEventListener instantiated on the selected sensor object with event type set to "sensor" (see code example in the beginning of this specification).\n
+   *  To stop listening to a sensor removeEventListener is called.
    * 
    *
    * 
    */
 
    interface SensorEvent : Event {
-
- 
-  /**
-   * \brief A constant describing that the sensor is reporting data with maximum accuracy.
-   */
-    const unsigned short SENSOR_STATUS_ACCURACY_HIGH = 4;
-
-  /**
-   * \brief A constant describing that the sensor is reporting data with an average level of accuracy, calibrating with the environment may improve the
-   * reading.
-   */
-    const unsigned short SENSOR_STATUS_ACCURACY_MEDIUM = 3;
-
-  /**
-   * \brief A constant describing that the sensor is reporting with low accuracy, calibrating with the environment is needed.
-   */
-    const unsigned short SENSOR_STATUS_ACCURACY_LOW = 2;
-
-  /**
-   * \brief A constant describing that the sensor data cannot be trusted, calibrating is needed or the environment does not allow reading.
-   */
-    const unsigned short SENSOR_STATUS_UNRELIABLE = 1;
-
- /**
-   * \brief A constant describing that the sensor is not available and no sensor data can be provided. This accuracy attribute will for example take 
-   * this value when contact is lost with a sensor using Bluetooth communication.
-   */
-    const unsigned short SENSOR_STATUS_UNAVAILABLE = 0;
-
 
   /**
    *  \brief The type of sensor. This is a URI defining the sensor type according to the defined sensor "feature" URI strings. See section "Features". \n
@@ -415,23 +308,24 @@ module sensors {
    *\n
    * http://webinos.org/api/sensors.light:\n
    * sensorValue[0] = the measured ambient light level around the device in SI lux units.\n
-   * sensorValue[1] = A normalized value between 0 and 1.\n
    *\n
    * http://webinos.org/api/sensors.noise:\n
    * sensorValue[0] = the measured ambient noise around the device, DB(SPL).\n
-   * sensorValue[1] = A normalized value between 0 and 1.\n
    *\n
    * http://webinos.org/api/sensors.temperature:\n
    * sensorValue[0] = the measured ambient temperature around the device, degrees Celsius.\n
-   * sensorValue[1] = A normalized value between 0 and 1.\n
    *\n
    * http://webinos.org/api/sensors.pressure:\n
    * sensorValue[0] = the measured atmospheric pressure around the device in hPa (millibar)\n
-   * sensorValue[1] = A normalized value between 0 and 1.\n
    *\n
    * http://webinos.org/api/sensors.proximity:\n
-   * sensorValue[0] =  Proximity sensor distance measured in centimeters.\n
-   * sensorValue[1] = A normalized value between 0 and 1.Some sensor can only state "near" (0) and "far" (1) \n
+   * sensorValue[0] =  proximity sensor distance measured in centimeters. Some sensor can only state "near" (0) and "far" (1)\n
+   *\n
+   * http://webinos.org/api/sensors.humidity:\n
+   * sensorValue[0] =  the measured relative humidity around the device in percent. \n
+   *\n
+   * http://webinos.org/api/sensors.heartratemonitor:\n
+   * sensorValue[0] =  the measured heart rate as beats per minute (bpm). \n
    *   
    */
     readonly attribute DOMString sensorType;
@@ -445,33 +339,38 @@ module sensors {
   /**
    * \brief The accuracy of the sensor
    */
-    readonly attribute unsigned short accuracy;
+    readonly attribute Accuracy accuracy;
 
  
   /**
-   * \brief The rate of the sensor data
+   * \brief The rate of the sensor data.
+   * This value will be 0 if the rate is undefined or eventFireMode is set to valuechange.
    */
-    readonly attribute unsigned short rate;
+    readonly attribute unsigned long rate;
 
   /**
-   *  \brief Interrupt mode of the sensor.
-   *  The value is one of
-   *  false = INTERRUPT_DISABLED (events fired with a fixed time interval)
-   *  true = INTERRUPT_ENABLED (events fired when value changes)
+   *  \brief The event fire mode the sensor.
+   *
    */
-    readonly attribute boolean interrupt;
+    readonly attribute EventFireMode eventFireMode;
 
   /**
    * \brief Array of sensor values
    */
     readonly attribute float[] sensorValues;
 
+    /**
+     * \brief Position of the sensor.
+     */ 
+     readonly attribute GeoPosition?  position;
+
+
   /**
    * \brief Method to set initial values of sensor event.  
    *
    * The initSensorEvent() method must initialize the event in a manner analogous to the initEvent() method in http://www.w3.org/TR/2010/WD-DOM-Level-3-Events-20100907/.
    * The method can for example be used with document.createEvent() and EventTarget.dispatchEvent() to simulate a specific event.
-   * The sensorType, sensorId, accuracy, rate, interrupt and sensorvalues arguments must initialize the attributes with the same names.
+   * The sensorType, sensorId, accuracy, rate, eventFireMode and sensorvalues arguments must initialize the attributes with the same names.
    *   
    * \param type Event type i.e. 'sensor'
    * \param bubbles True if event bubbles
@@ -479,19 +378,21 @@ module sensors {
    * \param sensorType Sensor type as a URI
    * \param sensorId The unique identity of the specific sensor
    * \param accuracy Accuracy of sensor data
-   * \param rate Rate
-   * \param interrupt Interrupt mode
+   * \param rate Rate of sensor data event
+   * \param eventFireMode Mode of firing events
    * \param sensorValues Array of sensor values
+   * \param position Position of the sensor
    */
     void initSensorEvent(DOMString type,
                          boolean bubbles,
                          boolean cancelable,
                          DOMString sensorType,
                          DOMString sensorId,
-                         unsigned short accuracy,
-                         unsigned short rate,
-                         boolean interrupt, 
-                         float[] sensorValues); 
+                         Accuracy accuracy,
+                         unsigned long rate,
+                         EventFireMode eventFireMode, 
+                         float[] sensorValues,
+                         GeoPosition position);
     };
 
-};
+

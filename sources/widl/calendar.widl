@@ -1,6 +1,5 @@
-
-/**
- * \brief W3C based Calendar interface.
+/**<p> This W3C API provides access to a user calendaring service.</p> 
+ * \name W3C based Calendar interface.
  *
  * This specification provides a wrapper that mandates the use of the  
  * <a href="http://www.w3.org/TR/2011/WD-calendar-api-20110419/">W3C Calendar API </a> (W3C Working draft 14th April).
@@ -19,11 +18,10 @@
  * \author W3C Working Draft 19 April 2011  
  * \author Normative: <a href="http://www.w3.org/TR/2011/WD-calendar-api-20110419/">W3C Calendar API </a>
  * \author WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
- * \version 1.0
+ * \author Update to new WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
+ * \version 2.0
  */
  
- 
-module CalendarWrapper {
 
         /**
          * \brief The ServiceCalendar interface is exposed on the Navigator interface [NAVIGATOR]. 
@@ -57,9 +55,9 @@ module CalendarWrapper {
                  * \param successCB Function to call when the asynchronous operation completes successfully.
                  * \param errorCB Function to call when the asynchronous operation fails.
                  * \param options The options to apply to the output of this method.                                 
-                 * \return caller void                 
+                 * \return  void                 
                  */ 
-            caller void findEvents (CalendarEventSuccessCB successCB, optional CalendarErrorCB errorCB, optional CalendarFindOptions options);
+             void findEvents (CalendarEventSuccessCB successCB, optional CalendarErrorCB errorCB, optional CalendarFindOptions options);
         };
 
         /**
@@ -447,25 +445,19 @@ module CalendarWrapper {
         };
         
         
-        [Callback=FunctionOnly, NoInterfaceObject]
-        interface CalendarEventSuccessCB {        
                  /**
                  * 
                  * \param eventObjs The resulting sequence of CalendarEvent objects resulting from a successful search operation. 
                  * \return void                 
                  */
-            void onSuccess (sequence<CalendarEvent> eventObjs);
-        };
+           callback CalendarEventSuccessCB = void (sequence<CalendarEvent> eventObjs);
         
-        [Callback=FunctionOnly, NoInterfaceObject]
-        interface CalendarErrorCB {
                  /**
                  * 
                  * \param error The Calendar API related error object of an unsuccessful asynchronous operation. 
                  * \return void                 
                  */
-            void onError (CalendarError error);
-        };
+          callback  CalendarErrorCB = void(CalendarError error);
         
           /**
          * \brief he CalendarError interface encapsulates all errors in the manipulation of CalendarEvent objects in the Calendar API. 
@@ -508,5 +500,5 @@ module CalendarWrapper {
            */
             readonly attribute unsigned short code;
         };
-            
-};
+        
+        

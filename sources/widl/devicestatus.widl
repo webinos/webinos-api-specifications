@@ -1,0 +1,707 @@
+/**<p>The webinos Device Status API lets you get information about various "aspects" of a device.</p>
+ * \name Device Status API 
+ *
+ * This API uses a kind of tree model to allow developers to get at the various bits of data about things on a device. 
+ * 
+ * <b>Aspect</b>
+ * \n  An aspect is an abstract nameable thing (e.g., a "Device", "Battery", "Display", etc.) that the user agent knows about and can interact with. An aspect can contain one or more components.
+ * \n \n <b>Component</b>
+ * \n  A component is a concrete instance of an aspect (e.g., a real battery in the device, the real screens of the device). As devices can contain more than one instance of the thing being referred to by an aspect (e.g. two screens, three batteries, two SIM cards), each real instance of an aspect is referred to as a component. Each component has its own unique component name, which is assigned by the user agent and serves as the component's identifier for the life of the application (e.g., "screen_1", 
+ "battery2", "os", "hdd", "SDCard").
+ * \n     This specification reserves two special components names ("_active" and "_default") which a user agent MUST NOT use when generating. 
+ * \n \n <b>Property</b>
+ * \n     A property of an component is something that can be queried to return data (e.g., how much charge a battery has, if the WiFi is connected or not, the SSID of a WiFi network). 
+ * 
+ * A user agent supports aspect X if the user agent can verify that the aspect (hardware or software) exists on the device and/or has not been disabled (either by policy or by a feature declaration).
+ * 
+ * A user agent supports aspect X and property Y if the user agent supports the aspect and is able to query property Y to retrieve its data. 
+ * 
+ *  To make the Device Status API easier to work with, this specification reserves two special component names ("_default" and "_active"). These two component names can be used by a developer in the API as proxies for either a default component or active component.
+ * 
+ * \n <b>Default component</b>
+ * \n     The component that is the default component for a given aspect, which may or may not be the active component. 
+ * \n     In ECMAScript, a developer uses the string "_default" to refer to the default component. 
+ * \n \n <b>Active component</b>
+ * \n     The component that is the active component for a given aspect, which may or may not be the default component. 
+ * \n     In ECMAScript, a developer uses the string "_active" to refer to the active component. 
+ *
+ *   
+ * \def-api-feature http://webinos.org/api/devicestatus.deviceinfo
+ * 
+ *     Only the following device-information aspects are available to the application (all others are disabled):
+ * \n         Battery
+ * \n         Device
+ * \n         Display
+ * \n         MemoryUnit
+ * \n         OperatingSystem
+ * \n         WebRuntime
+  * \n        Input controls
+ * 
+* \def-api-feature http://webinos.org/api/devicestatus.networkinfo
+ * 
+ *     Only the following network-information aspects are available to the application (all others are disabled):
+ * \n         CellularHardware
+ * \n         CellularNetwork
+ * \n         WiFiHardware
+ * \n         WiFiNetwork
+ * 
+* \def-api-feature http://webinos.org/api/devicestatus
+ * 
+ *     All aspects (the union of the network information aspects and device-information aspects) are enabled and available to the application.
+ * 
+ *   Processing feature declaration
+ *  
+ *  A user agent processes feature elements in accordance with the W3C's Widget Packaging and XML Configuration specification.
+ *  
+ *  If the feature-list contains any features whose feature-name exactly matches a device status feature declarations , then the user agent MUST apply the steps for processing a feature declaration.
+ *  
+ *  The steps for processing a device status feature declaration is given by the following algorithm. Only the first feature declaration is respected by the user agent:
+ *  
+ * <ol>
+ * <li>    Let declaration be the first device status feature declaration that was present in the configuration document, ignoring all others. </li>
+ * <li>    Implement the DeviceapisDeviceStatusManager interface when the widget's start file is instantiated:
+ * \n   2a. For each supported aspect, identify the components and assign each of them a component name, and, where there are more than one component, identify which is the default and track which components are active. It is recommended that the component name assigned by the user agent to a component be something that is "developer-friendly": i.e., that logically relates to the aspect the component represents (e.g., candidates include "screen_1", "battery2", "os", "hdd", "SD-Card"). </li>
+ * <li> If required, disable any aspects as needed by the particular feature declaration (see each device status feature strings). </li>
+ * <li> ignore all other subsequent device status feature declarations. </li>
+ * </ol> 
+ *
+ * \code
+ *  \<widget xmlns="http://www.w3.org/ns/widgets"> 
+ *  \<feature name="http://webinos.org/api/devicestatus"/> 
+ *  \</widget> 
+ * \endcode
+ *  
+ *  The above example shows how a developer declares their intention to access all aspects of the Device Status API.
+ *
+ * \code
+ *  \<widget xmlns="http://www.w3.org/ns/widgets"> 
+ *  \<feature name="http://webinos.org/api/devicestatus.deviceinfo"/>
+ *  \</widget>
+ * \endcode 
+ *
+ *  The above example shows a developers intention to access the device information aspects of the Device Status API.
+ *
+ * \code
+ *  \<widget xmlns="http://www.w3.org/ns/widgets"> 
+ *    \<feature name="http://webinos.org/api/devicestatus.networkinfo"/> 
+ *  \</widget> 
+ * \endcode 
+ *  
+ *  The above example shows a developers intention to access network information aspects of the Device Status API.
+ *  
+ * \code
+ *  \<widget xmlns="http://www.w3.org/ns/widgets">
+ *    \<feature name="http://webinos.org/api/devicestatus.networkinfo"/>
+ *    \<!-- The rest are ignored --> 
+ *    \<feature name="http://webinos.org/api/devicestatus"/> 
+ *    \<feature name="http://webinos.org/api/devicestatus.deviceinfo"/> 
+ *  \</widget>  
+ * \endcode 
+ *  
+ *  In the above example, only the network information aspects would be made available.
+ *   
+ * \author Based on  WAC Device API Specifications 2.1, 30 April 2012
+ * \author WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
+ * \version 2.1
+ */
+ 
+ 
+/**
+* \brief Creates the webinos.devicestatus namespace.
+*
+*/
+partial interface Webinos {
+       /**
+        * \brief The devicestatus attribute provides access to Device Status API. 
+        *         
+        * \code
+        * var info = deviceapis.devicestatus;
+        * info.getPropertyValue(
+        * function(model) {
+        *         console.log("Device model is: " + model);
+        * },
+        * null, {
+        *         aspect: "Device",
+        *         property: "model"
+        * });
+        * \endcode
+        *
+        */
+    readonly attribute  DeviceStatusManager devicestatus;
+};
+
+       /**
+        * \brief This offers methods to get information about the device status and subscribe to receive notifications of device status changes. To allow for asynchronous of changes to the various properties of components, the user agent keeps a list of active watch operations. Each entry in this list is identified by a number, which is unique within its list for the lifetime of the application.
+        *         
+        * \code
+        * deviceapis.devicestatus.getPropertyValue(
+        * function(value) {
+        *         console.log("The battery level is at " + value + "%");
+        * },
+        * null, {
+        *         property: "batteryLevel",
+        *         aspect: "Battery"
+        * });
+        * \endcode
+        *
+        */
+
+[NoInterfaceObject]
+interface DeviceStatusManager {
+       /**
+        * \brief The getComponents() method provides means to get the components of an aspect.
+        * 
+        * When the getComponents() method is invoked, the user agent MUST run the steps to retrieve the components.
+        * 
+        * The steps to retrieve the components are given by the following algorithm. The algorithm returns an array of component names, which may be empty.
+        * 
+        * <ol>
+        * <li>  Run the general invocation checks algorithm. If no exceptions were generated, continue.</li>
+        * <li>  Let components be an empty array.</li>
+        * <li>  If the first argument (aspect) null, return components and terminate this algorithm.</li>
+        * <li>  Let trimmed aspect be the result of trimming any space characters from the front and back of aspect.</li>
+        * <li>  If trimmed aspect is an empty string or does not exactly match the name of a supported aspect, return null and terminate this algorithm.</li>
+        * <li>  If trimmed aspect exactly matches the name of a supported aspect:
+        * \n      6a. For each component of the matching aspect, create a DOMString representation of the component name and add it to the components array.</li>
+        * <li>   This offers methods to get information about the device status and subscribe to receive notifications of device status changes. To allow for asynchronous notification of changes to the various properties of components, the user agent keeps a list of active watch operations. Each entry in this list is identified by a number, which is unique within its list for the lifetime of the application.</li>
+        * </ol>
+        *
+        *        
+        * \code
+//displays contain, for example, ["screen1"] 
+var displays = deviceapis.devicestatus.getComponents('Display');
+console.log("Your device has " + displays.length + " displays");
+
+//iterate through and show the name of each component
+for (var i = 0; i < displays.length; i++) {
+        var display = displays[i];
+        console.log("Display component " + i + ": " + displays[i]);
+}
+        * \endcode
+        *
+        * \param aspect for component to retrieve
+        * \return components
+        */
+    DOMString[]? getComponents(DOMString? aspect);
+
+       /**
+        * \brief The isSupported() method checks if an aspect is supported and, optionally, if a property that would correspond to a component of that aspect is supported (e.g., a Battery aspect's batteryLevel property).
+        * 
+        * When invoked, the user agent MUST run the steps to check if an aspect is supported.
+        * 
+        * The steps to check if an aspect is supported are given by the following algorithm. The algorithm returns either true or false.
+        * 
+        * <ol>
+        * <li> Run the general invocation checks algorithm. If no exceptions were generated, continue.</li>
+        * <li> Let trimmed aspect be the result of trimming all white space from the front and back of the first argument.</li>
+        * <li> If the user agent does not supports aspect trimmed aspect, return false and terminate this algorithm.</li>
+        * <li> If the second argument (property) was passed, and it's not null,
+        * \n    4a. Let trimmed property be the result of of trimming all white space from the front and back of the second argument.
+        * \n    4b. If trimmed property is a supported property of trimmed aspect, then return true and terminate this algorithm.</li>
+        * <li> Return false.</li>
+        * </ol>
+        * 
+        * \code
+if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
+        console.log("batteryLevel property is available");
+} else {
+        console.log("batteryLevel property is not available");
+}
+        * \endcode
+        *
+        * \param aspect Aspect to check for
+        * \param aspect Optional property to check for
+        * \return whether aspect is supported
+        */
+               
+    boolean isSupported(
+               DOMString aspect,
+               optional DOMString? property);
+
+       /**
+        * \brief The getPropertyValue() method asyncrhonously attemps to read the value of a given component. However, if no component is given, the user agent will default to the active component or the default component of a given aspect.
+        * 
+        * 
+        * The steps to get a property value are given by the following algorithm:
+        * 
+        * <ol>
+        * <li>  Run the general invocation checks algorithm. If no exceptions were generated, continue.</li>
+        * <li>  If either the aspect member or the property member is not present in the third argument (query):
+        * \n     2a.  If the second argument (errorCallback) is not an ECMAScript function, then terminate this algorithm skipping all steps below.
+        * \n     2b.  Let exception be a new DOMException of type "TypeMismatchError", with message "Required aspect or property was not passed." (or similar).
+        * \n     2c.  Queue a task to invoke the errorCallback with exception as the argument.
+        * \n     2d.  Terminate this algorithm, skipping all steps below.</li>
+        * <li>  Let aspect name be the result of trimming the value of the aspect member from the third argument (query).</li>
+        * <li>  If aspect name does not match an enabled aspect:
+        * \n     4a.  If the second argument (errorCallback) is not an ECMAScript function, then terminate this algorithm skipping all steps below.
+        * \n     4b.  If aspect name is one found in all aspects, but was disabled by policy or via a feature string, then:
+        * \n        4b1.   Let exception be a new DOMException of type "SecurityError", with message "Access to this component was blocked by policy." (or similar).
+        * \n     4c.  If aspect name is not one found in the list of all aspects, then:
+        * \n        4c1.   Let exception be a new DOMException of type "NotFoundError", with message "Aspect could not be found." (or similar).
+        * \n     4d.  Queue a task to invoke the errorCallback with exception as the argument.
+        * \n     4e.  Terminate this algorithm, skipping all steps below.</li>
+        * <li>  Let prop name be the result of trimming the value of the property member from the third argument (query).</li>
+        * <li>  If the component member is present in query, let component name be the result of trimming component member.</li>
+        * <li>  If the component name is not component of the aspect aspect name (e.g., {aspect:"Battery", component: "screen1"}:
+        * \n     7a.  If the second argument (errorCallback) is not an ECMAScript function, then terminate this algorithm skipping all steps below.
+        * \n     7b.  Let exception be a new DOMException of type "InvalidAccessError", with message "Component is not an instance of aspect." (or similar).
+        * \n     7c.  Queue a task to invoke the errorCallback with exception as the argument.
+        * \n     7d.  Terminate this algorithm, skipping all steps below.</li>
+        * <li>  If the component member is not present in query:
+        * \n     8a.  If the aspect aspect name has an active component, then let component name be "_active". Otherwise, let component name be "_default".</li>
+        * <li>  If the component component name does not have the property property name (e.g., {aspect:"Battery", component: "_active", "fooBar"):
+        * \n     9a.  If the second argument (errorCallback) is not an ECMAScript function, then terminate this algorithm skipping all steps below.
+        * \n     9b.  Let exception be a new DOMException of type "NotFoundError", with message "Property not found in component." (or similar).
+        * \n     9c.  Queue a task to invoke the errorCallback with exception as the argument.
+        * \n     9d.  Terminate this algorithm, skipping all steps below.</li>
+        * <li>  Let task be a task that does the following:
+        * \n    10a.  Let value be the value of property property name of the component component name.
+        * \n    10b.  Invoke the successCallback with value as the argument.</li>
+        * <li>  Let op be and object that implements the PendingDeviceStatusOp interface.</li>
+        * <li>  Associate task with op, so that if op's cancel() method is invoked, it attempts to remove task for the callbacks task queue.</li>
+        * <li>  Queue a task.</li>
+        * <li>  Return op.</li>
+        * </ol>
+        * 
+        * \code
+        * //The "_default" component is implied.
+        * var options = {
+        *         aspect: "Battery",
+        *         property: "batteryLevel"
+        * };
+        * 
+        * deviceapis.devicestatus.getPropertyValue(
+        * function batteryQuery(value) {
+        *         console.log("Battery is at " + value + "%");
+        * },
+        * null, options);
+        * \endcode
+        *
+        * \param successCallback Function to call on successfully retrieving a property value
+        * \param errorCallback Function to call if property value could not be retrieved
+        * \param query Property to retrieve
+        * \return PendingDeviceStatusOp enabling the requester to cancel this request.        
+        */
+    PendingDeviceStatusOp getPropertyValue(Function  successCallback,
+                                      ErrorCB? errorCallback,
+                                      PropQuery query);
+
+
+       /**
+        * \brief The watchPropertyChange() method allows the developer to watch for changes to the properties of components.
+        * 
+        * 
+        * The steps for watching property changes is given by the following algorithm:
+        * 
+        * 
+        * <ol>
+        * <li>  Run the general invocation checks algorithm. If no exceptions were generated, continue.</li>
+        * <li>  Let subscription id be a user-agent-defined (random or sequential) unique integer that will represent the looping action to be created by invoking this method.</li>
+        * <li>  Add subscription id to the list of active watch operations.</li>
+        * <li>  Return subscription id, and then continue running this algorithm asynchronously.</li>
+        * <li>  Let interval be the value 0.</li>
+        * <li>  If the fourth argument (options) is present:
+        * \n     6a.  If the minChangePercent member is present, and it is a number greater than 0, then let percent interval be the value of minChangePercent.
+        * \n     6b.  If the minNotificationInterval member is present, and it is a number, then let interval be the value of minNotificationInterval.
+        * \n     6c.  If the maxNotificationInterval member is present, and it is a number, then let max interval be the value of minNotificationInterval.</li>
+        * <li>  If interval is less than a user-agent-defined value for a the smallest amount of time between intervals (i.e., to protect the component from being flooded with requests or because it would drain too much battery, etc.), set interval to that user-agent-defined value.</li>
+        * <li>  If max interval is less than interval, discard max interval.</li>
+        * <li>  Let old value be the value 0.</li>
+        * <li>  Wait, at a minimum (optionally more time if needed), the amount of time indicated by the interval. If the max interval was not discarded, and the time waited exceeds the max interval, do this step again (i.e., wait).</li>
+        * <li>  If the entry for subscription id has been cleared from the list of active watch operations, terminate this algorithm. If subscription id has not been cleared from the list of active watch operations, create a task to run the getPropertyValue() method using successCallback as the first argument, and, if present, errorCallback as the second argument, and query dictionary as the third argument. Discard the resulting PendingDeviceStatusOp object.</li>
+        * <li>  Factor in the minChangePercent change value. Only queue the task when the change between the old value and new value is minChangePercent or greater.</li>
+        * <li>  Queue the task.</li>
+        * <li>  Return to step labelled wait.</li>
+        * </ol>
+        * 
+        * 
+        * \code
+        * function propertyChange(value, ref) {
+        *         console.log("New value for " + ref.property + " is " + value);
+        * }
+        * 
+        * deviceapis.devicestatus.watchPropertyChange(propertyChange, null, {
+        *         property: "batteryLevel",
+        *         aspect: "Battery"
+        * });
+        * 
+        * //The "_default" component is implied.
+        * var options = {
+        *         aspect: "Battery",
+        *         property: "batteryLevel"
+        * };
+        * 
+        * deviceapis.devicestatus.getPropertyValue(
+        * function batteryQuery(value) {
+        *         console.log("Battery is at " + value + "%");
+        * },
+        * null, options);
+        * \endcode
+        *
+        * \param successCallback Function to call on changing property value
+        * \param errorCallback Function to call if an error occurs
+        * \param query Property to watch
+        * \param options Additional options for property watch, such as the minimum range of change
+        * \return Subscription ID
+        */
+
+    long watchPropertyChange(Function successCallback,
+                             ErrorCB? errorCallback,
+                             PropQuery query,
+                             optional WatchOptions? options);
+                             
+       /**
+        * \brief Unsubscribe from notifications for property changes set up by watchPropertyChange.
+        * 
+        * 
+        * If a valid watchid argument is passed that corresponds to a subscription already in place, then the watch process MUST immediately terminate and no further callbacks MUST be invoked. If the watchid argument does not correspond to a valid subscription, the method should return without any further action.
+        * 
+        * \code
+        * function propertyChange(value, ref) {
+        *      console.log("New value for " + ref.property + " is " + value);
+        * 
+        *       if (id) {
+        *              deviceapis.devicestatus.clearPropertyChange(id);
+        *              console.log(id + " cleared");
+        *      }
+        *  }
+        *  
+        *  var id = deviceapis.devicestatus.watchPropertyChange(
+        *   propertyChange, null, {
+        *        property: "batteryLevel",
+        *       aspect: "Battery"
+        *   });
+        * \endcode
+        *
+        * \param watchid Id of watch property change subscription
+        */
+    void clearPropertyChange(long watchid);
+  };
+  
+       /**
+        * \brief       The PropQuery provides a way to query an component about a property. 
+        */
+dictionary PropQuery {
+       /**
+        * \brief       The component member represents the component that is to be queried. If it is not present, the user agent will try to use either the active component or the default component for a given aspect (e.g., "screen1"). 
+        */
+     DOMString component;
+       /**
+        * \brief     The aspect member takes the identifier of an aspect (e.g., "Battery"). 
+        *
+        * The defined aspect / property combinations are listed in this table:
+        *        
+        * <TABLE>
+        * <TR>
+        * <TD><b>Aspect</b></TD><TD><b>Property</b></TD><TD><b>Description</b></TD>
+        * </TR>
+        * <TR>
+        *    <TD>Battery</TD><TD>batteryBeingCharged</TD>
+        *    <TD>The batteryBeingCharged property is a boolean that indicates whether the battery is currently being charged or not. <br /> Returns true if the battery is being charged. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>Battery</TD><TD>batteryLevel</TD>
+        *    <TD>The batteryLevel property is an octet that represents the remaining percentage (0-100) of the battery capacity that available. When the battery is full, the value is 100. When the battery is drained, the value is 0.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Camera</TD><TD>model (**)</TD>
+        *    <TD>This property indicates the model of the Camera as a DOMString.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Camera</TD><TD>vendor (**)</TD>
+        *    <TD>This property indicates the vendor of the camera as a DOMString.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Camera</TD><TD>status (**)</TD>
+        *    <TD>This property indicates the status of the camera as a DOMString. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>Camera</TD><TD>resolutionHeight (**)</TD>
+        *    <TD>This property indicates the height resolution of the camera as an unsigned short.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Camera</TD><TD>resolutionWidth (**)</TD>
+        *    <TD>This property indicates the width resolution of the camera as an unsigned short.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Camera</TD><TD>maxZoom (**)</TD>
+        *    <TD>This property indicates the maximum zoom of the camera a as an unsigned short.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Camera</TD><TD>minZoom (**)</TD>
+        *    <TD>This property indicates the minimum zoom of the camera a as an unsigned short.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Camera</TD><TD>currentZoom (**)</TD>
+        *    <TD>This property indicates the current zoom of the camera a as an unsigned short.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Camera</TD><TD>hasFlash (**)</TD>
+        *    <TD>This property indicates if the camera has the flash as a boolean value.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Camera</TD><TD>flashOn (**)</TD>
+        *    <TD>This property indicates if the flash of the camera is active as a boolean value.</TD>
+        * </TR>
+        * <TR>
+        *    <TD> CellularHardware</TD><TD>status</TD>
+        *    <TD>The status property is a DOMString represented as a SwitchType that indicates the status of the Cellular Hardware. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>CellularNetwork aspect</TD><TD>isInRoaming</TD>
+        *    <TD>The isInRoaming property is a boolean that indicates if the cellular connection is roaming. A value of true indicates that the connection is roaming. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>CellularNetwork aspect</TD><TD>mcc</TD>
+        *    <TD>The mcc property is a DOMString that represents the country of a mobile network. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>CellularNetwork aspect</TD><TD>mnc</TD>
+        *    <TD>The mnc property is a DOMString that represents the Mobile Network Code (MNC). </TD>
+        * </TR>
+        * <TR>
+        *    <TD>CellularNetwork aspect</TD><TD>signalStrength</TD>
+        *    <TD>The signalStrength property is an octet that represent the signal strength of the cellular network represented as a percentage.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>CellularNetwork aspect</TD><TD>operatorName</TD>
+        *    <TD>The operatorName property is a DOMString that represents the name of the operator of the cellular network.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>CellularNetwork aspect</TD><TD>ipAddress (*)</TD>
+        *    <TD>IP address of the connection (null if not connected) as a DOMstring.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>CellularNetwork aspect</TD><TD>macAddress (*)</TD>
+        *    <TD>MAC address of the connection (null if not connected) as a DOMstring.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>CPU</TD><TD>model (**)</TD>
+        *    <TD>This property indicates the model of the CPU as a DOMstring.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>CPU aspect</TD><TD>currentLoad (*)</TD>
+        *    <TD>This property indicates the current load of the CPU as a percentage. In case of multi processor CPU, it reports the average. The currentLoad is an unsigned short.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Device</TD><TD>imei</TD>
+        *    <TD>The imei property is a DOMString that represents the International Mobile Equipment Identity (IMEI).</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Device</TD><TD>type</TD>
+        *    <TD>The type property is a DOMString that represents as DeviceType the device category</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Device</TD><TD>model</TD>
+        *    <TD>The model property is a DOMString that represents the name of the device model, as assigned by the vendor. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>Device</TD><TD>vendor</TD>
+        *    <TD>The vendor property is a DOMString that represents the vendor of the device.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Device</TD><TD>version</TD>
+        *    <TD>The version property is a DOMString that represents the device version assigned by the vendor. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>Display</TD><TD>resolutionHeight</TD>
+        *    <TD>The resolutionHeight property is an unsigned short representing the total number of pixels for the height of the screen. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>Display</TD><TD>pixelAspectRatio </TD>
+        *    <TD>The pixelAspectRatio property is a float that represents pixel aspect ratio, for example 1.333333333 for a 4:3 aspect. It's always the value of the resolutionHeight divided by the resolutionWidth. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>Display</TD><TD>dpiY </TD>
+        *    <TD>The dpiY property is an unsigned short that represents the dots per inch of the display in the Y axis.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Display</TD><TD>resolutionWidth </TD>
+        *    <TD>The resolutionWidth property is an unsigned short representing the total number of pixels for the width of the screen. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>Display</TD><TD>dpiX </TD>
+        *    <TD>The dpiX property is an unsigned short that represents the dots per inch of the display in the X axis.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>Display</TD><TD>colorDepth</TD>
+        *    <TD>The colorDepth property is an octet that represents the number of bits used for color definition (e.g. 24). </TD>
+        * </TR>
+        * <TR>
+        *    <TD>InputControl</TD><TD>touchscreen (*)</TD>
+        *    <TD>The touchscreen property is a boolean that indicates, if the device has a touchscreen.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>InputControl</TD><TD>touchpad (*)</TD>
+        *    <TD>The touchpad property is a boolean that indicates, if the device has a touchpad attached.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>InputControl</TD><TD>mouse (*)</TD>
+        *    <TD>The mouse property is a boolean that indicates, if the device has a mouse attached.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>InputControl</TD><TD>scrollwheel (*)</TD>
+        *    <TD>The scrollwheel property is a boolean that indicates, if the device has a scrollwheel attached.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>InputControl</TD><TD>keyboard (*)</TD>
+        *    <TD>The keyboard property is a boolean that indicates, if the device has a keyboard attached.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>InputControl</TD><TD>cursorkeyboard (*)</TD>
+        *    <TD>The cursorkeyboard property is a boolean that indicates, if the device has a cursorkeyboard attached.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>InputDevice</TD><TD>type (*)</TD>
+        *    <TD>This property indicates the type of input devices. It is a DOMString with a value chosen from the following InputType enum.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>MemoryUnit</TD><TD>size</TD>
+        *    <TD>The size property is an unsigned long that represents size of a memory component in bytes.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>MemoryUnit</TD><TD>removable</TD>
+        *    <TD>The removable property is a boolean indicating if the memory component can be removed from the device. The value is true if it is possible.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>MemoryUnit</TD><TD>availableSize</TD>
+        *    <TD>The availableSize property is an unsigned long representing the available size of the memory component in bytes. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>MemoryUnit</TD><TD>volatile (**)</TD>
+        *    <TD>This boolean property indicates if a memory unit is volatile. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>OperatingSystem</TD><TD>language</TD>
+        *    <TD>The language property is a DOMString representation the locale of the operating system, in the RFC 4646 language tag format. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>OperatingSystem</TD><TD>version</TD>
+        *    <TD>The version property is a DOMString that represents the version of the operating system. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>OperatingSystem</TD><TD>name</TD>
+        *    <TD>The name property is a DOMString representing the name of the operating system.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>OperatingSystem</TD><TD>vendor</TD>
+        *    <TD>The vendor property is a DOMString representing name of the vendor of the operating system. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>ParentalRating</TD><TD>name (*)</TD>
+        *    <TD>The name property is a DOMString representing the rating value as denoted by scheme, eg. "PG-13". </TD>
+        * </TR>
+        * <TR>
+        *    <TD>ParentalRating</TD><TD>scheme (*)</TD>
+        *    <TD>The scheme property is a DOMString representing the guidance scheme URIs as defined in MPEG-7.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>ParentalRating</TD><TD>region (*)</TD>
+        *    <TD>The region property is a DOMString representing the region.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>WebRuntime</TD><TD>version</TD>
+        *    <TD>The version property is a DOMString representing the version of the runtime assigned by the vendor.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>WebRuntime</TD><TD>name</TD>
+        *    <TD>The name property is a DOMString representing the name assigned by the vendor to the runtime.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>WebRuntime</TD><TD>vendor</TD>
+        *    <TD>The vendor property is a DOMString representing the name of the vendor who sells or created the runtime. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>WebRuntime</TD><TD>webinosVersion (*)</TD>
+        *    <TD>>The webinosVersion property is a DOMString indicating the version of the webinos specs supported.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>WiFiHardware</TD><TD>status</TD>
+        *    <TD>The status property is a DOMString represented as a SwitchType that indicates if the WiFi Hardware is switched on or off. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>WiFiNetwork</TD><TD>ssid</TD>
+        *    <TD>The ssid property A DOMString that represents the SSID of a WiFi network. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>WiFiNetwork</TD><TD>signalStrength</TD>
+        *    <TD>The signalStrength property is an octet that represents the relative signal strength offered by the WiFi network (from 0 to 100, where 100 is full strength). </TD>
+        * </TR>
+        * <TR>
+        *    <TD>WiFiNetwork</TD><TD>networkStatus</TD>
+        *    <TD>The networkStatus property A DOMString represented as one of the NetworkStates that indicates the state of a WiFi network. </TD>
+        * </TR>
+        * <TR>
+        *    <TD>WiFiNetwork</TD><TD>ipAddress (*)</TD>
+        *    <TD>IP address of the connection (null if not connected) as a DOMstring.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>WiFiNetwork</TD><TD>macAddress (*)</TD>
+        *    <TD>MAC address of the connection (null if not connected) as a DOMstring.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>WiredNetwork</TD><TD>networkStatus</TD>
+        *    <TD>The networkStatus property A DOMString that represents the status of a network taken from the NetworkStates enum</TD>
+        * </TR>
+        * <TR>
+        *    <TD>WiredNetwork</TD><TD>ipAddress (*)</TD>
+        *    <TD>IP address of the connection (null if not connected) as a DOMstring.</TD>
+        * </TR>
+        * <TR>
+        *    <TD>WiredNetwork</TD><TD>macAddress (*)</TD>
+        *    <TD>MAC address of the connection (null if not connected) as a DOMstring.</TD>
+        * </TR>
+        * </TABLE>
+        * <b>(*) This aspect/property has been added by Webinos.</b><br />
+        * <b>(**) This aspect/property has been taken from the BONDI vocabulary. </b>
+        *
+        */
+     DOMString aspect;
+       /**
+        * \brief       The property member takes the name of a property of a component ("batteryBeingCharged"). 
+        */
+     DOMString property;
+};  
+
+
+    /**
+     * \brief The PendingDeviceStatusOp interface
+     *
+     * The PendingSensorConfigOp interface describes the object that is returned by the asynchronous device status method. It makes it possible to abort
+     * this operation to a stop if it hasn't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.
+     *
+     */
+     [NoInterfaceObject] interface PendingDeviceStatusOp {
+
+    /**
+     * \brief Method Cancel
+     *
+     *  Cancel the pending device status asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
+     *  Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
+     *  name "AbortError" is issued.
+     */
+        void cancel ();
+     };
+
+
+
+        /**
+        * \brief Possible values for switch
+        */
+        enum SwitchType {"ON", "OFF"};
+        /**
+        * \brief Possible values for the device type
+        */
+        enum DeviceType {"smartphone", "tablet","ivi","tv","homemediabox","pc","laptop"};
+
+        /**
+        * \brief Possible values for the input type 
+        */
+        enum InputType {"clickWheel", "fourWayScroller", "jogDial", "mouse", "numericKeypad", "phoneKeypad", "qwertyKeyboard", "stylus", "touchScreen", "trackBall"};
+
+
+        /**
+        * \brief Possible values for network states
+        */
+        enum NetworkStates {"connected", "available", "forbidden"};
+

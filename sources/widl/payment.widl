@@ -1,28 +1,26 @@
-/**
- * \brief Interface for Payment functions.
+/**<p> Interface for Payment functions.</p>
+ * \name Payment API
  *
  * This API provides generic shopping basket functionality to provide in-app payment.
  *
  * It is not linked to a specific payment service provider and is designed to be 
  * sufficiently generic to be mapable to various payment services like GSMA OneAPI,
- * Andoid Payment API or PayPal. 
+ * BlueVia, Android Payment API or PayPal. 
  *
  * \def-api-feature http://webinos.org/api/payment
  * Identifies all payment interactions. 
- *
+ * 
+ * \def-api-feature http://webinos.org/api/payment.checkout
+ * Identifies access to the checkout function, enabling a separate policy (ask user consent) for the checkout itself. 
  * 
  * \author Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
  */
  
-module payment {      
-
-
-  /**
-   * \brief The WebinosPayment interface describes the part of the payment API accessible through the webinos object.
-   */
-
-   [NoInterfaceObject] interface WebinosPayment {
-
+/**
+* \brief Creates the webinos.payment namespace.
+*
+*/
+partial interface Webinos {
      /**
       * \brief webinos.payment object.
       */
@@ -83,7 +81,7 @@ module payment {
    *        function updateSuccess() {
    *                alert("Total amount is: "myBasket.totalAmount+" Tax is "+myBasket.tax);
    *                // now close the bill and perform the actual payment
-   *                myBasket.checkout(checkoutSuccess, paymentFailure);
+   *                myBasket.checkout(checkoutSuccess, paymentFailure, paymentChallenge);
    *        }
    *        
    *        // Define the checkoutSuccess success callback.
@@ -97,6 +95,27 @@ module payment {
    *                alert("Failure occured during payment.");
    *                 if (myBasket != null) myBasket.release();
    *        }
+   *
+   *        // Define the paymentChallenge callback.
+   *        function paymentChallenge(cType, cValue) {   
+   *                 
+   *         if(cType=="url"){
+   *           // direct web page of payment provider
+   *           window.open(cValue, "Confirm Payment", "width=300,height=200,scrollbars=yes");
+   *         }
+   *         else if(cType=="text"){
+   *             userInput = prompt(cValue, "");
+   *             answerChallenge(userInput);
+   *         }
+   *         else if(cType=="image"){
+   *             // this would need a custom prompt, which would make this example
+   *             // too large - just pretent it's here.
+   *             userInput = graphicPrompt(cValue, "");
+   *             answerChallenge(userInput);
+   *         }
+   *         else alert("Unknown challenge type "+cType+" issued by payment provider.");  *
+   *        }
+   *         
    *
    * \endcode
    *
@@ -115,12 +134,10 @@ module payment {
        * \param serviceProviderID is the name of the payment provider to be used
        * \param customerID is identification of the person making the payment as known to the payment provider
        * \param shopID is the identification of the shop the payment is made to
-       * \return PendingOperation enabling the requester to cancel this request.
-       * \throw PaymentException INVALID_ARGUMENT_ERROR if an invalid argument is passed
+       * \return void
        */
-        PendingOperation createShoppingBasket(SuccessShoppingBasketCallback successCallback, PaymentErrorCB errorCallback,
-        DOMString serviceProviderID, DOMString customerID, DOMString shopID)
-        raises(PaymentException);
+        void createShoppingBasket(SuccessShoppingBasketCallback successCallback, PaymentErrorCB errorCallback,
+        DOMString serviceProviderID, DOMString customerID, DOMString shopID);
   };
   
     /**
@@ -132,13 +149,10 @@ module payment {
    **/
    
 [NoInterfaceObject] interface ShoppingBasket {   
-
         /**
        * \brief List of items currently in the shopping basket. 
-       * 
        * These are the items that have been added with addItem.
        *
-       * No exceptions
        */
         readonly attribute ShoppingItem[] items; 
         /**
@@ -151,7 +165,6 @@ module payment {
        * shipping costs and other items that are calculated on the basis of the regular
        * items added.
        *
-       * No exceptions
        */
         readonly attribute ShoppingItem[] extras; 
         /**
@@ -159,21 +172,18 @@ module payment {
        *
        * Will be updated by update(), may be updated by addItem().
        *
-       * No exceptions
        */
         readonly attribute float totalBill; 
         
         /**
        * \brief Adds an item to a shopping basket.
        *
-       * \param successCallback Callback issued when the adding of the item to the shopping basket is correctly finished.
-       * \param errorCallback Callback issued if an error occurs during adding the amount       
+       * \param successCallback Callback issued when successfully added the item to the shopping basket
+       * \param errorCallback Callback issued if an error occurs during adding the item
        * \param item the item to purchase
-       * \return PendingOperation enabling the requester to cancel this request.
-       * \throw PaymentException INVALID_ARGUMENT_ERROR if an invalid argument is passed
+       * \return void
        */
-        PendingOperation addItem(PaymentSuccessCB successCallback, PaymentErrorCB errorCallback, ShoppingItem item)
-        raises(PaymentException);
+        void addItem(VoidFunction successCallback, PaymentErrorCB errorCallback, ShoppingItem item);
 
         /**
        * \brief Updates the shopping basket
@@ -193,11 +203,9 @@ module payment {
        *
        * \param successCallback Callback issued when the update is performed
        * \param errorCallback Callback issued if an error occurs during update 
-       * \return PendingOperation enabling the requester to cancel this request.
-       * \throw PaymentException INVALID_ARGUMENT_ERROR if an invalid argument is passed
+       * \return void
        */
-        PendingOperation update(PaymentSuccessCB successCallback, PaymentErrorCB errorCallback)
-        raises(PaymentException);
+        void update(VoidFunction successCallback, PaymentErrorCB errorCallback);
 
         /**
        * \brief Performs the checkout of the shopping basket.
@@ -208,12 +216,24 @@ module payment {
        * might cause the checkout screen of the payment service provider to be displayed.
        *
        * \param successCallback Callback issued when the checkout is performed and payment is made
-       * \param errorCallback Callback issued if an error occurs during adding the amount       
-       * \return PendingOperation enabling the requester to cancel this request.
-       * \throw PaymentException INVALID_ARGUMENT_ERROR if an invalid argument is passed
+       * \param errorCallback Callback issued if an error occurs during adding the amount   
+       * \param challengeCallback Callback that will be used if the payment provider requires additional confirmation to finalize payment
+       * \return void
        */
-        PendingOperation checkout(PaymentSuccessCB successCallback, PaymentErrorCB errorCallback)
-        raises(PaymentException);
+        void checkout(VoidFunction successCallback, PaymentErrorCB errorCallback, PaymentChallengeCB challengeCallback);
+
+       /**
+       * \brief Provide the user response to a challenge to the payment provider
+       *
+       * If a payment provider presents an image or a text challenge to the user,
+       * the client needs to present them and gather a text response from the user,
+       * which is returned to the payment provider via the userResponse function.
+       *
+       * \param userResponse Information that the user issued in response to the challenge (on image and text challenges)
+       * \return void 
+       */
+        void answerChallenge(DOMstring userResponse);
+
 
         /**
        * \brief Releases a shopping basket.
@@ -234,37 +254,32 @@ module payment {
    * add a number of items to the basket before proceeding to checkout.
    *
    **/
-   [NoInterfaceObject] interface ShoppingItem {
+   dictionary ShoppingItem {
         /**
        * \brief An id that allows the shop to identify the purchased item
        *
-       * No exceptions
        */
-         attribute DOMString productID;
+         DOMString productID;
         /**
        * \brief A human-readable text to appear on the bill, so the user can easily see what they bought.
        *
-       * No exceptions
        */
-         attribute DOMString description;
+         DOMString description;
         /**
        * \brief The 3-figure code as per ISO 4217.
        *
-       * No exceptions
        */
-         attribute DOMString currency;
+         DOMString currency;
         /**
        * \brief The price per individual item in the currency given above, a negative number represents a refund.
        *
-       * No exceptions
        */
-         attribute float itemPrice;
+         float itemPrice;
         /**
        * \brief The number of identical items purchased
        *
-       * No exceptions
        */
-         attribute unsigned long itemCount;
+         unsigned long itemCount;
        /**
        * \brief Price for all products in this shopping item.
        *
@@ -272,158 +287,85 @@ module payment {
        *
        * Updated by the shopping basket update function.
        *
-       * No exceptions
-       *
        */
-         readonly attribute unsigned long itemsPrice;
+         unsigned long itemsPrice;
     };  
 
         /**
          * \brief Callback for successful creation of a shopping basket
-         */
-        [Callback=FunctionOnly, NoInterfaceObject]
-        interface SuccessShoppingBasketCallback {
-        /**
-         * \brief Callback for successful creation of a shopping basket
          * \param basket The shopping basket to which items can be added.
-         * \return void
          */
-            void onSuccess  (ShoppingBasket basket);
-        };
-        
-        /**
-         * \brief Callback for successful payment related functions
-         */
-        [Callback=FunctionOnly, NoInterfaceObject]
-        interface PaymentSuccessCB {
-        /**
-         * \brief Callback for successful of payment related functions
-         * \return void
-         */
-            void onSuccess  ();
-        };
-                
-        /**
-         * \brief Callback for errors during payment related functions
-         */
-        [Callback=FunctionOnly, NoInterfaceObject]
-        interface PaymentErrorCB {
+        callback SuccessShoppingBasketCallback = void (ShoppingBasket basket);
+                        
         /**
          * \brief Callback for errors during payment related functions
          * \param error The Payment API related error object of an unsuccessful asynchronous operation. 
-         * \return void
          */
-            void onError (PaymentError error);
-        };
-
-    /**
-     * \brief The PendingOperation interface
-     *
-     * The PendingOperation interface describes objects that are returned by asynchronous methods that are cancellable. It makes it possible to bring 
-     * these operations to a stop if they haven't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.\n
-     *
-     */
-     [NoInterfaceObject] interface PendingOperation {
-    /**
-     * \brief Method Cancel
-     *
-     *  Cancel the pending asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return. No success or error callback for the pending operation will be invoked.
-     */
-        void cancel ();
-     };
-
-
+        callback PaymentErrorCB = void (PaymentError error);
         
+
+        /**
+         * \brief Callback for additional confirmation / identification challenges by the payment provider
+         *
+         * In many payment scenarios, the payment provider will require additional information
+         * and confirmation by the user to ensure that the payment is done with user consent
+         * and that the user is not impersonated by an application. To facilitate this, the
+         * payment provider can issue a challenge, which will be presented to the user and
+         * needs to be responded to by the user. It is the task of the payment provider to 
+         * ensure that challenges are changing and a capture/replay attack will not be successful.
+         * 
+         * Depening on the needs of the transaction, this can also be used to ensure that the
+         * payment is confirmed by a person (for example by using captcha-style images) and also
+         * to confirm to users that they are indeed connected to the proper payment provider (for
+         * example by presenting an image, only known to the user and the payment provider overlaid
+         * with information about the current payment process).
+         * 
+         * Challenges can take three forms:
+         *   Text challenges - such as "Enter the PIN from the SMS er just sent you."
+         *   Image challenges - captcha-style images or any image containing a textual question
+         *   URL - many payment providers require a re-direct to their own web page for additional
+         *         identification and confirmation. On receiving an URL, the client is required
+         *         to open a frame with this URL so the user can comunicate and provide credentials
+         *         directly to the payment provider.         
+         *
+         * \param challengeType Defines the challenge type issued by the payment provider.
+         * \param challenge Defines the challenge to be presented to the user
+         */
+        callback PaymentChallengeCB = void (PaymentChallengeType challengeType, DOMString challenge);
+        
+
+
+
+        /**
+        * \brief Types of payment challenges
+        */
+          enum PaymentChallengeType {"text", "image", "url"};
+          
+        /**
+        * \brief Types of error messages specific to payment functionality
+        */
+         enum PaymentErrors {"basket_already_open", "basket_not_open", "payment_charge_failed", "payment_refund_not_supported", "payment_refund_failed", "payment_chargeable_exceeded", "payment_authentication_failed"};
+
         /**
          * \brief Payment specific errors.
          *
-         * The PaymentError interface encapsulates all errors in the manipulation of payments objects in the Payment API. 
+         * The PaymentError dictionary encapsulates all errors in the manipulation of payments objects in the Payment API. 
          */
-        interface PaymentError {
-
-
-                
-                /**
-                 * \brief Bill is already open
-                 */
-                const unsigned short PAYMENT_SHOPPING_BASKET_OPEN_ERROR = 1;
-
-                /**
-                 * \brief Bill is not open
-                 */
-                const unsigned short PAYMENT_SHOPPING_BASKET_NOT_OPEN_ERROR = 2;
-
-                /**
-                 * \brief Charging operation failed, the charge was not applied
-                 */
-                const unsigned short PAYMENT_CHARGE_FAILED = 3;                
-
-                /**
-                 * \brief Refunds not supported
-                 */
-                const unsigned short PAYMENT_REFUND_NOT_SUPPORTED = 4;
-
-                /**
-                 * \brief  Refund failed
-                 */
-                const unsigned short PAYMENT_REFUND_FAILED = 5;                
-
-                /**
-                 * \brief Chargeable amount exceeded
-                 */
-                const unsigned short PAYMENT_CHARGEABLE_EXCEEDED = 6;
-
-                /**
-                 * \brief Chargeable Authentication failed. Payment credentials are incorrect. 
-                 */
-                const unsigned short PAYMENT_AUTHENTICATION_FAILED = 7;
+        dictionary PaymentError {
 
         /**
        * \brief An error code assigned by an implementation when an error has occurred in Payment processing.
        *
        * No exceptions.
        */
-        readonly attribute unsigned short code;
+        PaymentErrors code;
         /**
        * \brief A text describing an error occuring in the Payment in human readable form.
        *
        * No exceptions.
        */    
-             readonly attribute DOMString message;
-  };  
-
-
-        /**
-         * \brief Payment API specific errors.
-         *
-         * The PaymentException interface encapsulates all errors in calling of the Payment API. 
-         */
-
-         exception PaymentException {
-
-                /**
-                 * \brief Invalid argument
-                 */
-                const unsigned short INVALID_ARGUMENT_ERROR = 1;
-
-        /**
-       * \brief An error code assigned by an implementation when an error has occurred in Payment API processing.
-       *
-       * 
-       */
-        unsigned short code;
-
-        /**
-       * \brief A text describing an error occuring in the Payment API in human readable form.
-       *
-       * 
-       */    
         DOMString message;
-
-    
   };  
 
 
-     webinoscore::Webinos implements WebinosPayment;
 
-};

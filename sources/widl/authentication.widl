@@ -1,200 +1,137 @@
-/**
- * \brief Provides information to applications about the current authentication status of users, as well as allowing applications to request re-authentication.
+/**<p>Provides information to applications about the current authentication status of users</p>
+ * \name Authentication API
  * 
- * Authentication API for providing applications with information about whether the current user has authenticated, and requesting re-authentication at runtime.
+ * Authentication API for providing applications with information about whether the current user has authenticated,
+ * and requesting re-authentication at runtime.
  *
  * Requirement/architectural reference:  PS-USR-Oxford-121
  *
- * This API intentionally does not reveal identity information, but can give details about authentication method, which may reveal device information.
+ * This API intentionally does not reveal identity information, but can give details about authentication method,
+ * which may reveal device information.
  * 
  * \author John Lyle; &lt;john.lyle@cs.ox.ac.uk&gt;
+ * \author Andrea Atzeni; &lt;shocked@polito.it&gt;
+ * \author Cesare Cameroni; &lt;cesare.cameroni@polito.it&gt;
  * \def-api-feature http://webinos.org/api/authentication
  * \version 0.1
  */
-module authentication {
-
   /**
-    * \brief The object returned when user authentication status is queried.  This contains information about when and how authentication occurred.
+    * \brief The object returned when user authentication status is queried.
+    * This contains information about when and how authentication occurred.
     */
-  [NoInterfaceObject]
-  interface AuthStatus  {
-  
-	/**
-	  * \brief The time of last authentication, as a valid date or time string.
-	  *
-	  * \code
-	  * {lastAuthTime: '2011-03-24T09:00-08:00'} // last authentication was on March 24, 2011 @ 5pm (UTC)
-	  * \endcode
-	  *
-	  * No exceptions.
-	  */
-         attribute DOMString? lastAuthTime;
-
-	/**
-	  * \brief An identifier for the type of authentication performed by the user. \n
-	  * Intended to be flexible for different devices.  Examples include "PIN", \n 
-	  * "Password", "Fingerprint".  This is a high-level method name, no details.
-	  * 
-	  */
-	 attribute DOMString? authMethod;
-	 
-	 /**
-	   * \brief Further details as to the authentication method.  This might include \n
-	   * the authentication device identifier, or the numberof digits in PINS, or
-	   * any device-specific value.  Optional.
-	   *
-	   */
-	 
-	 attribute DOMString? authMethodDetails;
+  dictionary AuthStatus  {
+    /**
+      * \brief The time of last authentication, as a valid date or time string.
+      *
+      * \code
+      * {lastAuthTime: '2011-03-24T09:00-08:00'} // last authentication was on March 24, 2011 @ 5pm (UTC)
+      * \endcode
+      *
+      */
+     DOMString? lastAuthTime;
+    /**
+      * \brief An identifier for the type of authentication performed by the user. \n
+      * Intended to be flexible for different devices.  Examples include "PIN",
+      * "Password", "Fingerprint".  This is a high-level method name, no details.
+      * 
+      */
+     DOMString? authMethod;
+    /**
+      * \brief Further details as to the authentication method.  This might include
+      * the authentication device identifier, or the numberof digits in PINS, or
+      * any device-specific value.  Optional.
+      *
+      */
+     DOMString? authMethodDetails;
   };
   
   /**
-    * \brief Definition of error codes for authentication events
+    * \brief Success callback for authenticate() and getAuthenticationStatus() methods.
+    * \param status contains information about when and how authentication occurred
     */
-  [NoInterfaceObject]
-  interface AuthError  {
-     /**
-	   * \brief An unknown error occurred. 
-	   */
-	const unsigned short UNKNOWN_ERROR = 0;
-	
-     /**
-	   * \brief An invalid parameter was provided when the requested method was invoked. 
-	   */
-	const unsigned short INVALID_ARGUMENT_ERROR = 1;
-	
-	 /**
-	   * \brief Access to the requested method was denied at the implementation or by the user.  
-	   */
-	const unsigned short PERMISSION_DENIED_ERROR = 20;
-
-	 /**
-	   * \brief Authentication timed out
-	   */	
-	const unsigned short TIMEOUT_ERROR = 2;
-
-	 /**
-       * \brief An error code assigned by an implementation when an error has occurred 
-	   *        in authentication API processing.
-	   */	
-	   
-	readonly attribute unsigned short code;
-	
-  };
+  callback AuthSuccessCB = void (AuthStatus status);
   
   /**
-    * \brief Success callback for authentication events.
+    * \brief Success callback for isAuthenticated() method.
+    * \param authenticated specifies whether the user is authenticated or not
     */
-  [Callback=FunctionOnly, NoInterfaceObject]
-  interface AuthSuccessCB {
-	void onSuccess(AuthStatus status);
-  };
+  callback IsAuthenticatedSuccessCB = void (boolean authenticated);
 
   /**
     * \brief Error callback for authentication events.
+    * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> 
+    * object detailing what went wrong; e.g. SecurityError if permission denied, TimeoutError if operation timed out
     */
-  [Callback=FunctionOnly, NoInterfaceObject]
-  interface AuthErrorCB {
-	void onError(AuthError error);
-  };
-  
- /**
-   * \brief Exception codes for authentication events
-   */
-  exception AuthenticationException{ 
-	unsigned short code;
-	DOMString message;
-	
-	const unsigned short UNKNOWN_ERROR = 0;
-	const unsigned short INVALID_ARGUMENT_ERROR = 1;
-	const unsigned short PERMISSION_DENIED_ERROR = 20;
-	const unsigned short TIMEOUT_ERROR = 2;
-  };
-
+  callback AuthErrorCB = void (DOMError error);
   
   /**
-    * \brief The authentication interface provides three methods which allow applications to check the current user authentication status and prompt for re-authentication.
+    * \brief The authentication interface provides three methods which allow applications to check the current user
+    * authentication status and prompt for re-authentication.
     */
-   
   [NoInterfaceObject]
   interface WebinosAuthenticationInterface {
-
     /**
-     * \brief this method instructs the runtime to request that the user authenticate themselves. \n
+      * \brief This method instructs the runtime to request that the user authenticate themselves. \n
 	 * The method for authentication is not specified, it may be through any means provided by the platform.
-     *
+	 *
 	 *  Errors can occur due to: a policy restricting access to this API, or an unknown error in the
 	 *  device-specific authentication method.
      * 
-     * \param successCB contains the status of the user with regards to authentication, including when \n 
+     * \param successCB contains the status of the user with regards to authentication, including when
 	 *        and how he or she was last authenticated.  It does not include user identity.
-	 * \param errorCB is a callback for when errors occur 
-     * \return 
+     * \param errorCB is a callback for when errors occur 
+     * \return void
 	 *
 	 * This is an asynchronous method, although it may well be used (practice) synchronously.
 	 *
      */
-
-     void authenticate (in AuthSuccessCB successCB, optional AuthErrorCB errorCB );
-
-
+     void authenticate (AuthSuccessCB successCB, optional AuthErrorCB errorCB);
     /**
-     * \brief Query the runtime to ask whether the user has recently been authenticated.  How the platform \n 
-	 *  determines this is not specified.  It may return true if the user entered their PIN in the last 10 \n
-	 *  minutes, for example.  It is expected that a platform preference based on current authentication \n 
+     * \brief Query the runtime to ask whether the user has recently been authenticated. How the platform
+	 *  determines this is not specified.  It may return true if the user entered their PIN in the last 10
+	 *  minutes, for example.  It is expected that a platform preference based on current authentication 
 	 *  status would be defined.  These preferences are security-sensitive.
 	 *  
-     *  Errors can occur due to: a policy restricting access to this API, or if the platform does not have \n
-	 *  a definitive answer due to a misconfigured preference or lack of information.  
-	 *
-     * \return True IFF the user has been authenticated to the satisfaction of the platform.
+    	 * Throws a SecurityError exception if policy restricts access to the API, or if the platform does not
+	 * have  a definitive answer due to a misconfigured preference or lack of information.
+     * 
+     * \param successCB True if the user has been authenticated to the satisfaction of the platform.
+     * \param errorCB is a callback for when errors occur 
+     *
+     * \return void
      * 
 	 * This is a synchronous method.  Expected use would be to check at an important place whether the user
 	 * is authenticated and, if not, call "authenticate" to do so.
 	 *
      */
-
-
-     boolean isAuthenticated ( ) raises(AuthenticationException);
-
-
-	 
+     void isAuthenticated(IsAuthenticatedSuccessCB successCB, optional AuthErrorCB errorCB);
     /**
-     * \brief Query the runtime for precise details about the current state of the user with regard to \n
+     * \brief Query the runtime for precise details about the current state of the user with regard to
 	 *  authentication.  \n
-     *
-	 *  Errors can occur due to: a policy restricting access to this API.
-     *	 
-     * \return AuthStatus - returns the status of the user with regards to authentication, including when \n 
-	 *        and how he or she was last authenticated.  It does not include user identity.
+         * Throws a SecurityError exception if policy restricts access to the API
      * 
-	 * This is a synchronous method.  Expected use is for when an application is determining whether the 
+     * \param successCB contains the boolen status of the user with regards to authentication
+     * \param errorCB is a callback for when errors occur 
+     *	 
+     * \return void
+     * 
+	 * This is an asynchronous method.  Expected use is for when an application is determining whether the 
 	 * user ought to re-authenticate, or whether the user is suitably authenticated for a particular
 	 * action.  Future versions of this API may be able to insist that the user authenticates in a certain
 	 * way.
 	 *
      */
-
-
-     AuthStatus getAuthenticationStatus () raises(AuthenticationException);
-
-
-
+     void getAuthenticationStatus(AuthSuccessCB successCB, optional AuthErrorCB errorCB);
    };
    
-   	/**
-	 * \brief The WebinosAuthentication interface describes the part of the Authentication
-	 *        API accessible through the webinos object.
-	 */
-	[NoInterfaceObject] interface WebinosAuthentication {
-		/**
-		 * \brief webinos.authentication object.
-		 */
-		readonly attribute WebinosAuthenticationInterface authentication;
-	};
-
-	webinoscore::Webinos implements WebinosAuthentication;
-   
-
-};
+  /**
+   * \brief The Webinos interface describes the part of the Authentication API accessible through the
+   * webinos object.
+   */
+  partial interface Webinos {
+     /**
+      * \brief webinos.authentication object.
+      */
+     readonly attribute WebinosAuthenticationInterface authentication;
+  };
 
