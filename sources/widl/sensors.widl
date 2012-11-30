@@ -1,4 +1,4 @@
-/**<p> The Webinos Generic Sensor API provides web applications with an API to access data from sensors in the device or in another device. Updated to test specification generation on Github.</p> 
+/**<p> The Webinos Generic Sensor API provides Web Applications with an API to access data from sensors in the device or in another device.</p> 
  * \name The Generic Sensor API 
  *
  * The API is agnostic to underlying low level methods for sensor discovery and communication with sensors. However, the sensor API should be used
