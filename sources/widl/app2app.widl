@@ -16,7 +16,7 @@
  *
  * \def-api-feature http://webinos.org/api/app2app
  * \author Fabian Walraven &lt;fabian.walraven@tno.nl&gt;
- * \version 0.1.1
+ * \version 0.2.0
  */
 
 /**
@@ -35,129 +35,97 @@ partial interface Webinos {
  * \brief Access to the App2App Messaging functions.
  *
  * An application
- * can create and configure a channel using a namespace. Other applications are
- * able to
- * connect to that channel using the namespace as a key (with a possible 
- * wildcard). A channel sits between (two or more) applications such that
- * applications do not address each other directly.
+ * can create a channel with a unique namespace. Other applications are
+ * able to search for channels and request to connect to a channel.
+ * An application can create and/or connect to multiple channels, and for each
+ * channel the application is represented by a client instance which is valid
+ * only in the scope of its channel (i.e. it can not be used as a cross-channel
+ * application address).
  *
- * The application which created the channel (i.e. the channel owner)
- * can authorize connect requests of other application instances that want to use
- * the channel using the App2AppChannelRequestCB callback.
- *
+ * A client interacts with a channel proxy (which is returned as a result of
+ * channel search) which exposes the channel API to a client. Before a client
+ * can use a channel it first has to connect to it using the proxy.
  */
 interface App2AppMessaging {
 
   /**
-   * \brief Create a new channel.
+   * \brief Create a new channel. The channel creator decides which clients are allowed to connect to the channel. For each client trying to
+   * connect to the channel the requestCB is invoked which should return true (if allowed to connect) or false.
    *
-   * \param namespace The namespace of the channel (must be unique within the
-   * personal zone).
-   * \param properties The properties of the channel.
-   * \param requestCB The callback called when an application wants to connect
-   * to the channel. If the callback returns true the application is allowed to
-   * connect, otherwise the connect attempt is rejected. 
+   * \param configuration Channel configuration.
+   * \param requestCB Callback invoked to allow or deny clients access to a channel.
+   * \param messageCB Callback invoked to receive messages.
+   * \param successCB Callback invoked when channel creation was successful.
+   * \param errorCB Callback invoked when channel creation failed.
    * \code
    // create channel and ask user to accept connections
-   var channel = webinos.app2app.createChannel("urn:webinos:org:example", { channelOwner: "exampleApp", mode: "send-receive" },
-                                               requestHandler(request) { return confirm("Accept connect request from " + request.source) });
+   var channel = webinos.app2app.createChannel({ namespace: "urn:webinos-org:example", properties: { mode: "send-receive" }, appInfo: {} },
+                                               function(request) { return confirm("Accept connect request from " + request.requestInfo) },
+                                               function(message) { alert("Received message: " + message.contents) },
+                                               function(channel) { alert("Channel creation was successful for namespace " + channel.namespace) },
+                                               function(error) { alert("Could not create channel: " + error.message) });
    \endcode
    */
-  App2AppChannel createChannel(
-    DOMString namespace,
-    App2AppChannelProperties properties,
-    App2AppChannelRequestCB requestCB);
-
-  /**
-   * \brief Create a new message.
-   *
-   * \param type The type of the message.
-   * \param payload The payload of the message.
-   * \code
-   var channel; // previously created channel
-   var message = webinos.app2app.createMessage("status", '{"status": "ok"}');
-   channel.send(message, errorHandler(error) { alert("Oops, something went wrong.") });
-   \endcode
-   */
-  App2AppMessage createMessage(
-    DOMString type,
-    [TreatUndefinedAs=Null] 
-      optional DOMString? payload);
+  void createChannel(
+    App2AppChannelConfiguration configuration,
+    App2AppChannelRequestCB requestCB,
+    App2AppMessageCB messageCB,
+    App2AppChannelCreateSuccessCB successCB,
+    optional App2AppErrorCB errorCB);
 
   /**
    * \brief Search for channels.
    *
    * The key used for finding channels is the channel namespace. It is possible
-   * to use a trailing wildcard for the namespace-specific string of the URN to
+   * to use a trailing wildcard for the namespace-specific string of the URN (RFC2141) to
    * match all channels with the provided namespace identifier prefix. This is
    * useful when multiple application instances of the same application run in
    * the personal zone, share the same namespace identifier and use a generated
    * namespace-specific string to avoid clashes.
    *
-   * \param namespace The namespace of the channels to search for. A wildcard
-   * is allowed for the namespace-specific string.
+   * \param namespace The namespace (URN) of the channels to search for. A wildcard
+   * is allowed for the namespace-specific string ('*').
    * \param zoneIds The identifiers of the personal zones to search for
    * channels in addition the local personal zone.
    * \param searchCB The callback called when a channel is found. Can be called 
    * multiple times if multiple channels are found.
+   * \param successCB Callback invoked when the search is accepted for processing.
+   * \param errorCB Callback invoked when search query could not be processed.
    * \return PendingOperation interface to cancel the asynchronous call.
    *
    * \code
    webinos.app2app.searchForChannels("urn:webinos:org:*", [],
-                                     resultHandler(channel) { alert("Found a channel.") });
+                                     function(channel) { alert("Found a channel with namespace " + channel.namespace) });
    \endcode
    */
   PendingOperation searchForChannels(
     DOMString namespace, 
     DOMString[] zoneIds,
     App2AppChannelSearchCB searchCB,
+    optional App2AppSuccessCB successCB,
     optional App2AppErrorCB errorCB);
 
 };
 
 /**
- * \brief The App2AppMessage interface.
- */
-dictionary App2AppMessage {
-
-  /**
-   * \brief The identifier of the message.
-   *
-   * The message identifier is generated by the Webinos system.
-   */
-  DOMString id;
-
-  /**
-   * \brief The message type.
-   */
-  DOMString type;
-
-  /**
-   * \brief The timestamp of the message.
-   *
-   * The message timestamp is generated by the Webinos system.
-   */
-  DOMTimeStamp timeStamp;
-
-  /**
-   * \brief The payload of the message.
-   */
-  DOMString? payload;
-};
-
-/**
- * \brief The App2AppChannel interface.
+ * \brief The App2AppChannelProxy interface.
  *
- * A channel is the primary entity used for App2App Messaging.
+ * A channel is the primary entity used for App2App Messaging, and is
+ * represented by a proxy.
  * The namespace of a channel is specified as an URN and must be unique within
  * a personal zone. If an application attempts to create a channel with an 
  * already existing namespace (i.e. there is already an active channel with
- * the same namespace within the personal zone) an error is returned.
+ * the same namespace within the personal zone) the errorCB is invoked.
  *
  * An application can create multiple channels, if needed. Each channel
- * requires its own namespace.
+ * requires its own unique namespace.
  */
-interface App2AppChannel {
+interface App2AppChannelProxy {
+
+  /**
+   * \brief The creator of the channel (i.e. a client reference).
+   */
+  readonly attribute object _creator;
 
   /**
    * \brief The namespace of the channel.
@@ -170,65 +138,120 @@ interface App2AppChannel {
   readonly attribute App2AppChannelProperties properties;
 
   /**
-   * \brief Connects to the channel.
+   * \brief Application-specific information attached to the channel.
+   */
+  readonly attribute object appInfo;
+
+  /**
+   * \brief Connect to the channel. The connect request is forwarded to the channel creator, which decides if a client
+   * is allowed to connect. The client can provide application-specific info with the request through the
+   * requestInfo parameter.
    *
-   * \param request Request object to include in the request.
-   * \param messageCB Callback called when receiving a message.
-   * \param successCB Callback called when the connect was successful.
-   * \param errorCB Callback called when an error occurred during connecting.
+   * \param requestInfo Application-specific information to include in the request.
+   * \param messageCB Callback invoked when a message is received on the channel (only after successful connect).
+   * \param successCB Callback invoked if the client is successfully connected to the channel (i.e. if authorized).
+   * \param errorCB Callback invoked if the client could not be connected to the channel.
    *
    * \code
-   var channels; // previously (non-empty) array of found channels
-   channels[0].connect( { source: "exampleApp" },
-                        messageHandler(message) { alert("Got message with type: " + message.type) },
-                        successHandler() { alert("Successfully connected to channel.") },
-                        errorHandler() { alert("Oops, something went wrong.") });
+   var channel; // previously found channel (proxy)
+   channel.connect({ source: "me" },
+                   function(message) { alert("Received message: " + message.contents) },
+                   function(success) { alert("Successfully connected to channel.") },
+                   function(error) { alert("Oops, something went wrong: " + error.message ) });
    \endcode
    */
   void connect(
-    App2AppChannelRequest request,
+    App2AppChannelRequest requestInfo,
     App2AppMessageCB messageCB,
     optional App2AppSuccessCB successCB,
     optional App2AppErrorCB errorCB);
 
   /**
-   * \brief Send a message on the channel.
+   * \brief Send a message to all connected clients on the channel.
    *
    * \param message The message to send.
-   * \param errorCB Callback called when an error occurred during sending.
+   * \param successCB Callback invoked when the message is accepted for processing.
+   * \param errorCB Callback invoked if the message could not be processed.
    *
    * \code
-   var channel; // previously obtained and successfully connected channel
-   var message = webinos.app2app.createMessage("status", '{"status": "ok"}');
-   channel.send(message, errorHandler(error) { alert("Oops, something went wrong.") });
+   var channel; // previously obtained and successfully connected channel (proxy)
+   channel.send({ example: "message" },
+                function(success) { alert("Successfully sent message.") },
+                function(error) { alert("Oops, something went wrong: " + error.message ) });
    \endcode
    */
   void send(
     App2AppMessage message,
+    optional App2AppSuccessCB successCB,
     optional App2AppErrorCB errorCB);
 
   /**
-   * \brief Close the channel.
+   * \brief Send to a specific client only. The client object of the channel creator is a property of the channel proxy. The
+   * App2App Messaging API does not include a discovery mechanism for clients. A channel creator obtains the client
+   * objects for each client through its connectRequestCallback, and if needed the channel creator can implement
+   * an application-specific lookup service to other clients. A client object only has meaning within the scope of its
+   * channel, not across channels. Note that the client object of a message sender can also be found in the "from"
+   * property of the message.
    *
-   * There is no corresponding open function as this is implicit in the
-   * creation of the channel.
+   * \param client The client to send the message to.
+   * \param message The message to send.
+   * \param successCB Callback invoked when the message is accepted for processing.
+   * \param errorCB Callback invoked if the message could not be processed.
+   *
+   * \code
+   var channel; // previously obtained and successfully connected channel (proxy)
+   var client = channel.creator;
+   channel.send(client,
+                { example: "message" },
+                function(success) { alert("Successfully sent message.") },
+                function(error) { alert("Oops, something went wrong: " + error.message ) });
+   \endcode
    */
-  void close();
+  void sendTo(
+    object client,
+    App2AppMessage message,
+    optional App2AppSuccessCB successCB,
+    optional App2AppErrorCB errorCB);
+
+  /**
+   * \brief Disconnect from the channel. After disconnecting the client does no longer receive messages from the channel.
+   * If the channel creator disconnects, the channel is closed and is no longer available. The service
+   * does not inform connected clients of the disconnect or closing. If needed the client can send an
+   * application-specific message to inform other clients before disconnecting. 
+   *
+   * \param successCB Callback invoked when the message is accepted for processing.
+   * \param errorCB Callback invoked if the message could not be processed.
+   */
+  void disconnect(
+    optional App2AppSuccessCB successCB,
+    optional App2AppErrorCB errorCB);
+};
+
+/**
+ * \brief The channel configuration.
+ */
+dictionary App2AppChannelConfiguration {
+
+  /**
+   * \brief The channel namespace
+   */
+  DOMString namespace;
+
+  /**
+   * \brief The channel properties
+   */
+  App2AppChannelProperties properties;
+
+  /**
+   * \brief Application-specific information to attach to the channel.
+   */
+  object appInfo;
 };
 
 /**
  * \brief The channel properties.
- *
- * At channel creation time the application instance can specify channel
- * properties. The properties contains mandatory fields but can be extended
- * with application-specific fields.
  */
 dictionary App2AppChannelProperties {
-
-  /**
-   * \brief The owner of the channel.
-   */
-  DOMString channelOwner;
 
   /**
    * \brief The mode of the channel.
@@ -237,28 +260,65 @@ dictionary App2AppChannelProperties {
 };
 
 /**
- * \brief The available channel modes.
- *
- * <ul>
- *   <li>send-receive: connected applications can both send and receive on the
- *   channel. This is effectively a many-to-many communication scheme.</li>
- *   <li>receive-only: connected applications can only receive on the channel
- *     (the channel owner can both send and receive). This is effectively a
- *     one-to-many communication scheme.</li>
- * </ul>
- */
-enum ChannelMode { "send-receive", "receive-only" };
-
-/**
- * \brief Interface for channel connect requests.
+ * \brief A channel request as it is delivered to the channel creator.
  */
 dictionary App2AppChannelRequest {
 
   /**
-   * \brief The source of the channel request.
+   * \brief The sending client.
    */
-  DOMString source;
+  object from;
+
+  /**
+   * \brief The namespace of the channel on which the request is sent.
+   */
+  DOMString namespace;
+
+  /**
+   * \brief Application-specific information to include in the request.
+   */
+  object requestInfo;
+
 };
+
+/**
+ * \brief A message as it is delivered to a client.
+ */
+dictionary App2AppMessage {
+
+  /**
+   * \brief The sending client.
+   */
+  object from;
+
+  /**
+   * \brief The receiving client.
+   */
+  object to;
+
+  /**
+   * \brief The namespace of the channel on which the message is sent.
+   */
+  DOMString namespace;
+
+  /**
+   * \brief The contents of the message.
+   */
+  object contents;
+
+};
+
+/**
+ * \brief The available channel modes.
+ *
+ * <ul>
+ *   <li>send-receive: connected clients can both send and receive on the
+ *   channel.</li>
+ *   <li>receive-only: connected clients can only receive on the channel
+ *     (the channel creator can both send and receive).</li>
+ * </ul>
+ */
+enum ChannelMode { "send-receive", "receive-only" };
 
 /**
  * \brief The message callback for receiving messages on the channel.
@@ -281,11 +341,15 @@ callback App2AppChannelRequestCB = boolean (App2AppChannelRequest request);
    * Cancel the pending channel search operation. When this method is called, the 
    * user agent must immediately bring the operation to stop and return.
    * Allocated resources should be released and any ongoing related network
-   * operations should be terminated. An error callback is issued with the DOMError
-   * name "AbortError".
+   * operations should be terminated.
    */
   void cancel();
 };
+
+/**
+ * \brief Success callback for when channel creation succeeded.
+ */
+callback App2AppChannelCreateSuccessCB = void(App2AppChannelProxy channel);
 
 /**
  * \brief Success callback for when an operation successfully terminated.
@@ -300,5 +364,5 @@ callback App2AppErrorCB = void (DOMError error);
 /**
  * \brief The channel search callback.
  */
-callback App2AppChannelSearchCB = void (App2AppChannel channel);
+callback App2AppChannelSearchCB = void (App2AppChannelProxy channel);
 
