@@ -22,7 +22,7 @@
  * Identifies all the sensor types. 
  *
  * \def-api-feature http://webinos.org/api/sensors.read
- * Enables access only to read methods of the api - access to configureSensor is forbidden
+ * Enables access only to read methods of the api - access to configureSensor is forbidden. N/A for discovery.
  *
  * \def-api-feature http://webinos.org/api/sensors.light
  * Identifies the light sensor type. 
