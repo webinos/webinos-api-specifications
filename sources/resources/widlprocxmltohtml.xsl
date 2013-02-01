@@ -159,7 +159,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <xsl:if test="descriptive/def-api-feature">
             <div id="def-api-features" class="def-api-features">
                 <xsl:apply-templates select="Interface/descriptive/def-instantiated"/>
-                <p>This is the list of URIs used to declare this API's features, for use in the widget config.xml and as identifier for service type in service discovery functionality. For each URI, the list of functions covered is provided.</p>
+                <p>This is the list of URIs used to declare this API's features, for use in the widget config.xml and as identifier for service type in service discovery functionality. Note that only a subset of the feature URIs are applicable for service discovery. If a feature URI is not applicable for discovery this is explicitly stated by "N/A for discovery".</p>
                 <xsl:apply-templates select="descriptive/def-api-feature"/>
             </div>
         </xsl:if>
