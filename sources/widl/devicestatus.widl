@@ -692,7 +692,7 @@ dictionary PropQuery {
         /**
         * \brief Possible values for the device type
         */
-        enum DeviceType {"smartphone", "tablet","ivi","tv","homemediabox","pc","laptop"};
+        enum DeviceType {"smartphone", "tablet","ivi","tv","homemediabox","pc","laptop", "iot"};
 
         /**
         * \brief Possible values for the input type 
