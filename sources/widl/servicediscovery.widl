@@ -17,9 +17,10 @@
  * of the device is authenticated and authorized to use the API.
  *
  * \def-api-feature http://webinos.org/api/discovery
- * \author Anders Isberg &lt;anders.isberg@sonyericsson.com&gt;
+ * \author Anders Isberg &lt;anders.isberg@sonymobile.com&gt;
  * \author Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;
- * \version 0.8 
+ * \author Claes Nilsson &lt;claes.nilsson@sonymobile.com&gt;
+ * \version 0.9 
  */
 	/**
 	 * \brief The DiscoveryInterface interface provides functionality for discovery of services. 
@@ -118,7 +119,7 @@
 		 * \param serviceType An input argument that defines which type of API that is requested. The serviceType is an URI that uniquely identifies the API.   
 		 * \param findCallBack Callback interface used to report the outcome of the search process. 
 		 * \param options Defines search options. 
-		 * \param filter Defines a filter that be used to limit the service operation to certain constraints and context information. 
+		 * \param filter Defines a filter that be used to limit the service operation to certain constraints and context information. NOTE: It is proposed that Filter should be replaced by REST-like query parameters that extends the Feature URI used as serviceType in findServices().
 		 */
 		 PendingOperation findServices(	
 		 	ServiceType serviceType, 
@@ -139,9 +140,44 @@
 	dictionary ServiceType {
 		/**
 	 	 * \brief 	URI used to identify which type of API that is requested. The URI could either be:\n\n 
-	 	 *			1. webinos Feature URI that is defined for each API by Webinos, for example http://webinos.org/api/sensors.temperature,\n
+	 	 *			1. webinos Feature URI that is defined for each API by Webinos, for example http://webinos.org/api/sensors/temperature,\n
 	 	 *      2. webinos Feature URI for referred unchanged API specifications, for example http://webinos.org/api/w3c/geolocation,\n
 	 	 *			3. an unique URI identifying an API exposed by a web application. The URI shall be the same URI as exposed by the web application manifest in the api-name attribute of the webinos:shared-api element.\n  
+     * \n
+     * The search could be refined by extending the Feature URIs with "REST style" discovery parameters. A set of query parameters can be used for all 
+     * APIs but API specific parameters can also be specified as defined by the "Features" section of each webinos API specification. \n
+     * \n
+     * The common discovery parameters are:\n
+     * \n
+     * - Parameter name: remote_services\n
+     * - Values: true, false\n
+     * - Description: If remote_services is false the findServices method will limit the search for services that are connected directly to the device 
+     *   (including Bluetooth, NFC, etc if available) or to the same local IP network. If remote_services is true, the findServices method will extend the 
+     *   search for services outside the local IP network (including other PZHs). Default value is false.\n
+     * \n
+     * This list is TBD. The intention is to use discovery parameters instead of the current "Filter" attribute.\n
+     * \n
+	   * \code    
+	     // Examples of webinos service discovery using parameters
+	     
+	     // Initiate a search query for TV service outside of the local environment.
+		   findHandle = window.webinos.discovery.findServices(
+			              {api:'http://webinos.org/api/tv?remote_services=true'}, 
+			              {onFound:serviceFoundCB, onLost:serviceLostCB});	     
+	     
+	     // Initiate a search query for a proximity sensor capable of providing proximity in centimeters
+		   findHandle = window.webinos.discovery.findServices(
+			              {api:'http://webinos.org/api/sensors/proximity/read?accuracy=cm'}, 
+			              {onFound:serviceFoundCB, onLost:serviceLostCB});
+			              
+	     // Initiate a search query for a proximity sensor just capable of stating near or far
+		   findHandle = window.webinos.discovery.findServices(
+			              {api:'http://webinos.org/api/sensors/proximity/read?accuracy=nearfar'}, 
+			              {onFound:serviceFoundCB, onLost:serviceLostCB});			              
+	     
+	   * \endcode
+  	 *	    
+     *    
 		 */
 		DOMString api;
 	};
@@ -297,6 +333,8 @@
 	
 	/**
 	 * \brief Filter dictionary
+	 *\n
+	 * NOTE: It is proposed that Filter should be replaced by REST-like query parameters that extends the Feature URI used as serviceType in findServices().
 	 */
 	dictionary Filter {
 		/**

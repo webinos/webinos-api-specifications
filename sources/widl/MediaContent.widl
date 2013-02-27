@@ -8,7 +8,7 @@
  * \def-api-feature http://webinos.org/api/mediacontent
  * Access to all features in this module
  *
- * \def-api-feature http://webinos.org/api/mediacontent.read
+ * \def-api-feature http://webinos.org/api/mediacontent/read
  * Access to all features in this module except updateItem() and updateItemsBatch()
  *
  * \author Tizen Device API Specifications
