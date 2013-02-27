@@ -11,34 +11,34 @@
  * \def-api-feature http://webinos.org/api/vehicle
  * Identifies the static information about the vehicle 
  *
- * \def-api-feature http://webinos.org/api/vehicle.climate
+ * \def-api-feature http://webinos.org/api/vehicle/climate
  * Identifies vehicle data related to climate controls. 
  *
- * \def-api-feature http://webinos.org/api/vehicle.parksensors
+ * \def-api-feature http://webinos.org/api/vehicle/parksensors
  * Identifies park sensor modules of a vehicle.
  *
- * \def-api-feature http://webinos.org/api/vehicle.tripcomputer
+ * \def-api-feature http://webinos.org/api/vehicle/tripcomputer
  * Identifies the trip computer information of a vehicle.
  *
- * \def-api-feature http://webinos.org/api/vehicle.lights
+ * \def-api-feature http://webinos.org/api/vehicle/lights
  * Identifies light data of a vehicle
  *
- * \def-api-feature http://webinos.org/api/vehicle.gearbox
+ * \def-api-feature http://webinos.org/api/vehicle/gearbox
  * Identifies gear data
  *
- * \def-api-feature http://webinos.org/api/vehicle.engineoil
+ * \def-api-feature http://webinos.org/api/vehicle/engineoil
  * Identifies information about engine oil level
  *
- * \def-api-feature http://webinos.org/api/vehicle.seating
+ * \def-api-feature http://webinos.org/api/vehicle/seating
  * Identifies information about engine oil level
  *
- * \def-api-feature http://webinos.org/api/vehicle.tires
+ * \def-api-feature http://webinos.org/api/vehicle/tires
  * Identifies information about the tires
  *
- * \def-api-feature http://webinos.org/api/vehicle.windows
+ * \def-api-feature http://webinos.org/api/vehicle/windows
  * Identifies information about the tire pressure
  *
- * \def-api-feature http://webinos.org/api/vehicle.doors
+ * \def-api-feature http://webinos.org/api/vehicle/doors
  * Identifies information about the doors
  * 
  * \author Simon Isenberg (BMW Forschung \& Technik) &lt;Simon.Isenberg@bmw.de&gt;

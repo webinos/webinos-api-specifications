@@ -15,7 +15,7 @@
  * \def-api-feature http://webinos.org/api/nfc
  * Acccess to all the module. This feature provides access to the whole API.
  *
- * \def-api-feature http://webinos.org/api/nfc.read
+ * \def-api-feature http://webinos.org/api/nfc/read
  * Acccess to all the module except write operations.
  *
  * \author Dave Raggett (W3C) &lt;dsr@w3.org&gt;

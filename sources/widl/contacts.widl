@@ -18,11 +18,9 @@
  * provide write functionality for contacts.
  * 
  * \def-api-feature http://webinos.org/api/contacts  
- * Read and write access to the address book. For discovery it identifes the address book service.
- * \def-api-feature http://webinos.org/api/contacts.read 
- * Read access to the address book. N/A for discovery.
- * \def-api-feature http://webinos.org/api/contacts.write
- * Write access to the address book. N/A for discovery.
+ * Identifies the contacts service including both read and write access.
+ * \def-api-feature http://webinos.org/api/contacts/read 
+ * Identifies the contacts service limited to read access.
  *
  * \author Based on W3C Editor's Draft 16 June 2011 with added contacts write functionality patterned after WAC
  * \author WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;

@@ -10,23 +10,80 @@
  * 
  *
  * \def-api-feature http://webinos.org/api/messaging
- * Access to the full Messaging module except the methods Messaging.sendMessage and Messaging.find and the attribute Message.attachments 
+ * Access to the full Messaging module supporting all messaging types except the methods Messaging.sendMessage and Messaging.find and the attribute Message.attachments 
  *
- * \def-api-feature http://webinos.org/api/messaging.send
- * Access to the Messaging.sendMessage() method 
+ * \def-api-feature http://webinos.org/api/messaging/send
+ * Access to the Messaging.sendMessage() method for all all messaging types 
  *
- * \def-api-feature http://webinos.org/api/messaging.find
- * Access to the Messaging.findMessages method 
+ * \def-api-feature http://webinos.org/api/messaging/find
+ * Access to the Messaging.findMessages method for all all messaging types 
  *
- * \def-api-feature http://webinos.org/api/messaging.subscribe
+ * \def-api-feature http://webinos.org/api/messaging/subscribe
  * Access to the Messaging.onSMS, Messaging.onMMS, Messaging.onEmail, Messaging.onIM methods 
  *
- * \def-api-feature http://webinos.org/api/messaging.attach
- * Access to the Message.attachments attribute. 
+ * \def-api-feature http://webinos.org/api/messaging/attach
+ * Access to the Message.attachments attribute for MMS, Email and IMS. 
+ *
+ * \def-api-feature http://webinos.org/api/messaging/SMS
+ * Access to SMS Messaging except the methods Messaging.sendMessage and Messaging.find and the attribute Message.attachments 
+ *
+ * \def-api-feature http://webinos.org/api/messaging/SMS/send
+ * Access to the Messaging.sendMessage() method for SMS
+ *
+ * \def-api-feature http://webinos.org/api/messaging/SMS/find
+ * Access to the Messaging.findMessages method for SMS 
+ *
+ * \def-api-feature http://webinos.org/api/messaging/SMS/subscribe
+ * Access to the Messaging.onSMS method 
+ *
+ * \def-api-feature http://webinos.org/api/messaging/MMS
+ * Access to MMS Messaging except the methods Messaging.sendMessage and Messaging.find and the attribute Message.attachments 
+ *
+ * \def-api-feature http://webinos.org/api/messaging/MMS/send
+ * Access to the Messaging.sendMessage() method for MMS 
+ *
+ * \def-api-feature http://webinos.org/api/messaging/MMS/find
+ * Access to the Messaging.findMessages method for MMS
+ *
+ * \def-api-feature http://webinos.org/api/messaging/MMS/subscribe
+ * Access to the Messaging.onMMS method 
+ *
+ * \def-api-feature http://webinos.org/api/messaging/MMS/attach
+ * Access to the Message.attachments attribute for MMS 
+ *
+ * \def-api-feature http://webinos.org/api/messaging/Email
+ * Access to Email Messaging except the methods Messaging.sendMessage and Messaging.find and the attribute Message.attachments 
+ *
+ * \def-api-feature http://webinos.org/api/messaging/Email/send
+ * Access to the Messaging.sendMessage() method for Email 
+ *
+ * \def-api-feature http://webinos.org/api/messaging/Email/find
+ * Access to the Messaging.findMessages method for Email
+ *
+ * \def-api-feature http://webinos.org/api/messaging/Email/subscribe
+ * Access to the Messaging.onEmail method 
+ *
+ * \def-api-feature http://webinos.org/api/messaging/Email/attach
+ * Access to the Message.attachments attribute for Email  
+ *
+ * \def-api-feature http://webinos.org/api/messaging/IM
+ * Access to IM Messaging except the methods Messaging.sendMessage and Messaging.find and the attribute Message.attachments 
+ *
+ * \def-api-feature http://webinos.org/api/messaging/IM/send
+ * Access to the Messaging.sendMessage() method for IM 
+ *
+ * \def-api-feature http://webinos.org/api/messaging/IM/find
+ * Access to the Messaging.findMessages method for IM
+ *
+ * \def-api-feature http://webinos.org/api/messaging/IM/subscribe
+ * Access to the Messaging.onIM method 
+ *
+ * \def-api-feature http://webinos.org/api/messaging/IM/attach
+ * Access to the Message.attachments attribute for IM  
  *
  * \author WAC 2.0 Proposed Release Version (PRV) 28 January 2011
  * \author Extended with InstantMessaging functionality for webinos by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
- * \version 1.0
+ * \version 1.1
  */
  
 
