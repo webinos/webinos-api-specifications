@@ -11,15 +11,15 @@
  *
  * The application execution API provides mechanisms for webinos applications to check if specific webinos application is installed in the device. 
  *
- * \def-api-feature http://webinos.org/api/applauncher.launch
+ * \def-api-feature http://webinos.org/api/applauncher/launch
  * Start webinos application - allows to invoke webinos application identified by a unique identifier.
  * 
- * \def-api-feature http://webinos.org/api/applauncher.check
+ * \def-api-feature http://webinos.org/api/applauncher/check
  * Check if application is installed - allow to test of an application identified by a specific application ID is installed on the device.
  *
  * \author Michael Vakulenko &lt;michael@visionmobile.com&gt;
  * \author Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;
- * \version 0.9 
+ * \version 1.0 
  */
   
   /**

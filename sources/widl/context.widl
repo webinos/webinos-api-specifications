@@ -14,26 +14,26 @@
  * \def-api-feature http://webinos.org/api/context
  * Acccess to all the module. This feature provides access to the whole API.
  * Security and Privacy enforcement may depend on the query or subscription requested by the developer.
- * \def-api-feature http://webinos.org/api/context.query
+ * \def-api-feature http://webinos.org/api/context/query
  * Access to the query mechanism.
- * \def-api-feature http://webinos.org/api/context.app
+ * \def-api-feature http://webinos.org/api/context/app
  * Access to the Application context manager. Enables to create new Application ContextObject and retrieve ContextObjects created by the application
- * \def-api-feature http://webinos.org/api/context.app.read
- * Access to read Application ContextObject from othe applications
- * \def-api-feature http://webinos.org/api/context.schedule.read
+ * \def-api-feature http://webinos.org/api/context/app/read
+ * Access to read Application ContextObject from the applications
+ * \def-api-feature http://webinos.org/api/context/schedule/read
  * Access to the scheduling API calls api to query for existing schedules
- * \def-api-feature http://webinos.org/api/context.schedule.create
+ * \def-api-feature http://webinos.org/api/context/schedule/create
  * Enables the application to schedule a new API call
- * \def-api-feature http://webinos.org/api/context.rules.read
+ * \def-api-feature http://webinos.org/api/context/rules/read
  * Read rules and execute them
- * \def-api-feature http://webinos.org/api/context.rules.create
+ * \def-api-feature http://webinos.org/api/context/rules/create
  * Allows the application to create rules.
  *
  * \author Christos Botsikas (NTUA) &lt;cbot@epu.ntua.gr&gt;
  * \author Christos Ntanos (NTUA) &lt;cntanos@epu.ntua.gr&gt;
  * \author Dimitrios Sdrallis (NTUA) &lt;sdrallis@epu.ntua.gr&gt;
  *
- * \version 0.6 
+ * \version 0.7 
  */
  
 /**

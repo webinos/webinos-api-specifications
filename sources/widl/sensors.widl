@@ -21,34 +21,61 @@
  * \def-api-feature http://webinos.org/api/sensors
  * Identifies all the sensor types. 
  *
- * \def-api-feature http://webinos.org/api/sensors.read
- * Enables access only to read methods of the api - access to configureSensor is forbidden. N/A for discovery.
+ * \def-api-feature http://webinos.org/api/sensors/read
+ * Identifies all the sensor types limited to read access only, i.e. access to configureSensor is not supported.
  *
- * \def-api-feature http://webinos.org/api/sensors.light
+ * \def-api-feature http://webinos.org/api/sensors/light
  * Identifies the light sensor type. 
  *
- * \def-api-feature http://webinos.org/api/sensors.noise
+ * \def-api-feature http://webinos.org/api/sensors.light/read
+ * Identifies the light sensor type limited to read access only, i.e. access to configureSensor is not supported. 
+ *
+ * \def-api-feature http://webinos.org/api/sensors/noise
  * Identifies the noise sensor type. 
  *
- * \def-api-feature http://webinos.org/api/sensors.temperature
+ * \def-api-feature http://webinos.org/api/sensors/noise/read
+ * Identifies the noise sensor type limited to read access only, i.e. access to configureSensor is not supported.
+ *
+ * \def-api-feature http://webinos.org/api/sensors/temperature
  * Identifies the temperature sensor type. 
  *
- * \def-api-feature http://webinos.org/api/sensors.pressure
+ * \def-api-feature http://webinos.org/api/sensors/temperature/read
+ * Identifies the temperature sensor type limited to read access only, i.e. access to configureSensor is not supported. 
+ *
+ * \def-api-feature http://webinos.org/api/sensors/pressure
  * Identifies the pressure sensor type. 
  *
- * \def-api-feature http://webinos.org/api/sensors.proximity
- * Identifies the proximity sensor type. 
+ * \def-api-feature http://webinos.org/api/sensors/pressure/read
+ * Identifies the pressure sensor type limited to read access only, i.e. access to configureSensor is not supported.
+ * 
+ * \def-api-feature http://webinos.org/api/sensors/proximity
+ * Identifies the proximity sensor type. Optional discovery parameter is:\n
+ * "resolution" with values:\n
+ *  - "cm" (proximity sensor capable of providing proximity in centimeters)\n 
+ *  - "nearfar" (proximity sensor just capable of stating near or far)
  *
- * \def-api-feature http://webinos.org/api/sensors.humidity
+ * \def-api-feature http://webinos.org/api/sensors/proximity/read
+ * Identifies the proximity sensor type limited to read access only, i.e. access to configureSensor is not supported. Optional discovery parameter is:\n
+ * "resolution" with values:\n
+ *  - "cm" (proximity sensor capable of providing proximity in centimeters)\n 
+ *  - "nearfar" (proximity sensor just capable of stating near or far)
+ * 
+ * \def-api-feature http://webinos.org/api/sensors/humidity
  * Identifies the relative humidity sensor type. 
  *
- * \def-api-feature http://webinos.org/api/sensors.heartratemonitor
+ * \def-api-feature http://webinos.org/api/sensors/humidity/read
+ * Identifies the relative humidity sensor type limited to read access only, i.e. access to configureSensor is not supported.
+ * 
+ * \def-api-feature http://webinos.org/api/sensors/heartratemonitor
  * Identifies a heart rate monitor sensor type. 
  *
+ * \def-api-feature http://webinos.org/api/sensors/heartratemonitor/read
+ * Identifies a heart rate monitor sensor type limited to read access only, i.e. access to configureSensor is not supported. 
+ * 
  * \author Claes Nilsson &lt;claes1.nilsson@sonymobile.com&gt;
  * \author Updated to new WIDL by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
  * \author Stefano Vercelli &lt;stefano.vercelli@telecomitalia.it&gt;
- * \version 1.99 
+ * \version 2.1
  */
 
 

@@ -7,7 +7,7 @@
  * \def-api-feature http://webinos.org/api/widget
  * Identifies the whole Widget API to be used for remote deploy requests.
  * 
- * \def-api-feature http://webinos.org/api/widget.deploy
+ * \def-api-feature http://webinos.org/api/widget/deploy
  * Identifies access to the deploy function and whether an application is allowed to trigger deployment of child applications or not. 
  *
  * \author Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;

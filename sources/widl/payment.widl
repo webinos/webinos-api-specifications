@@ -10,7 +10,7 @@
  * \def-api-feature http://webinos.org/api/payment
  * Identifies all payment interactions. 
  * 
- * \def-api-feature http://webinos.org/api/payment.checkout
+ * \def-api-feature http://webinos.org/api/payment/checkout
  * Identifies access to the checkout function, enabling a separate policy (ask user consent) for the checkout itself. 
  * 
  * \author Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;

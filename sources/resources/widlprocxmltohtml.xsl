@@ -159,7 +159,12 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <xsl:if test="descriptive/def-api-feature">
             <div id="def-api-features" class="def-api-features">
                 <xsl:apply-templates select="Interface/descriptive/def-instantiated"/>
-                <p>This is the list of URIs used to declare this API's features, for use in the widget config.xml and as identifier for service type in service discovery functionality. Note that only a subset of the feature URIs are applicable for service discovery. If a feature URI is not applicable for discovery this is explicitly stated by "N/A for discovery".</p>
+                <p>This section lists the URIs used to declare the features of this API. The feature URIs are used by the developer in:</p>
+                <ul>
+                  <li>The application's config.xml file to declare requested features.</li>
+                  <li>As identifier for serviceType in the webinos Discovery API's findServices() method.</li>        
+                </ul>
+                <p>Note that for use as serviceType in discovery the feature strings can optionally be extended with query parameters that further refines the search operation. See the webinos Discovery API for more information.</p>
                 <xsl:apply-templates select="descriptive/def-api-feature"/>
             </div>
         </xsl:if>

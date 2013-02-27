@@ -24,37 +24,37 @@
  * \def-api-feature http://webinos.org/api/actuators
  * Identifies all the actuator types. 
  *
- * \def-api-feature http://webinos.org/api/actuators.switch
+ * \def-api-feature http://webinos.org/api/actuators/switch
  * Identifies the switch actuator type. A switch actuator has only one input pin which represents the state of the switch.
  * range = {0,1} (OFF = 0, ON = 1).
  *
- * \def-api-feature http://webinos.org/api/actuators.linearmotor
+ * \def-api-feature http://webinos.org/api/actuators/linearmotor
  * Identifies the linear motor actuator type. A linear motor actuator has only one input pin which represents the speed and the direction of the movement.
  * Positive values for forward direction, negative values for backwards direction. the absolute value represents the speed of the movement in km/h.
  *
- * \def-api-feature http://webinos.org/api/actuators.rotationalmotor
+ * \def-api-feature http://webinos.org/api/actuators/rotationalmotor
  * Identifies the rotational motor actuator type. A rotational motor actuator has only one input pin which represents the speed and the direction of the rotation.
  * Positive values for clockwise rotational direction, negative values for counter clockwise rotational direction. the absolute value represents the rotational speed in Hz (Herz = cycles per second).
  *
- * \def-api-feature http://webinos.org/api/actuators.vibratingmotor
+ * \def-api-feature http://webinos.org/api/actuators/vibratingmotor
  * Identifies the vibrating motor actuator type. A vibrating motor actuator has only one input pin which represents the normalized intensity of the vibration.
  * only values in interval [0, 1] are valid. 0 means no vibration, 1 for maximal intensity.
  *
- * \def-api-feature http://webinos.org/api/actuators.servomotor
+ * \def-api-feature http://webinos.org/api/actuators/servomotor
  * Identifies the servo motor actuator type. A servo motor actuator has only one input pin which represents the angular position of the output shaft in degree.
  * The min und max values define the lower and upper bound for valid values of the angle
  *
- * \def-api-feature http://webinos.org/api/actuators.swivelmotor
+ * \def-api-feature http://webinos.org/api/actuators/swivelmotor
  * Identifies the swivel motor actuator type. A swivel motor actuator has three input pins which represent the coordinate (x-y-z) of the swivel arm.
  * The min und max values of each input pin define the lower and upper bound for valid values of each coordinate
  *
- * \def-api-feature http://webinos.org/api/actuators.thermostat
+ * \def-api-feature http://webinos.org/api/actuators/thermostat
  * Identifies the thermostat actuator type. A thermostat has only one input pin which represents the desired temperature in &deg;C.
  * The min und max values define the lower and upper bound for valid temperature values
  *
  * \author Louay Bassbouss &lt;louay.bassbouss@fokus.fraunhofer.de&gt;
  * \author Update to new WIDL format by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
- * \version 2.0
+ * \version 2.1
  */
 
 
