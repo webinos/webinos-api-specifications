@@ -4,7 +4,7 @@
  * This specification defines the common interface from which all Webinos APIs can be accessed and personal zone information.
  *
  * This version of the specification defines: \n
- * - The core Webinos interface,  part of the window global object.\n
+ * - The core Webinos interface, part of the window global object.\n
  * - The personal zone information such as the connected status, pzh name, pzp friendly name and application identifier. \n
  *
  * \def-api-feature http://webinos.org/api/corePZinformation
@@ -15,6 +15,10 @@
  * \version 0.4
  */
 
+/**
+* \brief Defines the core Webinos interface as part of the window global object.
+*
+*/
   partial interface Window {
     readonly attribute Webinos webinos;
   };

@@ -101,12 +101,21 @@ cat > "$SPECHOME/apis/index.html" <<DELIM
      <h1 class="head">webinos Device APIs - working repository</h1>
 </div>
 <p>This page lists all API specifications that are defined or referenced/used within the Webinos project.</p>
-<p>The APIs listed here are to be considered 'work in progress'.
-The official stable webinos API specifications are located at <a href='http://dev.webinos.org/deliverables/wp3/Deliverable34'>http://dev.webinos.org/deliverables/wp3/Deliverable34/</a></p>
-<p>All APIs defined by Webinos, are by default exposed under the <code>window.webinos</code> object and are available in the local web execution environment.</p>
-<p> One of the key elements of Webinos is that the framework provides means to <strong>bind to a service object in a remote execution environment</strong>. The <a href='http://dev.webinos.org/specifications/new/servicediscovery.html\">Webinos Discovery API</a> defines how a service discovered and how an application can bind to a remote service. The service object will act as proxy for sending/receiving events to/from the remote peer and hides the complexity of sending/receiving message between the peers in 
-a trusted manner. This mechanism is not limited to Webinos defined APIs but also available for the APIs defined by W3C referenced below and user defined APIs.</p>
-<p>For more information see <a href='http://dev.webinos.org/specifications/new/servicediscovery.html'>Discovery API</a> and <a href='http://dev.webinos.org/deliverables/wp3/d31.html'>Architecture Specification</a>.</p>
+<p>The APIs listed here are to be considered 'work in progress'. The official stable webinos API specifications are located at 
+<a href='http://dev.webinos.org/deliverables/wp3/Deliverable34'>http://dev.webinos.org/deliverables/wp3/Deliverable34/</a></p>
+<p>Webinos is exposed under the <code>window.webinos</code> object. The <a href="http://dev.webinos.org/specifications/api/webinoscore.html">Webinos Core Interface</a>, the 
+<a href="http://dev.webinos.org/specifications/api/servicediscovery.html">Webinos Discovery API</a> and a few more Webinos APIs are available directly 
+under this name space.</p>
+<p>However, one of the key elements of Webinos is that the framework provides means to <strong>bind to a service object in a remote execution 
+environment</strong>. The <a href="http://dev.webinos.org/specifications/api/servicediscovery.html">Webinos Discovery API</a> defines how a service is 
+discovered and how an application can bind to a remote service. The service object will act as proxy for sending/receiving events to/from the remote 
+peer and hides the complexity of sending/receiving message between the peers in a trusted manner. This mechanism is not limited to Webinos defined 
+APIs but is also available for the APIs defined by W3C referenced below and also to user defined APIs.</p>
+<p>Most Webinos APIs defines services that are discoverable through the 
+<a href="http://dev.webinos.org/specifications/api/servicediscovery.html">Webinos Discovery API</a> and are therefore not exposed directly under
+the <code>window.webinos</code> object. Instead these APIs inherit the general <a href="http://dev.webinos.org/specifications/api/servicediscovery.html#::Service">Webinos Service Interface</a> that is defined in the 
+<a href="http://dev.webinos.org/specifications/api/servicediscovery.html">Webinos Discovery API</a> </p>
+<p>For more information see <a href='http://dev.webinos.org/specifications/api/servicediscovery.html'>Discovery API</a> and <a href='http://www.webinos.org/content/html/D033/index.html'>Architecture Specification</a>.</p>
 
 <div class="api">
   <h2 class="head">APIs Specified by Webinos</h2>
