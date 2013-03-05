@@ -4,7 +4,7 @@
  * This specification defines the common interface from which all Webinos APIs can be accessed and personal zone information.
  *
  * This version of the specification defines: \n
- * - The core Webinos interface, part of the window global object.\n
+ * - The core Webinos interface,  part of the window global object.\n
  * - The personal zone information such as the connected status, pzh name, pzp friendly name and application identifier. \n
  *
  * \def-api-feature http://webinos.org/api/corePZinformation
@@ -12,13 +12,14 @@
  *
  * \author Claes Nilsson &lt;claes1.nilsson@sonymobile.com&gt;
  * \author Habib Virji &lt;habib.virji@samsung.com&gt;
- * \version 0.4
+ * \author Krishna Bangalore &lt;krishna.bangalore@in.tum.de&gt;
+ * \version 0.5
  */
 
-/**
-* \brief Defines the core Webinos interface as part of the window global object.
-*
-*/
+  /**
+   * \brief Defines the core Webinos interface as part of the window global object.
+   *
+   */
   partial interface Window {
     readonly attribute Webinos webinos;
   };
@@ -46,6 +47,48 @@
     * \brief Attribute denotes the application identifier as assigned by the PZP. This should be unique and useful when communicating outside personal zone.
     */
     readonly attribute DOMString  app_id;
+    /**
+    * \brief Attribute provides the webinos version as assigned by the webinos Development Team. This should be unique and useful for the Users to know the version of webinos.
+    */
+    readonly attribute DOMString  webinos_version;
+    /**
+    * \brief Attribute denotes the register_browser which registers app with the PZP. Basically it helps PZP identify App and App gets its own id. 
+    */
+    readonly attribute DOMString  registered_browser;
+    /**  
+    * \brief Attribute denotes the error, shows the error ocurred in the PZP. 
+    */
+    readonly attribute DOMString  error;
+	  /**
+    * \brief Attribute denotes the PZP directly connected to the PZP i.e. mdns.
+    */
+    readonly attribute DOMString  DirectConnectedPZP_ids;
+   /**
+    * \brief Attribute denotes the PZP connected to the PZH. PZP can communicate to these PZPs but via PZH.
+    */
+    readonly attribute DomString  ConnectedPZPtoPZP_ids;
+	 /**
+    * \brief Attribute denotes the ID of the other user PZHIDs that are connected to the PZH. PZP can communicate to devices in these PZHIDs but communication is via PZH. 
+    */
+    readonly attribute DOMString  OtherPZH_ids; 
+	 /**
+    * \brief Attribute denotes the Port that PZP is connected to. Shows the Port in Usage.
+    */
+    readonly attribute DOMString  PZP_port;
+	 /**
+    * \brief Attribute denotes the setFriendly Name given to PZP Name. An User should be able to assign a  Friendlyname to PZP Name.
+    */
+    readonly attribute DOMString  setFriendly_name;
+	 /**
+    * \brief Attribute denotes the getFriendly Name given to PZP Name. Shows the given Friendlyname that was assigned to PZP Name by the User.
+    */
+    readonly attribute DOMString  getFriendly_name;
+   /**
+    * \brief setFriendly Name
+    *
+    * \param name Friendly Name. 
+    */
+    void setFriendly_name (DOMString name);    
   };
 
   /**
@@ -54,4 +97,5 @@
    * not-connected = The PZP is not connected either to the PZH or a local peer\n
    */
   enum States {"connected", "not-connected"};
+  
 
