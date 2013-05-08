@@ -75,7 +75,7 @@
  *
  * \code
  *  \<widget xmlns="http://www.w3.org/ns/widgets"> 
- *  \<feature name="http://webinos.org/api/devicestatus.deviceinfo"/>
+ *  \<feature name="http://webinos.org/api/devicestatus/deviceinfo"/>
  *  \</widget>
  * \endcode 
  *
@@ -83,7 +83,7 @@
  *
  * \code
  *  \<widget xmlns="http://www.w3.org/ns/widgets"> 
- *    \<feature name="http://webinos.org/api/devicestatus.networkinfo"/> 
+ *    \<feature name="http://webinos.org/api/devicestatus/networkinfo"/> 
  *  \</widget> 
  * \endcode 
  *  
@@ -91,10 +91,10 @@
  *  
  * \code
  *  \<widget xmlns="http://www.w3.org/ns/widgets">
- *    \<feature name="http://webinos.org/api/devicestatus.networkinfo"/>
+ *    \<feature name="http://webinos.org/api/devicestatus/networkinfo"/>
  *    \<!-- The rest are ignored --> 
  *    \<feature name="http://webinos.org/api/devicestatus"/> 
- *    \<feature name="http://webinos.org/api/devicestatus.deviceinfo"/> 
+ *    \<feature name="http://webinos.org/api/devicestatus/deviceinfo"/> 
  *  \</widget>  
  * \endcode 
  *  
@@ -102,39 +102,24 @@
  *   
  * \author Based on  WAC Device API Specifications 2.1, 30 April 2012
  * \author WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
+ * \author Corrections relating to inheriting Discovery Service interface &lt;claes1.nilsson@sonymobile.com&gt;
  * \version 2.1
  */
- 
- 
-/**
-* \brief Creates the webinos.devicestatus namespace.
-*
-*/
-partial interface Webinos {
-       /**
-        * \brief The devicestatus attribute provides access to Device Status API. 
-        *         
-        * \code
-        * var info = deviceapis.devicestatus;
-        * info.getPropertyValue(
-        * function(model) {
-        *         console.log("Device model is: " + model);
-        * },
-        * null, {
-        *         aspect: "Device",
-        *         property: "model"
-        * });
-        * \endcode
-        *
-        */
-    readonly attribute  DeviceStatusManager devicestatus;
-};
 
        /**
-        * \brief This offers methods to get information about the device status and subscribe to receive notifications of device status changes. To allow for asynchronous of changes to the various properties of components, the user agent keeps a list of active watch operations. Each entry in this list is identified by a number, which is unique within its list for the lifetime of the application.
+        * \brief This interface offers methods to get information about the device status and subscribe to receive notifications of device 
+        * status changes. To allow for asynchronous of changes to the various properties of components, the user agent keeps a list of active 
+        * watch operations. Each entry in this list is identified by a number, which is unique within its list for the lifetime of the 
+        * application.
+        *
+        * The DeviceStatusManager interface is a discoverable interface through the webinos Discovery API findServices() method and thus 
+        * inherits the Discovery API Service interface.
         *         
         * \code
-        * deviceapis.devicestatus.getPropertyValue(
+        *
+        * // deviceStatusService is the device status service, discovered through the webinos Discovery API, that has been selected 
+        * // by the user
+        * deviceStatusService.getPropertyValue(
         * function(value) {
         *         console.log("The battery level is at " + value + "%");
         * },
@@ -147,7 +132,7 @@ partial interface Webinos {
         */
 
 [NoInterfaceObject]
-interface DeviceStatusManager {
+interface DeviceStatusManager : Service {
        /**
         * \brief The getComponents() method provides means to get the components of an aspect.
         * 
@@ -169,7 +154,7 @@ interface DeviceStatusManager {
         *        
         * \code
 //displays contain, for example, ["screen1"] 
-var displays = deviceapis.devicestatus.getComponents('Display');
+var displays = deviceStatusService.getComponents('Display');
 console.log("Your device has " + displays.length + " displays");
 
 //iterate through and show the name of each component
@@ -202,7 +187,7 @@ for (var i = 0; i < displays.length; i++) {
         * </ol>
         * 
         * \code
-if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
+if (deviceStatusService.isSupported('Battery', 'batteryLevel')) {
         console.log("batteryLevel property is available");
 } else {
         console.log("batteryLevel property is not available");
@@ -270,7 +255,7 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         *         property: "batteryLevel"
         * };
         * 
-        * deviceapis.devicestatus.getPropertyValue(
+        * deviceStatusService.getPropertyValue(
         * function batteryQuery(value) {
         *         console.log("Battery is at " + value + "%");
         * },
@@ -320,7 +305,7 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         *         console.log("New value for " + ref.property + " is " + value);
         * }
         * 
-        * deviceapis.devicestatus.watchPropertyChange(propertyChange, null, {
+        * deviceStatusService.watchPropertyChange(propertyChange, null, {
         *         property: "batteryLevel",
         *         aspect: "Battery"
         * });
@@ -331,7 +316,7 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         *         property: "batteryLevel"
         * };
         * 
-        * deviceapis.devicestatus.getPropertyValue(
+        * deviceStatusService.getPropertyValue(
         * function batteryQuery(value) {
         *         console.log("Battery is at " + value + "%");
         * },
@@ -361,12 +346,12 @@ if (deviceapis.devicestatus.isSupported('Battery', 'batteryLevel')) {
         *      console.log("New value for " + ref.property + " is " + value);
         * 
         *       if (id) {
-        *              deviceapis.devicestatus.clearPropertyChange(id);
+        *              deviceStatusService.clearPropertyChange(id);
         *              console.log(id + " cleared");
         *      }
         *  }
         *  
-        *  var id = deviceapis.devicestatus.watchPropertyChange(
+        *  var id = deviceStatusService.watchPropertyChange(
         *   propertyChange, null, {
         *        property: "batteryLevel",
         *       aspect: "Battery"

@@ -14,27 +14,20 @@
  *
  * \author Based on WAC Device API Specifications 2.1, 30 April 2012
  * \author WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
+ * \author Corrections relating to inheriting Discovery Service interface &lt;claes1.nilsson@sonymobile.com&gt;
  * \version 2.1
- */
- 
- 
-/**
-* \brief Creates the webinos.deviceinteraction namespace.
-*
-*/
-partial interface Webinos {
-    readonly attribute DeviceInteractionManager deviceinteraction;
-};
- 
+ */ 
 
 /**
  * \brief This is the top-level interface for the deviceinteraction API that provides access to the module functionalities.
- *
- * Example
- * \code
- * var di = webinos.deviceinteraction;
  * 
- * di.lightOn(function() {
+ * The DeviceInteractionManager interface is a discoverable interface through the webinos Discovery API findServices() method and thus 
+ * inherits the Discovery API Service interface.
+ *
+ * \code
+ *
+ * // deviceInteractionService is the deviceinteraction service, discovered through the webinos Discovery API, that has been selected by the user
+ * deviceInteractionService.lightOn(function() {
  *      console.log("Lighting for 1 second");
  * },
  * function() {
@@ -42,7 +35,7 @@ partial interface Webinos {
  * },
  * 1000);
  * 
- * di.startNotify(
+ * deviceInteractionService.startNotify(
  * function() {
  *      console.log("Notifying for 1 second");
  * },
@@ -51,7 +44,7 @@ partial interface Webinos {
  * },
  * 1000);
  * 
- * di.startVibrate(
+ * deviceInteractionService.startVibrate(
  * function() {
  *      console.log("Vibrating for 1 second");
  * },
@@ -62,7 +55,7 @@ partial interface Webinos {
  * \endcode
  */
 
-interface DeviceInteractionManager {
+interface DeviceInteractionManager : Service {
 
  
 /**
@@ -85,7 +78,7 @@ interface DeviceInteractionManager {
  *  
  * \code
  * try {
- *      webinos.deviceinteraction.startNotify(function() {
+ *      deviceInteractionService.startNotify(function() {
  *              console.log("Notifying indefinitely");
  *      },
  *      function(e) {
@@ -129,7 +122,7 @@ interface DeviceInteractionManager {
  * If the stopVibrate method is invoked before the specified vibration duration expires, any vibration MUST be stopped.
  * \code
  * try {
- *      webinos.deviceinteraction.startVibrate(function() {
+ *      deviceInteractionService.startVibrate(function() {
  *              console.log("Vibrating...");
  *      },
  *      function(e) {
@@ -164,7 +157,7 @@ interface DeviceInteractionManager {
  * \n UNKNOWN_ERR in any other case.
  * \code
  *  try {
- *      webinos.deviceinteraction.lightOn(function() {
+ *      deviceInteractionService.lightOn(function() {
  *              console.log("Lighting indefinitely");
  *      },
  *      function(e) {
@@ -198,7 +191,7 @@ interface DeviceInteractionManager {
  * If the errorCallback does not contain a valid function (e.g. null), or in the case of any of the above errors that should be returned in the errorCallback, the implementation MUST silently fail, the developer is not notified of the error and no further action is required.
  * \code
  * try {
- *      webinos.deviceinteraction.setWallpaper(function() {
+ *      deviceInteractionService.setWallpaper(function() {
  *              alert("Set wallpaper to WAC logo");
  *      },
  *      function(e) {
@@ -225,7 +218,7 @@ interface DeviceInteractionManager {
  * 
  * If this functionality is not supported, or if any other error occurs when executing the request, it MUST return immediately without performing any action.
  * \code
- * webinos.deviceinteraction.stopNotify();
+ * deviceInteractionService.stopNotify();
  * \endcode     
  */                             
     void stopNotify();
@@ -237,7 +230,7 @@ interface DeviceInteractionManager {
  * 
  * If this functionality is not supported, or if any other error occurs when executing the request it MUST return immediately without performing any action.
  * \code
- * webinos.deviceinteraction.stopVibrate();
+ * deviceInteractionService.stopVibrate();
  * \endcode
  */
     void stopVibrate();
@@ -250,7 +243,7 @@ interface DeviceInteractionManager {
  * 
  * If this functionality is not supported, or if any other error occurs when executing the request it MUST return immediately without performing any action.
  * \code
- * webinos.deviceinteraction.lightOff();
+ * deviceInteractionService.lightOff();
  * \endcode
  */
     void lightOff();
