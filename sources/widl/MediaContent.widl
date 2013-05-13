@@ -14,6 +14,7 @@
  * \author Tizen Device API Specifications
  * \author Normative:  <a href="https://developer.tizen.org/help/index.jsp?topic=%2Forg.tizen.help.web.api.device%2Ftizen%2Fmediacontent.html">Tizen MediaContent API </a>
  * \author Edited for webinos by Stefano Vercelli &lt;stefano.vercelli@telecomitalia.it&gt;
+ * \author Corrections relating to inheriting Discovery Service interface &lt;claes1.nilsson@sonymobile.com&gt;
  */
 
 
@@ -46,21 +47,14 @@
    * \brief Media folder identifier.
    */
   typedef DOMString MediaFolderId;
-
-	/**
-	 * \brief The MediaContent interface is accessible through the webinos object.
-	 * 
-	 */
-	partial interface Webinos {
-	  readonly attribute MediaSourceManager mediacontent;
-	};
-
-  
+ 
   /**
    * \brief MediaSourceManager interface that provides access to the module functionality.
    * This interface offers a method to retrieve the media source objects.
+   * The MediaSourceManager interface is a discoverable interface through the webinos Discovery API findServices() 
+   * method and thus inherits the Discovery API Service interface.
    */
-  [NoInterfaceObject] interface MediaSourceManager {
+  [NoInterfaceObject] interface MediaSourceManager : Service {
 	  /**
 	   * \brief Gets the media source object that provides access to media items stored on the device.
 	   */
@@ -97,7 +91,9 @@
 	   *    console.log('Attributes set successfully');
 	   * }
 	   * 
-	   * var mediasource = webinos.mediaconent.getLocalMediaSource();
+     * // mediaContentService is the media content service, discovered through the webinos Discovery API, that has been selected 
+     * // by the user	   
+	   * var mediasource = mediaContentService.getLocalMediaSource();
 	   * // Assume items is a MediaItem object vector as a result of findItems method.
 	   * // Check the playCount is editable, and then increase by 1.
 	   * for (i=0; i &lt; items.length; i++) {
@@ -129,14 +125,17 @@
 
 	  /**
 	   * \brief Finds media items. That is, satisfy conditions set in a filter.
-	   * This method allows searching based on a supplied filter. For more detail on AbstractFilter, refer to the Tizen module. The filter allows precise searching such as "return all songs by artist U2, ordered by name".
+	   * This method allows searching based on a supplied filter. For more detail on AbstractFilter, refer to the Tizen module. 
+	   * The filter allows precise searching such as "return all songs by artist U2, ordered by name".
 	   * The errorCallback is launched with these error types:
 	   * InvalidValuesError: If any of the input parameters contain an invalid value.
 	   * UnknownError: In any other error case.
 	   *
 	   * \code
 	   * // The following example retrieves all songs from the album "The Joshua Tree", by artist "U2", ordered by the track number.
-	   *  var mediasource = webinos.mediacontent.getLocalMediaSource();
+     * // mediaContentService is the media content service, discovered through the webinos Discovery API, that has been selected 
+     * // by the user	  	   
+	   *  var mediasource = mediaContentService.getLocalMediaSource();
 	   *  var count = 100;
 	   *  var offset = 0;
 	   *  var sortMode = new webinos.SortMode("trackNumber", "ASC");
