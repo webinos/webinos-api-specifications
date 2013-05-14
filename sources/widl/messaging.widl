@@ -83,39 +83,26 @@
  *
  * \author WAC 2.0 Proposed Release Version (PRV) 28 January 2011
  * \author Extended with InstantMessaging functionality for webinos by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
- * \version 1.1
+ * \author Corrections relating to inheriting Discovery Service interface and a number of other corrections &lt;claes1.nilsson@sonymobile.com&gt;
+ * \version 2.0
  */
- 
-
- /**
-   * \brief Sequence of Message objects
-   */
-  typedef sequence<Message> MessageArray;
-
-   /**
-    * \brief     Array of files 
-    */
-   typedef File[]  FileArray;
-
-
-
-/**
-* \brief Creates the webinos.messaging namespace.
-*
-*/
-partial interface Webinos {
-   readonly attribute Messaging messaging;
-  };
   
  /**
  * \brief Messaging creation, sending and reading capabilities 
  *
- * This interface allows a web application to create a message through the createMessage() method that returns an instance of the Message interface. That message could be manipulated through the functionality offered by the Message interface and sent afterwards through the sendMessage() method.
+ * This interface allows a web application to create a message through the createMessage() method that returns an instance of the Message 
+ * interface. That message could be manipulated through the functionality offered by the Message interface and sent afterwards through the 
+ * sendMessage() method.
  *
- * Messages created through this API are not persistent in device memory until the implementation tries to send them through the send operation. When that operation has been performed, the message will be available on the relevant folder depending on the result of the operation (e.g. sent, drafts...). The only way to access the messages that have been sent is through the use of the findMessages method. The findMessages method allows developers to retrieve the content of the messages available in 
- * the device folders.
+ * Messages created through this API are not persistent in device memory until the implementation tries to send them through the send operation. 
+ * When that operation has been performed, the message will be available on the relevant folder depending on the result of the operation 
+ * (e.g. sent, drafts...). The only way to access the messages that have been sent is through the use of the findMessages method. 
+ * The findMessages method allows developers to retrieve the content of the messages available in the device folders.
  *
  * This interface also offers mechanism to subscribe for being notified upon incoming message events.
+ *
+ * The Messaging interface is a discoverable interface through the webinos Discovery API findServices() 
+ * method and thus inherits the Discovery API Service interface. 
  *
  * \code
  *  // Define the success callback
@@ -129,65 +116,34 @@ partial interface Webinos {
  * }
  * 
  * // SMS sending example
- * var msg = window.webinos.messaging.createMessage(window.webinos.messaging.TYPE_SMS);
+ * // messagingService is the messaging service, discovered through the webinos Discovery API, that has been selected 
+ * // by the user	   
+ * var msg = messagingService.createMessage("sms");
  * msg.body = "I will arrive in 10 minutes";
  * msg.to = ["+34666666666"];
  * 
  * // Send request
- * window.webinos.messaging.sendMessage(messageSent, messageFailed, msg);
+ * messagingService.sendMessage(messageSent, messageFailed, msg);
  * \endcode
  */
    
-  [NoInterfaceObject] interface Messaging {
-   /**
-    * \brief Identifier for messages of type SMS. 
-    */  
-    const short TYPE_SMS = 1;
-   /**
-    * \brief Identifier for messages of type MMS. 
-    */     
-    const short TYPE_MMS = 2;
-   /**
-    * \brief Identifier for messages of type Email. 
-    */      
-    const short TYPE_EMAIL = 3;
-   /**
-    * \brief Identifier for messages of type IM. 
-    */      
-    const short TYPE_IM = 4;
-   /**
-    * \brief Identifier for the message inbox.
-    */  
-    const unsigned short FOLDER_INBOX = 1;
-   /**
-    * \brief Identifier for the message outbox. 
-    */      
-    const unsigned short FOLDER_OUTBOX = 2;
-   /**
-    * \brief Identifier for the message draft folder. 
-    */      
-    const unsigned short FOLDER_DRAFTS = 3;
-   /**
-    * \brief Identifier for message sent-items folder. 
-    */     
-    const unsigned short FOLDER_SENTBOX = 4;
+  [NoInterfaceObject] interface Messaging : Service {
   
    /**
    * \brief Create a message of a given type. 
    *
    * \code
-   * var msg = window.webinos.messaging.createMessage(window.webinos.messaging.TYPE_SMS);
+   * var msg = messagingService.createMessage("sms");
    * msg.body = "webinos first SMS message.";
    * \endcode
    *
-   * Throws DeviceAPIError INVALID_VALUES_ERR if the input parameter contains an invalid value. 
+   * Throws Throws DOMException INVALID_ACCESS_ERR if the input parameter contains an invalid value or if the input parameter is not 
+   * compatible with the expected type for that parameter.
    *
-   * Throws DeviceAPIError TYPE_MISMATCH_ERR if the input parameter is not compatible with the expected type for that parameter. 
-   *
-   * \param type The type of message that is created. The possible values are: TYPE_SMS, TYPE_MMS, TYPE_EMAIL and TYPE_IM. 
+   * \param type The type of message that is created, sms, mms, email or im.  
    * \return A Message object of the given type or null if there is any problem during the message creation. 
    */
-    Message createMessage(short type);
+    Message createMessage(MessageType type);
                          
 
    /**
@@ -212,15 +168,13 @@ partial interface Webinos {
    * 
    * When the operation is fully completed (i.e. the implementation knows the result of the send operation to all the recipients), the onsuccess method of the successCallback will be invoked if the message is successfully sent to all the recipients.
    * 
-   * If any of the input parameters is not compatible with the expected type for that parameter a DeviceAPIError with code TYPE_MISMATCH_ERR MUST be synchronously thrown.
+   * If any of the input parameters is not compatible with the expected type for that parameter a DOMException with code INVALID_ACCESS_ERR MUST be synchronously thrown.
    *
    * If the operation fails for any other reason, the errorCallback will be invoked with an appropriate error code amongst the following:
    * 
    * NOT_SUPPORTED_ERR: If the specified messaging technology is not supported.
    *
    * SECURITY_ERR: If the operation is not allowed.
-   *
-   * UNKNOWN_ERR: In any other error case.
    *
    * \code
    * // Define the success callback
@@ -234,15 +188,13 @@ partial interface Webinos {
    * }
    * 
    * // SMS sending example
-   * var msg = window.webinos.messaging.createMessage(window.webinos.messaging.TYPE_SMS);
+   * var msg = messagingService.createMessage("sms");
    * msg.body = "I will arrive in 10 minutes";
    * msg.to = ["+34666666666", "+34888888888"];
    * 
    * // Send request
-   * window.webinos.messaging.sendMessage(messageSent, messageFailed, msg);
+   * messagingService.sendMessage(messageSent, messageFailed, msg);
    * \endcode
-   *
-   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    *
    * \param successCallback To be invoked if the message is successfully sent. 
    * \param errorCallback To be invoked in case the sending request fails. 
@@ -257,19 +209,24 @@ partial interface Webinos {
    /**
    * \brief Gets an array of messages from the message folders matching the selected filter. 
    *
-   * If this feature is not supported, a DeviceAPIError with code NOT_SUPPORTED_ERR MUST be returned in the errorCallback. If this functionality is not allowed the errorCallback MUST be invoked with a DeviceAPIError with code SECURITY_ERR.
+   * If this feature is not supported, a DOMError with name NOT_SUPPORTED_ERR must be returned in the errorCallback. 
+   * If this functionality is not allowed the errorCallback must be invoked with a DOMError with code SECURITY_ERR.
    *
+   * If the filter is passed and contains valid values, only those values in the message lists that matches the filter criteria as specified in 
+   * the MessageFilter interface will be returned in the successCallback. If no filter is passed, it is null or undefined, or contains any 
+   * invalid value, the implementation MUST return the full list of messages in the successCallback. If no messages are available in the lists or 
+   * no one matches the filter criteria, the successCallback will be invoked with an empty array.
    *
-   * If the filter is passed and contains valid values, only those values in the message lists that matches the filter criteria as specified in the MessageFilter interface will be returned in the successCallback. If no filter is passed, it is null or undefined, or contains any invalid value, the implementation MUST return the full list of messages in the successCallback. If no messages are available in the lists or no one matches the filter criteria, the successCallback will be invoked with an empty array.
+   * If any other error occurs, while trying to retrieve the messages, the errorCallback function that was passed in the invocation MUST be 
+   * called including a DOMError with code ABORT_ERR.
    *
-   * If any other error occurs, while trying to retrieve the messages, the errorCallback function that was passed in the invocation MUST be called including a DeviceAPIError object with code UNKNOWN_ERR.
-   *
-   * In any of the cases in which the errorCallback should be invoked, if the developer has not passed an ErrorCallback or it is null, no action is required (i.e. the error is not notified to the developer).
+   * In any of the cases in which the errorCallback should be invoked, if the developer has not passed an ErrorCallback or it is null, 
+   * no action is required (i.e. the error is not notified to the developer).
    *
    * \code
-   *    var msg = { type:[window.webinos.messaging.TYPE_SMS], body:"first messa%" };
+   *    var msg = { type:["sms"], body:"first messa%" };
    *
-   * window.webinos.messaging.findMessages(
+   * messagingService.findMessages(
    *    function (messages) {
    *      alert(messages.length + " message(s) found!");
    *      for (var i=0; i<messages.length; i++) {
@@ -280,7 +237,7 @@ partial interface Webinos {
    *   msg);
    * \endcode
    *
-   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
+   * Throws DOMException INVALID_ACCESS_ERR if any input parameter is not compatible with the expected type for that parameter. 
    * 
    * \param successCallback function called when the invocation ends successfully. 
    * \param errorCallback function called when an error occurs 
@@ -295,9 +252,20 @@ partial interface Webinos {
    /**
    * \brief Registers the function to be notified on incoming new SMSs 
    *
-   * When this method is invoked, the implementation MUST register the function passed in the messageHandler argument as the handler for being notified whenever an incoming SMS arrives to the device. That function will be invoked every time an incoming SMS arrives, unless the unsubscribe method with the handler identifier is invoked in order to cancel the subscription.
+   * When this method is invoked, the implementation MUST register the function passed in the messageHandler argument as the handler for being 
+   * notified whenever an incoming SMS arrives to the device. That function will be invoked every time an incoming SMS arrives, unless the 
+   * unsubscribe method with the handler identifier is invoked in order to cancel the subscription.
    *
-   * If the subscription is successfully created, an identifier for the handler is created and returned so that it is possible to cancel the subscription. If the subscription cannot be created, a DeviceAPIError is synchronously thrown with an error code that describes the reason for the error.If any of the input parameters is not compatible with the expected type for that parameter a DeviceAPIError with code TYPE_MISMATCH_ERR MUST be synchronously thrown.
+   * If the subscription is successfully created, an identifier for the handler is created and returned so that it is possible to cancel the 
+   * subscription. 
+   *
+   * Throws DOMException SECURITY_ERR if this operation is not allowed.
+   *
+   * Throws DOMException NOT_SUPPORTED_ERR if this feature is not supported.
+   *
+   * Throws DOMException INVALID_ACCESS_ERR if the messageHandler is null or undefined.
+   *
+   * Throws DOMException INVALID_ACCESS_ERR if any input parameter is not compatible with the expected type for that parameter.   
    *
    * \code
    *  // function to receive new SMS notifications
@@ -307,20 +275,12 @@ partial interface Webinos {
    * 
    *    // The subscription is cancelled to prevent further notifications
    *    if (mySMSListener != null)
-   *      window.webinos.messaging.unsubscribe(mySMSListener);
+   *      messagingService.unsubscribe(mySMSListener);
    *  }
    *   // Register listener for new SMS events
    *  var mySMSListener = null;
-   *  mySMSListener = window.webinos.messaging.onSMS(incomingSMS);
+   *  mySMSListener = messagingService.onSMS(incomingSMS);
    * \endcode
-   *
-   * Throws DeviceAPIError SECURITY_ERR if this operation is not allowed. 
-   *
-   * Throws DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
-   *
-   * Throws DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
-   *
-   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    *
    * \param messageHandler The function to be invoked on incoming SMSs 
    * \return Subscription identifier 
@@ -331,9 +291,20 @@ partial interface Webinos {
    /**
    * \brief Registers the function to be notified on incoming new MMSs 
    *
-   * When this method is invoked, the implementation MUST register the function passed in the messageHandler argument as the handler for being notified whenever an incoming MMS arrives to the device. That function will be invoked every time an incoming MMS arrives, unless the unsubscribe method with the handler identifier is invoked in order to cancel the subscription.
+   * When this method is invoked, the implementation MUST register the function passed in the messageHandler argument as the handler for being 
+   * notified whenever an incoming MMS arrives to the device. That function will be invoked every time an incoming MMS arrives, unless the 
+   * unsubscribe method with the handler identifier is invoked in order to cancel the subscription.
    *
-   * If the subscription is successfully created, an identifier for the handler is created and returned so that it is possible to cancel the subscription. If the subscription cannot be created, a DeviceAPIError is synchronously thrown with an error code that describes the reason for the error.
+   * If the subscription is successfully created, an identifier for the handler is created and returned so that it is possible to cancel the 
+   * subscription. 
+   *
+   * Throws DOMException SECURITY_ERR if this operation is not allowed.
+   *
+   * Throws DOMException NOT_SUPPORTED_ERR if this feature is not supported.
+   *
+   * Throws DOMException INVALID_ACCESS_ERR if the messageHandler is null or undefined.
+   *
+   * Throws DOMException INVALID_ACCESS_ERR if any input parameter is not compatible with the expected type for that parameter.   
    *
    * \code
    * // function to receive new MMS notifications
@@ -343,20 +314,12 @@ partial interface Webinos {
    *
    *   // The subscription is cancelled to prevent further notifications
    *   if (myMMSListener != null)
-   *     window.webinos.messaging.unsubscribe(myMMSListener);
+   *     messagingService.unsubscribe(myMMSListener);
    * }
    *   // Register listener for new SMS events
    *  var myMMSListener = null;
-   *  my<MSListener = window.webinos.messaging.onMMS(incomingMMS);
+   *  myMSListener = messagingService.onMMS(incomingMMS);
    * \endcode
-   *
-   * Throws DeviceAPIError SECURITY_ERR if this operation is not allowed. 
-   *
-   * Throws DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
-   *
-   * Throws DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
-   *
-   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    *
    * \param messageHandler The function to be invoked on incoming MMSs 
    * \return Subscription identifier 
@@ -366,9 +329,20 @@ partial interface Webinos {
    /**
    * \brief Registers the function to be notified on incoming new Email
    *
-   * When this method is invoked, the implementation MUST register the function passed in the messageHandler argument as the handler for being notified whenever an incoming Email arrives to the device. That function will be invoked every time an incoming Email arrives, unless the unsubscribe method with the handler identifier is invoked in order to cancel the subscription.
+   * When this method is invoked, the implementation MUST register the function passed in the messageHandler argument as the handler for being 
+   * notified whenever an incoming Email arrives to the device. That function will be invoked every time an incoming Email arrives, 
+   * unless the unsubscribe method with the handler identifier is invoked in order to cancel the subscription.
    *
-   * If the subscription is successfully created, an identifier for the handler is created and returned so that it is possible to cancel the subscription. If the subscription cannot be created, a DeviceAPIError is synchronously thrown with an error code that describes the reason for the error.
+   * If the subscription is successfully created, an identifier for the handler is created and returned so that it is possible to cancel the 
+   * subscription. 
+   *
+   * Throws DOMException SECURITY_ERR if this operation is not allowed.
+   *
+   * Throws DOMException NOT_SUPPORTED_ERR if this feature is not supported.
+   *
+   * Throws DOMException INVALID_ACCESS_ERR if the messageHandler is null or undefined.
+   *
+   * Throws DOMException INVALID_ACCESS_ERR if any input parameter is not compatible with the expected type for that parameter.   
    *
    * \code
    * // function to receive new Email notifications
@@ -378,21 +352,13 @@ partial interface Webinos {
    * 
    *    // The subscription is cancelled to prevent further notifications
    *    if (myEmailListener != null)
-   *      window.webinos.messaging.unsubscribe(myEmailListener);
+   *      messagingService.unsubscribe(myEmailListener);
    *  }
    * 
    *  // Register listener for new Email events
    *  var myEmailListener = null;
-   *  myEmailListener = window.webinos.messaging.onEmail(incomingEmail);    
+   *  myEmailListener = messagingService.onEmail(incomingEmail);    
    * \endcode
-   *
-   * Throws DeviceAPIError SECURITY_ERR if this operation is not allowed. 
-   *
-   * Throws DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
-   *
-   * Throws DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
-   *
-   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    *
    * \param messageHandler he function to be invoked on incoming emails 
    * \return Subscription identifier 
@@ -403,9 +369,20 @@ partial interface Webinos {
    /**                       
    * \brief Registers the function to be notified on incoming new Instant Message
    *
-   * When this method is invoked, the implementation MUST register the function passed in the messageHandler argument as the handler for being notified whenever an incoming instant message arrives to the device. That function will be invoked every time an incoming Instant Message arrives, unless the unsubscribe method with the handler identifier is invoked in order to cancel the subscription.
+   * When this method is invoked, the implementation MUST register the function passed in the messageHandler argument as the handler for being 
+   * notified whenever an incoming instant message arrives to the device. That function will be invoked every time an incoming Instant Message 
+   * arrives, unless the unsubscribe method with the handler identifier is invoked in order to cancel the subscription.
    *
-   * If the subscription is successfully created, an identifier for the handler is created and returned so that it is possible to cancel the subscription. If the subscription cannot be created, a DeviceAPIError is synchronously thrown with an error code that describes the reason for the error.
+   * If the subscription is successfully created, an identifier for the handler is created and returned so that it is possible to cancel the 
+   * subscription. 
+   *
+   * Throws DOMException SECURITY_ERR if this operation is not allowed.
+   *
+   * Throws DOMException NOT_SUPPORTED_ERR if this feature is not supported.
+   *
+   * Throws DOMException INVALID_ACCESS_ERR if the messageHandler is null or undefined.
+   *
+   * Throws DOMException INVALID_ACCESS_ERR if any input parameter is not compatible with the expected type for that parameter.   
    *
    * \code
    * // function to receive new Instant Messaging notifications
@@ -415,21 +392,13 @@ partial interface Webinos {
    * 
    *    // The subscription is cancelled to prevent further notifications
    *    if (myIMListener != null)
-   *      window.webinos.messaging.unsubscribe(myIMistener);
+   *      messagingService.unsubscribe(myIMistener);
    *  }
    * 
    *  // Register listener for new Instant Messaging events
    *  var myIMistener = null;
-   *  myIMistener = window.webinos.messaging.onIM(incomingIM);    
+   *  myIMistener = messagingService.onIM(incomingIM);    
    * \endcode
-   *
-   * Throws DeviceAPIError SECURITY_ERR if this operation is not allowed. 
-   *
-   * Throws DeviceAPIError NOT_SUPPORTED_ERR if this feature is not supported. 
-   *
-   * Throws DeviceAPIError INVALID_VALUES_ERR if the messageHandler is null or undefined. 
-   *
-   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
    *
    * \param messageHandler he function to be invoked on incoming instant message 
    * \return Subscription identifier 
@@ -441,7 +410,7 @@ partial interface Webinos {
    *
    * If the subscriptionHandler argument is valid and corresponds to a subscription already in place the subscription process MUST immediately stop and no further message notifications MUST be invoked. If the subscriptionHandler argument does not correspond to a valid subscription, the method should return without any further action. 
    *
-   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
+   * Throws DOMException INVALID_ACCESS_ERR if any input parameter is not compatible with the expected type for that parameter. 
    *
    * \param subscriptionHandler identifier of the subscription returned by the onSMS(), onMMS(), onEmail() or onIM() methods. 
    * \return void
@@ -460,7 +429,7 @@ partial interface Webinos {
    * If the developer attempts to access an attribute not supported by the messaging technology (see attribute description or summary table in the sendMessage mehtod description), the implementation MUST ignore this attempt.
    *
    * \code
-   * var msg = window.webinos.messaging.createMessage(window.webinos.messaging.TYPE_SMS);
+   * var msg = messagingService.createMessage("sms");
    * msg.body = "webinos first SMS message.";
    * msg.to = ["+34666666666"];
    * \endcode
@@ -479,14 +448,14 @@ partial interface Webinos {
    /**
     * \brief The type of the given message. 
     */
-    attribute short type;
+    attribute MessageType type;
     
    /**
     * \brief  The folder for the given message.
     *
     *    For messages created through the createMessage method this property is undefined.
     */
-    attribute short folder;
+    attribute MessageFolder folder;
     
    /**
     * \brief The timestamp of a message.
@@ -548,7 +517,7 @@ partial interface Webinos {
     *
     * This property should only be taken into account for Email and MMS. If the message has not been created by the developer but returned through the findMessage, onMMS or onEmail methods, the attachments will be stored in the "attachments" file system root location, that is only accessible through this API.
     */
-    attribute FileArray attachments;
+    attribute MessageAttachment[] attachments;
 
 
    /**                       
@@ -558,21 +527,22 @@ partial interface Webinos {
    * 
    * This method does not have effect on messages created through the createMessage method as they are not persistenly stored until the send action is invoked.
    * 
-   * For messages in the inbox (window.webinos.messaging.FOLDER_INBOX), outbox (window.webinos.messaging.FOLDER_OUTBOX) and sentbox (window.webinos.messaging.FOLDER_SENTBOX) the implementation MUST only change the isRead attribute of the Message object. For messages within the draft folder (window.webinos.messaging.FOLDER_DRAFTS) the implementation MAY update other attributes as well. However, this is up to the actual implementation and relies on the underlying system.
+   * For messages in the inbox, outbox and sentbox the implementation MUST only change the isRead attribute of the Message object. 
+   * For messages within the draft folder the implementation MAY update other attributes as well. However, this is up to the actual implementation and relies on the underlying system.
    * 
    * The implementation has to make sure that an updated Message object is provided in the success callback, which represents the current status of the message. The developer is expected to use this updated message for comparison with the former object to check which fields have or have not been transferred by the implementation.
    * 
-   * If any of the input parameters is not compatible with the expected type for that parameter a DeviceAPIError with code TYPE_MISMATCH_ERR MUST be synchronously thrown.
+   * If any of the input parameters is not compatible with the expected type for that parameter a DOMException with code INVALID_ACCESS_ERR be synchronously thrown.
    * 
-   * If this feature is not supported, a DeviceAPIError with code NOT_SUPPORTED_ERR MUST be returned in the errorCallback. If this functionality is not allowed the errorCallback MUST be invoked with a DeviceAPIError with code SECURITY_ERR.
+   * If this feature is not supported, a DOMError with code NOT_SUPPORTED_ERR MUST be returned in the errorCallback. If this functionality is not allowed the errorCallback MUST be invoked with a DOMError with code SECURITY_ERR.
    * 
-   * If the successCallback contains an invalid value (e.g. null or undefined), a DeviceAPIError with code INVALID_VALUES_ERR MUST be returned.
+   * If the successCallback contains an invalid value (e.g. null or undefined), a DOMError with code SYNTAX_ERR MUST be returned.
    * 
-   * If any other error occurs, while trying to update the messages, the errorCallback function that was passed in the invocation MUST be called including a DeviceAPIError object with code UNKNOWN_ERR.
+   * If any other error occurs, while trying to update the messages, the errorCallback function that was passed in the invocation MUST be called including a DOMError object with an appropriate error code.
    * 
    * If the errorCallback does not contain a valid function (e.g. null), case of any error that should be returned in the errorCallback (see above), the implementation MUST silently fail and no further action is required (i.e. the error is not notified to the developer).
    *
-   * Throws DeviceAPIError TYPE_MISMATCH_ERR if any input parameter is not compatible with the expected type for that parameter. 
+   * Throws  DOMException INVALID_ACCESS_ERR if any input parameter is not compatible with the expected type for that parameter. 
    *
    * \param successCallback Function to call on successful update
    * \param errorCallback Function to call on unsuccessful update
@@ -605,103 +575,103 @@ partial interface Webinos {
    *  than or equal to the initial one. If only the end date contains a value different to null, a message matches the filter if its corresponding attribute is earlier than or equal to the end date.
    *
    */           
-  [Callback, NoInterfaceObject] interface MessageFilter {
+  dictionary MessageFilter {
    /**
     * \brief     Used for filtering the Message id attribute.
     *
     * Messages which id corresponds with this attribute (either exactly or with the specified wildcards) match this filtering criteria.
     */
-    attribute DOMString id;
+    DOMString id;
 
    /**
     * \brief     Used for filtering the Message type attribute.
     *
     * Messages with type equals to one of the values in this array match the filtering criteria.
     */
-    attribute ShortArray type;
+    MessageType[] type;
   
    /**
     * \brief     Used for filtering the Message folder attribute.
     *
     * Messages with folder equals to one of the values in this array match the filtering criteria.
     */
-    attribute ShortArray folder;
+    MessageFolder[] folder;
 
    /**
     * \brief     Used for filtering the Message timestamp attribute.
     *
     * Messages with date later than or equal to this attribute match the filtering criteria.
     */
-    attribute Date startTimestamp;
+    Date startTimestamp;
 
    /**
     * \brief     Used for filtering the Message timestamp attribute.
     *
     * Messages with date earlier than or equal to this attribute match the filtering criteria.
     */
-    attribute Date endTimestamp;
+    Date endTimestamp;
     
    /**
     * \brief     Used for filtering the Message from attribute.
     *
     * Messages which from corresponds with this attribute (either exactly or with the specified wildcards) match this filtering criteria.
     */
-    attribute DOMString from;
+    DOMString from;
 
    /**
     * \brief     Used for filtering the Message to attribute.
     *
     * Messages which elements in the to array that correspond to all the elements of this attribute (either exactly or with the specified wildcards) match this filtering criteria.
     */
-    attribute StringArray to;
+    StringArray to;
     
    /**
     * \brief     Used for filtering the Message cc attribute.
     *
     * Messages which elements in the cc array that correspond to all the elements of this attribute (either exactly or with the specified wildcards) match this filtering criteria.
     */
-    attribute StringArray cc;
+    StringArray cc;
     
    /**
     * \brief     Used for filtering the Message bcc attribute.
     *
     * Messages which elements in the bcc array that correspond to all the elements of this attribute (either exactly or with the specified wildcards) match this filtering criteria.
     */
-    attribute StringArray bcc;
+    StringArray bcc;
 
    /**
     * \brief     Used for filtering the Message body attribute.
     *
     * Messages which body corresponds with this attribute (either exactly or with the specified wildcards) match this filtering criteria.
     */
-    attribute DOMString body;
+    DOMString body;
 
    /**
     * \brief     Used for filtering the Message isRead attribute.
     *
     * Messages which isRead corresponds exactly with this attribute match this filtering criteria.
     */
-    attribute boolean isRead;
+    boolean isRead;
 
    /**
     * \brief     Used for filtering the Message messagePriority attribute.
     *
     * Messages which messagePriority corresponds exactly with this attribute match this filtering criteria.
     */
-    attribute boolean messagePriority;
+     boolean messagePriority;
 
    /**
     * \brief     Used for filtering the Message subject attribute.
     *
     * Messages which subject corresponds with this attribute (either exactly or with the specified wildcards) match this filtering criteria.
     */
-    attribute DOMString subject;
+     DOMString subject;
   };
   
    /**                       
    * \brief Describes a message attachement 
    *
-   * This attribute extends the File interface (from W3C File reader (http://dev.w3.org/2006/webapi/FileAPI/#file)) by MIMEtype
+   * This interface extends the File interface (from W3C File reader (http://dev.w3.org/2006/webapi/FileAPI/#file)) by MIMEtype
    *
    */           
   
@@ -721,7 +691,7 @@ partial interface Webinos {
    * \param messages The list of messages that correspond to the find criteria 
    * \return void
    */         
-    callback FindMessagesSuccessCallback = void (MessageArray messages);
+    callback FindMessagesSuccessCallback = void (Message[] messages);
 
 
    /**                       
@@ -754,7 +724,7 @@ partial interface Webinos {
    * \param error The error message received 
    * \return void
    */         
-     callback MessagingErrorCallback =   void (DeviceAPIError error);
+     callback MessagingErrorCallback =   void (DOMError error);
 
 
    /**                       
@@ -786,7 +756,7 @@ partial interface Webinos {
    * \param recipient The recipient which the message has been sent to 
    * \return void
    */         
-     void onmessagesenderror(DeviceAPIError error, DOMString recipient);
+     void onmessagesenderror(DOMError error, DOMString recipient);
   };
   
       /**
@@ -829,4 +799,14 @@ partial interface Webinos {
      */
         void cancel ();
      };
+     
+   /**
+    * \brief MessageType.\n
+    */
+    enum MessageType { "sms", "mms", "email", "im"};     
+    
+   /**
+    * \brief MessageFolder.\n
+    */
+    enum MessageFolder { "inbox", "outbox", "drafts", "sentbox"};         
 
