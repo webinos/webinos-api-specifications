@@ -10,7 +10,8 @@
  *
  * 
  * \author Simon Isenberg (BMW Forschung \& Technik) &lt;Simon.Isenberg@bmw.de&gt;
- * \version 0.1
+ * \author Corrections relating to inheriting Discovery Service interface &lt;claes1.nilsson@sonymobile.com&gt;
+ * \version 0.2
  */
 
 	/**
@@ -163,55 +164,64 @@
 	callback NavigationEventHandler = void (NavigationEvent data);
 	
 	/**
-	* \brief The interface defines general information about the vehicle and is the object, where the event listener for vehicle related data can be registered. The interface is accessible through the webinos.vehicle object. 
+	* \brief This interface provides methods for navigation. The NavigationInterface is a discoverable interface through the webinos Discovery API 
+	* findServices() method and thus inherits the Discovery API Service interface.
 	* 
 	*/
 	[NoInterfaceObject]
-	interface NavigationInterface{
+	interface NavigationInterface : Service {
 		/**
-		* \brief Function is used to handover a point-of-interest to the navigation system 
-		* \code
-		*  var navigationHandler = {
-		*	onRequest:  function(id, poi){
-		*   	console.log('Guidance set to' + poi.name);
-		*   },
-		*   onReach: function(id, poi){
-		*   	console.log(poi.name + ' reached.');
-		*   },
-		*	onCancel: function(id, poi)
-		*  		console.log('Guidance to ' + poi.name + ' is cancelled.'); 
-		*	}
-		*  var destination = {name:"BMW Forschung und Technik", address:{street: "Hanauer Strasse", streetNumber: "46", postalCode: "80992", city: "MÜNCHEN", country: "DE"};
-		*  webinos.navigation.requestGuidance(destination, false, navigationHandler);
-		* \endcode
+    * \brief Function is used to handover a point-of-interest to the navigation system 
+    * \code
+    *  var navigationHandler = {
+    *  onRequest:  function(id, poi){
+    *   	console.log('Guidance set to' + poi.name);
+    *  },
+    *  onReach: function(id, poi){
+    *   	console.log(poi.name + ' reached.');
+    *  },
+    *  onCancel: function(id, poi)
+    *     console.log('Guidance to ' + poi.name + ' is cancelled.'); 
+    *	 }
+    *  var destination = {name:"BMW Forschung und Technik", address:{street: "Hanauer Strasse", streetNumber: "46", 
+    *                     postalCode: "80992", city: "MÜNCHEN", country: "DE"};
+    *  // navigationService is the navigation service, discovered through the webinos Discovery API, that has been selected 
+    *  // by the user.	 
+    *  navigationService.requestGuidance(destination, false, navigationHandler);
+    * \endcode
 
 		* \param successCallback callback, if the POIs are succesully transferred.
 		* \param errorCallback callback, if the address could not be transferred. 
 		* \param destination in form of an POI.
 		* \param intermediate if the provided POI is an intermediate or final destination.
 		*/
-		void requestGuidance(POI destination, optional boolean intermediate, optional NavigationCallback successCallback, optional NavigationErrorCallback errorCallback);
+		void requestGuidance(POI destination, optional boolean intermediate, optional NavigationCallback successCallback, 
+		                     optional NavigationErrorCallback errorCallback);
 
 		/**
 		* \brief Function to cancel the guidance to a Point-of-interest 
 		* \param cancelCallback callback, if the guidance to a POI has been successfully cancelled.
 		* \param errorCallback callback, if the address could not be transferred. 
 		*/
-		void cancelGuidance(long guidanceId, optional NavigationCancelCallback cancelCallback, optional NavigationErrorCallback errorCallback);
+		void cancelGuidance(long guidanceId, optional NavigationCancelCallback cancelCallback, 
+		                    optional NavigationErrorCallback errorCallback);
 
 		/**
 		* \brief Queries the navigation system to retrieve POIs for a given search string.
 		*
 		* \code
-		*	var destinations =new Array();
-		*      webinos.navigation.findDestination("BMW", destinationCB, errorCB);
-		*      function destinationCB(pois){
-		*	if(destinations.length > 0){
-		*      	webinos.navigation.requestGuidance(destinations[0], false, successCB, errorCB);            
-		*	else{
-		*		console.log("No POI found");
-		*	}		
-		*}
+		*	
+    * // navigationService is the navigation service, discovered through the webinos Discovery API, that has been selected 
+    * // by the user.	 		
+		* navigationService.findDestination("BMW", destinationCB, errorCB);
+		* function destinationCB(pois){
+		*   if(destinations.length > 0){
+    *     navigationService.requestGuidance(pois[0], false, successCB, errorCB);   
+    *   }         
+    *   else{
+    *     console.log("No POI found");
+    *   }		
+		* }
 		* 
 		* \endcode
 		*
@@ -220,12 +230,16 @@
 		* \param search search string for resolving a address.
 		* \param options options object to optimize search behavior.
 		*/
-		void findDestination(DOMString search, DestinationCallback destinationCallback, optional NavigationErrorCallback errorCallback, optional PoiSearchOptions options);
+		void findDestination(DOMString search, DestinationCallback destinationCallback, 
+		                     optional NavigationErrorCallback errorCallback, 
+		                     optional PoiSearchOptions options);
 		/**
 		* \brief Provides the information if guidance is active or not.
 		*
 		* \code
-		* webinos.navigation.getStatus(function(data){alert(data.status)}); 
+    * // navigationService is the navigation service, discovered through the webinos Discovery API, that has been selected 
+    * // by the user.	 		
+		* navigationService.getStatus(function(data){alert(data.status)}); 
 		* \endcode
 		*
 		* \param successHandler callback to handle the status of navigation system.
@@ -234,14 +248,6 @@
 		void getStatus(NavigationEventHandler successHandler, optional NavigationErrorCallback errorHandler);
 	};
 	
-	/**
-	* \brief The Vehicle interface describes the part of the Vehicle API accessible through the webinos object. 
-	*
-	*/
-	partial interface Webinos {
-	  readonly attribute NavigationInterface navigation;
-	 };
-	 
 	/**
 	* \brief callback for the asynchronous findDestination method.
 	* \param pois Parameter provides an array of POIs.
