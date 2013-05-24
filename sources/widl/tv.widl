@@ -13,7 +13,7 @@
 * \def-api-feature http://webinos.org/api/tv
 * \author Fraunhofer FOKUS, Martin Lasak &lt;martin.lasak@fokus.fraunhofer.de&gt;, Alexander Fut&aacute;sz &lt;alexander.futasz@fokus.fraunhofer.de&gt;
 * \author Dominique Hazael-Massieux
-*  \author Corrections relating to inheriting Discovery Service interface &lt;claes1.nilsson@sonymobile.com&gt;
+* \author Corrections relating to inheriting Discovery Service interface &lt;claes1.nilsson@sonymobile.com&gt;
 */
 
 /**
