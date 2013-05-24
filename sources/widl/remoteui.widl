@@ -10,12 +10,15 @@
  * \def-api-feature http://webinos.org/api/remoteUI
  *
  * \author Christian Fuhrhop &lt;christian.fuhrhop@@fokus.fraunhofer.de&gt;
+ * \author Corrections relating to inheriting Discovery Service interface &lt;claes1.nilsson@sonymobile.com&gt;
  * \version 1.0
  */
 
         /**
-         * \brief Creates the webinos.remoteUI namespace..
+         * \brief This is the top-level interface for the Remote UI API that provides access to the module functionalities.
          *
+         *  The RemoteUI interface is a discoverable interface through the webinos Discovery API findServices() method and thus 
+         * inherits the Discovery API Service interface.
          *
          * On binding to the service, a window on the remote device is opened, which needs to be uniquely recognizeable as a window instantiated by a remote instance by having a specific frame and including information about which application on which device has opened it remotely. The purpose of this is to avoid remote programs being able to spoof the appearance of programs running locally on the device.
          * 
@@ -23,7 +26,7 @@
          * 
          * The opened window on the remote device contains as named elements a head element with the id "head" and a body element with the id 'body".
          */
-         partial interface Webinos { 
+         [NoInterfaceObject] interface RemoteUI : Service { 
              /**
               * \brief Sends a DOM manipulation command to the remote UI and evaluates (executes) it there.
               *
@@ -49,7 +52,7 @@
               * \param remoteComand The remore command to be evalated on the remote UI
               * \return void 
               */
-        void remoteDOM(RemoteDOMSuccessCB? successCallback, RemoteDOMErrorCB? errorCallback, DOMstring remoteComand);
+              void remoteDOM(RemoteDOMSuccessCB? successCallback, RemoteDOMErrorCB? errorCallback, DOMstring remoteComand);
                 
         };
 
