@@ -9,29 +9,20 @@
 * means to control channel management of the native hardware TV, by allowing
 * to set a channel or watch for channel changes that are invoked otherwise.
 *
-* The tv object is made available under the webinos namespace, i.e.
-* webinos.tv.
 *
 * \def-api-feature http://webinos.org/api/tv
 * \author Fraunhofer FOKUS, Martin Lasak &lt;martin.lasak@fokus.fraunhofer.de&gt;, Alexander Fut&aacute;sz &lt;alexander.futasz@fokus.fraunhofer.de&gt;
 * \author Dominique Hazael-Massieux
+*  \author Corrections relating to inheriting Discovery Service interface &lt;claes1.nilsson@sonymobile.com&gt;
 */
 
 /**
- * \brief The TVControl interface describes the part of the TV
- *        Control API accessible through the webinos object.
- */
-partial interface Webinos {
-  /**
-   * \brief webinos.tv object.
-   */
-  readonly attribute TVManager tv;
-};
-
-/**
-* \brief Access to tuner and display managers.
+* \brief  This is the top-level interface for the TV API that provides access to tuner and display managers.
+* 
+* The TVManager interface is a discoverable interface through the webinos Discovery API findServices() method and thus 
+* inherits the Discovery API Service interface.
 */
-interface TVManager {
+interface TVManager : Service {
   readonly attribute TVDisplayManager display;
   readonly attribute TVTunerManager tuner;
 }; 
@@ -46,7 +37,8 @@ interface TVManager {
   \<p>Currently shown on TV: \<span id='tv'>Undetermined\</span>\</p>
   \<script>
   var channel; // holding a previously obtained channel object.
-  webinos.tv.display.setChannel(channel, success);
+  // tvService is the TV service, discovered through the webinos Discovery API, that has been selected by the user
+  tvService.display.setChannel(channel, success);
   var ontv = document.getElementById('tv');
   function success(channel) {
     ontv.normalize();
@@ -80,7 +72,8 @@ interface TVDisplayManager : EventTarget {
  * \code
   \<p>Currently shown on TV: \<span id='tv'>Undetermined\</span>\</p>
   \<script>
-  webinos.tv.display.addEventListener('channelchange', channelchanged);
+  // tvService is the TV service, discovered through the webinos Discovery API, that has been selected by the user
+  tvService.display.addEventListener('channelchange', channelchanged);
   var ontv = document.getElementById('tv');
   function channelchanged(channel) {
     ontv.normalize();
@@ -110,7 +103,8 @@ callback TVDisplaySuccessCB = void (Channel channel);
   \</select>\</label>
   \<video id='display' width='640' height='400' poster='nochannel.png'>\</video>
   \<script>
-  webinos.tv.tuner.getTVSources(successCB);
+  // tvService is the TV service, discovered through the webinos Discovery API, that has been selected by the user
+  tvService.tuner.getTVSources(successCB);
   var tvsourceselector = document.getElementById('source');
   var channelselector = document.getElementById('channel');
   var v = document.getElementById('display');
