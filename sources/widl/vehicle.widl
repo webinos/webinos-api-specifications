@@ -42,8 +42,19 @@
  * Identifies information about the doors
  * 
  * \author Simon Isenberg (BMW Forschung \& Technik) &lt;Simon.Isenberg@bmw.de&gt;
- * \version 0.9
+ * \author Corrections relating to inheriting Discovery Service interface &lt;claes1.nilsson@sonymobile.com&gt; 
+ * \version 1.0
  */
+ 
+  /**
+  * \brief  This is the top-level interface for the Vehicle API.
+  * 
+  * The VehicleManager interface is a discoverable interface through the webinos Discovery API findServices() method and thus 
+  * inherits the Discovery API Service interface.
+  */
+  interface VehicleManager : Service {
+    readonly attribute VehicleInterface vehicle;
+  }; 	  
 
 	/**
 	* \brief Generic Vehicle Data
@@ -91,7 +102,7 @@
 	enum VehicleTransmission { "transmission-automatic", "transmission-manual" };
 	
 	/**
-	* \brief The interface defines general information about the vehicle and is the object, where the event listener for vehicle related data can be registered. The interface is accessible through the webinos.vehicle object. 
+	* \brief The interface defines general information about the vehicle and is the object, where the event listener for vehicle related data can be registered. 
 	* 
 	*/
 	[NoInterfaceObject]
@@ -127,7 +138,8 @@
 		/**
 		* \brief Method allows to request vehicle data in a non-recurring way and is independant from value changes (cf. events). The same identifiers  are used for vehicle data as well as for the different vehicle events (ClimateControlEvent, ControlEvent, NavigationEvent, ParkSensorsEvent, ShiftEvent). 
 		* \code
-		* webinos.vehicle.get("climate-all", dataHandler);
+    * // vehicleService is the vehicle service, discovered through the webinos Discovery API, that has been selected by the user		
+		* vehicleService.vehicle.get("climate-all", dataHandler);
 		* function dataHandler(data){
 		*	if(data.acStatus){
 		* 		console.log("Airconditioning is on");
@@ -144,14 +156,6 @@
 		*/
 		void get(VehicleDataType vehicleDataId, VehicleDataHandler handler, VehicleErrorCallback errorCB);
 	};
-	
-	/**
-	* \brief The Vehicle interface describes the part of the Vehicle API accessible through the webinos object. 
-	*
-	*/
-	partial interface Webinos {
-	  readonly attribute VehicleInterface vehicle;
-	 };
 
 	/**
 	* \brief Climate zone names
@@ -163,7 +167,8 @@
 	* The event provides information about changes to the climate control system inside the vehicle.
 	* \code
 	*
-	* webinos.vehicle.addEventListener("climate", climateHandler, null);
+  * // vehicleService is the vehicle service, discovered through the webinos Discovery API, that has been selected by the user		
+	* vehicleService.vehicle.addEventListener("climate", climateHandler, null);
 	* function climateHandler(data){
 	*		console.log(data.zone + " desired temperature is " + data.desiredTemperature + "° C"); 		
 	*	}				
@@ -214,7 +219,8 @@
 	* \brief The interface defines a light data. 
 	* The event signals a change for a light unit inside the vehicle. The identifiers for the different light events are defined in the enum VehicleLight.
 	* \code
-	*	webinos.vehicle.addEventListener("light-hibeam", lightHandler, false);
+  * // vehicleService is the vehicle service, discovered through the webinos Discovery API, that has been selected by the user		
+	*	vehicleService.vehicle.addEventListener("light-hibeam", lightHandler, false);
 	*      function lightHandler(cEvent){
 	*		if(cEvent.controlId == "hibeam"){
 	*			if(cEvent.active == true){
@@ -252,8 +258,9 @@
 	* \brief This interface defines an data related to the built-in park sensors. 
 	* A listener can be registered by vehicle.addEventLister("parksensor-front",listener,false).
 	* \code
-	*	webinos.vehicle.addEventListener("parksensor-front", psHandler, false);
-	*	webinos.vehicle.addEventListener("parksensor-rear", psHandler, false);
+  * // vehicleService is the vehicle service, discovered through the webinos Discovery API, that has been selected by the user		
+	*	vehicleService.vehicle.addEventListener("parksensor-front", psHandler, false);
+	*	vehicleService.vehicle.addEventListener("parksensor-rear", psHandler, false);
 	*	function psHandler(psEvent){
 	*		if(psEvent.left == 20){
 	*			console.log("obstacle on the left in" + psEvent.position + " is close");
@@ -301,7 +308,8 @@
 	*
 	* \code
 	*var latestConsumption = 0;
-	*webinos.vehicle.addEventListener("tripcomputer", tripDataHandler, false);
+  * // vehicleService is the vehicle service, discovered through the webinos Discovery API, that has been selected by the user		
+	*vehicleService.vehicle.addEventListener("tripcomputer", tripDataHandler, false);
 	*      
 	*function tripDataHandler(data){
 	*	//Calculating, if the fuel efficiency increased, since the last update
@@ -316,7 +324,7 @@
 	*	latestConsumption = data.averageConsumption;
 	*      
 	*	if (data.range \< 20){
-	*	    console.log("You really need " + webinos.vehicle.fuel + "soon.");	
+	*	    console.log("You really need " + vehicleService.vehicle.fuel + "soon.");	
 	*	}
 	*}
 	* \endcode
@@ -368,11 +376,12 @@
 	* \brief This interface defines a gear data. 
 	* A listener can be registered by vehicle.addEventLister("gear",listener,false).
 	* \code
-	* // registering an Event for a Shift
-	* webinos.vehicle.addEventListener("gear", shiftHandler);
+	* // registering an Event for a Shift. vehicleService is the vehicle service, discovered through the webinos Discovery API, 
+	* //that has been selected by the user	
+	* vehicleService.vehicle.addEventListener("gear", shiftHandler);
 	* function shiftHandler(e){
 	*   document.getElementById("info").innerHTML = e.gear;
-	*  webinos.vehicle.removeEventListener("shift", shiftHandler);
+	*  vehicleService.vehicle.removeEventListener("shift", shiftHandler);
 	* }				
 	* \endcode
 	*/
@@ -408,8 +417,9 @@
 	* \brief This interface defines wiper data. 
 		* A listener can be registered by vehicle.addEventLister("gear",listener,false).
 	* \code
-	* // requesting the status of the wiper stick.
-	* vehicle.get("wipers", wiperHandler);
+	* // requesting the status of the wiper stick. vehicleService is the vehicle service, discovered through the webinos Discovery API, 
+	* // that has been selected by the user	
+	* vehicleService.vehicle.get("wipers", wiperHandler);
 	* function wiperHandler(e){
 	*   document.getElementById("info").innerHTML = e.position;
 	* }				
@@ -529,8 +539,9 @@
 	/**
 	* \brief The interface defines door data.
 	* \code
-	* // checking if driver door is openend.
-	* vehicle.addEventListener("doors", doorHandler);
+	* // checking if driver door is openend. vehicleService is the vehicle service, discovered through the webinos Discovery API, 
+	* // that has been selected by the user	
+	* vehicleService.vehicle.addEventListener("doors", doorHandler);
 	* function doorHandler(doors){
 	*  if(doors.driver){
 	*  	document.getElementById("info").innerHTML = 'Please close driver door';
@@ -577,8 +588,9 @@
 	* \brief The interface defines window data.
 	* WindowData exposes the information of the current position of the different windows of a vehicle.
 	* \code
-	* // checking if driver window is openend.
-	* vehicle.addEventListener("windows", windowHandler);
+	* // checking if driver window is openend. vehicleService is the vehicle service, discovered through the webinos Discovery API, 
+	* // that has been selected by the user	
+	* vehicleService.vehicle.addEventListener("windows", windowHandler);
 	* function windowsHandler(windows){
 	*  if(windows.driver == 0){
 	*  	document.getElementById("info").innerHTML = 'Window is closed';
