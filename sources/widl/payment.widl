@@ -14,18 +14,8 @@
  * Identifies access to the checkout function, enabling a separate policy (ask user consent) for the checkout itself. 
  * 
  * \author Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
+ * \author Corrections relating to inheriting Discovery Service interface &lt;claes1.nilsson@sonymobile.com&gt;
  */
- 
-/**
-* \brief Creates the webinos.payment namespace.
-*
-*/
-partial interface Webinos {
-     /**
-      * \brief webinos.payment object.
-      */
-      readonly attribute Payment payment;
-   };
 
     /**
    * \brief The Payment interface
@@ -37,12 +27,16 @@ partial interface Webinos {
    *
    * This essentially echoes the usual 'shopping basket' system used on many web sites.
    *
+   * The Payment interface is a discoverable interface through the webinos Discovery API findServices() method and thus 
+   * inherits the Discovery API Service interface. 
+   *
    * The code example below refunds the user for a returned CD and charges for
    * the deluxe edition of that CD, demonstarting charging and refunding payments.
    *
    * \code
-   *    
-   *        webinons.payment.createShoppingBasket(openBasketSuccess, paymentFailure, "PayPal", "mymail@provider.com", "ShopName12345");
+   *   
+   *        // paymentService is the payment service, discovered through the webinos Discovery API, that has been selected by the user 
+   *        paymentService.createShoppingBasket(openBasketSuccess, paymentFailure, "PayPal", "mymail@provider.com", "ShopName12345");
    *        var myBasket = null;
    *
    *        // Define the openBasketSuccess success callback.
@@ -125,7 +119,7 @@ partial interface Webinos {
 
 
  
-[NoInterfaceObject] interface Payment { 
+[NoInterfaceObject] interface Payment : Service{ 
       /**
        * \brief Creates a shopping basket
        *
