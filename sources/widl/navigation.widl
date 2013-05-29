@@ -215,7 +215,7 @@
     * // by the user.	 		
 		* navigationService.findDestination("BMW", destinationCB, errorCB);
 		* function destinationCB(pois){
-		*   if(destinations.length > 0){
+		*   if(pois.length > 0){
     *     navigationService.requestGuidance(pois[0], false, successCB, errorCB);   
     *   }         
     *   else{
