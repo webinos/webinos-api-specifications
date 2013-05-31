@@ -1,0 +1,372 @@
+/**<p>The Webinos Event Handling API provides means to exchange data in terms of events among addressable entities (e.g., applications, services), either locally or remotely.</p>
+ * \name The Event Handling API
+ *
+ * This is an advanced API that is mostly meant to be used by third-party
+ * developers to implement custom event-based protocols by taking advantage of
+ * the features offered by the Webinos event handling system, that in turn
+ * leverages off of the features offered by Webinos overlay networking model.
+ *
+ * It is, therefore, strongly recommended to carefully read the Messaging
+ * section in the Webinos system specifications before committing to the usage
+ * of this API.
+ *
+ * Despite its apparent complexity, this API revolves around three simple basic
+ * concepts: generating events, sending events and
+ * registering/unregistering event listeners for incoming events.
+ *
+ * The following example demonstrates what the core functionality of a
+ * simplicistic textual chat application could look like if implemented using
+ * this API.
+ *
+ * \code
+// Array of objects implementing the DOMString interface that
+// represents the list of participants to the chat session, excluding the
+// current application.
+var participants = [...];
+
+// DOM element that keeps a log of the whole session.
+var logElem;
+
+// DOM Text object that allows the user to insert text messages.
+var inputElem;
+
+// Function that somehow returns a human-readable name associated to the input
+// entity.
+function getName(entity) {
+  ...
+}
+
+// Function that returns a copy of the input string with HTML control characters
+// ('&lt;', '&gt;', '&amp;') escaped ('&amp;lt;', '&amp;gt;', '&amp;amp;').
+function escapeHTML(str) {
+  str = str.replace(/&amp;/g, '&amp;amp;');
+  return str.replace(/&lt;/g, '&amp;lt;').replace(/&gt;/g, '&amp;gt;');
+}
+
+// Listener callback for incoming events.
+function onMsg(evt) {
+  // Appends event data to logElem.
+  // E.g.: [00:00:00] Stefano said: Hi all!
+  logElem.innerHTML += "[" + new Date(evt.timeStamp).toLocaleTimeString() + "] "
+                       + getName(evt.from) + " said: "
+                       + escapeHTML(evt.payload) + "\\n";
+}
+
+// Delivery error notification callback.
+function onMsgError(evt, recipient, error)
+{
+  // Pops up an alert dialog with error details.
+  // E.g.: Stefano did not receive your message saying: "How are you?"
+  //       Event refused (4)
+  alert(getName(recipient) + ' did not receive your message saying: "'
+        + evt.payload + '"\\n' + error.message + '(' + error.code + ')');
+}
+
+// Listener to DOM "click" event for some "Send Message" button.
+function onSendButtonClicked() {
+  // Creates a new event of type "chatMessage" directed to all the chat
+  // participants with payload containing the text in inputElem and with
+  // timestamp.
+  // eventsService is the service, discovered through the webinos Discovery API, that has been selected by the user
+  var evt = eventsService.createWebinosEvent("chatMessage", {to: participants},
+                                              inputElem.value, true, null);
+
+  // Sends the event and specifies the onMsgError callback for handling error
+  // delivery notifications.
+  evt.dispatchWebinosEvent({onError: onMsgError});
+
+  // Appends the input message to logElem.
+  // E.g.: [00:01:00] you said: "Let's try again... how are you?"
+  logElem.innerHTML += "[" + new Date(evt.timeStamp).toLocaleTimeString()
+                       + "] you said: " + escapeHTML(evt.payload) + "\\n";
+}
+
+// Initialization stuff.
+document.onLoad = function() {
+  // Gets "log" element.
+  logElem = document.getElementById("log");
+
+  // Gets "input" element.
+  inputElem = document.getElementById("input");
+
+  // Adds the onMsg() callback as an event listener for incoming events with
+  // type "chatMessage", from any source and to any destination (within the
+  // application).
+  // eventsService is the service, discovered through the webinos Discovery API, that has been selected by the user
+  eventsService.addWebinosEventListener(onMsg, "chatMessage");
+}
+ * \endcode
+ *
+ * \def-api-feature http://webinos.org/api/events
+ * \author Stefano D'Angelo &lt;dangelo@ismb.it&gt; 
+ * \author Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;
+ * \version 0.9.13
+ */
+
+	/**
+	 * \brief The WebinosEvent interface describes an incoming or outgoing
+	 *        event.
+	 */
+	[NoInterfaceObject] interface WebinosEvent {
+		/**
+		 * \brief Event type identifier.
+		 *
+		 * The type of the event as specified by the sender of the event.
+		 */
+		readonly attribute DOMString type;
+		/**
+		 * \brief Event source.
+		 *
+		 * Represents the entity that originally sent/created the event.
+		 */
+		readonly attribute DOMString from;
+		/**
+		 * \brief Array of recipients.
+		 *
+		 * It MUST contain at least one element in case
+		 * of a point-to-point event.
+		 * It MUST be NULL in case the event is used
+		 * with the publish/subscribe scheme.
+		 *
+		 */
+		attribute DOMString[] to;
+		/**
+		 * \brief Event identifier.
+		 *
+		 * String identifying the event
+		 */
+		readonly attribute DOMString id;
+		/**
+		 * \brief Moment in time in which the event is generated by the
+		 *        original event source.
+		 *
+		 * It MAY be null.
+		 */
+		readonly attribute DOMTimeStamp? timeStamp;
+		/**
+		 * \brief Moment in time past which the event is no more valid
+		 *        or meaningful.
+		 *
+		 * It MAY be null.
+		 */
+		readonly attribute DOMTimeStamp? expiryTimeStamp;
+		/**
+		 * \brief Event type-specific data.
+		 *
+		 * It MAY be null.
+		 */
+		readonly attribute DOMString? payload;
+
+		/**
+		 * \brief Sends an event.
+		 *
+		 * W.r.t. the "Delivery notification wanted" attribute described
+		 * in the Webinos system specification, its value in the
+		 * implementation is to be deferred from the callbacks parameter
+		 * and allowed to change between dispatchWebinosEvent() and
+		 * forwardWebinosEvent() calls. It SHALL be true when delivery
+		 * and/or error callbacks are passed via the callbacks argument,
+		 * false otherwise.
+		 *
+	 	 * \b NOTE: Please, keep in mind that all recipients SHALL get
+		 * references to all entities specified in the "to" attribute.
+		 *
+		 * \param callbacks Set of callbacks to monitor sending status
+		 *	  (null and undefined are considered as equivalent to a
+		 *	  WebinosEventCallbacks object with all attributes set
+		 *        to null).
+		 * \param referenceTimeout Moment in time until which the
+		 *	  Webinos runtime SHALL ensure that the WebinosEvent
+		 *        object being sent is not garbage collected for the
+		 *        purpose of receiving events in response to the event
+		 *        being sent (null, undefined and values up to the
+		 *        current date/time mean that no special action is taken
+		 *        by the runtime in this regard).
+		 * \param sync If false or undefined, the function is
+		 *	  non-blocking, otherwise if true it will block until
+		 *	  one of the following conditions becomes true: \n
+		 *	   - if referenceTimeout represents a moment in time in
+		 *	     the future at call time, that moment is reached; \n
+		 *	   - otherwise, if the "expiryTimeStamp" attribute is
+		 *	     specified as a moment in time in the future at call
+		 *	     time, that moment is reached; \n
+		 *	   - in any case, the end result of the operation is
+		 *	     completely determined for all recipients and all
+		 *	     callbacks that were to be called have run.
+		 *
+		 * throws DOMException of type SecurityError if some local policy rule does not allow for the event to be sent.
+		 */
+		void dispatchWebinosEvent(
+				optional WebinosEventCallbacks? callbacks,
+				optional DOMTimeStamp? referenceTimeout,
+				optional boolean sync);
+	};
+
+
+	/**
+	 * \brief The WebinosEventCallbacks interface allows to pass a set of
+	 *        status monitoring callbacks to event sending/forwarding
+	 *        methods.
+	 *
+	 */
+	callback interface WebinosEventCallbacks {
+		/**
+		 * \brief Called right after the event has been put into the
+		 *        Local Event Cache for later transmission (e.g., when
+		 *        trying to send it to a remote entity but no
+		 *        connectivity is currently available).
+		 *
+		 * \param event The event being cached.
+		 */
+		void onCaching(WebinosEvent event);
+		/**
+		 * \brief Called as soon as successful event delivery has been
+		 *        reported by a given recipient or if the recipient
+		 *        notifies that it did already receive an event with the
+		 *        same ID.
+		 *
+		 * This callback SHALL NOT be called more than once per
+		 * recipient for each send/forward.
+		 *
+		 * Conforming implementations SHALL set the "Delivery
+		 * notification wanted" attribute described in the Webinos
+		 * system specifications as true whenever this callback is
+		 * specified.
+		 *
+		 * \param event The event that was successfully delivered.
+		 * \param recipient The recipient that notified delivery
+		 *                  success.
+		 */
+		void onDelivery(WebinosEvent event,DOMString recipient);
+		/**
+		 * \brief Called right after the moment in time specified by the
+		 *        "referenceTimeout" attribute is reached and the given
+		 *        primary recipient did not successfully sent back at
+		 *        least one event in response to the given event.
+		 *
+		 * This callback SHALL only be called if the "referenceTimeout"
+		 * attribute indicates a moment in time in the future at
+		 * sending/forwarding time and SHALL NOT be called more than
+		 * once per recipient for each send/forward.
+		 *
+		 * \param event The event.
+		 * \param recipient The recipient that did not successfully sent
+		 *        back at least one event in response to the given
+		 *        event.
+		 */
+		void onTimeout(WebinosEvent event, DOMString recipient);
+		/**
+		 * \brief Called as soon as unsuccessful event delivery has been
+		 *        reported w.r.t. a given recipient.
+		 *
+		 * This callback SHALL be called when the recipient reports
+		 * unsuccessful delivery or when it was not possible to send the
+		 * message and the event expired.
+		 *
+		 * This callback SHALL NOT be called more than once per
+		 * recipient for each send/forward.
+		 *
+		 * Conforming implementations SHALL set the "Delivery
+		 * notification wanted" attribute described in the Webinos
+		 * system specifications as true whenever this callback is
+		 * specified.
+		 *
+		 * \param event The event that was not successfully delivered.
+		 * \param recipient The recipient that notified delivery error.
+		 * \param error The reported error; the following new types of DOMError are to be used: InvalidError if the recipient received an invalid event; BadDestinationError if the intended recipient is unknown or unreachable, ExpiredError if the event expired before actual delivery, SecurityError if the event could not be received due to policy settings.
+		 */
+		void onError(WebinosEvent event, DOMString recipient,
+			     DOMError error);
+	};
+
+	/**
+	 * \brief The WebinosEventListener interface describes an event listener
+	 *        callback.
+	 * \param event The event.
+	 */
+	callback WebinosEventListener = void (WebinosEvent event);
+
+	/**
+	 * \brief This is the top-level interface for the Event Handling API.
+	 *        
+	 * This interface is a discoverable interface through the webinos Discovery
+	 * API findServices() method and thus inherits the Discovery API Service
+	 * interface.
+	 */
+	interface WebinosEventsInterface : Service {
+		/**
+		 * \brief Creates a new event.
+		 *
+		 * The function SHALL make sure that it is
+		 * valid for the application to create the event on the behalf
+		 * of the specified source, otherwise an WebinosEventException
+		 * exception with error code INVALID_ARGUMENT_ERROR SHALL be
+		 * thrown.
+		 *
+		 * \param type Event type identifier.
+		 * \param to References to the event recipients.
+		 * \param payload Event type-specific data or null (undefined
+		 *        is considered as equivalent to null).
+		 * \param withTimeStamp Whether to set the generation timestamp
+		 *        (undefined is considered as equivalent to false).
+		 * \param expiryTimeStamp Moment in time past which the event is
+		 *        no more valid or meaningful (undefined is considered
+		 *        as equivalent to null).
+		 * \return Newly created WebinosEvent object or null if an error
+		 *         occurred.
+		 *
+		 */
+		WebinosEvent createWebinosEvent(
+				DOMString type,
+				DOMString[] to,
+				[TreatUndefinedAs=Null]
+				  optional DOMString? payload,
+				optional boolean withTimeStamp,
+				optional DOMTimeStamp? expiryTimeStamp);
+		/**
+		 * \brief Registers an event listener.
+		 *
+		 * The arguments to this function act as filters, the sense
+		 * that when a new event is received, the listener is called if
+		 * the event's attributes match with all arguments passed to
+		 * this function.
+		 *
+		 * When a new event is received, all listeners that were
+		 * registered via this function with matching arguments SHALL be
+		 * called, yet the order of such calls is unspecified.
+		 *
+		 * Registering a listener SHALL NOT have consequences on other
+		 * listeners, hence it SHALL be possible to register multiple
+		 * listeners to the same event type/source/destination
+		 * combinations.
+		 *
+		 * \param listener The event listener.
+		 * \param type Specific event type or null for any type
+		 *        (undefined is considered as null).
+		 * \param from Specific event source or null for any source
+		 *        (undefined is considered as null).
+		 * \param to Specific event recipient (whether primary
+		 *        or not) or null for any destination (undefined is
+		 *        considered as null).
+		 *
+		 * \return Listener identifier.
+		 */
+		DOMString addWebinosEventListener(
+				WebinosEventListener listener,
+				[TreatUndefinedAs=Null]
+				optional DOMString? type,
+				optional DOMString? from,
+				optional DOMString? to);
+		/**
+		 * \brief Unregisters an event listener.
+		 *
+		 * Unregistering a listener SHALL NOT have consequences on other
+		 * listeners.
+		 *
+		 * \param listenerId Listener identifier as returned by
+		 *        addWebinosEventListener().
+		 *
+		 */
+		void removeWebinosEventListener(DOMString listenerId);
+	};
+
