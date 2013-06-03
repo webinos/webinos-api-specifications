@@ -22,23 +22,18 @@
  * \author Hans Myrhaug (AmbieSense Ltd.) &lt;hans@ambiesense.com&gt;
  * \author Stefano Vercelli (Telecom Italia) &lt;stefano.vercelli@telecomitalia.it&gt;
  * \author WIDL format created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
+ * \author Claes Nilsson (Sony Mobile) &lt;claes1.nilsson@sonymobile.com&gt;
  *
- * \version 1.5
+ * \version 2.0
  */
-
-/**
-* \brief Creates the webinos.nfc namespace.
-*
-*/
-
-partial interface Webinos  {
-  readonly attribute NFC nfc;
-};
 
     /**
    * \brief The NFCinterface
    *
    * This interface provides a variety of means for adding listeners for NFC tags, setting the device into a sharing mode, and helper methods for dealing with NDEF records.
+   *
+   * The NFC interface is a discoverable interface through the webinos Discovery API findServices() method and thus 
+   * inherits the Discovery API Service interface.   
    *
    * <b>Introduction</b>
    * 
@@ -64,12 +59,11 @@ partial interface Webinos  {
    * This specification starts with some informative examples for how the API can be used. The next section deals with the normative definition of the API and is followed by the full WebIDL definition of API. The specification closes with acknowledgements and references.
    *   
    * <b>Listen</b>
-   * 
-   * To set up an event listener for an NFC Tag:
-   * 
-   * Webinos.nfc.addListener(listener, success, fail);
+   *
+   * To set up an event listener for an NFC Tag register for events for Tags with specific NDEF record types:
    * 
    * \code
+   *
    * function listener (event)
    * {
    *   var tag = event.tag;  // object proxying the NFC Tag
@@ -87,8 +81,18 @@ partial interface Webinos  {
    * function fail ()
    * {
    *   console.log("failed to register NFC event listener");
-   * }
-   * \endcode
+   * }   
+   *   
+   * // nfcService is the NFC service, discovered through the webinos Discovery API, that has been selected by the user
+   * // register for Tags with text
+   * nfcService.addTextTypeListener(listener, success, fail);
+   *
+   * // register for Tags with VCARD data
+   * nfcService.addMimeTypeListener("text/vcard", listener, success, fail);
+   * 
+   * // register for Tags with URIs, e.g. for pointers to websites
+   * nfcService.addURITypeListener("http", listener, success, fail);
+   * \endcode   
    * 
    * The tag.tech field is a string identifying the kind of NFC Tag:
    * 
@@ -105,84 +109,70 @@ partial interface Webinos  {
    * If the Tag is an NDEF Tag, the ndefMessage property can be used to access the NDEF records:
    * 
    * \code
-   *   var records = tag.ndefMessage || [];
-   * 
-   *   for (var i = 0; i < records.length; ++i
-   *   {
-   *     var record = records[i];
-   *     console.log("Record: " + i);
-   *     console.log("type: " + record.type);
-   *     console.log("id: " + record.id);
-   *     console.log("payload: " + Webinos.nfc.bytesToString(record.payload));
-   *     console.log("");
-   *   }
-   * \endcode
-   * 
-   * As a convenience to developers, you can also register for events for Tags with specific NDEF record types:
-   * 
-   * \code
-   *   // register for Tags with VCARD data
-   *   Webinos.nfc.addMimeTypeListener("text/vcard", listener, success, fail);
-   * 
-   *   // register for Tags with URIs, e.g. for pointers to websites
-   *   Webinos.nfc.addURITypeListener(listener, success, fail);
+   * var records = tag.ndefMessage || [];
+   *
+   * for (var i = 0; i < records.length; i++)
+   * {
+   *   var record = records[i];
+   *   console.log("Record: " + i);
+   *   console.log("type: " + record.type);
+   *   console.log("id: " + record.id);
+   *   console.log("payload: " + record.payload);
+	 *   console.log("info: " + record.info);
+   *   console.log("");
+   * }
    * \endcode
    *  
-   * <b>Writing</b>
+   * <b>Read/write</b>
    * 
-   * To write to a tag having discovered one:
+   * To write and read to a tag having discovered one:
    * 
    * \code
    * // called when the Tag is discovered
-   * function listener (event)
-   * {
-   *   var nfc = Webinos.nfc;
-   * 
-   *   // read the tag here if you want ...
-   * 
-   *   // prepare an NDEF message
-   *   var message = [
-   *     nfc.textRecord("Have a nice day!");
-   *   ];
-   * 
-   *   // and write it back to the Tag
-   *   event.tag.write(message, success, fail);
-   * }
-   * 
-   * function success ()
-   * {
-   *   console.log("successfully wrote message to Tag");
-   * }
-   * 
-   * function fail ()
-   * {
-   *   console.log("failed to write message to Tag");
-   * }
+   *  function listener (event)
+   *  {
+   *    // nfcService is the NFC service, discovered through the webinos Discovery API, that has been selected by the user   
+   *    var nfc = nfcService;
+   *  
+   *    // read newly discovered Tag again
+   *    event.tag.read(readCallback, fail);
+   *  
+   *    // prepare an NDEF message
+   *    var message = [
+   *      nfc.textRecord("Have a nice day!");
+   *    ];
+   *  
+   *    // and write it back to the Tag
+   *    event.tag.write(message, writeCallback, fail);
+   *    
+   *    // read Tag again and see that it has changed
+   *    event.tag.read(readCallback, fail);
+   *  }
+   *  
+   *  function readCallback (message)
+   *  {
+   *    console.log("successfully read a message from Tag");
+   *    for (var i = 0; i < message.length; i++)
+   *    {
+   *      var record = records[i];
+   *      console.log("" + record.info);
+   *      console.log("");
+   *    }
+   *  }
+   *  
+   *  function writeCallback ()
+   *  {
+   *    console.log("successfully wrote message to Tag");
+   *  }
+   *  
+   *  function fail ()
+   *  {
+   *    console.log("something went wrong");
+   *  }
    * \endcode
    * 
    * 
    * There could be more than one Tag in range, e.g. you might have several in your wallet. This approach allows you to write back to the same Tag that you just read.
-   * 
-   * <b>Set Read Only</b>
-   * 
-   * To prevent further modifications to a Tag you can do the following:
-   * 
-   * 
-   * \code
-   *   tag.makeReadOnly(success, fail);
-   * 
-   * ...
-   * 
-   * function success ()
-   * {
-   *   console.log("successfully make Tag read-only");
-   * }
-   * 
-   * function fail ()
-   * {
-   *   console.log("failed to make Tag read-only");
-   * }
-   * \endcode
    * 
    * 
    * <b> Push </b>
@@ -195,7 +185,8 @@ partial interface Webinos  {
    * // called when the Tag is discovered
    * function listener (event)
    * {
-   *   var nfc = Webinos.nfc;
+   *   // nfcService is the NFC service, discovered through the webinos Discovery API, that has been selected by the user  
+   *   var nfc = nfcService;
    * 
    *   // prepare an NDEF message
    *   var message = [
@@ -239,13 +230,14 @@ partial interface Webinos  {
    * 
    * The Link Logical Control Protocol (LLCP) can be used to set up an HTML Message Channel for a temporary bidirectional aysnchronous connection. Message Channels are part of HTML5
    * 
-   *     <a href="http://www.w3.org/TR/html5/comms.html">HTML5 MessageChannel</a>
+   *     <a href="http://www.w3.org/TR/webmessaging/">HTML5 Web Messaging</a>
    * 
    * Here is a simple example:
    * 
    * \code
    *   // first set phone into peering mode
-   *   Webinos.nfc.peer(success, fail);
+   *   // nfcService is the NFC service, discovered through the webinos Discovery API, that has been selected by the user   
+   *   nfcService.peer(success, fail);
    * 
    * function success (channel)
    * {
@@ -280,20 +272,7 @@ partial interface Webinos  {
    */
 
 
-interface NFC {
-
-        /**
-       * \brief This is a method for registering a call back for all NFC tag technologies.
-       *
-       * It makes use of the success and failure call back pattern. These call backs are defined in a subsequent section.
-       *
-       * \param listener Callback issued when an update occurs
-       * \param success Callback issued when listener has been successfully added
-       * \param fail Callback issued if an error occurs 
-       * \return void
-       */
-  void addListener(NfcEventCallBack listener,
-      SuccessCallBack success, FailCallBack fail);
+interface NFC : Service {
 
         /**
        * \brief This is a method for registering a call back for NFC tags with NDEF text records.
@@ -313,12 +292,13 @@ interface NFC {
        *
        * It makes use of the success and failure call back pattern. These call backs are defined in a subsequent section.
        *
+       * \param scheme Specific URI scheme to listen for
        * \param listener Callback issued when an update occurs
        * \param success Callback issued when listener has been successfully added
        * \param fail Callback issued if an error occurs 
        * \return void
        */
-  void addUriTypeListener(NfcEventCallBack listener,
+  void addUriTypeListener(DOMString scheme, NfcEventCallBack listener,
       SuccessCallBack success, FailCallBack fail);
 
         /**
@@ -366,7 +346,7 @@ interface NFC {
        * 
        * This method is used to establish a bidirectional channel with another NFC device for asynchronous exchange of data. It makes use of the Link Logical Control Protocol and exposes it as an HTML MessageChannel, see:
        * 
-       *     <a href="http://www.w3.org/TR/html5/comms.html">http://www.w3.org/TR/html5/comms.html</a>
+       *     <a href="http://www.w3.org/TR/webmessaging/">HTML5 Web Messaging</a>
        * 
        * Each message channel exposes a pair of ports. The first port represents the local end of the channel, and the second port represents the remote end of the channel. Messages are posted between ports using the postMessage method. Messages can be strings or other kinds of JavaScript objects, and are serialized and reassembled automatically as structured clones, see:
        * 
@@ -406,48 +386,34 @@ interface NFC {
        */
   NfcNdefRecord mimeRecord(DOMString mimeType, byte[] data);
 
-      /**
-       * \brief This is a helper method for converting strings to byte arrays for use in NDEF messages.
-       *
-       * This is a helper method for converting strings to byte arrays for use in NDEF messages. It maps 16 bit Unicode characters into a byte array in the big-endian manner with the most significant byte appearing first.
-       *
-       * \param string String to convert 
-       * \return byte[] Resulting byte array for NDEF message use
-       */
-  byte[] stringToBytes(DOMString string);
-
-      /**
-       * \brief This is a helper method for converting byte arrays from NDEF messages into strings.
-       *
-       * This is a helper method for converting byte arrays from NDEF messages into strings. This performs the inverse mapping from stringToBytes, and maps a big-endian byte array into a JavaScript string consisting of 16 bit unicode characters.
-       *
-       * \param data NDEF style byte array
-       * \return DOMString Converted NDEF data in text
-       */
-  DOMString bytesToString(byte[] data);
 };
 
+      /**
+       * \brief This is a callback issued when NDEF message has been read. 
+       *
+       */
+callback NdefReadCallback = void (NfcNdefRecord[] ndefMessage);
 
       /**
-       * \brief This is a call back for notifying the presence of NFC tags. 
+       * \brief This is a callback for notifying the presence of NFC tags. 
        *
        */
 callback NfcEventCallBack = void (NfcNdefEvent event);
 
       /**
-       * \brief This is a call back for notifying the success of an operation such as registering a listener for the presence of NFC tags.
+       * \brief This is a callback for notifying the success of an operation such as registering a listener for the presence of NFC tags.
        *
        */
 callback SuccessCallBack = void ();
 
       /**
-       * \brief This is a call back for notifying the failure of an operation such as registering a listener for the presence of NFC tags.
+       * \brief This is a callback for notifying the failure of an operation such as registering a listener for the presence of NFC tags.
        *
        */
 callback FailCallBack = void ();
 
       /**
-       * \brief This is a call back for notifying when a message channel has been established with another NFC device via the Link Logical Control Protocol.
+       * \brief This is a callback for notifying when a message channel has been established with another NFC device via the Link Logical Control Protocol.
        *
        */
 callback LLCPCallBack = void (MessageChannel channel);
@@ -463,14 +429,14 @@ interface NfcNdefEvent : DOMEvent {
 
 
       /**
-       * \brief he NFCTag interface defines properties and methods for NFC tags.
+       * \brief The NFCTag interface defines properties and methods for NFC tags.
        *
        */
 interface NfcTag {
   readonly attribute NfCTagTech tech;  
   readonly attribute NfcNdefRecord[] ndefMessage;
 
-  attribute CloseCallBack close;
+  attribute CloseCallBack? close;
 
       /**
        * \brief This method can be called on an open NFC tag to write an NDEF message. It will fail if the tag is read-only.
@@ -482,21 +448,24 @@ interface NfcTag {
        */
 
   void write(NfcNdefRecord[] ndefMessage,
-             SuccessCallBack success, FailCallBack fail);
-
+             SuccessCallBack success, FailCallBack fail);             
+             
       /**
-       * \brief This method can be called on an open NFC tag to set it to read-only.
+       * \brief This method can be called on an open NFC tag to read an NDEF message.
        *
-       * \param success Callback issued when NFC tag has been set to read-only.
+       * \param success Callback issued when NDEF message has been read
        * \param fail Callback issued if an error occurs 
        * \return void
        */
-  void makeReadOnly(SuccessCallBack success, FailCallBack fail);
+
+  void read(NdefReadCallback success, FailCallBack fail);
+                                  
 };
 
 
       /**
-       * \brief This is a call back that indicates that a NFC tag is no longer accessible, e.g. because the user has pulled the tag away from the reader.
+       * \brief This is a call back that indicates that a NFC tag is no longer accessible, e.g. because the user has pulled the tag away from the reader. 
+       * Note that this callback is not supported on all platforms.
        *
        */
 callback CloseCallBack = void ();
@@ -512,13 +481,45 @@ callback CloseCallBack = void ();
 // definitions come from the NFC Forum
 
       /**
-       * \brief An NDEF message is an array of records as defined above.
+       * \brief NDEF message.
        *
        */
 interface NfcNdefRecord {
+
+  /**
+   * \brief The record's Type Name Format. 
+   *
+   * TBD. See http://www.nfc-forum.org/specs/, "NFC Data Exchange Format (NDEF)", NFC Forum 2006 
+   */    
   readonly attribute DOMString tnf;
+  
+  /**
+   * \brief A string identifier describing the type of the payload. 
+   *
+   * TBD. See http://www.nfc-forum.org/specs/, "NFC Data Exchange Format (NDEF)", NFC Forum 2006
+   */     
   readonly attribute DOMString type;
+  
+  /**
+   * \brief An identifier for the record, in the form of a URI reference. 
+   *
+   * TBD. See http://www.nfc-forum.org/specs/, "NFC Data Exchange Format (NDEF)", NFC Forum 2006 
+   */     
   readonly attribute DOMString id;
+  
+  /**
+   * \brief Carries the payload intended for the NDEF user application. 
+   *
+   * TBD. See http://www.nfc-forum.org/specs/, "NFC Data Exchange Format (NDEF)", NFC Forum 2006 
+   */    
   readonly attribute byte[] payload;
+  
+  /**
+   * \brief String representation of the info on the tag. 
+   *
+   * It is the parsed payload without control characters and actual content 
+   * depends on tag type.
+   */    
+  readonly attribute DOMString info;
 };
       
