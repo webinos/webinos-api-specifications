@@ -20,7 +20,7 @@
  * \author Anders Isberg &lt;anders.isberg@sonymobile.com&gt;
  * \author Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;
  * \author Claes Nilsson &lt;claes.nilsson@sonymobile.com&gt;
- * \version 0.9 
+ * \version 1.0
  */
 	/**
 	 * \brief The DiscoveryInterface interface provides functionality for discovery of services. 
@@ -64,7 +64,7 @@
 	// Success callback when bind has been successfully executed on the service object. 
 	function bindCB(myLocationService) {
 		alert('Service ' + myLocationService.displayName + ' ready to use');
-		myLocationService.navigator.geolocation.getCurrentPosition(showMap);
+		myLocationService.getCurrentPosition(showMap);
 	}
 	
 	// Event listner that is called when the 'change' event is dispatched on the HTML selection list.  
@@ -228,10 +228,10 @@
 	 * \code
 	succesBindCallBack(tvService) {
 		// Invoke a remote method.
-		tvService.webinos.tv.display.setChannel(channel, success);
+		tvService.display.setChannel(channel, success);
 		
 		// Register an event listner from event orginating from the remote peer.
-		tvService.addEventListener('channelchange', success);
+		tvService.display.addEventListener('channelchange', success);
 	}  
 	 * \endcode
 	 */
