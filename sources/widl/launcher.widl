@@ -19,7 +19,8 @@
  *
  * \author Michael Vakulenko &lt;michael@visionmobile.com&gt;
  * \author Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;
- * \version 1.0 
+ * \author Corrections relating to inheriting Discovery Service interface &lt;claes1.nilsson@sonymobile.com&gt; 
+ * \version 1.1 
  */
   
   /**
@@ -33,6 +34,9 @@
    * - "tel:" in order to initiate a call (if supported by the platform) as defined by RFC 3966 <a href="http://www.rfc-editor.org/rfc/rfc3966.txt">http://www.rfc-editor.org/rfc/rfc3966.txt</a>\n
    * - "sms" in order to send a short message service (SMS) message (if supported by the platform) as defined by RFC 5724 <a href="http://www.rfc-editor.org/rfc/rfc5724.txt">http://www.rfc-editor.org/rfc/rfc5724.txt</a>\n
    * - "mailto" in order to send an email message (if supported by the platform) as defined by RFC 6068 <a href="http://www.rfc-editor.org/rfc/rfc6068.txt">http://www.rfc-editor.org/rfc/rfc6068.txt</a>\n
+   * \n
+   * The AppLauncherManager interface is a discoverable interface through the webinos Discovery API findServices() method and thus 
+   * inherits the Discovery API Service interface.
    *
    * \code
 
@@ -51,10 +55,11 @@
 
 
         // Activate webinos application, if the application is installed in the device.
-        webinosAppLauncher.appInstalled(
+        // appLauncherService is the AppLauncher service, discovered through the webinos Discovery API, that has been selected by the user
+        appLauncherService.appInstalled(
             function (result) {
                 if (result)  {
-                    webinos.AppLauncher.launchApplication(launchedCallback, errorCallback, appURI, null);
+                    appLauncherService.launchApplication(launchedCallback, errorCallback, appURI, null);
                 }  
             },
             errorCallback,
@@ -62,7 +67,7 @@
         );
    * \endcode
    */  
-  [NoInterfaceObject] interface AppLauncherManager {
+  [NoInterfaceObject] interface AppLauncherManager : Service {
 
       /**
        * \brief Starts a webinos applicaiton identified by an appURI.
@@ -71,7 +76,6 @@
        * \param errorCallback Callback invoked if activation of webinos app was not successful. "NotFoundError" if the application identified by appURI could not be found or "NotSupportedError" if the protocol of the app URI is not supported.
        * \param appURI Identifies webinos application that needs to be activated.
        */
-
     void launchApplication(VoidFunction successCallback,
                                        ErrorCallback errorCallback,
                                        DOMString appURI);
@@ -100,11 +104,3 @@
     * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> containing information about the error ; in particular, NotFoundError if application does not exist, InvalidStateError if application already started, QuotaExceededError if no resources are available or or "NotSupportedError" if the protocol of the app URI is not supported.
     */
     callback ErrorCallback = void (DOMError error);
-
-    
-	/**
-	 * \brief Creates the namespace webinos.launcher from where the AppLauncher is accessable.
-	 */
-	partial interface Webinos {
-  		readonly attribute AppLauncherManager launcher;
-	};
