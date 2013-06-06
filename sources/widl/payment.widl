@@ -1,99 +1,75 @@
 /**<p> Interface for Payment functions.</p>
  * \name Payment API
  *
- * This API provides generic shopping basket functionality to provide in-app payment.
+ * This API provides functionality to provide in-app payment.
  *
  * It is not linked to a specific payment service provider and is designed to be 
  * sufficiently generic to be mapable to various payment services like GSMA OneAPI,
  * BlueVia, Android Payment API or PayPal. 
  *
+ *
  * \def-api-feature http://webinos.org/api/payment
  * Identifies all payment interactions. 
  * 
- * \def-api-feature http://webinos.org/api/payment.checkout
- * Identifies access to the checkout function, enabling a separate policy (ask user consent) for the checkout itself. 
- * 
  * \author Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
+ * \author Updated from version 1.0  &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
+ * \author Corrections relating to inheriting Discovery Service interface &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
+ * \version 2.0
  */
  
-/**
-* \brief Creates the webinos.payment namespace.
-*
-*/
-partial interface Webinos {
-     /**
-      * \brief webinos.payment object.
-      */
-      readonly attribute Payment payment;
-   };
 
     /**
    * \brief The Payment interface
    *
    * The Payment interface provides access to payment functionality.
    *
-   * The API supports creation of a shopping basket, adding items to the shopping
-   * basket, proceeding to checkout and releasing the shopping basket.
+   * The API supports the payment from the device user to a merchant
+   * or other user, utilizing a payment provider.
    *
-   * This essentially echoes the usual 'shopping basket' system used on many web sites.
+   * The payment interface is a discoverable interface through the webinos Discovery API findServices()
+   * method and thus inherits the Discovery API Service interface. 
    *
    * The code example below refunds the user for a returned CD and charges for
    * the deluxe edition of that CD, demonstarting charging and refunding payments.
    *
    * \code
-   *    
-   *        webinons.payment.createShoppingBasket(openBasketSuccess, paymentFailure, "PayPal", "mymail@provider.com", "ShopName12345");
-   *        var myBasket = null;
-   *
-   *        // Define the openBasketSuccess success callback.
-   *        function openBasketSuccess(basket) {
-   *                alert("Shopping basket was opened successfully");
-   *                myBasket = basket;  
-   *                // refound for a CD
-   *                myBasket.addItem(CD2346278, paymentFailure,
-   *                    {  productID: 'DCD2346233', 
+   *       // creating item list
+   *       var itemList = new Array();
+   *       itemList[0] = {  productID: 'DCD2346233', 
    *                       description: 'Best of Ladytron 00-10 by Ladytron (Audio CD - 2011)', 
    *                       currency: 'EUR',
-   *                       itemPrice: -14.99,
-   *                       itemCount: 1}
-   *        }
-   *
-   *        // Define the refundItemSuccess success callback.
-   *        function refundSuccess() {
-   *                alert("Adding of refunding item was handled successfully");
-   *                // charge for the deluxe CD
-   *                myBasket.addItem(addItemSuccess, paymentFailure,
-   *                    {  productID: 'DCD2346233', 
-   *                       description: 'Best of Ladytron 00-10 (Deluxe Edition) by Ladytron (Audio CD - 2011)', 
+   *                       itemPrice: 14.99,
+   *                       itemCount: 1
+   *                     };
+   *       itemList[1] = {  productID: 'DCD1358954167', 
+   *                       description: 'Breakfast at Tiffanys DVD', 
    *                       currency: 'EUR',
-   *                       itemPrice: 17.98,
-   *                       itemCount: 1}
-   *        }
-   *
-   *        // Define the addItemSuccess success callback.
-   *        function addItemSuccess() {
-   *                alert("Adding of new item was handled successfully");
-   *                // now close the bill and perform the actual payment
-   *                myBasket.update(updateSuccess, paymentFailure);
-   *        }
-   *        
-   *        // Define the updateSuccess success callback.
-   *        function updateSuccess() {
-   *                alert("Total amount is: "myBasket.totalAmount+" Tax is "+myBasket.tax);
-   *                // now close the bill and perform the actual payment
-   *                myBasket.checkout(checkoutSuccess, paymentFailure, paymentChallenge);
-   *        }
+   *                       itemPrice: 5.97,
+   *                       itemCount: 1
+   *                     };
+   *       itemList[2] = {  description: 'Postage and Packaging', 
+   *                       currency: 'EUR',
+   *                       itemPrice: 5.0,
+   *                       itemCount: 1
+   *                     };
+   *    
+   *       var bill = {  description: 'Bill 123456', 
+   *                       currency: 'EUR',
+   *                       itemPrice: 25.96 
+   *                     };
+   *       // paymentService is the messaging service, discovered through the webinos Discovery API, 
+   *       // that has been selected by the user    
+   *        paymentService.pay(paymentSuccess, paymentFailure, paymentChallenge,
+   *                             itemList, bill,  "mymail@provider.com", "ShopName12345" );
    *        
    *        // Define the checkoutSuccess success callback.
-   *        function checkoutSuccess() {
-   *                alert("Checkout handled successfully - payment was performed.");
-   *                 if (myBasket != null) myBasket.release();
+   *        function paymentSuccess() {
+   *                alert("Payment handled successfully - payment was performed.");
    *        }        
    *
    *        // Define the paymentFailure failure callback.
    *        function paymentFailure(e) {   
    *                alert("Failure occured during payment.");
-   *                 if (myBasket != null) myBasket.release();
    *        }
    *
    *        // Define the paymentChallenge callback.
@@ -125,92 +101,11 @@ partial interface Webinos {
 
 
  
-[NoInterfaceObject] interface Payment { 
-      /**
-       * \brief Creates a shopping basket
-       *
-       * \param successCallback Callback issued when the shopping basket is created
-       * \param errorCallback Callback issued if an error occurs during the creation of the shopping basket
-       * \param serviceProviderID is the name of the payment provider to be used
-       * \param customerID is identification of the person making the payment as known to the payment provider
-       * \param shopID is the identification of the shop the payment is made to
-       * \return void
-       */
-        void createShoppingBasket(SuccessShoppingBasketCallback successCallback, PaymentErrorCB errorCallback,
-        DOMString serviceProviderID, DOMString customerID, DOMString shopID);
-  };
-  
-    /**
-   * \brief The ShoppingBasket interface provides access to a shopping basket
-   *
-   * The shopping basket represents a current payment action and allows to 
-   * add a number of items to the basket before proceeding to checkout.
-   *
-   **/
-   
-[NoInterfaceObject] interface ShoppingBasket {   
+[NoInterfaceObject] interface Payment : Service{ 
         /**
-       * \brief List of items currently in the shopping basket. 
-       * These are the items that have been added with addItem.
+       * \brief Performs the payment using a payment provider.
        *
-       */
-        readonly attribute ShoppingItem[] items; 
-        /**
-       * \brief Automatically generated extra items, typically rebates, taxes and shipping costs.
-       *
-       * These items are automatically added to the shopping basket by update()
-       * (or after the addition of an item to the basket).
-       * 
-       * These items can contain such 'virtual' items as payback schemes, rebates, taxes,
-       * shipping costs and other items that are calculated on the basis of the regular
-       * items added.
-       *
-       */
-        readonly attribute ShoppingItem[] extras; 
-        /**
-       * \brief The total amount that will be charged to the user on checkout.
-       *
-       * Will be updated by update(), may be updated by addItem().
-       *
-       */
-        readonly attribute float totalBill; 
-        
-        /**
-       * \brief Adds an item to a shopping basket.
-       *
-       * \param successCallback Callback issued when successfully added the item to the shopping basket
-       * \param errorCallback Callback issued if an error occurs during adding the item
-       * \param item the item to purchase
-       * \return void
-       */
-        void addItem(VoidFunction successCallback, PaymentErrorCB errorCallback, ShoppingItem item);
-
-        /**
-       * \brief Updates the shopping basket
-       *
-       * The update function updates the values in the shopping baskets, based on 
-       * the added items. Such updates may include taxes, calculating the total
-       * amount, shipping costs or rebate calculations. 
-       *
-       * While this, preferably, is internally updated after the adding of each item,
-       * such an update might require communication with the payment service provider
-       * and it might be undesireable in specific implementations to perform such
-       * a query after each individual item, so a specifc update function is provided
-       * to force such an update.
-       *
-       * The checkout function will always perform an update internally before
-       * payment.              
-       *
-       * \param successCallback Callback issued when the update is performed
-       * \param errorCallback Callback issued if an error occurs during update 
-       * \return void
-       */
-        void update(VoidFunction successCallback, PaymentErrorCB errorCallback);
-
-        /**
-       * \brief Performs the checkout of the shopping basket.
-       *
-       * The items in the shopping basket will be charged to the shopper.
+       * The bill will be charged to the shopper.
        *
        * Depending on the implementation of the actual payment service, this function
        * might cause the checkout screen of the payment service provider to be displayed.
@@ -218,35 +113,16 @@ partial interface Webinos {
        * \param successCallback Callback issued when the checkout is performed and payment is made
        * \param errorCallback Callback issued if an error occurs during adding the amount   
        * \param challengeCallback Callback that will be used if the payment provider requires additional confirmation to finalize payment
+       * \param itemList This is a list of shopping items that have been bought - this is primarily for providing detailed invoisces if the payment provider allows itemized bills. Due to the use of coupons or special combination offers, there is no requirement that the sums of the individual prices is the same as the charged amount for the bill. The item list has only informative purpose and can be left empty or null.
+       * \param bill This defines the payment to be performed. Mandatory parts of the bill are the amount to be paid, the currency and an ID that allows the merchant to match the payment to the purchase. For the bill, itemCount is required to be 1 and itemsPrice and itemPrice need to be identical. A human readable description should be provided, but isn't mandatory.
+       * \param customerID is identification of the person making the payment as known to the payment provider
+       * \param sellerID is the identification of the shop the payment is made to
        * \return void
        */
-        void checkout(VoidFunction successCallback, PaymentErrorCB errorCallback, PaymentChallengeCB challengeCallback);
-
-       /**
-       * \brief Provide the user response to a challenge to the payment provider
-       *
-       * If a payment provider presents an image or a text challenge to the user,
-       * the client needs to present them and gather a text response from the user,
-       * which is returned to the payment provider via the userResponse function.
-       *
-       * \param userResponse Information that the user issued in response to the challenge (on image and text challenges)
-       * \return void 
-       */
-        void answerChallenge(DOMstring userResponse);
-
-
-        /**
-       * \brief Releases a shopping basket.
-       *
-       * The current shopping basket will be released.
-       *
-       * If no checkout has been performed, the initiated shopping transaction will be cancelled.
-       *
-       * \return void
-       */
-        void release();
+        void pay(PaymentSuccessCB successCallback, PaymentErrorCB errorCallback, PaymentChallengeCB challengeCallback,
+        ShoppingItem [] itemList, ShoppingItem bill,  DOMString customerID, DOMString sellerID);
   };
-
+  
     /**
    * \brief The ShoppingItem captures the attributes of a single shopping product
    *
@@ -285,18 +161,18 @@ partial interface Webinos {
        *
        * Typically this is itemPrice*itemCount, but special '3 for 2' rebates might apply.
        *
-       * Updated by the shopping basket update function.
-       *
        */
-         unsigned long itemsPrice;
+         float itemsPrice;
     };  
 
-        /**
-         * \brief Callback for successful creation of a shopping basket
-         * \param basket The shopping basket to which items can be added.
-         */
-        callback SuccessShoppingBasketCallback = void (ShoppingBasket basket);
+     
                         
+        /**
+         * \brief Callback for errors during payment related functions
+         * \param proofOfPurchase Payment provider specific token to verify purchase. 
+         */
+        callback PaymentSuccessCB = void (DOMstring proofOfPurchase);
+        
         /**
          * \brief Callback for errors during payment related functions
          * \param error The Payment API related error object of an unsuccessful asynchronous operation. 
@@ -321,7 +197,7 @@ partial interface Webinos {
          * with information about the current payment process).
          * 
          * Challenges can take three forms:
-         *   Text challenges - such as "Enter the PIN from the SMS er just sent you."
+         *   Text challenges - such as "Enter the PIN from the SMS we just sent you."
          *   Image challenges - captcha-style images or any image containing a textual question
          *   URL - many payment providers require a re-direct to their own web page for additional
          *         identification and confirmation. On receiving an URL, the client is required
@@ -335,7 +211,6 @@ partial interface Webinos {
         
 
 
-
         /**
         * \brief Types of payment challenges
         */
@@ -344,7 +219,7 @@ partial interface Webinos {
         /**
         * \brief Types of error messages specific to payment functionality
         */
-         enum PaymentErrors {"basket_already_open", "basket_not_open", "payment_charge_failed", "payment_refund_not_supported", "payment_refund_failed", "payment_chargeable_exceeded", "payment_authentication_failed"};
+         enum PaymentErrors { "payment_charge_failed", "payment_chargeable_exceeded", "payment_authentication_failed"};
 
         /**
          * \brief Payment specific errors.
@@ -365,6 +240,12 @@ partial interface Webinos {
        * No exceptions.
        */    
         DOMString message;
+        /**
+       * \brief A boolean value describing whether the error is likely to be of a temporary nature (such as a connection failure) which might not be present on a retry a couple of seconds later. As a guideline, for every condition that is not likely to be resolved within one minute, 'retryPossible' should be false.
+       *
+       * No exceptions.
+       */    
+        boolean retryPossible;
   };  
 
 
