@@ -16,20 +16,10 @@
  *
  * \def-api-feature http://webinos.org/api/app2app
  * \author Fabian Walraven &lt;fabian.walraven@tno.nl&gt;
- * \version 0.3.0
+ * \author Corrections relating to inheriting Discovery Service interface &lt;claes1.nilsson@sonymobile.com&gt; 
+ * \version 0.4.0
  */
 
-/**
- * \brief The App2AppMessaging interface describes the part of the
- *        App2App Messaging API accessible through the
- *        webinos object.
- */
-partial interface Webinos {
-  /**
-   * \brief webinos.app2app object.
-   */
-  readonly attribute App2AppMessaging app2app;
-};
 
 /**
  * \brief Access to the App2App Messaging functions.
@@ -45,8 +35,11 @@ partial interface Webinos {
  * A client interacts with a channel proxy (which is returned as a result of
  * channel search) which exposes the channel API to a client. Before a client
  * can use a channel it first has to connect to it using the proxy.
+ *
+ * The App2AppMessaging interface is a discoverable interface through the webinos Discovery API findServices() method and thus 
+ * inherits the Discovery API Service interface. 
  */
-interface App2AppMessaging {
+interface App2AppMessaging : Service {
 
   /**
    * \brief Create a new channel. The channel creator decides which clients are allowed to connect to the channel. If the
@@ -61,7 +54,9 @@ interface App2AppMessaging {
    * \param errorCB Callback invoked when channel creation failed.
    * \code
    // create channel and ask user to accept connections
-   var channel = webinos.app2app.createChannel({ namespace: "urn:webinos-org:example", properties: { mode: "send-receive",
+   // app2appService is the app2app messaging service, discovered through the webinos Discovery API, 
+   // that has been selected by the user
+   var channel = app2appService.createChannel({ namespace: "urn:webinos-org:example", properties: { mode: "send-receive",
                                                 canDetach: true, reclaimIfExists: true }, appInfo: {} },
                                                function(request) { return confirm("Accept connect request from " + request.requestInfo) },
                                                function(message) { alert("Received message: " + message.contents) },
@@ -97,7 +92,7 @@ interface App2AppMessaging {
    * \return PendingOperation interface to cancel the asynchronous call.
    *
    * \code
-   webinos.app2app.searchForChannels("urn:webinos:org:*", [],
+   app2appService.searchForChannels("urn:webinos:org:*", [],
                                      function(channel) { alert("Found a channel with namespace " + channel.namespace) });
    \endcode
    */
