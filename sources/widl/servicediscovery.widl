@@ -1,4 +1,4 @@
-/**<p>The Webinos Discovery API provide web applications with an API to discover services without any previous knowledge of the service.</p>
+/**<p>The Webinos Discovery API provides web applications with an API to discover services without any previous knowledge of the service.</p>
  * \name Discovery API 
  *
 
@@ -20,7 +20,7 @@
  * \author Anders Isberg &lt;anders.isberg@sonymobile.com&gt;
  * \author Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;
  * \author Claes Nilsson &lt;claes.nilsson@sonymobile.com&gt;
- * \version 1.0
+ * \version 1.1
  */
 	/**
 	 * \brief The DiscoveryInterface interface provides functionality for discovery of services. 
@@ -61,7 +61,7 @@
 		option.parentNode.removeChild(option);
 	}
 	
-	// Success callback when bind has been successfully executed on the service object. 
+	// Success callback when bindService has been successfully executed on the service object. 
 	function bindCB(myLocationService) {
 		alert('Service ' + myLocationService.displayName + ' ready to use');
 		myLocationService.getCurrentPosition(showMap);
@@ -74,7 +74,7 @@
 	
 		// Binds to the service to initiate an authorized object used to
 		// invoke services.  
-		service.bind({onBind:bindCB});
+		service.bindService({onBind:bindCB});
 	}
 	
 	if (serviceId) {
@@ -145,25 +145,47 @@
 	 	 *			3. an unique URI identifying an API exposed by a web application. The URI shall be the same URI as exposed by the web application manifest in the api-name attribute of the webinos:shared-api element.\n  
      * \n
      * The search could be refined by extending the Feature URIs with "REST style" discovery parameters. A set of query parameters can be used for all 
-     * APIs but API specific parameters can also be specified as defined by the "Features" section of each webinos API specification. \n
+     * APIs but API specific parameters can also be specified as defined by the "Features" section of each webinos API specification. If no parameters
+     * are given the search is not restricted.\n
      * \n
      * The common discovery parameters are:\n
      * \n
-     * - Parameter name: remote_services\n
-     * - Values: true, false\n
-     * - Description: If remote_services is false the findServices method will limit the search for services that are connected directly to the device 
-     *   (including Bluetooth, NFC, etc if available) or to the same local IP network. If remote_services is true, the findServices method will extend the 
-     *   search for services outside the local IP network (including other PZHs). Default value is false.\n
+     * - Parameter name: filter\n
+     * - Values: localpzp, mypz\n
+     * - Description: Makes it possible to restrict the search to only services supported by the same PZP, i.e. in the same device, or to services only
+     *   in the user's personal zone. \n
      * \n
-     * This list is TBD. The intention is to use discovery parameters instead of the current "Filter" attribute.\n
      * \n
+     * - Parameter name: filterzone\n
+     * - Values: Name of personal zone.\n
+     * - Description: Name of personal zone that will be used to search for services in addition to the personal zone of the user logged into to the 
+     *   device\n
+     * \n     
+     * \n
+     * - Parameter name: serviceid\n
+     * - Values: Unique Id for the searched service.\n
+     * - Description: If set service discovery will only return the service with the given identifier. This can be used to establish a service 
+     *   binding directly if the service identity is already known, for example if the service identity was stored persistently for later reuse or it 
+     *   was received via out of band.\n
+     * \n     
+     * \n     
 	   * \code    
 	     // Examples of webinos service discovery using parameters
 	     
-	     // Initiate a search query for TV service outside of the local environment.
+	     // Initiate a search query for TV service within the user's personal zone only.
 		   findHandle = window.webinos.discovery.findServices(
-			              {api:'http://webinos.org/api/tv?remote_services=true'}, 
-			              {onFound:serviceFoundCB, onLost:serviceLostCB});	     
+			              {api:'http://webinos.org/api/tv?filter=mypz'}, 
+			              {onFound:serviceFoundCB, onLost:serviceLostCB});	   
+			              
+	     // Initiate a search query for TV service within the user's and Alex's personal zones.
+		   findHandle = window.webinos.discovery.findServices(
+			              {api:'http://webinos.org/api/tv?filterzone=alex@pzh'}, 
+			              {onFound:serviceFoundCB, onLost:serviceLostCB});			
+			              
+	     // Initiate a search query for a specific TV service whose service ID is already known.
+		   findHandle = window.webinos.discovery.findServices(
+			              {api:'http://webinos.org/api/tv?serviceid=some_serv_id'}, 
+			              {onFound:serviceFoundCB, onLost:serviceLostCB});					              	                
 	     
 	     // Initiate a search query for a proximity sensor capable of providing proximity in centimeters
 		   findHandle = window.webinos.discovery.findServices(
@@ -261,7 +283,12 @@
 		readonly attribute DOMString displayName;
 		
 		/**
-		 * \brief An URL referring to a detailed description of the service. 
+		 * \brief A human readable name of the device hosting the service. 
+		 */
+		readonly attribute DOMString serviceAddress;		
+		
+		/**
+		 * \brief A URL referring to a detailed description of the service. 
 		 */ 
 		readonly attribute DOMString description;
 		
@@ -271,16 +298,16 @@
 		readonly attribute DOMString icon;
 		
 		/**
-		 * \brief bind Binds to the service uniquely identified by the service identity.  
-		 * \param bindCallBack Asynchrounous callback to report the states of the bind operation and the availability of the service.  
+		 * \brief Binds to the service uniquely identified by the service identity.  
+		 * \param bindCallBack Asynchrounous callback to report the states of the bindService operation and the availability of the service.  
 		 * \param serviceId Unique id of the binding to the particular service. If no serviceId is provided as an in parameter, the id attribute in the Service interface will be used to bind the service.
 		 */
-		void bind(BindCallBack bindCallBack, optional DOMString serviceId);
+		void bindService(BindCallBack bindCallBack, optional DOMString serviceId);
 		
 		/**
-		 * \brief unbind Releases all resources and connections allocated by the service object.  
+		 * \brief Releases all resources and connections allocated by the service object.  
 		 */
-		void unbind();
+		void unbindService();
 	};
 	
 	/**
