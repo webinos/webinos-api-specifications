@@ -164,7 +164,6 @@ XSLT stylesheet to convert widlprocxml into html documentation.
                   <li>The application's config.xml file to declare requested features.</li>
                   <li>As identifier for serviceType in the webinos Discovery API's findServices() method.</li>        
                 </ul>
-                <p>Note that for use as serviceType in discovery the feature strings can optionally be extended with query parameters that further refines the search operation. See the webinos Discovery API for more information.</p>
                 <xsl:apply-templates select="descriptive/def-api-feature"/>
             </div>
         </xsl:if>

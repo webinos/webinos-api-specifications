@@ -119,7 +119,7 @@
 		 * \param serviceType An input argument that defines which type of API that is requested. The serviceType is an URI that uniquely identifies the API.   
 		 * \param findCallBack Callback interface used to report the outcome of the search process. 
 		 * \param options Defines search options. 
-		 * \param filter Defines a filter that be used to limit the service operation to certain constraints and context information. NOTE: It is proposed that Filter should be replaced by REST-like query parameters that extends the Feature URI used as serviceType in findServices().
+		 * \param filter Defines a filter that be used to limit the service operation to certain constraints and context information.
 		 */
 		 PendingOperation findServices(	
 		 	ServiceType serviceType, 
@@ -142,63 +142,7 @@
 	 	 * \brief 	URI used to identify which type of API that is requested. The URI could either be:\n\n 
 	 	 *			1. webinos Feature URI that is defined for each API by Webinos, for example http://webinos.org/api/sensors/temperature,\n
 	 	 *      2. webinos Feature URI for referred unchanged API specifications, for example http://webinos.org/api/w3c/geolocation,\n
-	 	 *			3. an unique URI identifying an API exposed by a web application. The URI shall be the same URI as exposed by the web application manifest in the api-name attribute of the webinos:shared-api element.\n  
-     * \n
-     * The search could be refined by extending the Feature URIs with "REST style" discovery parameters. A set of query parameters can be used for all 
-     * APIs but API specific parameters can also be specified as defined by the "Features" section of each webinos API specification. If no parameters
-     * are given the search is not restricted.\n
-     * \n
-     * The common discovery parameters are:\n
-     * \n
-     * - Parameter name: filter\n
-     * - Values: localpzp, mypz\n
-     * - Description: Makes it possible to restrict the search to only services supported by the same PZP, i.e. in the same device, or to services only
-     *   in the user's personal zone. \n
-     * \n
-     * \n
-     * - Parameter name: filterzone\n
-     * - Values: Name of personal zone.\n
-     * - Description: Name of personal zone that will be used to search for services in addition to the personal zone of the user logged into to the 
-     *   device\n
-     * \n     
-     * \n
-     * - Parameter name: serviceid\n
-     * - Values: Unique Id for the searched service.\n
-     * - Description: If set service discovery will only return the service with the given identifier. This can be used to establish a service 
-     *   binding directly if the service identity is already known, for example if the service identity was stored persistently for later reuse or it 
-     *   was received via out of band.\n
-     * \n     
-     * \n     
-	   * \code    
-	     // Examples of webinos service discovery using parameters
-	     
-	     // Initiate a search query for TV service within the user's personal zone only.
-		   findHandle = window.webinos.discovery.findServices(
-			              {api:'http://webinos.org/api/tv?filter=mypz'}, 
-			              {onFound:serviceFoundCB, onLost:serviceLostCB});	   
-			              
-	     // Initiate a search query for TV service within the user's and Alex's personal zones.
-		   findHandle = window.webinos.discovery.findServices(
-			              {api:'http://webinos.org/api/tv?filterzone=alex@pzh'}, 
-			              {onFound:serviceFoundCB, onLost:serviceLostCB});			
-			              
-	     // Initiate a search query for a specific TV service whose service ID is already known.
-		   findHandle = window.webinos.discovery.findServices(
-			              {api:'http://webinos.org/api/tv?serviceid=some_serv_id'}, 
-			              {onFound:serviceFoundCB, onLost:serviceLostCB});					              	                
-	     
-	     // Initiate a search query for a proximity sensor capable of providing proximity in centimeters
-		   findHandle = window.webinos.discovery.findServices(
-			              {api:'http://webinos.org/api/sensors/proximity/read?accuracy=cm'}, 
-			              {onFound:serviceFoundCB, onLost:serviceLostCB});
-			              
-	     // Initiate a search query for a proximity sensor just capable of stating near or far
-		   findHandle = window.webinos.discovery.findServices(
-			              {api:'http://webinos.org/api/sensors/proximity/read?accuracy=nearfar'}, 
-			              {onFound:serviceFoundCB, onLost:serviceLostCB});			              
-	     
-	   * \endcode
-  	 *	    
+	 	 *			3. an unique URI identifying an API exposed by a web application. The URI shall be the same URI as exposed by the web application manifest in the api-name attribute of the webinos:shared-api element.\n      
      *    
 		 */
 		DOMString api;
@@ -359,9 +303,26 @@
 	};
 	
 	/**
-	 * \brief Filter dictionary
-	 *\n
-	 * NOTE: It is proposed that Filter should be replaced by REST-like query parameters that extends the Feature URI used as serviceType in findServices().
+	 * \brief Filter dictionary.
+	 *	 
+	 * \code    
+       // Examples of webinos service discovery using the filter parameter.	      
+			              
+       // Initiate a search query for TV service within the user's and a remote personal zones.
+       findHandle = window.webinos.discovery.findServices(
+                    {api:'http://webinos.org/api/tv'}, 
+                    {onFound:serviceFoundCB, onLost:serviceLostCB},
+                    null,
+                    {zoneNames[0]:remoteZoneName});			              	
+			              
+       // Initiate a search query for a specific TV service whose service ID is already known.
+       findHandle = window.webinos.discovery.findServices(
+                    {api:'http://webinos.org/api/tv'}, 
+                    {onFound:serviceFoundCB, onLost:serviceLostCB},
+                    null,
+                    {serviceID: myServiceId});			              				              	                		              
+	     
+	   * \endcode	 
 	 */
 	dictionary Filter {
 		/**
