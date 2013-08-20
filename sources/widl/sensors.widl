@@ -49,16 +49,10 @@
  * Identifies the pressure sensor type limited to read access only, i.e. access to configureSensor is not supported.
  * 
  * \def-api-feature http://webinos.org/api/sensors/proximity
- * Identifies the proximity sensor type. Optional discovery parameter is:\n
- * "resolution" with values:\n
- *  - "cm" (proximity sensor capable of providing proximity in centimeters)\n 
- *  - "nearfar" (proximity sensor just capable of stating near or far)
+ * Identifies the proximity sensor type. 
  *
  * \def-api-feature http://webinos.org/api/sensors/proximity/read
- * Identifies the proximity sensor type limited to read access only, i.e. access to configureSensor is not supported. Optional discovery parameter is:\n
- * "resolution" with values:\n
- *  - "cm" (proximity sensor capable of providing proximity in centimeters)\n 
- *  - "nearfar" (proximity sensor just capable of stating near or far)
+ * Identifies the proximity sensor type limited to read access only, i.e. access to configureSensor is not supported.
  * 
  * \def-api-feature http://webinos.org/api/sensors/humidity
  * Identifies the relative humidity sensor type. 
