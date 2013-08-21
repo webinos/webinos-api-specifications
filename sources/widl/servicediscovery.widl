@@ -20,7 +20,7 @@
  * \author Anders Isberg &lt;anders.isberg@sonymobile.com&gt;
  * \author Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;
  * \author Claes Nilsson &lt;claes.nilsson@sonymobile.com&gt;
- * \version 1.1
+ * \version 1.2
  */
 	/**
 	 * \brief The DiscoveryInterface interface provides functionality for discovery of services. 
@@ -313,7 +313,7 @@
                     {api:'http://webinos.org/api/tv'}, 
                     {onFound:serviceFoundCB, onLost:serviceLostCB},
                     null,
-                    {zoneNames[0]:remoteZoneName});			              	
+                    {zoneNames:[remoteZoneName]});			              	
 			              
        // Initiate a search query for a specific TV service whose service ID is already known.
        findHandle = window.webinos.discovery.findServices(
