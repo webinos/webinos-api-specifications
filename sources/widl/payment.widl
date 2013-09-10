@@ -7,6 +7,30 @@
  * sufficiently generic to be mapable to various payment services like GSMA OneAPI,
  * BlueVia, Android Payment API or PayPal. 
  *
+ * It should be noted that the webinos Payment API assumes that the payment process
+ * is triggered by the web applications. 
+ *
+ * Currently, for most current (web based) payment scenarios, the payment process is 
+ * triggered by the merchant's server, i.e. the user clicks the 'buy' button on the 
+ * web page, the server redirects to the payment provider's page (so the merchant can 
+ * be sure that the proper payment provider is contacted and the bill is unmodified), 
+ * the user performs the transaction and is re-directed to the merchant's server, where
+ * the confirmation from the payment provider is sufficient for the merchant to be
+ * sure that the payment has taken place.
+ *
+ * However, this process can not always be maintained for payment done from within
+ * a web application. In these cases (and these are the cases the webinos API is
+ * to be used for), the payment is triggered by the application, not the merchant's
+ * server. As this adds some security concerns (as any confirmation from the payment
+ * provider to the application can be spoofed), it requires the merchant to be able
+ * to confirm the payment receipt by some server-to-server vackground channel (between
+ * the payment provider and the merchant). This will be either by query from the merchant
+ * side (as offered by PayPal) or by automatic sending of a receipt by the payment provider
+ * (as offered by Firefox Payment).
+ *
+ * Even though application initiated payment is currently rare, the movement from web page
+ * based commerce to web application based commerce will increase the use of this mode
+ * and the webinos Payment API is aimed to support it.
  *
  * \def-api-feature http://webinos.org/api/payment
  * Identifies all payment interactions. 
@@ -120,7 +144,7 @@
        * \return void
        */
         void pay(PaymentSuccessCB successCallback, PaymentErrorCB errorCallback, PaymentChallengeCB challengeCallback,
-        ShoppingItem [] itemList, ShoppingItem bill,  DOMString customerID, DOMString sellerID);
+        ShoppingItem [] itemList, ShoppingItem bill,  DOMString? customerID, DOMString sellerID);
   };
   
     /**
