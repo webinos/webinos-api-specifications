@@ -172,7 +172,7 @@ callback PlayStatusCallback = void (PlayStatus status);
 /**
 * \brief Error callback interface definition
 */
-callback MediaPlayErrorCB = void (DOMString error);
+callback MediaPlayErrorCB = void (DOMError error);
 
 /**
 * \brief PlayStatus dictionary
