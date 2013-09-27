@@ -35,19 +35,6 @@
  *
  */
 interface MediaPlayInterface : Service  {
-	/** \brief Constant for forwarding the play position. */
-	const unsigned short FORWARD_STEP = 1;
-	/** \brief Constant for forwarding the play position some more. */
-	const unsigned short FORWARD_BIG_STEP = 2;
-	/** \brief Constant for rewinding the play position. */
-	const unsigned short BACKWARD_STEP = 3;
-	/** \brief Constant for rewinding the play position some more. */
-	const unsigned short BACKWARD_BIG_STEP = 4;
-	/** \brief Constant for increased playback speed. */
-	const unsigned short FASTER = 1;
-	/** \brief Constant for decreased playback speed. */
-	const unsigned short SLOWER = 2;
-
 	/**
 	* \brief Add listener for event handling.
 	* \param listener A MediaCallback object for event handling.
@@ -106,12 +93,12 @@ interface MediaPlayInterface : Service  {
 
 	/**
 	* \brief Moves current play position.
-	* \param stepConstant One of the constants FORWARD_STEP, BACKWARD_STEP, etc. for moving the play position.
+	* \param step SeekStep enum value specifying where to seek to.
 	* \param success Is called if command was successful.
 	* \param error Is called in case of error.
 	*/
 	void seek(
-		unsigned short stepConstant,
+		SeekStep step,
 		SuccessCallback success,
 		MediaPlayErrorCB error);
 
@@ -128,16 +115,21 @@ interface MediaPlayInterface : Service  {
 
 	/**
 	* \brief Sets playback speed to specified value.
-	* \param speedConstant Constant to change playback speed.
+	* \param speed Enum to change playback speed.
 	* \param success Is called if command was successful.
 	* \param error Is called in case of error.
 	*/
 	void setSpeed(
-		unsigned short speedConstant,
+		Speed speed,
 		SuccessCallback success,
 		MediaPlayErrorCB error);
 
 };
+
+/** \brief Type used with seek method. */
+enum SeekStep { "FORWARD", "FORWARD_BIG", "BACKWARD", "BACKWARD_BIG" };
+/** \brief Type used with playback speed method. */
+enum Speed {"FASTER", "SLOWER" };
 
 /**
 * \brief MediaCallback interface definition
