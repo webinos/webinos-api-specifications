@@ -411,6 +411,11 @@
     readonly attribute MediaLyrics? lyrics;
 
     /**
+     * \brief The video bitrate in bits per second.
+     */
+    readonly attribute unsigned long? bitrate;
+
+    /**
      * \brief The timestamp that determines where the playback has been paused or stopped previously.
      * This allows the media player application to resume playback from that point.
      */
