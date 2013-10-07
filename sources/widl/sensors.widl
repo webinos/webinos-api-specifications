@@ -36,7 +36,7 @@
  * in SI lux units.
  * 
  *
- * \def-api-feature http://webinos.org/api/sensors.light/read
+ * \def-api-feature http://webinos.org/api/sensors/light/read
  * Identifies the light sensor type limited to read access only, i.e. access to 
  * configureSensor is not supported. \n
  * The sensorValues attribute of SensorEvent has the same definition as for
@@ -218,7 +218,7 @@
         }
         
         // Get list of temperature sensors registered in the device through the Service Discovery findServices() method
-        findHandle  = window.webinos.discovery.findServices({api:'http://webinos.org/api/sensors.temperature'}, {onFound:sensorFoundCB});
+        findHandle  = window.webinos.discovery.findServices({api:'http://webinos.org/api/sensors/temperature'}, {onFound:sensorFoundCB});
  
        // Handle user selection of sensor
         var sensorlist = document.getElementById('sensorlist');
