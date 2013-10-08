@@ -42,10 +42,9 @@
 interface App2AppMessaging : Service {
 
   /**
-   * \brief Create a new channel. The channel creator decides which clients are allowed to connect to the channel. If the
-   * connectCB is defined it is invoked for each client trying to connect to the channel. If a client is allowed the 
-   * connectCB should return true, if not it should return false. If no connectCB is provided all clients are allowed to 
-   * connect.
+   * \brief Create a new channel. A channel can only be created once, else the error callback will be invoked. Use
+   * searchForChannels to connect to existing channels. The channel creator decides which clients are allowed to connect to the
+   * channel, by providing a request callback.
    *
    * \param configuration Channel configuration.
    * \param requestCB Callback invoked to allow or deny clients access to a channel.
@@ -66,7 +65,7 @@ interface App2AppMessaging : Service {
    */
   void createChannel(
     App2AppChannelConfiguration configuration,
-    App2AppChannelRequestCB requestCB,
+    App2AppChannelRequestCB? requestCB,
     App2AppMessageCB messageCB,
     App2AppChannelCreateSuccessCB successCB,
     optional App2AppErrorCB errorCB);
