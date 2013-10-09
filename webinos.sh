@@ -140,8 +140,6 @@ echo '<div class=api> <h2 class=head>Referred APIs used by Webinos</h2> </div>' 
 
 echo '<div id="content"><table><thead><tr><th>Specification</th><th>Summary</th><th>Feature URI</th></thead><tbody>' >> "$SPECHOME/apis/index.html"
 
-echo '<tr><td><a href=http://www.w3.org/TR/2011/WD-calendar-api-20110419/>The W3C calendar module</a></td><td><p>' >> "$SPECHOME/apis/index.html"
-echo 'This W3C API provides access to a user calendaring service.<br/></p></td><td><code>http://webinos.org/api/w3c/calendar/read</code></td></tr>' >> "$SPECHOME/apis/index.html"
 echo '<tr><td><a href=http://www.w3.org/TR/2011/WD-orientation-event-20111201/>The W3C DeviceOrientation Event specification</a></td><td><p>' >> "$SPECHOME/apis/index.html"
 echo 'This specification defines several new DOM event types that provide information about the physical orientation and motion of a hosting device.<br/></p></td><td><code>http://webinos.org/api/w3c/deviceorientation</code></td></tr>' >> "$SPECHOME/apis/index.html"
 echo '<tr><td><a href=http://www.w3.org/TR/2011/WD-FileAPI-20111020/>The W3C File API </a></td><td><p>' >> "$SPECHOME/apis/index.html"
@@ -152,10 +150,10 @@ echo '<tr><td><a href=http://www.w3.org/TR/2012/WD-file-system-api-20120417/>The
 echo 'This specification defines an API to navigate file system hierarchies, and defines a means by which a user agent may expose sandboxed sections of a user local filesystem to web applications. It builds on the File Writer API, which in turn built on the File API, each adding a different kind of functionality.<br/></p></td><td><code>http://webinos.org/api/w3c/file</code> (all file APIs)</td></tr>' >> "$SPECHOME/apis/index.html"
 echo '<tr><td><a href=http://www.w3.org/TR/2012/PR-geolocation-API-20120510/>The W3C Geolocation API</a></td><td><p>' >> "$SPECHOME/apis/index.html"
 echo 'This specification defines an API that provides scripted access to geographical location information associated with the hosting device.<br/></p></td><td><code>http://webinos.org/api/w3c/geolocation</code></td></tr>' >> "$SPECHOME/apis/index.html"
-echo '<tr><td><a href=http://dev.w3.org/2011/webrtc/editor/getusermedia.html>The W3C Media Capture and Streams API</a></td><td><p>' >> "$SPECHOME/apis/index.html"
+echo '<tr><td><a href=http://www.w3.org/TR/2013/WD-mediacapture-streams-20130903/>The W3C Media Capture and Streams API</a></td><td><p>' >> "$SPECHOME/apis/index.html"
 echo 'This specification defines an API that provides access to the audio, image and video capture capabilities of the device.' >> "$SPECHOME/apis/index.html"
 echo '<br/></p></td><td><code>http://webinos.org/api/w3c/mediastream</code></td></tr>' >> "$SPECHOME/apis/index.html"
-echo '<tr><td><a href=http://dev.w3.org/2011/webrtc/editor/webrtc.html>The W3C WebRTC API</a></td><td><p>' >> "$SPECHOME/apis/index.html"
+echo '<tr><td><a href=http://www.w3.org/TR/2013/WD-webrtc-20130910/>The W3C WebRTC API</a></td><td><p>' >> "$SPECHOME/apis/index.html"
 echo 'This specification defines an API that allows to establish peer-to-peer connections between browsers, and transmit media streams and data over these connections.' >> "$SPECHOME/apis/index.html"
 echo '<br/></p></td><td><code>http://webinos.org/api/w3c/webrtc</code></td></tr>' >> "$SPECHOME/apis/index.html"
 echo '</tbody></table></div>' >> "$SPECHOME/apis/index.html"
