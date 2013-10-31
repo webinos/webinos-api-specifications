@@ -20,7 +20,7 @@
  * \author Anders Isberg &lt;anders.isberg@sonymobile.com&gt;
  * \author Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;
  * \author Claes Nilsson &lt;claes.nilsson@sonymobile.com&gt;
- * \version 1.3
+ * \version 1.4
  */
 	/**
 	 * \brief The DiscoveryInterface interface provides functionality for discovery of services. 
@@ -124,8 +124,8 @@
 		 PendingOperation findServices(	
 		 	ServiceType serviceType, 
 		 	FindCallBack findCallBack, 
-		 	optional Options options, 
-		 	optional Filter filter);
+		 	optional Options? options, 
+		 	optional Filter? filter);
 		 
 		/**
 		 * \brief For the case that the application itself exposes functionality via JavaScript service interfaces the getServiceId method generates a service identity that can be shared with other peers to establish a binding without invoking a findServices operation. If no matching API is found the method will return Null. 
