@@ -20,7 +20,7 @@
  * \author Anders Isberg &lt;anders.isberg@sonymobile.com&gt;
  * \author Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;
  * \author Claes Nilsson &lt;claes.nilsson@sonymobile.com&gt;
- * \version 1.4
+ * \version 1.5
  */
 	/**
 	 * \brief The DiscoveryInterface interface provides functionality for discovery of services. 
@@ -166,7 +166,10 @@
 		 	  
 		/**
 		 * \brief Asynchronous error callback.   
-		 * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a>: of type TimeoutError if the timeout timer expired, SecurityError if not authorized to use the service, AbortError if the discovery process was canceled by the application
+		 * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a>: 
+		 *  of type TimeoutError if the timeout timer expired, SecurityError if not authorized to use the service, AbortError 
+		 *  if the discovery process was canceled by the application. In addition service type or filter specific error types 
+		 *  could be issued.
 		 */
 		 void onError(DOMError error);
 		  		 
@@ -306,17 +309,19 @@
 	};
 	
 	/**
-	 * \brief Filter dictionary.
+	 * \brief Filter dictionary. An instance of this dictionary can optionally be used in 
+	 * findServices(). All dictionary member fields are optional except that the the zoneId 
+	 * dictionary member must be present when the cache member is set to "false".
 	 *	 
 	 * \code    
        // Examples of webinos service discovery using the filter parameter.	      
 			              
-       // Initiate a search query for TV service within the user's and a remote personal zones.
+       // Initiate a search query for a temperature sensor in two personal zones.
        findHandle = window.webinos.discovery.findServices(
-                    {api:'http://webinos.org/api/tv'}, 
+                    {api:'http://webinos.org/api/sensors/temperature'}, 
                     {onFound:serviceFoundCB, onLost:serviceLostCB},
                     null,
-                    {zoneNames:[remoteZoneName]});			              	
+                    {cache:false, zoneId:[bobsmith@pzh.webinos.org/raspberrypi, tobyealden@pzh.webinos.org/raspberrypi]});			              	
 			              
        // Initiate a search query for a specific TV service whose service ID is already known.
        findHandle = window.webinos.discovery.findServices(
@@ -328,31 +333,49 @@
 	   * \endcode	 
 	 */
 	dictionary Filter {
+
 		/**
-		 * \brief 	User friendly names of personal zones that will be used to search for services in addition to 
-		 *			the person zone of the user logged into to the device.
+		 * \brief 	When cache is true, which is default, it means that a call to findServices () only 
+		 *          will search for information on available services cached in the PZP on the users 
+		 *          current device. This means that no communication with the PZH or with other devices 
+		 *          are executed.\n
+		 *          When cache is false, it means that a call to findServices () will execute communication, 
+		 *          either through the PZH or directly, with the actual external devices within the user's 
+		 *          personal zone or in other personal zones to check the actual availability of the searched 
+		 *          service. When cache is false the zoneId dictionary member must be present to limit the search to the
+		 *          specified personal zones.
 		 */
-		DOMString[] zoneNames;
+		boolean cache = true;	
+	
+		/**
+		 * \brief 	Identities of personal zones that will be used to search for services. \n
+		 *          If this dictionary member is not present the service will be searched for in all available zones.\n
+		 *          If the dictionary member is present but no one of the zones listed are available an onError 
+		 *          callback, with DOMError type "NetworkError", is issued.
+		 */
+		DOMString[] zoneId;
 		
 		/**
 		 * \brief 	If set service discovery will only return the service with the given identifier. This
-		 *		  	can be used to establish a service binding directly if the service identity is already
-		 * 		  	known, for example if the service identity was stored persistently for later reuse
-		 *		  	or it was received via out of band.  
+		 *		    	can be used to establish a service binding directly if the service identity is already
+		 * 		    	known, for example if the service identity was stored persistently for later reuse
+		 *		    	or it was received via out of band.  
 		 */
 		DOMString serviceID;
 		 
 	 	/**
 		 * \brief 	If remoteService is false the findServices method will limit the search for services that are  
-		 *		  	connected directly to the device (including Bluetooth, NFC, etc if available) or to the same local IP network.
-		 *  		If remoteServices is true, the findServices method will extend the search for services outside the local IP network
-		 *  		(including other PZHs). Default value is false. 
+		 *		  	  connected directly to the device (including Bluetooth, NFC, etc if available) or to the same 
+		 *          local IP network.\n
+		 *  		    If remoteServices is true, the findServices method will extend the search for services outside 
+		 *          the local IP network (including other PZHs). Default value is false. 
 		 */
 		boolean remoteServices = false;
 
 	 	/**
 		 * \brief 	With the serviceLocation attribute it is possible to indicate where the service shall be located.
-		 *			If the service location is null, the location of the service is not considered during the findServices process.  
+		 *			    If the serviceLocation dictionary member is not present or null, the location of the service is not 
+		 *          considered during the findServices process.  
 		 */
 		ServiceLocation? serviceLocation;	
 	};
