@@ -166,7 +166,10 @@
 		 	  
 		/**
 		 * \brief Asynchronous error callback.   
-		 * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a>: of type TimeoutError if the timeout timer expired, SecurityError if not authorized to use the service, AbortError if the discovery process was canceled by the application
+		 * \param error <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a>: 
+		 *  of type TimeoutError if the timeout timer expired, SecurityError if not authorized to use the service, AbortError 
+		 *  if the discovery process was canceled by the application. In addition service type or filter specific error types 
+		 *  could be issued.
 		 */
 		 void onError(DOMError error);
 		  		 
@@ -307,8 +310,8 @@
 	
 	/**
 	 * \brief Filter dictionary. An instance of this dictionary can optionally be used in 
-	 * findServices(). All fields are optional except that the the zoneId member must be
-	 * present when the cache member is set to "false".
+	 * findServices(). All dictionary member fields are optional except that the the zoneId 
+	 * dictionary member must be present when the cache member is set to "false".
 	 *	 
 	 * \code    
        // Examples of webinos service discovery using the filter parameter.	      
@@ -318,7 +321,7 @@
                     {api:'http://webinos.org/api/sensors/temperature'}, 
                     {onFound:serviceFoundCB, onLost:serviceLostCB},
                     null,
-                    {zoneId:[bobsmith@pzh.webinos.org/raspberrypi, tobyealden@pzh.webinos.org/raspberrypi]});			              	
+                    {cache:false, zoneId:[bobsmith@pzh.webinos.org/raspberrypi, tobyealden@pzh.webinos.org/raspberrypi]});			              	
 			              
        // Initiate a search query for a specific TV service whose service ID is already known.
        findHandle = window.webinos.discovery.findServices(
@@ -339,14 +342,16 @@
 		 *          When cache is false, it means that a call to findServices () will execute communication, 
 		 *          either through the PZH or directly, with the actual external devices within the user's 
 		 *          personal zone or in other personal zones to check the actual availability of the searched 
-		 *          service. When cache is false the zoneId member must be present to limit the search to the
+		 *          service. When cache is false the zoneId dictionary member must be present to limit the search to the
 		 *          specified personal zones.
 		 */
 		boolean cache = true;	
 	
 		/**
-		 * \brief 	Identities of personal zones that will be used to search for services. If this member 
-		 *          is not present the service will be searched for in all available zones.
+		 * \brief 	Identities of personal zones that will be used to search for services. \n
+		 *          If this dictionary member is not present the service will be searched for in all available zones.\n
+		 *          If the dictionary member is present but no one of the zones listed are available an onError 
+		 *          callback, with DOMError type "NetworkError", is issued.
 		 */
 		DOMString[] zoneId;
 		
@@ -369,7 +374,7 @@
 
 	 	/**
 		 * \brief 	With the serviceLocation attribute it is possible to indicate where the service shall be located.
-		 *			    If the serviceLocation member is not present or null, the location of the service is not 
+		 *			    If the serviceLocation dictionary member is not present or null, the location of the service is not 
 		 *          considered during the findServices process.  
 		 */
 		ServiceLocation? serviceLocation;	
