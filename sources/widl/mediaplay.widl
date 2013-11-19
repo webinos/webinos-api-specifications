@@ -1,16 +1,21 @@
-/**<p>The Webinos MediaPlay API can be used to invoke playback of media files in external media player software. It provides a means to play media files that are not supported by a widget/browser runtime.</p>
+/**<p>The Webinos MediaPlay API can be used to invoke playback of media files in external media player software, instead of using playback in the widget/browser runtime.</p>
  * \name MediaPlay API
  *
- 
+ * This API makes it possible for webinos applications to start and control playback 
+ * of media files on external media players on the device currently used or on another device.\n
+ * Use cases are for example:\n
+ * - The format of the media file is not supported by the widget/browser runtime so an external media player has to be used\n
+ * - The user just prefers to use another media player than the widget/browser runtime even though the file format is supported in the widget/browser runtime\n
+ * - The user wants to play the media file using a media player on a remote device
  *
  * \def-api-feature http://webinos.org/api/mediaplay
  * \author ISMB, Paolo Vergori, Michele Morello
  * \author Fraunhofer FOKUS
- * \version 1.0
+ * \version 1.1
  */
 
 /**
- * \brief The DiscoveryInterface interface provides functionality for discovery of services. 
+ * \brief The MediaPlayInterface provides methods for starting and controlling media playback on external media players. 
  * \code
 	var mediaPlayService; // previously acquired service instance
 
