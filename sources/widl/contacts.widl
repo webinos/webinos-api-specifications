@@ -25,7 +25,7 @@
  * \author Based on W3C Editor's Draft 16 June 2011 with added contacts write functionality patterned after WAC
  * \author WIDL version for webinos created by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
  * \author Corrections relating to inheriting Discovery Service interface &lt;claes1.nilsson@sonymobile.com&gt;
- * \version 2.0
+ * \version 2.1
  */
         
         /**
@@ -83,16 +83,16 @@
                 *         If any of the input parameters contain an invalid value, such as a null or undefined 
                 *         successCallback, the contact has any invalid value or the address book has some restrictions 
                 *         that cause the attempted insertion of the contact item to fail (e.g. limitations in the size 
-                *         of text attributes), the implementation MUST reject the request and invoke the errorCallback 
-                *         with a DOMException and code INVALID_VALUES_ERROR. Please note that in order to allow developer 
-                *         ignore errors errorCallback accepts null as a valid value.
+                *         of text attributes), the implementation MUST reject the request and invoke the errorCB
+                *         with a DOMError of name "InvalidAccessError". Please note that in order to allow developer 
+                *         ignore errors, errorCB accepts null as a valid value.
                 *         
                 *         If the contact is successfully added to the Address Book, the successCallback
                 *         MUST be invoked. The successCallback includes a Contact element that describes
                 *         the Contact that has been added and includes the assigned id attribute.
                 *         
-                *         In any of the above cases where the errorCallback should be invoked as specified 
-                *         above, if the developer has not passed a valid ErrorCallback (e.g. it is null 
+                *         In any of the above cases where the errorCB should be invoked as specified 
+                *         above, if the developer has not passed a valid ErrorCB (e.g. it is null 
                 *         or undefined), no action is required (i.e. the error is not notified to the developer). 
                 * \code
                 * var contact = myContactsService.createContact({
@@ -125,13 +125,13 @@
                 *         If any of the input parameters contain an invalid value, such as a null or undefined 
                 *         successCallback, the contact has any invalid value or the address book has some restrictions 
                 *         that cause the attempted insertion of the contact item to fail (e.g. limitations in the size 
-                *         of text attributes), the implementation MUST reject the request and invoke the errorCallback 
-                *         with a DOMException and code INVALID_VALUES_ERROR. Please note that in order to allow developer 
-                *         ignore errors errorCallback accepts null as a valid value.
+                *         of text attributes), the implementation MUST reject the request and invoke the errorCB 
+                *         with a DOMError of name "InvalidAccessError". Please note that in order to allow developer 
+                *         ignore errors errorCB accepts null as a valid value.
                 *         
                 *         If the id attribute does not correspond to the id attribute of any contact in the address book, 
-                *         (e.g. there is not an existing contact to update matching the id) a DOMException with code 
-                *         NOT_FOUND_ERR MUST be returned.
+                *         (e.g. there is not an existing contact to update matching the id) the errorCB is invoked
+                *         with a DOMError of name "NotFoundError".
                 *
                 *         If all the attributes are valid and the id attribute corresponds to 
                 *         an existing contact in the address book, the implementation MUST 
@@ -140,8 +140,8 @@
                 *         
                 *         If the contact is successfully updated, the SuccessCallback MUST be invoked.
                 *         
-                *         In any of the above cases where the errorCallback should be invoked, 
-                *         if the developer has not passed a valid ErrorCallback (e.g. it is null 
+                *         In any of the above cases where the errorCB should be invoked, 
+                *         if the developer has not passed a valid ErrorCB (e.g. it is null 
                 *         or undefined), no action is required (i.e. he error is not notified 
                 *         to the developer). 
                 * \code
@@ -231,12 +231,12 @@
                  *    the successCallback will be invoked with an empty array.
                  *    
                  *    If any other error occurs while trying to retrieve the contacts, 
-                 *    the errorCallback function that was passed in the invocation MUST 
-                 *    be called, passing a DOMException object with code UNKNOWN_ERROR.
+                 *    the errorCB function that was passed in the invocation MUST 
+                 *    be called, passing a DOMError object with an appropriate error name.
                  *    
-                 *    In any of the above cases where the errorCallback should be invoked, 
+                 *    In any of the above cases where the errorCB should be invoked, 
                  *    as specified above, if the developer has not passed a valid
-                 *    ErrorCallback (e.g. it is null or undefined), no action is 
+                 *    ErrorCB (e.g. it is null or undefined), no action is 
                  *    required and the developer is not notified of the error.    
                  *
                  * \code

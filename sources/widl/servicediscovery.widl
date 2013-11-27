@@ -20,7 +20,7 @@
  * \author Anders Isberg &lt;anders.isberg@sonymobile.com&gt;
  * \author Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;
  * \author Claes Nilsson &lt;claes.nilsson@sonymobile.com&gt;
- * \version 1.5
+ * \version 1.6
  */
 	/**
 	 * \brief The DiscoveryInterface interface provides functionality for discovery of services. 
@@ -83,13 +83,13 @@
 		// of band channel. 
 		
 		window.webinos.discovery.findServices(
-			{api:'http://www.w3.org/ns/api-perms/geolocation'}, 
+			{api:'http://webinos.org/api/w3c/geolocation'}, 
 			{onFound:serviceFoundCB, onLost:serviceLostCB},
 			null,
 			{serviceID : serviceId});
 		
 		serviceHandle = window.webinos.discovery.findServices(
-			{api:'http://www.w3.org/ns/api-perms/geolocation'}, 
+			{api:'http://webinos.org/api/w3c/geolocation'}, 
 			{onFound:serviceFoundCB, onLost:serviceLostCB},
 			null,
 			{serviceID: serviceId});
