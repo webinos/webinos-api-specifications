@@ -17,7 +17,7 @@
  * \def-api-feature http://webinos.org/api/app2app
  * \author Fabian Walraven &lt;fabian.walraven@tno.nl&gt;
  * \author Corrections relating to inheriting Discovery Service interface &lt;claes1.nilsson@sonymobile.com&gt; 
- * \version 0.4.0
+ * \version 0.4.1
  */
 
 
@@ -198,10 +198,11 @@ interface App2AppChannelProxy {
    * \code
    var channel; // previously obtained and successfully connected channel (proxy)
    var client = channel.creator;
-   channel.send(client,
-                { example: "message" },
-                function(success) { alert("Successfully sent message.") },
-                function(error) { alert("Oops, something went wrong: " + error.message ) });
+   channel.sendTo(client,
+                  { example: "message" },
+                  function(success) { alert("Successfully sent message.") },
+                  function(error) { alert("Oops, something went wrong: " + error.message ) }
+                 );
    \endcode
    */
   void sendTo(

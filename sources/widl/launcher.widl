@@ -6,11 +6,13 @@
  * Operation of the API is guided by application execution policies, which can be modified by user. 
  * The policies control the following aspects of API operation: \n
  *  - Enable/disable of activation of webinos installable applications \n
- *  - Enable/disable of notifications to users when a webinos application attempts to activate another application \n
  *  - Enable/disable of application ability to discover installed applications \n
  *
  * The application execution API provides mechanisms for webinos applications to check if specific webinos application is installed in the device. 
  *
+ * \def-api-feature http://webinos.org/api/applauncher
+ * Identifies both the launch and check functionality of the API
+ *  
  * \def-api-feature http://webinos.org/api/applauncher/launch
  * Start webinos application - allows to invoke webinos application identified by a unique identifier.
  * 
@@ -20,7 +22,7 @@
  * \author Michael Vakulenko &lt;michael@visionmobile.com&gt;
  * \author Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;
  * \author Corrections relating to inheriting Discovery Service interface &lt;claes1.nilsson@sonymobile.com&gt; 
- * \version 1.1 
+ * \version 1.2 
  */
   
   /**
