@@ -23,8 +23,8 @@
  * \def-api-feature http://webinos.org/api/notifications
  * Accessing the notification API
  *
- * \author Based on W3C Working Draft 14 June 2012 with removed permission functions which are replaced by the webinos security and policy system
- * \author WIDL version for webinos created by Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;
+ * \author Based on W3C Last Call Working Draft 12 September 2013 with removed permission functions which are replaced by the webinos security and policy system
+ * \author WIDL version for webinos created by Andr&eacute; Paul &lt;andre.paul@fokus.fraunhofer.de&gt;, Martin Lasak &lt;martin.lasak@fokus.fraunhofer.de&gt;
  * \author Corrections relating to inheriting Discovery Service interface &lt;claes1.nilsson@sonymobile.com&gt;
  * \version 1.0
  */
@@ -87,23 +87,23 @@
           */  
         dictionary NotificationOptions {
            /**
-		    * \brief The title direction of this notification.
+		    * \brief The text direction of this notification.
 		    *
    		    * Can be null.
 		    */
-           NotificationDirection titleDir;
+           NotificationDirection dir;
+           /**
+        * \brief Language of this notification.
+        *
+          * Can be null.
+        */
+           DOMString lang;
            /**
 		    * \brief The body content of this notification.
 		    *
    		    * Can be null.
 		    */
            DOMString body;
-           /**
-		    * \brief The body direction of this notification.
-		    *
-   		    * Can be null.
-		    */
-           NotificationDirection bodyDir;
            /**
 		    * \brief The tag of this notification.
 		    *
@@ -117,7 +117,7 @@
 		    *
    		    * Can be null.
 		    */
-           DOMString iconUrl;
+           DOMString icon;
         };
 
         /**
