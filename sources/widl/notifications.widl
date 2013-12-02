@@ -57,28 +57,52 @@
             * \brief Callback called when the shown notification was clicked.
             *
             */  
-           attribute Function? onclick;
+           attribute EventHandler? onclick;
            /**
             * \brief Callback called when the notification is shown.
             *
             */  
-           attribute Function? onshow;
+           attribute EventHandler? onshow;
            /**
             * \brief Callback called when the could not be shown.
             *
             */  
-           attribute Function? onerror;
+           attribute EventHandler? onerror;
            /**
             * \brief Callback called when the notification was closed.
             *
             */  
-           attribute Function? onclose;
-
+           attribute EventHandler? onclose;
+           /**
+            * \brief The text direction of this notification.
+            *
+            */ 
+           readonly attribute NotificationDirection dir;
+           /**
+            * \brief Language of this notification.
+            *
+            */ 
+           readonly attribute DOMString lang;
+           /**
+            * \brief The body content of this notification.
+            *
+            */ 
+           readonly attribute DOMString body;
+           /**
+            * \brief The tag of this notification.
+            *
+            */ 
+           readonly attribute DOMString tag;
+           /**
+            * \brief The URI that represents an icon to be shown by the notification.
+            *
+            */ 
+           readonly attribute DOMString icon; 
            /**
             * \brief Close the notification.
             *
             */  
-			close();
+			     void close();
         };
 
         /**
@@ -91,13 +115,13 @@
 		    *
    		    * Can be null.
 		    */
-           NotificationDirection dir;
+           NotificationDirection dir = "auto";
            /**
         * \brief Language of this notification.
         *
           * Can be null.
         */
-           DOMString lang;
+           DOMString lang = "";
            /**
 		    * \brief The body content of this notification.
 		    *
