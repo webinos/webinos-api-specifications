@@ -85,8 +85,8 @@
      *
      * // mediaContentService is the media content service, discovered through the webinos Discovery API, that has been selected
      * // by the user
-     * // Assume mediasource is MediaContentManager as a result of findServices method.
-     * // Assume items is a MediaItem object vector as a result of findItems method.
+     * // Assume mediasource is MediaContentManager as a result of findServices() method.
+     * // Assume items is a MediaItem object vector as a result of find() method.
      * // Check the playCount is editable, and then increase by 1.
      * for (i=0; i &lt; items.length; i++) {
      *   if (items[i].editableAttributes.indexOf("playCount") >= 0) {
@@ -106,7 +106,7 @@
 
     /**
      * \brief Gets a list of media directories.
-     * This method returns (via callback) a list of media directory objects. To obtain a list of media items in a specific directory, use findItems() method with the directory ID.
+     * This method returns (via callback) a list of media directory objects. To obtain a list of media items in a specific directory, use find() method with the directory ID.
      * The errorCallback is launched with these error types:
      * UnknownError: In any other error case.
      * \param successCallback Function called when media directories have been retrieved successfully.
@@ -127,14 +127,14 @@
      * // The following example retrieves all songs from the album "The Joshua Tree", by artist "U2", ordered by the track number.
      * // mediaContentService is the media content service, discovered through the webinos Discovery API, that has been selected
      * // by the user
-     *  // Assume mediasource is MediaContentManager as a result of findServices method.
+     *  // Assume mediasource is MediaContentManager object as a result of findServices method.
      *  var count = 100;
      *  var offset = 0;
      *  var sortMode = new webinos.SortMode("trackNumber", "ASC");
      *  var artistFilter = new webinos.AttributeFilter("artists", "EXACTLY", "U2");
      *  var albumFilter = new webinos.AttributeFilter("album", "EXACTLY", "The Joshua Tree");
      *  var filter = new webinos.CompositeFilter("INTERSECTION", [albumFilter, artistFilter]);
-     *  mediasource.findItems(findItemsCB, errorCB, null, filter, sortMode, count, offset);
+     *  mediasource.find(findItemsCB, errorCB, null, filter, sortMode, count, offset);
      *
      * function errorCB(err) {
      *     console.log( 'The following error occurred: ' +  err.name);
@@ -150,13 +150,13 @@
      *     // Increase the offset as much as the count and then find items again.
      *     if (items.length == count) {
      *         offset += count;
-     *         mediasource.findItems(findItemsCB, errorCB, null, filter, sortMode, count, offset);
+     *         mediasource.find(findItemsCB, errorCB, null, filter, sortMode, count, offset);
      *     }
      * }
      *
      * \endcode
      *
-     * \param successCallback Function called when media items have been retrieved. It's possible to call findItems again from that function to retrieve more items.
+     * \param successCallback Function called when media items have been retrieved. It's possible to call find again from that function to retrieve more items.
      * \param errorCallback Function called when an error has occurred.
      * \param directoryId
      * \param filter Filter that is used to select media items to retrieve.
@@ -535,7 +535,7 @@
   /**
   * \brief The PendingFindOperation interface
   *
-  * The PendingFindOperation interface describes the object that is returned by the asynchronous findItems method. It makes it possible to stop
+  * The PendingFindOperation interface describes the object that is returned by the asynchronous find() method. It makes it possible to stop
   * this operation if it hasn't produced a result within a desired time.
   *
   */
@@ -543,7 +543,7 @@
   /**
   * \brief Cancel method for cancelling asynchronous getDirectories operation
   *
-  * Cancel the pending findItems asynchronous operation. When this method is called, the user agent must stop and allocated resources should be released.
+  * Cancel the pending find() asynchronous operation. When this method is called, the user agent must stop and allocated resources should be released.
   * An error callback is issued with the DOMError name "AbortError".
   */
     void cancel ();
