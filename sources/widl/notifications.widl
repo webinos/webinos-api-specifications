@@ -84,17 +84,17 @@
             */ 
            readonly attribute DOMString lang;
            /**
-            * \brief The body content of this notification.
+            * \brief The body content of this notification. Returns empty string if the body was not specified on creation of the notification.
             *
             */ 
            readonly attribute DOMString body;
            /**
-            * \brief The tag of this notification.
+            * \brief The tag of this notification. Returns empty string if the tag was not specified on creation of the notification.
             *
             */ 
            readonly attribute DOMString tag;
            /**
-            * \brief The URI that represents an icon to be shown by the notification.
+            * \brief The URI that represents a reference or the serialisation of an icon to be shown by the notification. Returns empty string if the icon was not specified on creation of the notification.
             *
             */ 
            readonly attribute DOMString icon; 
@@ -107,27 +107,30 @@
 
         /**
          * \brief The NotificationOptions that defining the content of the notification. 
+         * 
+         * The attributes are optional and it is valid to specify only a subset. 
+         * For some attributes default values will be assumed if no value is specified explicitly.
          *
           */  
         dictionary NotificationOptions {
            /**
 		    * \brief The text direction of this notification.
 		    *
-   		    * Can be null.
+   		    * Can be null. If set to null then default text direction "auto" is set.
 		    */
-           NotificationDirection dir = "auto";
+           NotificationDirection? dir = "auto";
            /**
         * \brief Language of this notification.
         *
           * Can be null.
         */
-           DOMString lang = "";
+           DOMString? lang = "";
            /**
 		    * \brief The body content of this notification.
 		    *
    		    * Can be null.
 		    */
-           DOMString body;
+           DOMString? body;
            /**
 		    * \brief The tag of this notification.
 		    *
@@ -135,13 +138,13 @@
 		    * same way, and when both are shown, the user will only receive one notification.
 		    * Can be null.
 		    */
-           DOMString tag;
+           DOMString? tag;
            /**
 		    * \brief The URI that represents an icon to be shown by the notification.
 		    *
    		    * Can be null.
 		    */
-           DOMString icon;
+           DOMString? icon;
         };
 
         /**
