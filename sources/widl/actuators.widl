@@ -11,8 +11,9 @@
  * discovery methods findServices() and bind(). The actuator services can be located in the user's 
  * personal zone or be shared on the current network.
  *
- * Currently several different actuator types are defined but the API could easily be extended with 
- * additional actuator types.
+ * The section <a href="#api-features">Features</a> specifies a set of basic example actuator types supported by this API. 
+ * This list of actuator types could easily be extended with additional actuator types by adding feature URIs and JSON objects
+ * for the additional actuators.
  * 
  * This is an experimental API and security and privacy issues are not specifically addressed in the 
  * specification. If access to security or privacy
