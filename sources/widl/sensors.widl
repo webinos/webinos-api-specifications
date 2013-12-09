@@ -8,7 +8,9 @@
  * - A sensor interface that provides attributes for the sensors and a method to configure a selected sensor.\n
  * - A DOM level 3 event that provides sensor data.\n
  *
- * This list of sensor types supported in the API could easily be extended with additional sensor types.
+ * The section <a href="#api-features">Features</a> specifies a set of basic example sensor types supported by this API. 
+ * This list of sensor types could easily be extended with additional sensor types by adding feature URIs and JSON objects
+ * for the additional sensors.
  * 
  * Implementation notes:\n
  * - From the security point of view an extensible set of features identifying the various sensor types is reported; this allows a granular control on 
