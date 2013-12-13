@@ -116,6 +116,7 @@ APIs but is also available for the APIs defined by W3C referenced below and also
 the <code>window.webinos</code> object. Instead these APIs inherit the general <a href="http://dev.webinos.org/specifications/api/servicediscovery.html#::Service">Webinos Service Interface</a> that is defined in the 
 <a href="http://dev.webinos.org/specifications/api/servicediscovery.html">Webinos Discovery API</a> </p>
 <p>For more information see <a href='http://dev.webinos.org/specifications/api/servicediscovery.html'>Discovery API</a> and <a href='http://www.webinos.org/content/html/D033/index.html'>Architecture Specification</a>.</p>
+<p>The Github repository for the webinos API specifications source files is <a href='https://github.com/webinos/webinos-api-specifications'>Github webinos API specifications</a>.</p>
 
 <div class="api">
   <h2 class="head">APIs Specified by Webinos</h2>
