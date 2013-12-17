@@ -1,8 +1,6 @@
 /**<p> The webinos Generic Actuator API provides applications with an API to control actuators.</p> 
  * \name The Generic Actuator API 
  * 
- *
- *
  * The webinos Generic Actuator API provides applications with an API to control actuators in the device, 
  * connected to the device or in another device.
  *
@@ -93,7 +91,7 @@
  * \author Louay Bassbouss &lt;louay.bassbouss@fokus.fraunhofer.de&gt;
  * \author Update to new WIDL format by Christian Fuhrhop &lt;christian.fuhrhop@fokus.fraunhofer.de&gt;
  * \author Change to JSON object for actuator values by Claes Nilsson &lt;claes1.nilsson@sonymobile.com&gt; 
- * \version 2.1
+ * \version 3.0
  */
 
 
@@ -182,48 +180,6 @@
 
    * \endcode
    */
-
-        /**
-        * \brief This interface defines an abstract class representing the range of the actuator values. 
-        * The actuator range can be an interval (e.g. temperature is in interval [0&deg;C,27&deg;C]) or a set of 
-        * valid values (e.g. a switch accepts only the values {0,1} representing the ON and OFF state). 
-        */ 
-        interface ActuatorRange {
-                //this interface is abstract and therefore it dosent consist any attribute.
-        };
-
-        /**
-        * \brief This interface defines an interval as a sub class of the actuator range. 
-        * all valid values of the associated actuator must be between the min and max value.
-        * if the min/max value is undefined means that the lower/upper bound of actuator values 
-        * is not limited
-        */
-        [Constructor(float minValue), Constructor(float minValue,float maxValue)]
-        interface IntervalRange: ActuatorRange {
-                /**
-                * \brief Min range of actuator in the actuator unit.
-                * undefined min value means that the lower bound is not limited
-                */
-                attribute float minValue;
-                /**
-                * \brief Max range of actuator in the actuator unit.
-                * undefined max value means that the upper bound is not limited
-                */
-                attribute float maxValue;
-        };
-
-        /**
-        * \brief This interface defines a set of valid values as a sub class of the actuator range.
-        * a valid value of the actuator must be one of the values array.
-        */
-        [Constructor(float[] validValues)]
-        interface ListRange: ActuatorRange {
-                /**
-                * \brief Valid values in the actuator unit
-                */
-                attribute float[] validValues;
-        };
-
   
         /**
         * \brief This interface defines the actuator properties. 
@@ -232,49 +188,77 @@
  
         [NoInterfaceObject] interface Actuator : Service {
 
-                /**
-                * \brief The range of each actuator value.
-                * 
-                * The size of the range array must be the same as the number of input pins of the actuator
-                */
-                readonly attribute ActuatorRange[] range;
- 
-                /**
-                * \brief The unit of each actuator value.
-                * 
-                * The unit array and the range array must have the same size, 
-                * which represents the number of input pins of the actuator
-                */
-                readonly attribute DOMString[] unit;
+          /**
+          * \brief The range of each actuator value.
+          * 
+          * The size of the range array must be the same as the number of input pins of the actuator, i.e.
+          * the number of members in the JSON object that representa the Actuator type. 
+          * The type of range is an array of <a>ActuatorRange</a> dictionary objects.
+          */
+          readonly attribute any[] range;
 
-                /**
-                * \brief Vendor string of this actuator.
-                */
-                readonly attribute DOMString? vendor;  
+          /**
+          * \brief The unit of each actuator value.
+          * 
+          * The unit array and the range array must have the same size, 
+          * which represents the number of input pins of the actuator
+          */
+          readonly attribute DOMString[] unit;
 
-                /**
-                * \brief Version of the actuators module.
-                */ 
-                readonly attribute unsigned long?  version;
+          /**
+          * \brief Vendor string of this actuator.
+          */
+          readonly attribute DOMString? vendor;  
 
-                /**
-                * \brief Set a new actuator value.
-                *
-                * \param value the new actuator values as a JSON object. The number of members of the JSON object corresponds to the number 
-                *  of input pins of the actuator. See section "4 Features" for specification of the JSON object for each sensor type.
-                * \param successCB the success callback called with an ActuatorEvent object as input in case the setValue call succeeded.
-                * \param errorCB the error callback
-                */
-                PendingOperation setValue (any value, optional ActuatorSuccessCB successCB, optional ActuatorErrorCB errorCB);
+          /**
+          * \brief Version of the actuators module.
+          */ 
+          readonly attribute unsigned long?  version;
+
+          /**
+          * \brief Set a new actuator value.
+          *
+          * \param value the new actuator values as a JSON object. The number of members of the JSON object corresponds to the number 
+          *  of input pins of the actuator. See section <a href="#api-features">Features</a> for specification of the JSON object for each sensor type.
+          * \param successCB the success callback called with an ActuatorEvent object as input in case the setValue call succeeded.
+          * \param errorCB the error callback
+          */
+          PendingOperation setValue (any value, optional ActuatorSuccessCB successCB, optional ActuatorErrorCB errorCB);
         };
 
-                /**
-                * \brief onSuccess The onSuccess method is called after the setValue succeeded.  
-                *
-                * \param event The event object associated to the asynchronous operation setValue
-                */
-                callback ActuatorSuccessCB =  void (ActuatorEvent event); 
-
+        /**
+        * \brief onSuccess The onSuccess method is called after the setValue succeeded.  
+        *
+        * \param event The event object associated to the asynchronous operation setValue
+        */
+        callback ActuatorSuccessCB =  void (ActuatorEvent event); 
+                
+        /**
+        * \brief ActuatorRange definition. The actuator range can be an interval (e.g. temperature is in interval [0&deg;C,27&deg;C]) or a set of 
+        * valid values (e.g. a switch accepts only the values {0,1} representing the ON and OFF state). All dictionary members are optional. The 
+        * developer should define either a set of valid values or max and/or min value but if the validValues member is present and also minValue 
+        * and/or maxValue is present then minValue and/or maxValue are ignored.
+        */
+        dictionary ActuatorRange {
+        
+          /**
+          * \brief Min range of actuator in the actuator unit.
+          * undefined min value means that the lower bound is not limited
+          */
+          any minValue;
+          
+          /**
+          * \brief Max range of actuator in the actuator unit.
+          * undefined max value means that the upper bound is not limited
+          */
+          any maxValue;
+          
+          /**
+          * \brief Valid values in the actuator unit, i.e. a valid value of the actuator must be one of the validValues.
+          */
+          sequence<any> validValues;             
+        
+        };
 
       /**
        * \brief The ActuatorErrorCB method is called if an error occurs during the setValue() process.  
@@ -326,7 +310,7 @@
 
                 /**
                 * \brief Actual values as a JSON object representing the current state of the actuator. 
-                *  See section "4 Features" for specification of the JSON object for each sensor type.
+                *  See section <a href="#api-features">Features</a> for specification of the JSON object for each sensor type.
                 */
                 readonly attribute any actualValue;
 
@@ -340,3 +324,6 @@
                 */
                 void initActuatorEvent(DOMString type, DOMString actuatorType, DOMString actuatorId, any actualValue); 
         };
+        
+
+
