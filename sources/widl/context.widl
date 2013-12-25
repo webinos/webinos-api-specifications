@@ -566,7 +566,7 @@ interface Schedule{
 	attribute integer interval;
 	
 	/**
-	 * \brief The timestamp until when this ScheduledAPICall is valid. After that it will be removed. This is automatically set for new ScheduledAPICall to a month after the creation date.
+	 * \brief The timestamp until when this Schedule is valid. After that it will be removed. This is automatically set for new Schedule to a month after the creation date.
 	 */
 	attribute DOMTimeStamp validUntil;
 };
