@@ -371,7 +371,7 @@ interface ContextRuleManager{
 	
 	
 	/**
-	 * \brief Register a listener for a specific ContextRule
+	 * \brief Register a listener for a specific ContextRule.
 	 * \param contextRuleURI The URI or the ContextRule to monitor.
 	 * \param listenerName The name of the listener to add. This name is used to identify the callback so that the application can remove or override the listener.
 	 * \param callback The callback function to process the incoming data when the ContextRule has been triggered.
@@ -400,12 +400,12 @@ callback ContextRuleSearchCB = void (ContextRule[] rules);
 /**
  * \brief Callback function when a save for ContextRule executes successfully.
  *
- * \param savedRule The saved ContextRule with all possible modifications. If the interval provided is too low, an overridden value can be determined from this ContextRule.
+ * \param savedRule The saved ContextRule with all possible modifications. If the interval provided is too low, the predetermined overridden ContextRule-specific interval value can be found on the returned ContextRule.
  */
 callback ContextRuleSaveCB = void (ContextRule savedRule);
 
 /**
- * \brief This is the definition of a ContextRule object
+ * \brief This is the definition of a ContextRule object.
  */
 interface ContextRule{
 	/**
@@ -429,7 +429,7 @@ interface ContextRule{
 	attribute ContextQuery ruleQuery;
 	
 	/**
-	 * \brief The interval in seconds between each ContextRule evaluation. This interval might be overridden by the Context API to avoid performance issues. ContextRuleSaveCB should be used when saving to determine the overridden value.
+	 * \brief The interval in seconds between each ContextRule evaluation. This interval might be overridden by the Context API to avoid performance issues if the provided value is too low. ContextRuleSaveCB should be used when saving to determine the overridden value.
 	 */
 	attribute integer interval;
 	
