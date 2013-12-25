@@ -429,7 +429,7 @@ interface ContextRule{
 	attribute ContextQuery ruleQuery;
 	
 	/**
-	 * \brief The interval in seconds between each ContextRule evaluation. This interval might be overridden by the Context API to avoid performance issues if the provided value is too low. ContextRuleSaveCB should be used when saving to determine the overridden value.
+	 * \brief The interval in seconds between each ContextRule evaluation. This interval might be overridden by the Context API to avoid performance issues if the provided value is too low. ContextRuleSaveCB should be used, when saving, to determine the overridden value.
 	 */
 	attribute integer interval;
 	
@@ -492,10 +492,10 @@ interface ScheduleManager{
 	 * \brief Insert or update a Schedule. 
 	 *
 	 * \param schedule The new Schedule to insert. If the Schedule already exists and the owner application is the same as the caller, the Schedule gets updated. Otherwise an error occurs.
-	 * \param successCallback Function to be invoked if the asynchronous insert operation completes successfully.
+	 * \param saveCallback Function to be invoked if the asynchronous insert operation completes successfully. The Schedule that was saved is returned with possible modifications.
 	 * \param errorCallback Function to be invoked if the asynchronous insert operation results in errors.
 	 */
-	void save(Schedule schedule, optional SuccessCB? successCallback, optional ErrorCB? errorCallback);
+	void save(Schedule schedule, optional ScheduleSaveCB? saveCallback, optional ErrorCB? errorCallback);
 	
 	/**
 	 * \brief Remove a Schedule.
@@ -522,6 +522,13 @@ interface ScheduleManager{
  * \param schedules An array of Schedule that contains the results of the search
  */
 callback ScheduleSearchCB = void (Schedule[] schedules);
+
+/**
+ * \brief Callback function when a save for Schedule executes successfully.
+ *
+ * \param savedSchedule The saved Schedule with all possible modifications. If the interval provided is too low, the predetermined overridden Schedule-specific interval value can be found on the returned Schedule.
+ */
+callback ScheduleSaveCB = void (Schedule savedSchedule);
 
 /**
  * \brief This is the definition of a Schedule object
@@ -554,9 +561,9 @@ interface Schedule{
 	attribute DOMString deviceId;
 	
 	/**
-	 * \brief The Interval between each API call
+	 * \brief The interval in seconds between each API call. This interval might be overridden by the Context API to avoid performance issues if the provided value is too low. ScheduleSaveCB should be used, when saving, to determine the overridden value.
 	 */
-	attribute Interval interval;
+	attribute integer interval;
 	
 	/**
 	 * \brief The timestamp until when this ScheduledAPICall is valid. After that it will be removed. This is automatically set for new ScheduledAPICall to a month after the creation date.
