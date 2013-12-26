@@ -53,7 +53,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
           <xsl:apply-templates select="descriptive/author"/>
         </ul>
 
-        <div><p class="copyright"><small>© 2011-2012 <a href="http://www.webinos.org/">webinos consortium</a>.</small></p> </div>
+        <div><p class="copyright"><small>© 2011-2014 <a href="http://www.webinos.org/">webinos consortium</a>.</small></p> </div>
 
         <hr/>
 
