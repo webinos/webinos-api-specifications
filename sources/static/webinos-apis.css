@@ -1,27 +1,83 @@
+body {
+font-size: 14px;
+line-height: 1.4;
+
+}
+
+a { text-decoration: none;}
+a:hover {color: #2a6496;}
+
+b {
+color: #005A9C;
+}
+
+code {font-family: 'Open Sans', sans-serif;}
+
+h1, h2, h3, h4, h5, h6 {
+color: #005A9C;
+}
+
+#menu {
+width: 300px;
+float: left;
+font-family: 'Open Sans', sans-serif;
+position: relative;
+display: block;
+margin-right: 20px;
+}
+
+#header {clear: both;
+  font-family: 'Open Sans';
+  position: relative;
+  overflow: visible;
+  color: #428bca;
+  z-index: 999;
+  background: #fff;
+  width: 100%;
+  height: 100px;
+  display: block;
+  }
+  #header h1 a {
+  color: #428bca;
+  }
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Open Sans Light'), local('OpenSans-Light'), url(http://themes.googleusercontent.com/static/fonts/opensans/v8/DXI1ORHCpsQm3Vp6mXoaTXhCUOGz7vYGh680lGh-uXM.woff) format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans'), local('OpenSans'), url(http://themes.googleusercontent.com/static/fonts/opensans/v8/cJZKeOuBrn4kERxqtaUH3T8E0i7KZn-EPnyo3HZu7kw.woff) format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 600;
+  src: local('Open Sans Semibold'), local('OpenSans-Semibold'), url(http://themes.googleusercontent.com/static/fonts/opensans/v8/MTP_ySUJH_bn48VBG8sNSnhCUOGz7vYGh680lGh-uXM.woff) format('woff');
+}
 
 #content pre {
-    text-align: left;
-        font-family: 'Droid Sans Mono', Courier;        
-    font-family: "Consolas", "Lucida Sans Unicode", "Monaco", "Courier New", Courier, mono, serif;
-    -webkit-border-radius: 8px;
-    -khtml-border-radius: 8px;
-    -moz-border-radius: 8px;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    display:block;
-    color:#2c3123;
-    margin:15px 0px 15px -8px;
-    padding:12px 20px 12px 35px;
-    font-size: 14px;
-    overflow:hidden;
-    word-wrap:break-word;
-    white-space: pre-wrap;
+    display: block;
+padding: 9.5px;
+margin: 0 0 10px;
+font-size: 13px;
+line-height: 1.428571429;
+word-break: break-all;
+word-wrap: break-word;
+color: #333333;
+background-color: #f5f5f5;
+border: 1px solid #cccccc;
+border-radius: 4px;
+max-width: 600px;
 }
 
 
 
-#content pre code { font-family: 'Droid Sans Mono', Courier;        
-    font-family: "Consolas", "Lucida Sans Unicode", "Monaco", "Courier New", Courier, mono, serif;
+#content pre code {       
+    font-family: 'Open Sans', sans-serif;
     font-size: 1em;
     margin:0px;
     11px;
@@ -30,8 +86,7 @@
 }
 
 #content pre webidl {
-    font-family: 'Droid Sans Mono', Courier;        
-    font-family: "Consolas", "Lucida Sans Unicode", "Monaco", "Courier New", Courier, mono, serif;
+    font-family: 'Open Sans', sans-serif;
     font-size: 1em;
     margin:0px;
     11px;
@@ -39,21 +94,6 @@
     border: 1px solid #888;
 }
 
-#content .prettyprint {
-}
-
-
-#content .signature {
-  background-color: #EFF6F1;
-}
-
-#content .examplecode {
-  background-color: #D5E9F9;
-}
-
-#content .webidl {
-  background-color: #FCF2F2;
-}
 
 #content pre.signature::before {
     content:    "Method Signature";
@@ -61,12 +101,12 @@
     background: #007900;
     width: 200px;
     color:  #fff;
-    font-family:    "Helvetica";
+    font-family: 'Open Sans', sans-serif;
     padding:    3px;
     font-weight:    bold;
     margin: -1em 0 1em -1em;
     padding: 2px; 
-    border: 1px solid #888;
+    border-radius: 3px;
 }
 
 #content pre.examplecode::before {
@@ -75,10 +115,11 @@
     background: #00C;
     width: 200px;
     color:  #fff;
-    font-family:    "Helvetica";
+    font-family: 'Open Sans', sans-serif;
     padding:    3px;
     font-weight:    bold;
     margin: -1em 0 1em -1em;
+	border-radius: 3px;
 }
 
 #content pre.webidl::before {
@@ -87,10 +128,11 @@
     background: #C00;
     width: 200px;
     color:  #fff;
-    font-family:    "Helvetica";
+    font-family: 'Open Sans', sans-serif;
     padding:    3px;
     font-weight:    bold;
     margin: -1em 0 1em -1em;
+	border-radius: 3px;
 }
 
       #content .prettyprint b {
@@ -102,14 +144,14 @@
 
 
       #content pre select {
-        font-family: Monaco, Courier;
+        font-family: 'Open Sans', sans-serif;
         border: 1px solid #c61800;
       }
         
       #content input {
         font-size: 16px;
         margin-right: 10px;
-        font-family: Helvetica;
+        font-family: 'Open Sans', sans-serif;
         padding: 3px;
       }
       #content input[type="range"] {
@@ -118,7 +160,7 @@
       
       #content button {
         margin: 20px 10px 0 0;
-        font-family: Verdana;
+        font-family: 'Open Sans', sans-serif;
       }
       
       #content button.large {
@@ -144,14 +186,6 @@
       }
 
 
-
-#content {
-	font-size: 1.1em;
-	counter-reset: assertion;
-}
-
-#content .product, #content .product-ua, #content .product-cc {
-}
 
 #content dfn.external {
 	font-weight: normal;
@@ -265,20 +299,15 @@
 }
 
 #content code {
-	font-size: 1.1em;
 	text-decoration: none;
-	color: #002108;
 }
 
 
 #content .dir_listing li {
 	list-style-type:none;
-	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	font-family: 'Open Sans', sans-serif;
 }
 
-#content span span {
-	background-color: yellow;
-}
 
 #content li.folder {
 	list-style-image:url(images/expanded_folder.png)
@@ -320,7 +349,7 @@
 }
 
 #content var {
-	font-family: "Lucida Console", Monaco, monospace;
+	font-family: 'Open Sans', sans-serif;
 }
 
 #content li.folder li {
@@ -329,7 +358,7 @@
 
 #content .dir_listing .comment {
 	border: none;
-	font-family:"Courier New", Courier, monospace;
+	font-family: 'Open Sans', sans-serif;
 	color: #669933;
 }
 
@@ -438,14 +467,13 @@
       }
 
 #content .attrName, .methodName {
-    background: #ffffd2;
 }
 
 
 	#content  {
-	  padding: 2em 1em 2em 70px;
-	  margin: 0;
-	  font-family: sans-serif;
+	 
+	  /*margin: 0;*/
+	  font-family: 'Open Sans', sans-serif;
 	  color: black;
 	  background: white;
 	  background-position: top left;
@@ -453,11 +481,9 @@
 	  background-repeat: no-repeat;
 	}
 
-	#content :link { color: #00C; background: transparent }
-	#content :visited { color: #609; background: transparent }
-	#content a:active { color: #C00; background: transparent }
+	#content :link {color: #428bca; background: transparent }
+	#content a:active {color: #428bca; background: transparent }
 
-	#content a:link img, #content a:visited img { border-style: none } /* no border on img links */
 
 	#content a img { color: white; }        /* trick to hide the border in Netscape 4 */
 	@media all {                   /* hide the next rule from Netscape 4 */
@@ -465,18 +491,18 @@
 	}
 
 	#content th, #content td { /* ns 4 */
-	  font-family: sans-serif;
+	  font-family: 'Open Sans', sans-serif;
 	}
 
 	#content h1, #content h2, #content h3, #content h4, #content h5, #content h6 { text-align: left }
 	/* background should be transparent, but WebTV has a bug */
 	#content h1, #content h2, #content h3 { color: #005A9C; background: white; padding-top: 0.2em }
-	#content h1 { font: 170% sans-serif }
-	#content h2 { font: 140% sans-serif }
-	#content h3 { font: 120% sans-serif }
-	#content h4 { font: bold 100% sans-serif }
-	#content h5 { font: bold italic 100% sans-serif }
-	#content h6 { font: bold small-caps 100% sans-serif }
+	#content h1 { font-size: 170%}
+	#content h2 { font-size: 140%  }
+	#content h3 { font-size: 120% }
+	#content h4 { font-size: 115%}
+	#content h5 { font-size: 110%  }
+	#content h6 { font-size: 105%  }
 
 
 	#content .hide { display: none }
@@ -491,10 +517,6 @@
 
 	#content a[href] img:hover { background:white}
 
-	@media screen {  /* hide from IE3 */
-	#content a[href]:hover { background: #ffa }
-	}
-
 	#content pre { margin-left: 2em }
 	/*
 	#content  p {
@@ -504,7 +526,7 @@
 	*/
 	#content dt, #content dd { margin-top: 0; margin-bottom: 0 } /* opera 3.50 */
 
-	#content pre, #content code { font-family: monospace } /* navigator 4 requires this */
+	#content pre, #content code { font-family: 'Open Sans', sans-serif; } /* navigator 4 requires this */
 
 	#content ul.toc, #content ol.toc {
 	  list-style: disc;		/* Mac NS has problem with 'none' */
@@ -521,8 +543,6 @@
 
 
 
-	#content  {
-	}
 
 
 
@@ -546,7 +566,7 @@
 
 
 #content .def-api-feature dt, #content dt .def-device-cap, #content dt.const code { font: bold 100% sans-serif; }
-#content dt.attribute code, #content dt.method code { font: italic 100% sans-serif; }
+#content dt.attribute code, #content dt.method code {}
 
 #content .def-device-caps dd { margin-bottom: 2em }
 
@@ -593,32 +613,35 @@
 
 /*@media print {*/
   #content .str { color: #060; }
-  #content .kwd { color: #006; font-weight: bold; }
-  #content .com { color: #600; font-style: italic; }
-  #content .typ { color: #404; font-weight: bold; }
+  #content .kwd { color: #006; }
+  #content .com { color: #600; }
+  #content .typ { color: #404; }
   #content .lit { color: #044; }
   #content .pun { color: #440; }
   #content .pln { color: #000; }
-  #content .tag { color: #006; font-weight: bold; }
+  #content .tag { color: #006;  }
   #content .atn { color: #404; }
   #content .atv { color: #060; }
 /*}*/
 
-ol.toc {
-    list-style: none; 
-    margin: 0px 0px 0px 10px; 
-    padding: 0;
-    counter-reset: num;
+ul.toc {
+    list-style-type: none; 
+	font-weight: lighter;
+	min-height: 20px;
+	padding: 19px;
+	margin-bottom: 20px;
+	background-color: #f5f5f5;
+	border: 1px solid #e3e3e3;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 
-ol.toc li:before {
-    content: counter(num) '. ';
-    counter-increment: num;
+ul {
+ list-style-type: none; 
+	font-weight: lighter;
 }
 
-ol.toc ol li:before {
-    content: counters(num, '.') ' ';
-}
 
 #method-summary {
     counter-reset: section;
@@ -637,3 +660,44 @@ h3.section:before {
     content: counter(section) '.' counter(subsection) ' ';
     counter-increment: subsection;
 }
+
+.pull-left {float: left;
+}
+
+.api {
+position: relative;
+float: left;
+max-width: 600px;
+}
+
+#btn {
+color: #ffffff;
+float: right;
+height: 30px;
+background-color:#428bca;
+border-radius: 4px;
+
+}
+#btn ul {
+display: none;
+position: absolute;
+border: 1px solid rgba(0, 0, 0, 0.15);
+border-radius: 4px;
+background: #fff;
+box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+color: #000;
+float: left;
+padding: 5px 0;
+margin: 2px 0 0;
+min-width: 160px;
+top: 35px;
+right: 0px;
+z-index: 9999;
+}
+#btn:focus {
+background-color: #3276b1;
+}
+#btn:focus ul {
+display: inline;
+}
+

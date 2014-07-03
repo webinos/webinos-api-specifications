@@ -32,19 +32,85 @@ XSLT stylesheet to convert widlprocxml into html documentation.
                 <xsl:value-of select="$title"/>
             </title>
         </head>
-        <body id="content" onload='prettyPrint()'>
+        <body  onload='prettyPrint()'>
+		<div id="header">
+			<img alt="webinos" class="pull-left" src="webinos_logo.png" style="width: 60px;height:60px;"/><h1 class="pull-left"><a href="/">webinos developer's documentation</a></h1>
+			<button id="btn">
+			<ul><li><a href="http://webinos.org/" title="Foundation site">Foundation website</a></li>
+				<li><a href="https://developer.webinos.org/" title="Developer site">Developer Portal</a></li>
+			</ul>
+			Other Resources
+			
+			</button>
+		</div>
+		<div id="content">
             <xsl:apply-templates/>
+		</div>
         </body>
     </html>
 </xsl:template>
 
 <!--Root of Definitions.-->
 <xsl:template match="Definitions">
+	        <xsl:apply-templates select="descriptive/description[1]"/>
+
+
+        <div id="menu">
+        <ul class="toc">
+         <!--<li> <a href="#method-summary">Method Summary</a></li>-->
+
+          <li><a href="#intro">Introduction</a></li>
+          <li><a href="#interfaces">Interfaces and Dictionaries</a>
+          <ul>
+          <xsl:for-each select="Interface[descriptive]|Dictionary[descriptive]">
+            <li><a href="#{@id}"><xsl:value-of select="@name"/></a></li>
+          </xsl:for-each>
+          </ul>
+          </li>
+          <xsl:if test="Typedef">
+          <li><a href="#typedefs">Type Definitions</a>
+            <ul>
+              <xsl:for-each select="Typedef[descriptive]">
+                <li><a href="#{@id}"><xsl:value-of select="@name"/></a></li>
+              </xsl:for-each>
+            </ul>
+            </li>
+          </xsl:if>
+          <xsl:if test="Callback">
+	          <li><a href="#callbacks">Callbacks</a>
+	          <ul>
+	          <xsl:for-each select="Callback[descriptive]">
+	            <li><a href="#{@id}"><code><xsl:value-of select="@name"/></code></a></li>
+	          </xsl:for-each>
+	          </ul>
+	          </li>
+          </xsl:if>
+          <xsl:if test="Enum">
+	          <li><a href="#enums">Enums</a>
+	          <ul>
+	          <xsl:for-each select="Enum[descriptive]">
+	            <li><a href="#{@id}"><code><xsl:value-of select="@name"/></code></a></li>
+	          </xsl:for-each>
+	          </ul>
+	          </li>
+          </xsl:if>
+          <xsl:if test="Exception">
+          <li><a href="#exceptions">Exceptions</a>
+            <ul>
+              <xsl:for-each select="Exception">
+                <li><a href="#{@id}"><xsl:value-of select="@name"/></a></li>
+              </xsl:for-each>
+            </ul>
+            </li>
+          </xsl:if>
+
+          <li><a href="#api-features">Features</a></li>
+          <li><a href="#full-webidl">Full WebIDL</a></li>
+        </ul>
+		</div>
     <div class="api" id="{@id}">
       <div>
-        <a href="http://webinos.org"><img src="webinosLogo.png" alt="Webinos Logo"/></a>
         <h1><xsl:value-of select="$title"/></h1>
-        <h2 class="head">Webinos API Specifications</h2>
         <h3><xsl:value-of select="$date"/></h3>
       </div>
 
@@ -54,68 +120,6 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         </ul>
 
         <div><p class="copyright"><small>© 2011-2014 <a href="http://www.webinos.org/">webinos consortium</a>.</small></p> </div>
-
-        <hr/>
-
-        <h2>Abstract</h2>
-
-        <xsl:apply-templates select="descriptive/description[1]"/>
-
-
-        <h2>Table of Contents</h2>
-        <ol class="toc">
-         <!--<li> <a href="#method-summary">Method Summary</a></li>-->
-
-          <li><a href="#intro">Introduction</a></li>
-          <li><a href="#interfaces">Interfaces and Dictionaries</a>
-          <ol class="toc">
-          <xsl:for-each select="Interface[descriptive]|Dictionary[descriptive]">
-            <li><a href="#{@id}"><xsl:value-of select="@name"/></a></li>
-          </xsl:for-each>
-          </ol>
-          </li>
-          <xsl:if test="Typedef">
-          <li><a href="#typedefs">Type Definitions</a>
-            <ol class="toc">
-              <xsl:for-each select="Typedef[descriptive]">
-                <li><a href="#{@id}"><xsl:value-of select="@name"/></a></li>
-              </xsl:for-each>
-            </ol>
-            </li>
-          </xsl:if>
-          <xsl:if test="Callback">
-	          <li><a href="#callbacks">Callbacks</a>
-	          <ol class="toc">
-	          <xsl:for-each select="Callback[descriptive]">
-	            <li><a href="#{@id}"><code><xsl:value-of select="@name"/></code></a></li>
-	          </xsl:for-each>
-	          </ol>
-	          </li>
-          </xsl:if>
-          <xsl:if test="Enum">
-	          <li><a href="#enums">Enums</a>
-	          <ol class="toc">
-	          <xsl:for-each select="Enum[descriptive]">
-	            <li><a href="#{@id}"><code><xsl:value-of select="@name"/></code></a></li>
-	          </xsl:for-each>
-	          </ol>
-	          </li>
-          </xsl:if>
-          <xsl:if test="Exception">
-          <li><a href="#exceptions">Exceptions</a>
-            <ol class="toc">
-              <xsl:for-each select="Exception">
-                <li><a href="#{@id}"><xsl:value-of select="@name"/></a></li>
-              </xsl:for-each>
-            </ol>
-            </li>
-          </xsl:if>
-
-          <li><a href="#api-features">Features</a></li>
-          <li><a href="#full-webidl">Full WebIDL</a></li>
-        </ol>
-
-        <hr/>
 
        
         <h2 id="method-summary">Summary of Methods</h2>
