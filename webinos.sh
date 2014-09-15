@@ -91,15 +91,23 @@ cat > "$SPECHOME/apis/index.html" <<DELIM
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link media="screen" href="webinos-apis.css" type="text/css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="webinos-apis.css" media="screen">
+<script type="text/javascript" src="webinos-apis.js"></script>
 <title>webinos Device APIs - working repository</title>
 </head>
-<body id="content">
-<div class="api">
-     <a href="http://webinos.org"><img src="webinosLogo.png" alt="webinos Logo"></a>
-
-     <h1 class="head">webinos Device APIs - working repository</h1>
+<body onload="prettyPrint()">
+<div id="header">
+<img alt="webinos" class="pull-left" src="webinos_logo.png" style="width: 60px;height:60px;"><h1 class="pull-left"><a href="/">webinos developer's documentation</a></h1>
+<button id="btn"><ul>
+<li><a href="http://webinos.org/" title="Foundation site">Foundation website</a></li>
+<li><a href="https://developer.webinos.org/" title="Developer site">Developer Portal</a></li>
+</ul>
+			Other Resources
+			
+			</button>
 </div>
+<div id="content">
+<div class="description">
 <p>This page lists all API specifications that are defined or referenced/used within the webinos project.</p>
 <p>The APIs listed here are to be considered 'work in progress'. The official stable webinos API specifications are located at 
 <a href='http://dev.webinos.org/deliverables/wp3/Deliverable34'>http://dev.webinos.org/deliverables/wp3/Deliverable34/</a></p>
@@ -116,11 +124,11 @@ APIs but is also available for the APIs defined by W3C referenced below and also
 the <code>window.webinos</code> object. Instead these APIs inherit the general <a href="http://dev.webinos.org/specifications/api/servicediscovery.html#::Service">webinos Service Interface</a> that is defined in the 
 <a href="http://dev.webinos.org/specifications/api/servicediscovery.html">webinos Discovery API</a> </p>
 <p>The Github repository for the webinos API specifications source files is <a href='https://github.com/webinos/webinos-api-specifications'>Github webinos API specifications</a>.</p>
-
+</div>
 <div class="api">
   <h2 class="head">APIs Specified by webinos</h2>
 </div>
-<div id="content"><table><thead><tr><th>Specification</th><th>Summary</th></thead><tbody>
+<table><thead><tr><th>Specification</th><th>Summary</th></thead><tbody>
 DELIM
 
 for i in $WIDLFILES
@@ -134,11 +142,11 @@ do
         #basename2="$(echo ${basename2:0:1} | tr 'a-z' 'A-Z' )""${basename2:1}"
         #echo '<li><a href="./'"$(basename "$i" .widl).html"'">'"$basename2"' API</a><br /></li>' >> "$SPECHOME/apis/index.html"
 done
-echo '</tbody></table></div>'  >> "$SPECHOME/apis/index.html"
+echo '</tbody></table>'  >> "$SPECHOME/apis/index.html"
 
 echo '<div class=api> <h2 class=head>Referred APIs used by webinos</h2> </div>' >> "$SPECHOME/apis/index.html"
 
-echo '<div id="content"><table><thead><tr><th>Specification</th><th>Summary</th><th>Inheritance of webinos Service interface</th><th>Feature URI</th></thead><tbody>' >> "$SPECHOME/apis/index.html"
+echo '<table><thead><tr><th>Specification</th><th>Summary</th><th>Inheritance of webinos Service interface</th><th>Feature URI</th></thead><tbody>' >> "$SPECHOME/apis/index.html"
 
 echo '<tr><td><a href=http://www.w3.org/TR/2011/WD-orientation-event-20111201/>The W3C DeviceOrientation Event specification</a></td><td><p>' >> "$SPECHOME/apis/index.html"
 echo 'This specification defines several new DOM event types that provide information about the physical orientation and motion of a hosting device.<br/></p></td><td><code>interface DeviceOrientation : Service {<br/>...<br/>};</code></td><td><code>http://webinos.org/api/w3c/deviceorientation</code></td></tr>' >> "$SPECHOME/apis/index.html"

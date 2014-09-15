@@ -666,8 +666,7 @@ h3.section:before {
 
 .api {
 position: relative;
-float: left;
-max-width: 600px;
+
 }
 
 #btn {
