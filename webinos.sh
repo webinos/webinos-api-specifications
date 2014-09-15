@@ -127,7 +127,6 @@ the <code>window.webinos</code> object. Instead these APIs inherit the general <
 </div>
 <div class="api">
   <h2 class="head">APIs Specified by webinos</h2>
-</div>
 <table><thead><tr><th>Specification</th><th>Summary</th></thead><tbody>
 DELIM
 
@@ -144,7 +143,7 @@ do
 done
 echo '</tbody></table>'  >> "$SPECHOME/apis/index.html"
 
-echo '<div class=api> <h2 class=head>Referred APIs used by webinos</h2> </div>' >> "$SPECHOME/apis/index.html"
+echo ' <h2 class=head>Referred APIs used by webinos</h2>' >> "$SPECHOME/apis/index.html"
 
 echo '<table><thead><tr><th>Specification</th><th>Summary</th><th>Inheritance of webinos Service interface</th><th>Feature URI</th></thead><tbody>' >> "$SPECHOME/apis/index.html"
 
@@ -164,7 +163,7 @@ echo '<br/></p></td><td><code>interface NavigatorUserMedia : Service {<br/>...<b
 echo '<tr><td><a href=http://www.w3.org/TR/2013/WD-webrtc-20130910/>The W3C WebRTC API</a></td><td><p>' >> "$SPECHOME/apis/index.html"
 echo 'This specification defines an API that allows to establish peer-to-peer connections between browsers, and transmit media streams and data over these connections.' >> "$SPECHOME/apis/index.html"
 echo '<br/></p></td><td>N/A</td><td><code>http://webinos.org/api/w3c/webrtc</code></td></tr>' >> "$SPECHOME/apis/index.html"
-echo '</tbody></table></div>' >> "$SPECHOME/apis/index.html"
+echo '</tbody></table></div></div>' >> "$SPECHOME/apis/index.html"
 
 echo '</body>' >> "$SPECHOME/apis/index.html"
 echo '</html>' >> "$SPECHOME/apis/index.html"
